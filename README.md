@@ -1,1 +1,1 @@
-# Skolaroid-Team-GOAT-
+# Skolaroid
