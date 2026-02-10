@@ -33,6 +33,19 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Setup Environment Variables
+        run: |
+          cat > .env.local << EOF
+          DATABASE_URL=${{ secrets.DATABASE_URL }}
+          DIRECT_URL=${{ secrets.DIRECT_URL }}
+          NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+          VERCEL_OIDC_TOKEN=${{ secrets.VERCEL_OIDC_TOKEN }}
+          EOF
+
+      - name: Generate Prisma Client
+        run: pnpm prisma generate
+
       - name: Run Prettier check
         run: pnpm run format:check
 
