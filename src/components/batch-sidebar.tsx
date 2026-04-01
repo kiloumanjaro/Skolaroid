@@ -92,9 +92,9 @@ export function BatchSidebar({
                   aria-label={`Explore ${era.label} memories`}
                 >
                   {/* Polaroid Frame */}
-                  <div className="h-96 w-80 bg-white shadow-xl">
+                  <div className="w-80 bg-white p-2 pb-12 shadow-xl">
                     {/* Image or Placeholder */}
-                    <div className="relative h-[320px] w-full overflow-hidden">
+                    <div className="relative h-[320px] overflow-hidden bg-gray-200">
                       {era.imageUrl ? (
                         <Image
                           src={era.imageUrl}
@@ -111,12 +111,6 @@ export function BatchSidebar({
                           </span>
                         </div>
                       )}
-                    </div>
-                    {/* Polaroid Caption */}
-                    <div className="flex h-[64px] items-center justify-center">
-                      <span className="text-lg font-medium text-gray-800">
-                        {era.label}
-                      </span>
                     </div>
                   </div>
                 </button>
