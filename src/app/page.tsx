@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { BatchCard } from '@/components/batch-card';
 import { BatchSidebar } from '@/components/batch-sidebar';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
@@ -46,36 +47,9 @@ const batches = [
   },
 ];
 
-// Era-based navigation for sidebar (Latest to Oldest)
-const eras = [
-  {
-    decade: 2020,
-    label: '2020s',
-    color: 'bg-blue-100',
-    imageUrl: '', // Add Oblation statue photo from 2020s era here
-  },
-  {
-    decade: 2010,
-    label: '2010s',
-    color: 'bg-green-100',
-    imageUrl: '', // Add Oblation statue photo from 2010s era here
-  },
-  {
-    decade: 2000,
-    label: '2000s',
-    color: 'bg-yellow-100',
-    imageUrl: '', // Add Oblation statue photo from 2000s era here
-  },
-  {
-    decade: 1990,
-    label: '1990s',
-    color: 'bg-purple-100',
-    imageUrl: '', // Add Oblation statue photo from 1990s era here
-  },
-];
-
 export default function Home() {
   const { isAuthenticated, loading } = useUserAuth();
+  const router = useRouter();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const drawerContentRef = useRef<HTMLDivElement>(null);
@@ -83,16 +57,44 @@ export default function Home() {
   const [startY, setStartY] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
 
+  // Era-based navigation for sidebar (Latest to Oldest: 2020s → 1990s)
+  const eras = [
+    {
+      decade: 2020,
+      label: '2020s',
+      color: 'bg-blue-100',
+      imageUrl: '', // TODO: Add Oblation statue photo from 2020s era
+    },
+    {
+      decade: 2010,
+      label: '2010s',
+      color: 'bg-green-100',
+      imageUrl: '', // TODO: Add Oblation statue photo from 2010s era
+    },
+    {
+      decade: 2000,
+      label: '2000s',
+      color: 'bg-yellow-100',
+      imageUrl: '', // TODO: Add Oblation statue photo from 2000s era
+    },
+    {
+      decade: 1990,
+      label: '1990s',
+      color: 'bg-purple-100',
+      imageUrl: '', // TODO: Add Oblation statue photo from 1990s era
+    },
+  ];
+
   // After login, check for a stored invite redirect
   useEffect(() => {
     if (!loading && isAuthenticated) {
       const pendingRedirect = sessionStorage.getItem('invite_redirect');
       if (pendingRedirect) {
         sessionStorage.removeItem('invite_redirect');
-        window.location.href = pendingRedirect;
+        router.push(pendingRedirect);
       }
     }
-  }, [loading, isAuthenticated]);
+  }, [loading, isAuthenticated, router]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
