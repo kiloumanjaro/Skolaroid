@@ -43,9 +43,7 @@ export function useCreateMemory() {
       // 1. Upload media file first (if provided) to get the public URL.
       let mediaURL: string | undefined;
       if (mediaFile) {
-        console.log('[useCreateMemory] uploading media file', mediaFile.name);
         mediaURL = await uploadMediaFile(mediaFile);
-        console.log('[useCreateMemory] upload complete, url:', mediaURL);
       }
 
       // 2. Create the memory record with the resolved URL.
@@ -53,16 +51,13 @@ export function useCreateMemory() {
         ...data,
         ...(mediaURL ? { mediaURL } : {}),
       };
-      console.log('[useCreateMemory] sending request', payload);
 
       const res = await fetch('/api/prisma/memory/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      console.log('[useCreateMemory] response status', res.status);
       const text = await res.text();
-      console.log('[useCreateMemory] response body', text);
       if (!res.ok) {
         let errorMessage = 'Failed to create memory';
         try {

@@ -8,6 +8,7 @@ import { ProfileContactCard } from '@/components/profile/ProfileContactCard';
 import { ProfileAcademicCard } from '@/components/profile/ProfileAcademicCard';
 import { ProfileActivityCard } from '@/components/profile/ProfileActivityCard';
 import { ProfileSettingsCard } from '@/components/profile/ProfileSettingsCard';
+import { ProfileMemoriesCard } from '@/components/profile/ProfileMemoriesCard';
 
 export default function ProfilePage() {
   const { user, loading } = useUserAuth();
@@ -41,6 +42,7 @@ export default function ProfilePage() {
           status={dbUser?.status}
         />
         <ProfileActivityCard />
+        <ProfileMemoriesCard userId={dbUser?.id} />
         <ProfileSettingsCard />
       </div>
     </div>

@@ -90,6 +90,11 @@ export const memoriesByLocationQuerySchema = z.object({
   locationId: z.string().uuid('Invalid location ID'),
 });
 
+/** Schema for querying memories by creator. */
+export const memoriesByCreatorQuerySchema = z.object({
+  userId: z.string().uuid('Invalid user ID'),
+});
+
 // ============================================================================
 // VOTE SCHEMAS
 // ============================================================================

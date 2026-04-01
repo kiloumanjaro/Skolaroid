@@ -20,9 +20,10 @@ import { VISIBILITY_LABELS, type MemoryWithRelations } from '@/lib/schemas';
 
 interface MemoryCardProps {
   memory: MemoryWithRelations;
+  isOwner?: boolean;
 }
 
-export function MemoryCard({ memory }: MemoryCardProps) {
+export function MemoryCard({ memory, isOwner = false }: MemoryCardProps) {
   const [editTagsOpen, setEditTagsOpen] = useState(false);
 
   return (
@@ -63,15 +64,16 @@ export function MemoryCard({ memory }: MemoryCardProps) {
                 {tag.name}
               </Badge>
             ))}
-            {/* TODO: Only show when current user owns this memory (requires SCRUM-54 auth) */}
-            <button
-              type="button"
-              onClick={() => setEditTagsOpen(true)}
-              className="ml-1 text-muted-foreground hover:text-skolaroid-blue"
-              aria-label="Edit tags"
-            >
-              <Pencil className="h-3 w-3" />
-            </button>
+            {isOwner && (
+              <button
+                type="button"
+                onClick={() => setEditTagsOpen(true)}
+                className="ml-1 text-muted-foreground hover:text-skolaroid-blue"
+                aria-label="Edit tags"
+              >
+                <Pencil className="h-3 w-3" />
+              </button>
+            )}
           </div>
           {memory._count != null && <span>{memory._count.votes} votes</span>}
         </CardFooter>
