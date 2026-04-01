@@ -62,25 +62,25 @@ export default function Home() {
     {
       decade: 2020,
       label: '2020s',
-      color: 'bg-blue-100',
+      color: 'bg-sky-100',
       imageUrl: '', // TODO: Add Oblation statue photo from 2020s era
     },
     {
       decade: 2010,
       label: '2010s',
-      color: 'bg-green-100',
+      color: 'bg-slate-100',
       imageUrl: '', // TODO: Add Oblation statue photo from 2010s era
     },
     {
       decade: 2000,
       label: '2000s',
-      color: 'bg-yellow-100',
+      color: 'bg-green-100',
       imageUrl: '', // TODO: Add Oblation statue photo from 2000s era
     },
     {
       decade: 1990,
       label: '1990s',
-      color: 'bg-purple-100',
+      color: 'bg-amber-100',
       imageUrl: '', // TODO: Add Oblation statue photo from 1990s era
     },
   ];
