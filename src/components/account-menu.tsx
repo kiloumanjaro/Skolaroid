@@ -51,7 +51,7 @@ export function AccountMenu() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {userName && (
-          <DropdownMenuItem onClick={() => router.push('/protected/profile')}>
+          <DropdownMenuItem onClick={() => router.push('/profile')}>
             <User className="mr-2 h-4 w-4" />
             <span>{userName}</span>
           </DropdownMenuItem>

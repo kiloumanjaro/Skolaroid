@@ -1,6 +1,6 @@
 import { Header } from '@/components/header';
 
-export default function ProtectedLayout({
+export default function ProfileLayout({
   children,
 }: {
   children: React.ReactNode;
