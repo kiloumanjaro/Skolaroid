@@ -129,7 +129,7 @@ export default function Home() {
   };
 
   return (
-    <main className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-background">
+    <main className="relative flex min-h-screen w-full items-center justify-center overflow-hidden">
       {/* Auth Buttons - Fixed top right */}
       <div className="fixed right-5 top-3 z-50 flex items-center gap-3">
         {!loading && isAuthenticated ? (

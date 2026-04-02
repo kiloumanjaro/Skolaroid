@@ -11,11 +11,14 @@ export function Header() {
   const { isAuthenticated, loading } = useUserAuth();
 
   return (
-    <nav className="fixed left-0 right-0 top-0 z-50 flex h-16 w-full justify-center border-b border-gray-200 bg-white/80 backdrop-blur-sm dark:border-gray-800 dark:bg-gray-900/80">
+    <nav className="fixed left-0 right-0 top-0 z-50 flex h-16 w-full justify-center border-b border-border bg-card">
       <div className="relative flex w-full items-center p-3 px-5 text-sm">
         {/* Logo - Left */}
         <div className="font-semibold">
-          <Link href="/" className="text-lg hover:text-foreground/80">
+          <Link
+            href="/"
+            className="font-dancing text-2xl text-skolaroid-blue hover:text-skolaroid-blue/80"
+          >
             skolaroid
           </Link>
         </div>
