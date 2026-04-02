@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { BatchCard } from '@/components/batch-card';
+import { BatchSidebar } from '@/components/batch-sidebar';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { LoginForm } from '@/components/login-form';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
@@ -45,20 +47,9 @@ const batches = [
   },
 ];
 
-// Sample polaroid images for the drawer
-const polaroids = [
-  { id: 1, color: 'bg-red-100' },
-  { id: 2, color: 'bg-yellow-100' },
-  { id: 3, color: 'bg-green-100' },
-  { id: 4, color: 'bg-blue-100' },
-  { id: 5, color: 'bg-purple-100' },
-  { id: 6, color: 'bg-pink-100' },
-  { id: 7, color: 'bg-orange-100' },
-  { id: 8, color: 'bg-indigo-100' },
-];
-
 export default function Home() {
   const { isAuthenticated, loading } = useUserAuth();
+  const router = useRouter();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const drawerContentRef = useRef<HTMLDivElement>(null);
@@ -66,16 +57,44 @@ export default function Home() {
   const [startY, setStartY] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
 
+  // Era-based navigation for sidebar (Latest to Oldest: 2020s → 1990s)
+  const eras = [
+    {
+      decade: 2020,
+      label: '2020s',
+      color: 'bg-sky-100',
+      imageUrl: '', // TODO: Add Oblation statue photo from 2020s era
+    },
+    {
+      decade: 2010,
+      label: '2010s',
+      color: 'bg-slate-100',
+      imageUrl: '', // TODO: Add Oblation statue photo from 2010s era
+    },
+    {
+      decade: 2000,
+      label: '2000s',
+      color: 'bg-green-100',
+      imageUrl: '', // TODO: Add Oblation statue photo from 2000s era
+    },
+    {
+      decade: 1990,
+      label: '1990s',
+      color: 'bg-amber-100',
+      imageUrl: '', // TODO: Add Oblation statue photo from 1990s era
+    },
+  ];
+
   // After login, check for a stored invite redirect
   useEffect(() => {
     if (!loading && isAuthenticated) {
       const pendingRedirect = sessionStorage.getItem('invite_redirect');
       if (pendingRedirect) {
         sessionStorage.removeItem('invite_redirect');
-        window.location.href = pendingRedirect;
+        router.push(pendingRedirect);
       }
     }
-  }, [loading, isAuthenticated]);
+  }, [loading, isAuthenticated, router]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -134,91 +153,16 @@ export default function Home() {
         </DialogContent>
       </Dialog>
 
-      {/* Expandable Left Drawer */}
-      <div
-        className={`fixed left-0 top-0 z-40 flex h-screen transition-all duration-300 ease-in-out ${
-          drawerOpen ? 'w-[600px]' : 'w-2.5'
-        }`}
-      >
-        {/* Drawer Content - Polaroid Grid */}
-        <div
-          ref={drawerContentRef}
-          onMouseDown={handleMouseDown}
-          className={`scrollbar-hide h-screen overflow-y-auto bg-white transition-all duration-300 ease-in-out ${
-            drawerOpen ? 'w-[calc(100%-10px)] opacity-100' : 'w-0 opacity-0'
-          } ${isDragging ? 'cursor-grabbing select-none' : 'cursor-grab'}`}
-          style={{
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none',
-          }}
-        >
-          {drawerOpen && (
-            <div className="p-4 pt-8">
-              {/* Polaroid Stack */}
-              <div className="relative flex flex-col space-y-[-140px] pb-32 pl-12">
-                {polaroids.map((polaroid, index) => {
-                  const rotations = [
-                    'rotate-[-8deg]',
-                    'rotate-[5deg]',
-                    'rotate-[-3deg]',
-                    'rotate-[7deg]',
-                    'rotate-[-6deg]',
-                    'rotate-[4deg]',
-                    'rotate-[-5deg]',
-                    'rotate-[6deg]',
-                  ];
-                  const offsets = [
-                    'ml-[20px]',
-                    'ml-[150px]',
-                    'ml-[-10px]',
-                    'ml-[100px]',
-                    'ml-[50px]',
-                    'ml-[180px]',
-                    'ml-[10px]',
-                    'ml-[120px]',
-                  ];
-                  return (
-                    <button
-                      key={polaroid.id}
-                      onClick={() => {
-                        if (isAuthenticated) {
-                          window.location.href = '/map';
-                        } else {
-                          setLoginOpen(true);
-                        }
-                      }}
-                      className={`relative transform cursor-pointer transition-all hover:z-50 hover:rotate-0 hover:scale-110 ${rotations[index]} ${offsets[index]}`}
-                      style={{ zIndex: index }}
-                      aria-label="Open map"
-                    >
-                      {/* Polaroid Frame */}
-                      <div
-                        className={`h-96 w-80 ${polaroid.color} flex items-center justify-center shadow-xl`}
-                      >
-                        <span className="text-sm text-gray-400">Photo</span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Color Strip - Right Border */}
-        <button
-          onClick={() => setDrawerOpen(!drawerOpen)}
-          onMouseEnter={() => setDrawerOpen(true)}
-          className="flex h-screen w-2.5 flex-shrink-0 cursor-pointer flex-col transition-all hover:w-3"
-          aria-label="Expand drawer"
-        >
-          <div className="flex-1 bg-[#8E1537]" />
-          <div className="flex-1 bg-[#FFB81D]" />
-          <div className="flex-1 bg-[#005740]" />
-          <div className="flex-1 bg-[#7BC122]" />
-          <div className="flex-1 bg-[#208CD4]" />
-        </button>
-      </div>
+      <BatchSidebar
+        drawerOpen={drawerOpen}
+        setDrawerOpen={setDrawerOpen}
+        isDragging={isDragging}
+        isAuthenticated={isAuthenticated}
+        setLoginOpen={setLoginOpen}
+        eras={eras}
+        onMouseDown={handleMouseDown}
+        drawerContentRef={drawerContentRef}
+      />
 
       {/* Overlay - Click to close drawer */}
       {drawerOpen && (

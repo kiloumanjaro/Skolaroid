@@ -139,6 +139,19 @@ export function MapComponent() {
   // Pending memory for the flyTo → open detail flow
   const pendingMemoryRef = useRef<MemoryWithCoordinates | null>(null);
 
+  // Read era URL parameter on mount (for homepage → map navigation)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const eraParam = params.get('era');
+
+    if (eraParam) {
+      const eraValue = parseInt(eraParam, 10);
+      if (!isNaN(eraValue)) {
+        setActiveMapEra(eraValue);
+      }
+    }
+  }, []); // Empty deps - only run on mount
+
   const { data: countsData } = useMemoryCountsByLandmark();
   const memoryCounts = useMemo(() => countsData?.data ?? {}, [countsData]);
 
