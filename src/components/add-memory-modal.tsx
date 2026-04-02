@@ -34,6 +34,7 @@ import {
   Shield,
   Type,
   Upload,
+  Users,
   X,
 } from 'lucide-react';
 import Image from 'next/image';
@@ -66,8 +67,8 @@ interface PlaceholderStates {
 interface AddMemoryModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** Optional era (decade start year) for context display, e.g. 2020. */
   defaultEra?: number | null;
+  defaultGroupId?: string;
   /** Callback to request map selection mode from the parent map component. */
   onRequestMapSelection?: (
     mode: 'landmark' | 'custom',
@@ -117,6 +118,12 @@ const VISIBILITY_OPTIONS: {
     label: VISIBILITY_LABELS.PRIVATE,
     description: 'Only you can see this',
     icon: Lock,
+  },
+  {
+    value: 'GROUP_ONLY',
+    label: 'Group Only',
+    description: 'Visible to group members only',
+    icon: Users,
   },
 ];
 
@@ -187,6 +194,7 @@ export function AddMemoryModal({
   onOpenChange,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   defaultEra,
+  defaultGroupId,
   onRequestMapSelection,
 }: AddMemoryModalProps) {
   // ---------------------------------------------------------------------------
@@ -200,7 +208,9 @@ export function AddMemoryModal({
   const [caption, setCaption] = useState('');
   const [memoryDate, setMemoryDate] = useState('');
   const [tags, setTags] = useState<string[]>([]);
-  const [visibility, setVisibility] = useState<MemoryVisibility>('PUBLIC');
+  const [visibility, setVisibility] = useState<MemoryVisibility>(
+    defaultGroupId ? 'GROUP_ONLY' : 'PUBLIC'
+  );
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -296,7 +306,7 @@ export function AddMemoryModal({
     setCaption('');
     setMemoryDate('');
     setTags([]);
-    setVisibility('PUBLIC');
+    setVisibility(defaultGroupId ? 'GROUP_ONLY' : 'PUBLIC');
     setShowExitConfirm(false);
     setShowSuccess(false);
     setSubmitError(null);
@@ -310,7 +320,7 @@ export function AddMemoryModal({
     setSelectedLocationId(null);
     setSearchQuery('');
     setIsCreatingLocation(false);
-  }, []);
+  }, [defaultGroupId]);
 
   // ---------------------------------------------------------------------------
   // Close / Exit logic
@@ -524,6 +534,11 @@ export function AddMemoryModal({
 
     const locationId = selectedLocationId ?? locations[0]?.id ?? '';
 
+    if (visibility === 'GROUP_ONLY' && !defaultGroupId) {
+      setSubmitError('GROUP_ONLY visibility requires opening from a group');
+      return;
+    }
+
     createMemory(
       {
         title: caption.trim() || 'Untitled Memory',
@@ -534,6 +549,9 @@ export function AddMemoryModal({
         memoryDate: memoryDate ? new Date(memoryDate) : undefined,
         tags,
         mediaFile: firstCompleted.file,
+        ...(visibility === 'GROUP_ONLY' && defaultGroupId
+          ? { privateGroupId: defaultGroupId }
+          : {}),
       },
       {
         onSuccess: () => {
@@ -561,6 +579,7 @@ export function AddMemoryModal({
     createMemory,
     resetState,
     onOpenChange,
+    defaultGroupId,
   ]);
 
   // ---------------------------------------------------------------------------

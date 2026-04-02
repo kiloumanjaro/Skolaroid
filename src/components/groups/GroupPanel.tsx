@@ -378,7 +378,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                       onMemberRemoved={handleMemberRemoved}
                     />
                   )}
-                  {activeTab === 'media' && <MediaTab />}
+                  {activeTab === 'media' && <MediaTab group={selectedGroup} />}
                   {activeTab === 'about' && <AboutTab group={selectedGroup} />}
                 </div>
               </>

@@ -16,7 +16,12 @@ export type SortOption =
   | 'upvotes-high'
   | 'upvotes-low';
 
-export type VisibilityFilter = 'ALL' | 'PUBLIC' | 'BATCH_ONLY' | 'PROGRAM_ONLY';
+export type VisibilityFilter =
+  | 'ALL'
+  | 'PUBLIC'
+  | 'BATCH_ONLY'
+  | 'PROGRAM_ONLY'
+  | 'GROUP_ONLY';
 
 export interface MemoryFilters {
   sortBy: SortOption;
@@ -59,6 +64,7 @@ const VISIBILITY_OPTIONS: { value: VisibilityFilter; label: string }[] = [
   { value: 'PUBLIC', label: 'Public' },
   { value: 'BATCH_ONLY', label: 'Batch Only' },
   { value: 'PROGRAM_ONLY', label: 'Program Only' },
+  { value: 'GROUP_ONLY', label: 'Group Only' },
 ];
 
 // =============================================================================

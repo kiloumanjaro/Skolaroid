@@ -70,6 +70,7 @@ export const createMemorySchema = z.object({
     .array(z.string().trim().min(1).max(50))
     .max(MAX_TAGS, 'Maximum 10 tags')
     .optional(),
+  privateGroupId: z.string().uuid('Invalid group ID').optional(),
 });
 
 /** Server-side schema — same fields sent over the wire (no File objects). */
@@ -77,6 +78,7 @@ export const createMemoryServerSchema = createMemorySchema.extend({
   programBatchId: z.string().min(1, 'Program batch is required'), // change to uuid later
   mediaURL: z.string().url('Invalid media URL').optional(),
   memoryDate: z.coerce.date().optional(),
+  privateGroupId: z.string().uuid('Invalid group ID').optional(),
 });
 
 /** Schema for updating tags on an existing memory. */
