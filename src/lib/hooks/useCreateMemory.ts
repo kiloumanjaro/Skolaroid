@@ -68,8 +68,19 @@ export function useCreateMemory() {
       }
       return JSON.parse(text) as CreateMemoryResponse;
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
+      // Invalidate all memory-related queries
       queryClient.invalidateQueries({ queryKey: ['memories'] });
+
+      // Invalidate specific group queries if creating group memory
+      if (variables.privateGroupId) {
+        queryClient.invalidateQueries({
+          queryKey: ['memories', 'by-group', variables.privateGroupId],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ['group', variables.privateGroupId],
+        });
+      }
     },
   });
 }

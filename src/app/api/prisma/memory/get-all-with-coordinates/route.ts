@@ -1,14 +1,49 @@
 import { NextResponse } from 'next/server';
+import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      return NextResponse.json(
+        { success: false, message: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const memories = await prisma.memory.findMany({
       where: {
         deletedAt: null,
+        OR: [
+          { visibility: 'PUBLIC' },
+          { creator: { id: user.id } },
+          {
+            AND: [
+              { visibility: 'PROGRAM_ONLY' },
+              { programBatch: { students: { some: { id: user.id } } } },
+            ],
+          },
+          {
+            AND: [
+              { visibility: 'BATCH_ONLY' },
+              { programBatch: { students: { some: { id: user.id } } } },
+            ],
+          },
+          {
+            AND: [
+              { visibility: 'GROUP_ONLY' },
+              { privateGroup: { members: { some: { id: user.id } } } },
+            ],
+          },
+        ],
       },
       include: {
-        tags: { select: { id: true, name: true, slug: true } },
         location: {
           select: {
             id: true,
@@ -17,10 +52,23 @@ export async function GET() {
             longitude: true,
           },
         },
-        creator: { select: { firstName: true, lastName: true } },
-        _count: { select: { votes: true } },
+        creator: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        tags: true,
+        programBatch: {
+          select: {
+            id: true,
+          },
+        },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
     return NextResponse.json({
@@ -28,7 +76,8 @@ export async function GET() {
       message: 'Memories fetched successfully',
       data: memories,
     });
-  } catch {
+  } catch (error) {
+    console.error('[GET /api/prisma/memory/get-all-with-coordinates]', error);
     return NextResponse.json(
       {
         success: false,
