@@ -1,6 +1,7 @@
 'use client';
 
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import { LogOut } from 'lucide-react';
 
 interface LeaveGroupModalProps {
@@ -23,7 +24,7 @@ export function LeaveGroupModal({
   return (
     <Dialog open={open} onOpenChange={(val) => !val && handleClose()}>
       <DialogContent
-        className="max-w-xs gap-0 overflow-hidden rounded-2xl border-gray-100 p-0 shadow-2xl"
+        className="max-w-xs gap-0 overflow-hidden p-0"
         showCloseButton={false}
       >
         <DialogTitle className="sr-only">Leave {groupName}</DialogTitle>
@@ -32,31 +33,29 @@ export function LeaveGroupModal({
           <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-red-50">
             <LogOut size={18} className="text-red-500" />
           </div>
-          <h2 className="text-base font-semibold text-gray-900">
+          <h2 className="font-kalam text-base font-semibold text-foreground">
             Leave Group?
           </h2>
-          <p className="mt-1.5 text-xs leading-relaxed text-gray-400">
+          <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
             Are you sure you want to leave{' '}
-            <span className="font-medium text-gray-600">{groupName}</span>?
+            <span className="font-medium text-foreground">{groupName}</span>?
             You&apos;ll need a new invite to rejoin.
           </p>
 
           <div className="mt-5 flex w-full gap-2">
-            <button
-              onClick={handleClose}
-              className="flex-1 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
-            >
+            <Button variant="outline" onClick={handleClose} className="flex-1">
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="destructive"
               onClick={() => {
                 onConfirmLeave();
                 handleClose();
               }}
-              className="flex-1 rounded-xl bg-red-500 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-red-600 active:scale-[0.98]"
+              className="flex-1"
             >
               Leave
-            </button>
+            </Button>
           </div>
         </div>
       </DialogContent>

@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { WOBBLY_RADIUS_MD } from '@/lib/hand-drawn';
 import {
   Globe,
   Lock,
@@ -84,9 +85,12 @@ function CustomDropdown<T extends string>({
           onMouseEnter={() => setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}
         >
-          <Info size={14} className="cursor-help text-gray-400" />
+          <Info size={14} className="cursor-help text-muted-foreground" />
           {showTooltip && (
-            <div className="absolute bottom-full left-1/2 z-30 mb-2 w-56 -translate-x-1/2 rounded-md border bg-white px-3 py-2 text-xs text-gray-600 shadow-lg">
+            <div
+              className="absolute bottom-full left-1/2 z-30 mb-2 w-56 -translate-x-1/2 border-2 border-border bg-card px-3 py-2 text-xs text-muted-foreground shadow-[3px_3px_0px_0px_#2d2d2d]"
+              style={{ borderRadius: WOBBLY_RADIUS_MD }}
+            >
               {tooltip}
             </div>
           )}
@@ -97,7 +101,7 @@ function CustomDropdown<T extends string>({
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="flex w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors hover:bg-gray-50"
+          className="flex w-full items-center justify-between border-2 border-input bg-transparent px-3 py-2 text-sm transition-colors hover:bg-secondary"
         >
           <span className="flex items-center gap-2">
             {selected?.icon}
@@ -105,12 +109,15 @@ function CustomDropdown<T extends string>({
           </span>
           <ChevronDown
             size={16}
-            className={`text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+            className={`text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`}
           />
         </button>
 
         {isOpen && (
-          <div className="absolute left-0 top-full z-20 mt-1 w-full overflow-hidden rounded-md border bg-white shadow-lg">
+          <div
+            className="absolute left-0 top-full z-20 mt-1 w-full overflow-hidden border-2 border-border bg-card shadow-[3px_3px_0px_0px_#2d2d2d]"
+            style={{ borderRadius: WOBBLY_RADIUS_MD }}
+          >
             {options.map((option) => (
               <button
                 key={option.value}
@@ -119,7 +126,7 @@ function CustomDropdown<T extends string>({
                   onChange(option.value);
                   setIsOpen(false);
                 }}
-                className={`flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-gray-50 ${
+                className={`flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-secondary ${
                   value === option.value
                     ? 'border-l-2 border-skolaroid-blue bg-skolaroid-blue/5'
                     : 'border-l-2 border-transparent'
@@ -129,10 +136,10 @@ function CustomDropdown<T extends string>({
                   {option.icon}
                 </span>
                 <span>
-                  <span className="block text-sm font-semibold text-gray-800">
+                  <span className="block text-sm font-semibold text-foreground">
                     {option.label}
                   </span>
-                  <span className="mt-0.5 block text-xs leading-relaxed text-gray-400">
+                  <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">
                     {option.description}
                   </span>
                 </span>
@@ -283,7 +290,7 @@ export function CreateGroupModal({
         <div className="flex w-full flex-col">
           {/* Header */}
           <div className="border-b px-6 pb-4 pt-6">
-            <h2 className="text-lg font-semibold text-gray-900">
+            <h2 className="text-lg font-semibold text-foreground">
               Create Group
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
@@ -331,7 +338,7 @@ export function CreateGroupModal({
                 placeholder="Describe what this group is about..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full resize-none rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                className="w-full resize-none border-2 border-input bg-transparent px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
               />
               <p className="text-right text-xs text-muted-foreground">
                 {description.length}/500
@@ -367,7 +374,7 @@ export function CreateGroupModal({
               <div className="relative">
                 <Mail
                   size={16}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                 />
                 <Input
                   className="pl-9"
@@ -380,16 +387,14 @@ export function CreateGroupModal({
           </div>
 
           {/* Footer */}
-          <div className="flex justify-end gap-3 border-t bg-white px-6 py-4">
+          <div className="flex justify-end gap-3 border-t bg-card px-6 py-4">
             <Button variant="outline" onClick={handleClose}>
               Cancel
             </Button>
             <Button
               onClick={handleSubmit}
               disabled={isDisabled}
-              className={`gap-1.5 bg-skolaroid-blue text-white hover:bg-skolaroid-blue/90 ${
-                isDisabled ? 'cursor-not-allowed opacity-50' : ''
-              }`}
+              className="gap-1.5 bg-skolaroid-blue text-white hover:bg-skolaroid-blue/90"
             >
               {createGroup.isPending && (
                 <Loader2 size={14} className="animate-spin" />

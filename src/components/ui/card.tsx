@@ -1,17 +1,19 @@
 import * as React from 'react';
 
 import { cn } from '@/lib/utils';
+import { WOBBLY_RADIUS_MD } from '@/lib/hand-drawn';
 
 const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
+>(({ className, style, ...props }, ref) => (
   <div
     ref={ref}
     className={cn(
-      'rounded-xl border bg-card text-card-foreground shadow',
+      'border-2 border-border bg-card text-card-foreground shadow-[3px_3px_0px_0px_#2d2d2d]',
       className
     )}
+    style={{ borderRadius: WOBBLY_RADIUS_MD, ...style }}
     {...props}
   />
 ));
@@ -35,7 +37,10 @@ const CardTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('font-semibold leading-none tracking-tight', className)}
+    className={cn(
+      'font-kalam font-semibold leading-none tracking-tight',
+      className
+    )}
     {...props}
   />
 ));

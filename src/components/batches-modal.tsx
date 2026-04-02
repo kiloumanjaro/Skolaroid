@@ -232,28 +232,28 @@ export function BatchesModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="flex h-[85vh] w-[70vw] max-w-5xl gap-0 overflow-hidden rounded-2xl p-0 sm:max-w-5xl"
+        className="flex h-[85vh] w-[70vw] max-w-5xl gap-0 overflow-hidden p-0 sm:max-w-5xl"
         showCloseButton={false}
       >
         <DialogTitle className="sr-only">Batches</DialogTitle>
 
         {/* ====== Sidebar ====== */}
-        <div className="flex w-56 shrink-0 flex-col border-r bg-white">
+        <div className="flex w-56 shrink-0 flex-col border-r bg-card">
           {/* Header */}
           <div className="flex items-center px-5 pb-3 pt-5">
-            <h2 className="text-2xl font-bold text-gray-900">Batches</h2>
+            <h2 className="text-2xl font-bold text-foreground">Batches</h2>
           </div>
 
           {/* Search */}
           <div className="px-4 pb-3">
             <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="text"
                 placeholder="Search by title, caption, or tag..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-9 border-0 bg-gray-100 pl-8 text-sm placeholder:text-gray-400 focus-visible:ring-0"
+                className="h-9 border-0 bg-secondary pl-8 text-sm placeholder:text-muted-foreground focus-visible:ring-0"
               />
             </div>
           </div>
@@ -269,10 +269,10 @@ export function BatchesModal({
                     key={decade.label}
                     onClick={() => setSelectedDecade(decade.value)}
                     className={cn(
-                      'flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm font-medium transition-colors',
+                      'flex w-full items-center justify-between px-3 py-2.5 text-left text-sm font-medium transition-colors',
                       isSelected
-                        ? 'bg-gray-100 text-gray-900'
-                        : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
+                        ? 'bg-secondary text-foreground'
+                        : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
                     )}
                   >
                     <span>{decade.label}</span>
@@ -295,14 +295,14 @@ export function BatchesModal({
           <div className="flex items-center justify-end gap-2 border-b px-5 py-3">
             <button
               onClick={() => setFiltersOpen(true)}
-              className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50"
+              className="flex items-center gap-2 border-2 border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
             >
               <SlidersHorizontal className="h-4 w-4" />
               Filters
             </button>
             <button
               onClick={handleClose}
-              className="rounded-md p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+              className="p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
               aria-label="Close"
             >
               <X className="h-5 w-5" />
@@ -318,7 +318,7 @@ export function BatchesModal({
                     key={memory.id}
                     type="button"
                     onClick={() => handleMemoryCardClick(memory)}
-                    className="cursor-pointer overflow-hidden rounded-xl border border-gray-200 bg-white text-left shadow-sm transition-shadow hover:shadow-md"
+                    className="cursor-pointer overflow-hidden border-2 border-border bg-card text-left shadow-[2px_2px_0px_0px_#2d2d2d] transition-shadow hover:shadow-[3px_3px_0px_0px_#2d2d2d]"
                   >
                     {/* Image */}
                     {memory.mediaURL ? (
@@ -333,14 +333,16 @@ export function BatchesModal({
                           alt={memory.title}
                           className="h-full w-full object-cover"
                         />
-                        <span className="absolute right-3 top-3 rounded-md bg-white px-2.5 py-1 text-xs font-semibold text-gray-700 shadow-sm">
+                        <span className="absolute right-3 top-3 border border-border bg-card px-2.5 py-1 text-xs font-semibold text-foreground">
                           Batch
                         </span>
                       </div>
                     ) : (
-                      <div className="relative flex h-44 items-center justify-center bg-gray-100">
-                        <span className="text-sm text-gray-400">No image</span>
-                        <span className="absolute right-3 top-3 rounded-md bg-white px-2.5 py-1 text-xs font-semibold text-gray-700 shadow-sm">
+                      <div className="relative flex h-44 items-center justify-center bg-secondary">
+                        <span className="text-sm text-muted-foreground">
+                          No image
+                        </span>
+                        <span className="absolute right-3 top-3 border border-border bg-card px-2.5 py-1 text-xs font-semibold text-foreground">
                           Batch
                         </span>
                       </div>
@@ -348,28 +350,28 @@ export function BatchesModal({
 
                     {/* Info */}
                     <div className="p-4">
-                      <h3 className="text-sm font-semibold text-gray-900">
+                      <h3 className="text-sm font-semibold text-foreground">
                         {memory.title}
                       </h3>
 
                       {/* Caption / description snippet */}
                       {memory.description && (
-                        <p className="mt-1 line-clamp-2 text-xs text-gray-500">
+                        <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
                           {memory.description}
                         </p>
                       )}
 
                       {/* Location */}
-                      <div className="mt-1.5 flex items-center gap-1 text-xs text-gray-400">
+                      <div className="mt-1.5 flex items-center gap-1 text-xs text-muted-foreground">
                         <MapPin className="h-3 w-3" />
                         <span>{memory.location.buildingName}</span>
                       </div>
 
                       {/* Date + likes */}
-                      <div className="mt-1.5 flex items-center gap-1.5 text-xs text-gray-500">
+                      <div className="mt-1.5 flex items-center gap-1.5 text-xs text-muted-foreground">
                         <Calendar className="h-3.5 w-3.5" />
                         <span>{formatDate(memory.createdAt ?? '')}</span>
-                        <span className="text-gray-300">•</span>
+                        <span className="text-border">•</span>
                         <Heart className="h-3.5 w-3.5" />
                         <span>{memory._count?.votes ?? 0}</span>
                       </div>
@@ -381,7 +383,7 @@ export function BatchesModal({
                             <Badge
                               key={tag.id}
                               variant="outline"
-                              className="rounded-full px-2 py-0.5 text-xs font-normal text-gray-600"
+                              className="rounded-full px-2 py-0.5 text-xs font-normal text-muted-foreground"
                             >
                               #{tag.name}
                             </Badge>
@@ -409,7 +411,9 @@ export function BatchesModal({
               </div>
             ) : (
               <div className="flex h-full flex-col items-center justify-center gap-4">
-                <p className="text-sm text-gray-400">No memories found</p>
+                <p className="text-sm text-muted-foreground">
+                  No memories found
+                </p>
                 <button
                   type="button"
                   onClick={() => {

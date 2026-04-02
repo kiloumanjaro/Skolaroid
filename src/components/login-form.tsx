@@ -3,6 +3,8 @@
 import { cn } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
 import { FormError } from '@/components/ui/form-error';
+import { Button } from '@/components/ui/button';
+import { WOBBLY_RADIUS_MD } from '@/lib/hand-drawn';
 import { useState } from 'react';
 
 export function LoginForm({
@@ -36,21 +38,23 @@ export function LoginForm({
 
   return (
     <div
-      className={cn('flex flex-col gap-6 rounded-2xl p-6', className)}
+      className={cn('flex flex-col gap-6 p-6', className)}
+      style={{ borderRadius: WOBBLY_RADIUS_MD }}
       {...props}
     >
-      <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+      <h1 className="font-kalam text-2xl font-bold tracking-tight text-foreground">
         Welcome to Skolaroid
       </h1>
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-muted-foreground">
         Sign in with your Google account to continue.
       </p>
       <FormError message={error} />
-      <button
+      <Button
         type="button"
+        variant="outline"
         onClick={handleLogin}
         disabled={isLoading}
-        className="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+        className="w-full gap-3 py-3"
       >
         <svg className="h-5 w-5" viewBox="0 0 24 24">
           <path
@@ -71,7 +75,7 @@ export function LoginForm({
           />
         </svg>
         {isLoading ? 'Redirecting...' : 'Continue with Google'}
-      </button>
+      </Button>
     </div>
   );
 }

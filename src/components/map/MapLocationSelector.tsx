@@ -109,20 +109,20 @@ export function MapLocationSelector({
     <>
       {/* Instruction bar */}
       <div className="absolute left-1/2 top-4 z-20 -translate-x-1/2">
-        <div className="flex items-center gap-3 rounded-full bg-white px-5 py-3 shadow-lg ring-1 ring-black/5">
+        <div className="flex items-center gap-3 border-2 border-border bg-card px-5 py-3 shadow-[3px_3px_0px_0px_#2d2d2d]">
           <div className="h-2.5 w-2.5 animate-pulse rounded-full bg-skolaroid-blue" />
-          <span className="text-sm font-medium text-gray-700">
+          <span className="text-sm font-medium text-foreground">
             {mode === 'landmark'
               ? 'Click a landmark on the map to select it'
               : 'Click anywhere on the campus map to place a pin'}
           </span>
           <button
             onClick={onCancel}
-            className="ml-2 rounded-md bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-200"
+            className="ml-2 bg-secondary px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary/80"
           >
             Cancel
           </button>
-          <kbd className="hidden rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-400 sm:inline-block">
+          <kbd className="hidden bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground sm:inline-block">
             ESC
           </kbd>
         </div>
@@ -131,7 +131,7 @@ export function MapLocationSelector({
       {/* Out-of-bounds error toast */}
       {outOfBoundsError && (
         <div className="absolute left-1/2 top-20 z-20 -translate-x-1/2 duration-200 animate-in fade-in slide-in-from-top-2">
-          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-2 shadow-lg">
+          <div className="border-2 border-red-200 bg-red-50 px-4 py-2 shadow-[3px_3px_0px_0px_#2d2d2d]">
             <p className="text-sm font-medium text-red-700">
               Please select a location within campus
             </p>

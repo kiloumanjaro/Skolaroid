@@ -65,7 +65,7 @@ export function BatchSidebar({
       <div
         ref={drawerContentRef}
         onMouseDown={onMouseDown}
-        className={`scrollbar-hide h-screen overflow-y-auto bg-white transition-all duration-300 ease-in-out ${
+        className={`scrollbar-hide h-screen overflow-y-auto bg-card transition-all duration-300 ease-in-out ${
           drawerOpen ? 'w-[calc(100%-10px)] opacity-100' : 'w-0 opacity-0'
         } ${isDragging ? 'cursor-grabbing select-none' : 'cursor-grab'}`}
         style={{
@@ -92,9 +92,9 @@ export function BatchSidebar({
                   aria-label={`Explore ${era.label} memories`}
                 >
                   {/* Polaroid Frame */}
-                  <div className="w-80 bg-white p-2 pb-12 shadow-xl">
+                  <div className="w-80 border-2 border-border bg-card p-2 pb-12 shadow-[4px_4px_0px_0px_#2d2d2d]">
                     {/* Image or Placeholder */}
-                    <div className="relative h-[320px] overflow-hidden bg-gray-200">
+                    <div className="relative h-[320px] overflow-hidden bg-secondary">
                       {era.imageUrl ? (
                         <Image
                           src={era.imageUrl}
@@ -106,7 +106,7 @@ export function BatchSidebar({
                         <div
                           className={`flex h-full w-full items-center justify-center ${era.color}`}
                         >
-                          <span className="text-3xl font-semibold text-gray-600">
+                          <span className="text-3xl font-semibold text-muted-foreground">
                             {era.label}
                           </span>
                         </div>

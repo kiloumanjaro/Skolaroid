@@ -796,7 +796,7 @@ export function MapComponent() {
               onClick={() => {
                 window.location.href = `/gallery?era=${activeMapEra}`;
               }}
-              className="flex items-center gap-2 rounded-full border border-gray-300 bg-white/90 px-4 py-2 text-sm font-semibold text-gray-700 shadow-md backdrop-blur-sm transition-all hover:bg-white hover:shadow-lg active:scale-95"
+              className="flex items-center gap-2 border-2 border-border bg-card px-4 py-2 text-sm font-semibold text-foreground shadow-[3px_3px_0px_0px_#2d2d2d] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#2d2d2d]"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

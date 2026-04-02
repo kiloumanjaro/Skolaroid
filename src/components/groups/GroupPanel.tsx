@@ -198,7 +198,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent
-          className="flex h-[85vh] w-[70vw] max-w-none gap-0 overflow-hidden rounded-2xl p-0 sm:max-w-none"
+          className="flex h-[85vh] w-[70vw] max-w-none gap-0 overflow-hidden p-0 sm:max-w-none"
           showCloseButton={false}
         >
           <DialogTitle className="sr-only">
@@ -206,14 +206,16 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
           </DialogTitle>
 
           {/* LEFT COLUMN: Navigation */}
-          <div className="flex w-56 shrink-0 flex-col border-r border-gray-100 bg-white">
+          <div className="flex w-56 shrink-0 flex-col border-r border-border bg-card">
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-gray-100 px-5 py-3.5">
-              <h2 className="text-base font-semibold text-gray-900">Groups</h2>
+            <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
+              <h2 className="text-base font-semibold text-foreground">
+                Groups
+              </h2>
             </div>
 
             {/* GroupSwitcher */}
-            <div className="border-b border-gray-100 px-3 py-3">
+            <div className="border-b border-border px-3 py-3">
               <GroupSwitcher
                 groups={groups}
                 selectedGroup={selectedGroup}
@@ -229,10 +231,10 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                   <button
                     onClick={() => setActiveTab('members')}
                     className={cn(
-                      'flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition-colors',
+                      'flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium transition-colors',
                       activeTab === 'members'
-                        ? 'bg-gray-100 text-gray-900'
-                        : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
+                        ? 'bg-secondary text-foreground'
+                        : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
                     )}
                   >
                     <Users className="h-4 w-4" />
@@ -242,10 +244,10 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                   <button
                     onClick={() => setActiveTab('media')}
                     className={cn(
-                      'flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition-colors',
+                      'flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium transition-colors',
                       activeTab === 'media'
-                        ? 'bg-gray-100 text-gray-900'
-                        : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
+                        ? 'bg-secondary text-foreground'
+                        : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
                     )}
                   >
                     <ImageIcon className="h-4 w-4" />
@@ -255,10 +257,10 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                   <button
                     onClick={() => setActiveTab('about')}
                     className={cn(
-                      'flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition-colors',
+                      'flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium transition-colors',
                       activeTab === 'about'
-                        ? 'bg-gray-100 text-gray-900'
-                        : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
+                        ? 'bg-secondary text-foreground'
+                        : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
                     )}
                   >
                     <Info className="h-4 w-4" />
@@ -274,11 +276,11 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
             {selectedGroup ? (
               <>
                 {/* Header with group info and actions */}
-                <div className="flex items-start justify-between border-b border-gray-100 px-5 py-3.5">
+                <div className="flex items-start justify-between border-b border-border px-5 py-3.5">
                   <div className="flex flex-1 items-start gap-3">
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <h3 className="text-base font-semibold text-gray-900">
+                        <h3 className="text-base font-semibold text-foreground">
                           {selectedGroup.name}
                         </h3>
                         <Badge
@@ -298,7 +300,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                           )}
                         </Badge>
                       </div>
-                      <p className="mt-0.5 text-sm text-gray-600">
+                      <p className="mt-0.5 text-sm text-muted-foreground">
                         {selectedGroup.memberCount} members ·{' '}
                         {selectedGroup.postCount} posts
                       </p>
@@ -385,14 +387,14 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
             ) : (
               <div className="flex h-full flex-col items-center justify-center px-5 py-8">
                 {isLoadingGroups ? (
-                  <Loader2 className="h-8 w-8 animate-spin text-gray-300" />
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                 ) : (
                   <>
-                    <Users className="mb-3 h-12 w-12 text-gray-300" />
-                    <h3 className="text-base font-semibold text-gray-900">
+                    <Users className="mb-3 h-12 w-12 text-muted-foreground" />
+                    <h3 className="text-base font-semibold text-foreground">
                       No Group Selected
                     </h3>
-                    <p className="mt-1 text-center text-sm text-gray-600">
+                    <p className="mt-1 text-center text-sm text-muted-foreground">
                       Select a group from the sidebar or create a new one
                     </p>
                   </>
