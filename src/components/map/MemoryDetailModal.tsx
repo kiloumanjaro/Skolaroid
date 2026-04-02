@@ -9,6 +9,7 @@ import {
   CircleOff,
 } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogTitle } from '@/components/ui/dialog';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import {
@@ -130,6 +131,14 @@ const RightPageSpineRings = ({
     ))}
   </div>
 );
+
+const isAutoTag = (tagName: string): boolean => {
+  return (
+    /^\d{4}s$/.test(tagName) ||
+    /^\d{4}$/.test(tagName) ||
+    tagName.startsWith('Near ')
+  );
+};
 
 export function MemoryDetailModal({
   memory,
@@ -585,6 +594,30 @@ export function MemoryDetailModal({
 
                             {/* Action bar */}
                             <ActionBar memory={baseRightMemory} />
+
+                            {/* Tags section */}
+                            {baseRightMemory.tags &&
+                              baseRightMemory.tags.length > 0 && (
+                                <div className="mt-4">
+                                  <h3 className="text-sm font-medium text-muted-foreground">
+                                    Tags
+                                  </h3>
+                                  <div className="mt-2 flex flex-wrap gap-2">
+                                    {baseRightMemory.tags.map((tag) => (
+                                      <Badge
+                                        key={tag.id}
+                                        variant={
+                                          isAutoTag(tag.name)
+                                            ? 'outline'
+                                            : 'secondary'
+                                        }
+                                      >
+                                        {tag.name}
+                                      </Badge>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
 
                             {/* Comments section — during prev flip, hold old text on exposed base */}
                             <CommentSection

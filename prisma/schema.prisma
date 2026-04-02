@@ -78,6 +78,7 @@ model Memory {
   description    String?
   mediaURL       String?          @db.VarChar(2048)
   uploadDate     DateTime         @default(now())
+  memoryDate     DateTime?
   visibility     MemoryVisibility @default(PUBLIC)
   
   // Relations
