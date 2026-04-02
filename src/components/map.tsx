@@ -12,8 +12,12 @@ import {
 import { getEraFromBatchTag } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { createRoot, type Root } from 'react-dom/client';
-import { Plus } from 'lucide-react';
+import { Plus, Filter } from 'lucide-react';
 import { AddMemoryModal } from './add-memory-modal';
+import {
+  FilterMemoriesModal,
+  type MemoryFilters,
+} from './map/FilterMemoriesModal';
 import { GroupPanel } from './groups/GroupPanel';
 import { BatchesModal } from './batches-modal';
 import { ExpandableToolbar } from './expandable-toolbar';
@@ -123,6 +127,14 @@ export function MapComponent() {
   const [memoryDetailOpen, setMemoryDetailOpen] = useState(false);
   const [showLandmarks, setShowLandmarks] = useState(false);
   const [showMemoryPins, setShowMemoryPins] = useState(true);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filters, setFilters] = useState<MemoryFilters>({
+    selectedTags: [],
+    selectedYear: null,
+    sortBy: 'date-newest',
+    visibility: 'ALL',
+  });
+
   // Location selection mode for Add Memory flow
   const [locationSelectionMode, setLocationSelectionMode] =
     useState<LocationSelectionMode>('inactive');
@@ -165,6 +177,85 @@ export function MapComponent() {
       (m) => getEraFromBatchTag(m.tags ?? [], m.createdAt) === activeMapEra
     );
   }, [memories, activeMapEra]);
+
+  const tagFilteredMemories = useMemo(() => {
+    return eraFilteredMemories.filter((memory) => {
+      // Tag filter
+      if (filters.selectedTags.length > 0) {
+        const memoryTagNames = memory.tags?.map((t) => t.name) ?? [];
+        const hasAllTags = filters.selectedTags.every((tag) =>
+          memoryTagNames.includes(tag)
+        );
+        if (!hasAllTags) return false;
+      }
+
+      // Year filter
+      if (filters.selectedYear) {
+        const memoryDateValue = (memory as { memoryDate?: string }).memoryDate;
+        const memoryYear = memoryDateValue
+          ? new Date(memoryDateValue).getFullYear()
+          : new Date(memory.createdAt ?? Date.now()).getFullYear();
+        if (memoryYear !== filters.selectedYear) return false;
+      }
+
+      // Visibility filter
+      if (filters.visibility !== 'ALL') {
+        if (memory.visibility !== filters.visibility) return false;
+      }
+
+      return true;
+    });
+  }, [eraFilteredMemories, filters]);
+
+  const sortedMemories = useMemo(() => {
+    const sorted = [...tagFilteredMemories];
+    switch (filters.sortBy) {
+      case 'date-newest':
+        return sorted.sort((a, b) => {
+          const aDate = new Date(a.createdAt ?? Date.now()).getTime();
+          const bDate = new Date(b.createdAt ?? Date.now()).getTime();
+          return bDate - aDate;
+        });
+      case 'date-oldest':
+        return sorted.sort((a, b) => {
+          const aDate = new Date(a.createdAt ?? Date.now()).getTime();
+          const bDate = new Date(b.createdAt ?? Date.now()).getTime();
+          return aDate - bDate;
+        });
+      case 'upvotes-high':
+      case 'upvotes-low':
+      default:
+        return sorted;
+    }
+  }, [tagFilteredMemories, filters.sortBy]);
+
+  const displayedMemories = sortedMemories;
+
+  const availableTags = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          eraFilteredMemories.flatMap((m) => m.tags?.map((t) => t.name) ?? [])
+        )
+      ).sort(),
+    [eraFilteredMemories]
+  );
+
+  const availableYears = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          eraFilteredMemories.map((m) => {
+            const memoryDateValue = (m as { memoryDate?: string }).memoryDate;
+            const date = memoryDateValue
+              ? new Date(memoryDateValue)
+              : new Date(m.createdAt ?? Date.now());
+            return date.getFullYear();
+          })
+        )
+      ).sort((a, b) => b - a),
+    [eraFilteredMemories]
+  );
 
   // Keep a stable ref for the click handler so detached roots always call the latest version
   const handleClickRef = useRef<(landmark: Landmark) => void>(() => {});
@@ -611,7 +702,7 @@ export function MapComponent() {
       { lng: number; lat: number; memories: typeof eraFilteredMemories }
     >();
 
-    for (const memory of eraFilteredMemories) {
+    for (const memory of displayedMemories) {
       if (!memory.mediaURL) continue;
       const key = `${memory.location.longitude.toFixed(5)},${memory.location.latitude.toFixed(5)}`;
       if (!groups.has(key)) {
@@ -665,8 +756,8 @@ export function MapComponent() {
       memoryMarkersRef.current.push(marker);
     }
   }, [
-    eraFilteredMemories,
-    eraFilteredMemories.length,
+    displayedMemories,
+    displayedMemories.length,
     memories.length,
     handleMemoryClick,
     showMemoryPins,
@@ -734,8 +825,34 @@ export function MapComponent() {
         );
       })()}
 
-      {/* Add Memory Button - Bottom Right */}
-      <div className="absolute bottom-6 right-6 z-10">
+      {/* Add Memory + Filter Buttons - Bottom Right */}
+      <div className="absolute bottom-6 right-6 z-10 flex flex-col items-end gap-3">
+        <button
+          onClick={() => setIsFilterOpen(!isFilterOpen)}
+          className={
+            'inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition ' +
+            (isFilterOpen ||
+            filters.selectedTags.length > 0 ||
+            filters.selectedYear ||
+            filters.visibility !== 'ALL'
+              ? 'bg-skolaroid-blue text-white'
+              : 'hover:bg-gray-100')
+          }
+          aria-label="Filter memories"
+        >
+          <Filter size={16} />
+          Filter
+          {(filters.selectedTags.length > 0 ||
+            filters.selectedYear ||
+            filters.visibility !== 'ALL') && (
+            <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-white text-xs font-bold text-skolaroid-blue">
+              {filters.selectedTags.length +
+                (filters.selectedYear ? 1 : 0) +
+                (filters.visibility !== 'ALL' ? 1 : 0)}
+            </span>
+          )}
+        </button>
+
         <div className="group flex items-center gap-0 rounded-full bg-white p-2 shadow-lg transition-all duration-300 hover:gap-3">
           <button
             onClick={() => setAddMemoryOpen(true)}
@@ -812,6 +929,16 @@ export function MapComponent() {
           selectedLandmark ? (memoryCounts[selectedLandmark.id] ?? 0) : 0
         }
         onClose={() => setSelectedLandmark(null)}
+      />
+
+      {/* Filter Modal */}
+      <FilterMemoriesModal
+        open={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        filters={filters}
+        onApply={setFilters}
+        availableTags={availableTags}
+        availableYears={availableYears}
       />
 
       {/* Memory Detail Modal */}

@@ -1,12 +1,16 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { TagInput } from '@/components/tag-input';
 import { useCreateMemory } from '@/lib/hooks/useCreateMemory';
 import { useCreateCustomLocation } from '@/lib/hooks/useCreateCustomLocation';
 import { useLocations } from '@/lib/hooks/useLocations';
-import { VISIBILITY_LABELS, type MemoryVisibility } from '@/lib/schemas';
+import {
+  MAX_TAGS,
+  VISIBILITY_LABELS,
+  type MemoryVisibility,
+} from '@/lib/schemas';
 import { LANDMARKS, type Landmark } from '@/lib/constants/landmarks';
 import {
   LANDMARK_TYPE_COLORS,
@@ -14,15 +18,11 @@ import {
 } from '@/lib/constants/landmarks';
 import type { MapLocationSelection } from '@/lib/types/map';
 import {
-  ArrowUpDown,
   CheckCircle,
-  Copy,
-  Crop,
   Eye,
   FileText,
   Globe,
   Grid3X3,
-  Heart,
   ImageIcon,
   Info,
   List,
@@ -30,10 +30,7 @@ import {
   Lock,
   MapPin,
   MapPinned,
-  Trash2,
-  Pencil,
   Search,
-  Share,
   Shield,
   Type,
   Upload,
@@ -201,6 +198,8 @@ export function AddMemoryModal({
   const [uploadingFiles, setUploadingFiles] = useState<UploadingFile[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [caption, setCaption] = useState('');
+  const [memoryDate, setMemoryDate] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
   const [visibility, setVisibility] = useState<MemoryVisibility>('PUBLIC');
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -226,7 +225,6 @@ export function AddMemoryModal({
   const [isCreatingLocation, setIsCreatingLocation] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const captionRef = useRef<HTMLTextAreaElement>(null);
 
   const { mutate: createMemory, isPending } = useCreateMemory();
   const { data: locationsData } = useLocations();
@@ -296,6 +294,8 @@ export function AddMemoryModal({
     });
     setViewMode('grid');
     setCaption('');
+    setMemoryDate('');
+    setTags([]);
     setVisibility('PUBLIC');
     setShowExitConfirm(false);
     setShowSuccess(false);
@@ -531,6 +531,8 @@ export function AddMemoryModal({
         visibility,
         locationId,
         programBatchId: MOCK_PROGRAM_BATCH_ID,
+        memoryDate: memoryDate ? new Date(memoryDate) : undefined,
+        tags,
         mediaFile: firstCompleted.file,
       },
       {
@@ -552,6 +554,8 @@ export function AddMemoryModal({
     completedFiles,
     caption,
     visibility,
+    memoryDate,
+    tags,
     locations,
     selectedLocationId,
     createMemory,
@@ -976,152 +980,56 @@ export function AddMemoryModal({
   // ---------------------------------------------------------------------------
 
   const renderCaptionTab = () => (
-    <div className="flex h-full flex-col">
-      {/* Header: Main Caption + action icons */}
-      <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-900">Main Caption</h3>
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => captionRef.current?.focus()}
-            className="text-gray-600 hover:text-gray-900"
-          >
-            <Pencil className="h-5 w-5" />
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              // TODO: Implement pause/stop functionality
-              console.log('[AddMemoryModal] pause clicked');
-            }}
-            className="text-gray-600 hover:text-gray-900"
-          >
-            <Trash2 className="h-5 w-5" />
-          </button>
-        </div>
-      </div>
-
-      {/* Caption card */}
-      <div className="mb-4 flex flex-col items-center rounded-xl bg-gray-100 px-8 py-10">
+    <div className="space-y-4">
+      <div>
+        <label
+          htmlFor="caption"
+          className="mb-2 block text-sm font-medium text-foreground"
+        >
+          Caption
+        </label>
         <textarea
-          ref={captionRef}
+          id="caption"
+          placeholder="Write a caption for your memory..."
           value={caption}
           onChange={(e) => setCaption(e.target.value)}
-          placeholder="Write a caption..."
-          className="w-full resize-none border-none bg-transparent text-center font-dancing text-2xl leading-relaxed text-gray-800 placeholder:text-gray-400 focus:outline-none"
-          rows={3}
+          className="min-h-[100px] w-full rounded-md border border-input px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         />
-        {/* Three icon buttons */}
-        <div className="mt-4 flex items-center gap-5">
-          <button
-            type="button"
-            onClick={() => {
-              // TODO: Implement copy
-              console.log('[AddMemoryModal] copy clicked');
-            }}
-            className="text-gray-500 hover:text-gray-800"
-          >
-            <Copy className="h-5 w-5" />
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              // TODO: Implement heart/favorite
-              console.log('[AddMemoryModal] heart clicked');
-            }}
-            className="text-gray-500 hover:text-gray-800"
-          >
-            <Heart className="h-5 w-5" />
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              // TODO: Implement share
-              console.log('[AddMemoryModal] share clicked');
-            }}
-            className="text-gray-500 hover:text-gray-800"
-          >
-            <Share className="h-5 w-5" />
-          </button>
-        </div>
       </div>
 
-      {/* Table header */}
-      <div className="flex items-center border-b border-gray-200 pb-2">
-        <div className="w-8">
-          <Checkbox
-            id="select-all-media"
-            onCheckedChange={(checked) => {
-              // TODO: Implement select all
-              console.log('[AddMemoryModal] select all:', checked);
-            }}
-          />
-        </div>
-        <span className="w-20 text-xs font-medium text-gray-500">Image</span>
-        <span className="flex-1 text-xs font-medium text-gray-500">
-          Caption
-        </span>
-        <span className="w-24 text-xs font-medium text-gray-500">
-          Orientation
-        </span>
-        <button
-          type="button"
-          onClick={() => {
-            // TODO: Implement sort
-            console.log('[AddMemoryModal] sort clicked');
-          }}
-          className="flex items-center gap-1 rounded-md border border-gray-200 px-2 py-1 text-xs text-gray-600 hover:bg-gray-50"
+      <div>
+        <label
+          htmlFor="memoryDate"
+          className="mb-2 block text-sm font-medium text-foreground"
         >
-          <ArrowUpDown className="h-3 w-3" />
-          Sort
-        </button>
+          When did this happen? (optional)
+        </label>
+        <input
+          type="date"
+          id="memoryDate"
+          max={new Date().toISOString().split('T')[0]}
+          value={memoryDate}
+          onChange={(e) => setMemoryDate(e.target.value)}
+          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        />
+        <p className="mt-1 text-xs text-muted-foreground">
+          This helps us automatically tag your memory with the correct year and
+          era
+        </p>
       </div>
 
-      {/* Table row(s) */}
-      <div className="flex items-center py-3">
-        <div className="w-8">
-          <Checkbox
-            id="select-row-1"
-            onCheckedChange={(checked) => {
-              // TODO: Implement row selection
-              console.log('[AddMemoryModal] row 1 selected:', checked);
-            }}
-          />
-        </div>
-        <div className="flex w-20 items-center justify-center">
-          {completedFiles.length > 0 ? (
-            <div className="relative h-12 w-12 overflow-hidden rounded border border-gray-200">
-              <Image
-                src={completedFiles[0].previewUrl}
-                alt={completedFiles[0].file.name}
-                fill
-                className="object-cover"
-                unoptimized
-              />
-            </div>
-          ) : (
-            <div className="flex h-12 w-12 items-center justify-center rounded border border-gray-200 bg-gray-50">
-              <ImageIcon className="h-5 w-5 text-gray-300" />
-            </div>
-          )}
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="text-sm font-medium text-gray-800">Getting started</p>
-          <p className="text-xs text-gray-400">No caption</p>
-        </div>
-        <div className="flex w-24 items-center justify-center">
-          <Crop className="h-5 w-5 text-gray-400" />
-        </div>
-        <button
-          type="button"
-          onClick={() => {
-            // TODO: Implement row edit
-            console.log('[AddMemoryModal] edit row clicked');
-          }}
-          className="text-gray-600 hover:text-gray-900"
+      <div>
+        <label
+          htmlFor="tags"
+          className="mb-2 block text-sm font-medium text-foreground"
         >
-          <Pencil className="h-4 w-4" />
-        </button>
+          Tags
+        </label>
+        <TagInput tags={tags} onTagsChange={setTags} />
+        <p className="mt-1 text-xs text-muted-foreground">
+          Up to {MAX_TAGS} tags. The system will auto-add location, era, and
+          year tags (using up to 3 slots).
+        </p>
       </div>
     </div>
   );

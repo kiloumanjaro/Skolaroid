@@ -65,6 +65,7 @@ export const createMemorySchema = z.object({
     .optional(),
   visibility: memoryVisibilityEnum.default('PUBLIC'),
   locationId: z.string().min(1, 'Location is required'), // change to uuid later
+  memoryDate: z.string().datetime().optional(),
   tags: z
     .array(z.string().trim().min(1).max(50))
     .max(MAX_TAGS, 'Maximum 10 tags')
@@ -75,6 +76,7 @@ export const createMemorySchema = z.object({
 export const createMemoryServerSchema = createMemorySchema.extend({
   programBatchId: z.string().min(1, 'Program batch is required'), // change to uuid later
   mediaURL: z.string().url('Invalid media URL').optional(),
+  memoryDate: z.coerce.date().optional(),
 });
 
 /** Schema for updating tags on an existing memory. */

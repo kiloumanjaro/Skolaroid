@@ -32,17 +32,17 @@ export function haversineDistance(
 /**
  * Find the nearest landmark to a given coordinate.
  */
-export function findNearestLandmark(
-  latitude: number,
-  longitude: number
-): { landmark: Landmark; distance: number } {
+export function findNearestLandmark(coord: {
+  latitude: number;
+  longitude: number;
+}): { landmark: Landmark; distance: number } {
   let nearest: Landmark = LANDMARKS[0];
   let minDistance = Infinity;
 
   for (const landmark of LANDMARKS) {
     const distance = haversineDistance(
-      latitude,
-      longitude,
+      coord.latitude,
+      coord.longitude,
       landmark.coordinates[1],
       landmark.coordinates[0]
     );
@@ -62,7 +62,7 @@ export function generateLocationName(
   latitude: number,
   longitude: number
 ): string {
-  const { landmark } = findNearestLandmark(latitude, longitude);
+  const { landmark } = findNearestLandmark({ latitude, longitude });
   return `Near ${landmark.name}`;
 }
 

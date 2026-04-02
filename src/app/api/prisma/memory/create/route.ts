@@ -19,30 +19,39 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
 
-    const result = createMemoryServerSchema.safeParse(body);
-    if (!result.success) {
+    const validation = createMemoryServerSchema.safeParse(body);
+
+    if (!validation.success) {
       return NextResponse.json(
         {
           success: false,
-          message: result.error.issues[0]?.message ?? 'Validation failed',
+          message:
+            validation.error.issues[0]?.message || 'Invalid request data',
         },
         { status: 400 }
       );
     }
 
-    const memory = await createMemoryService(result.data, authUser.id);
+    const data = validation.data;
+
+    // Call service layer
+    const memory = await createMemoryService({
+      ...data,
+      creatorId: authUser.id,
+    });
+
     return NextResponse.json({
       success: true,
       message: 'Memory created successfully',
-      data: memory,
+      memory,
     });
-  } catch (err) {
-    console.error('[create memory] unexpected error:', err);
+  } catch (error) {
+    console.error('Failed to create memory:', error);
     return NextResponse.json(
       {
         success: false,
-        message: 'Unable to create memory. Please try again.',
-        detail: String(err),
+        message:
+          error instanceof Error ? error.message : 'Failed to create memory',
       },
       { status: 500 }
     );
