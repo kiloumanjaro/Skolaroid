@@ -47,9 +47,12 @@ export function GalleryPolaroid({
       }}
       onClick={onClick}
     >
-      <div className="bg-white p-2 pb-12 shadow-xl" style={{ width }}>
+      <div
+        className="border-2 border-border bg-card p-2 pb-12 shadow-[4px_4px_0px_0px_#2d2d2d]"
+        style={{ width }}
+      >
         <div
-          className="relative overflow-hidden bg-gray-200"
+          className="relative overflow-hidden bg-secondary"
           style={{ height: height - 56 }}
         >
           <Image src={src} alt={alt} fill className="object-cover" />

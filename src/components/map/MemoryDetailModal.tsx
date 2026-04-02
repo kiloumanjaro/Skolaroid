@@ -472,8 +472,8 @@ export function MemoryDetailModal({
                             <div className="flex flex-1 items-center justify-center">
                               <div className="w-full">
                                 {baseLeftMemory.mediaURL ? (
-                                  <div className="bg-white p-2 pb-8 shadow-[0px_2px_8px_2px_rgba(0,0,0,0.15)]">
-                                    <div className="relative h-80 w-full overflow-hidden">
+                                  <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
+                                    <div className="relative h-80 w-full overflow-hidden bg-secondary">
                                       <Image
                                         src={baseLeftMemory.mediaURL}
                                         alt={baseLeftMemory.title}
@@ -483,7 +483,7 @@ export function MemoryDetailModal({
                                     </div>
                                   </div>
                                 ) : (
-                                  <div className="bg-white p-2 pb-8 shadow-[0px_2px_8px_2px_rgba(0,0,0,0.15)]">
+                                  <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
                                     <div className="flex h-80 w-full items-center justify-center bg-secondary">
                                       <span className="text-xs text-muted-foreground">
                                         No image
@@ -722,8 +722,8 @@ export function MemoryDetailModal({
                                   <div className="flex flex-1 items-center justify-center">
                                     <div className="w-full">
                                       {cachedMemory.mediaURL ? (
-                                        <div className="bg-white p-2 pb-8 shadow-[0px_2px_8px_2px_rgba(0,0,0,0.15)]">
-                                          <div className="relative h-80 w-full overflow-hidden">
+                                        <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
+                                          <div className="relative h-80 w-full overflow-hidden bg-secondary">
                                             <Image
                                               src={cachedMemory.mediaURL}
                                               alt={cachedMemory.title}
@@ -733,7 +733,7 @@ export function MemoryDetailModal({
                                           </div>
                                         </div>
                                       ) : (
-                                        <div className="bg-white p-2 pb-8 shadow-[0px_2px_8px_2px_rgba(0,0,0,0.15)]">
+                                        <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
                                           <div className="flex h-80 w-full items-center justify-center bg-secondary">
                                             <span className="text-xs text-muted-foreground">
                                               No image
@@ -949,8 +949,8 @@ export function MemoryDetailModal({
                                 <div className="flex flex-1 items-center justify-center">
                                   <div className="w-full">
                                     {memory.mediaURL ? (
-                                      <div className="bg-white p-2 pb-8 shadow-[0px_2px_8px_2px_rgba(0,0,0,0.15)]">
-                                        <div className="relative h-80 w-full overflow-hidden">
+                                      <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
+                                        <div className="relative h-80 w-full overflow-hidden bg-secondary">
                                           <Image
                                             src={memory.mediaURL}
                                             alt={memory.title}
@@ -960,7 +960,7 @@ export function MemoryDetailModal({
                                         </div>
                                       </div>
                                     ) : (
-                                      <div className="bg-white p-2 pb-8 shadow-[0px_2px_8px_2px_rgba(0,0,0,0.15)]">
+                                      <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
                                         <div className="flex h-80 w-full items-center justify-center bg-secondary">
                                           <span className="text-xs text-muted-foreground">
                                             No image

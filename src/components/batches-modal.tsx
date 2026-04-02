@@ -3,17 +3,8 @@
 import { useMemo, useState } from 'react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { cn, getEraFromBatchTag } from '@/lib/utils';
-import {
-  X,
-  Search,
-  SlidersHorizontal,
-  Calendar,
-  Heart,
-  Plus,
-  MapPin,
-} from 'lucide-react';
+import { X, Search, SlidersHorizontal, Plus, MapPin } from 'lucide-react';
 import { MOCK_MEMORIES, MOCK_LOCATIONS } from '@/lib/mock-data';
 import {
   FilterMemoriesModal,
@@ -74,18 +65,6 @@ for (const loc of MOCK_LOCATIONS) {
     latitude: loc.latitude,
     longitude: loc.longitude,
   };
-}
-
-// =============================================================================
-// HELPERS
-// =============================================================================
-
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
 }
 
 // =============================================================================
@@ -318,11 +297,11 @@ export function BatchesModal({
                     key={memory.id}
                     type="button"
                     onClick={() => handleMemoryCardClick(memory)}
-                    className="cursor-pointer overflow-hidden border-2 border-border bg-card text-left shadow-[2px_2px_0px_0px_#2d2d2d] transition-shadow hover:shadow-[3px_3px_0px_0px_#2d2d2d]"
+                    className="cursor-pointer overflow-hidden border-2 border-border bg-card p-2 pb-12 text-left shadow-[4px_4px_0px_0px_#2d2d2d] transition-shadow hover:shadow-[5px_5px_0px_0px_#2d2d2d]"
                   >
                     {/* Image */}
                     {memory.mediaURL ? (
-                      <div className="relative h-44 w-full">
+                      <div className="relative h-44 w-full overflow-hidden bg-secondary">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={
@@ -333,63 +312,26 @@ export function BatchesModal({
                           alt={memory.title}
                           className="h-full w-full object-cover"
                         />
-                        <span className="absolute right-3 top-3 border border-border bg-card px-2.5 py-1 text-xs font-semibold text-foreground">
-                          Batch
-                        </span>
                       </div>
                     ) : (
                       <div className="relative flex h-44 items-center justify-center bg-secondary">
                         <span className="text-sm text-muted-foreground">
                           No image
                         </span>
-                        <span className="absolute right-3 top-3 border border-border bg-card px-2.5 py-1 text-xs font-semibold text-foreground">
-                          Batch
-                        </span>
                       </div>
                     )}
 
-                    {/* Info */}
-                    <div className="p-4">
+                    {/* Info - Caption area */}
+                    <div className="absolute bottom-0 left-0 right-0 px-3 pb-2 pt-1">
                       <h3 className="text-sm font-semibold text-foreground">
                         {memory.title}
                       </h3>
 
-                      {/* Caption / description snippet */}
-                      {memory.description && (
-                        <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
-                          {memory.description}
-                        </p>
-                      )}
-
                       {/* Location */}
-                      <div className="mt-1.5 flex items-center gap-1 text-xs text-muted-foreground">
+                      <div className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
                         <MapPin className="h-3 w-3" />
                         <span>{memory.location.buildingName}</span>
                       </div>
-
-                      {/* Date + likes */}
-                      <div className="mt-1.5 flex items-center gap-1.5 text-xs text-muted-foreground">
-                        <Calendar className="h-3.5 w-3.5" />
-                        <span>{formatDate(memory.createdAt ?? '')}</span>
-                        <span className="text-border">•</span>
-                        <Heart className="h-3.5 w-3.5" />
-                        <span>{memory._count?.votes ?? 0}</span>
-                      </div>
-
-                      {/* Tags */}
-                      {memory.tags && memory.tags.length > 0 && (
-                        <div className="mt-2.5 flex flex-wrap gap-1.5">
-                          {memory.tags.map((tag) => (
-                            <Badge
-                              key={tag.id}
-                              variant="outline"
-                              className="rounded-full px-2 py-0.5 text-xs font-normal text-muted-foreground"
-                            >
-                              #{tag.name}
-                            </Badge>
-                          ))}
-                        </div>
-                      )}
                     </div>
                   </button>
                 ))}

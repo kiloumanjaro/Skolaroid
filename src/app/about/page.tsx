@@ -9,9 +9,9 @@ export default function AboutPage() {
     <main className="flex h-screen flex-col overflow-hidden bg-gradient-to-b from-white to-gray-50">
       <Header />
 
-      <div className="flex flex-1 flex-col items-center justify-center px-6 pt-16">
+      <div className="flex flex-1 items-center justify-center px-6">
         {/* Hero Section */}
-        <section className="mx-auto max-w-5xl text-center">
+        <section className="mx-auto w-full max-w-5xl text-center">
           <h1 className="mb-6 text-5xl font-bold text-gray-900">
             About <span className="text-skolaroid-blue">Skolaroid</span>
           </h1>
@@ -80,24 +80,24 @@ export default function AboutPage() {
             Get Started
           </Link>
         </section>
-
-        {/* Footer */}
-        <footer className="mt-auto py-6">
-          <div className="flex items-center gap-4 text-sm text-gray-500">
-            <Heart className="h-4 w-4 text-red-500" />
-            <span>Made with love for campus communities</span>
-            <span>•</span>
-            <a
-              href="https://github.com/kiloumanjaro/Skolaroid"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="transition hover:text-skolaroid-blue"
-            >
-              GitHub
-            </a>
-          </div>
-        </footer>
       </div>
+
+      {/* Footer */}
+      <footer className="py-6">
+        <div className="flex items-center justify-center gap-4 text-sm text-gray-500">
+          <Heart className="h-4 w-4 text-red-500" />
+          <span>Made with love for campus communities</span>
+          <span>•</span>
+          <a
+            href="https://github.com/kiloumanjaro/Skolaroid"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition hover:text-skolaroid-blue"
+          >
+            GitHub
+          </a>
+        </div>
+      </footer>
     </main>
   );
 }
