@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import { Copy, Check } from 'lucide-react';
 
 interface ShareGroupModalProps {
@@ -43,29 +44,31 @@ export function ShareGroupModal({
   return (
     <Dialog open={open} onOpenChange={(val) => !val && handleClose()}>
       <DialogContent
-        className="max-w-xs gap-0 overflow-hidden rounded-2xl border-gray-100 p-0 shadow-2xl"
+        className="max-w-xs gap-0 overflow-hidden p-0"
         showCloseButton={false}
       >
         <DialogTitle className="sr-only">Share {groupName}</DialogTitle>
 
         <div className="flex flex-col">
           <div className="px-6 pb-1 pt-6">
-            <h2 className="text-base font-semibold text-gray-900">
+            <h2 className="font-kalam text-base font-semibold text-foreground">
               Share Group
             </h2>
-            <p className="mt-1 text-xs text-gray-400">
+            <p className="mt-1 text-xs text-muted-foreground">
               Copy the link to share this group.
             </p>
           </div>
 
           <div className="px-6 pt-4">
-            <div className="flex items-center gap-2 rounded-xl border border-gray-100 bg-gray-50 px-3 py-2.5">
-              <span className="min-w-0 flex-1 truncate text-xs text-gray-600">
+            <div className="flex items-center gap-2 border-2 border-border bg-secondary px-3 py-2.5">
+              <span className="min-w-0 flex-1 truncate text-xs text-foreground">
                 {shareLink}
               </span>
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={handleCopy}
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 active:scale-[0.96]"
+                className="h-7 w-7 shrink-0"
                 aria-label="Copy link"
               >
                 {copied ? (
@@ -73,17 +76,14 @@ export function ShareGroupModal({
                 ) : (
                   <Copy size={14} />
                 )}
-              </button>
+              </Button>
             </div>
           </div>
 
           <div className="flex justify-end px-6 pb-6 pt-5">
-            <button
-              onClick={handleClose}
-              className="rounded-xl px-4 py-2 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-50"
-            >
+            <Button variant="ghost" onClick={handleClose}>
               Done
-            </button>
+            </Button>
           </div>
         </div>
       </DialogContent>

@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Plus, Globe, Lock, Check } from 'lucide-react';
 import { type Group } from '@/lib/types/group';
+import { WOBBLY_RADIUS_MD } from '@/lib/hand-drawn';
 
 interface GroupSwitcherProps {
   groups: Group[];
@@ -37,32 +38,35 @@ export function GroupSwitcher({
     <div ref={dropdownRef} className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 rounded-xl px-3 py-2 transition-colors hover:bg-gray-50 active:scale-[0.98]"
+        className="flex items-center gap-2 px-3 py-2 transition-colors hover:bg-secondary"
       >
         {selectedGroup ? (
           <>
             <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-skolaroid-blue/10 text-xs font-semibold text-skolaroid-blue">
               {selectedGroup.name.charAt(0)}
             </div>
-            <span className="max-w-[180px] truncate text-sm font-semibold text-gray-900">
+            <span className="max-w-[180px] truncate text-sm font-semibold text-foreground">
               {selectedGroup.name}
             </span>
           </>
         ) : (
-          <span className="text-sm font-medium text-gray-500">
+          <span className="text-sm font-medium text-muted-foreground">
             Select a group
           </span>
         )}
         <ChevronDown
           size={14}
-          className={`text-gray-400 transition-transform duration-150 ${isOpen ? 'rotate-180' : ''}`}
+          className={`text-muted-foreground transition-transform duration-150 ${isOpen ? 'rotate-180' : ''}`}
         />
       </button>
 
       {isOpen && (
-        <div className="absolute left-0 top-full z-30 mt-1 w-64 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-lg">
+        <div
+          className="absolute left-0 top-full z-30 mt-1 w-64 overflow-hidden border-2 border-border bg-card shadow-[3px_3px_0px_0px_#2d2d2d]"
+          style={{ borderRadius: WOBBLY_RADIUS_MD }}
+        >
           <div className="px-3 pb-1 pt-3">
-            <p className="text-[11px] font-medium uppercase tracking-wider text-gray-400">
+            <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
               Your Groups
             </p>
           </div>
@@ -77,18 +81,18 @@ export function GroupSwitcher({
                     onSelectGroup(group);
                     setIsOpen(false);
                   }}
-                  className={`flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-gray-50 ${
-                    isSelected ? 'bg-gray-50' : ''
+                  className={`flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-secondary ${
+                    isSelected ? 'bg-secondary' : ''
                   }`}
                 >
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-skolaroid-blue/10 text-xs font-semibold text-skolaroid-blue">
                     {group.name.charAt(0)}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-gray-900">
+                    <p className="truncate text-sm font-medium text-foreground">
                       {group.name}
                     </p>
-                    <p className="flex items-center gap-1 text-[11px] text-gray-400">
+                    <p className="flex items-center gap-1 text-[11px] text-muted-foreground">
                       {group.privacy === 'PUBLIC' ? (
                         <Globe size={10} />
                       ) : (
@@ -105,13 +109,13 @@ export function GroupSwitcher({
             })}
           </div>
 
-          <div className="border-t border-gray-100 p-1.5">
+          <div className="border-t border-border p-1.5">
             <button
               onClick={() => {
                 onCreateGroup();
                 setIsOpen(false);
               }}
-              className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-skolaroid-blue transition-colors hover:bg-skolaroid-blue/5"
+              className="flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium text-skolaroid-blue transition-colors hover:bg-skolaroid-blue/5"
             >
               <Plus size={16} />
               Create New Group

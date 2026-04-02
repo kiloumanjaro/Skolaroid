@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { Link2, Mail, Copy, Check, Loader2 } from 'lucide-react';
 import { useSendInvitations } from '@/lib/hooks/useInvitation';
 
@@ -81,7 +82,7 @@ export function InviteMembersModal({
   return (
     <Dialog open={open} onOpenChange={(val) => !val && handleClose()}>
       <DialogContent
-        className="max-h-[90vh] w-[calc(100%-2rem)] max-w-sm gap-0 overflow-hidden rounded-2xl border-gray-100 p-0 shadow-2xl"
+        className="max-h-[90vh] w-[calc(100%-2rem)] max-w-sm gap-0 overflow-hidden p-0"
         showCloseButton={false}
       >
         <DialogTitle className="sr-only">
@@ -91,29 +92,30 @@ export function InviteMembersModal({
         <div className="flex min-w-0 flex-col overflow-y-auto">
           {/* Header */}
           <div className="px-6 pb-1 pt-6">
-            <h2 className="text-base font-semibold text-gray-900">
+            <h2 className="font-kalam text-base font-semibold text-foreground">
               Invite Members
             </h2>
-            <p className="mt-1 text-xs text-gray-400">
+            <p className="mt-1 text-xs text-muted-foreground">
               Share a link or invite people by email.
             </p>
           </div>
 
           {/* Invite Link */}
           <div className="min-w-0 space-y-2 px-6 pt-4">
-            <label className="text-xs font-medium text-gray-500">
+            <label className="text-xs font-medium text-muted-foreground">
               Invite Link
             </label>
             <div className="flex min-w-0 items-center gap-2">
-              <div className="flex min-w-0 flex-1 items-center gap-2 overflow-hidden rounded-xl border border-gray-100 bg-gray-50 px-3 py-2.5">
-                <Link2 size={14} className="shrink-0 text-gray-400" />
-                <span className="truncate text-xs text-gray-600">
+              <div className="flex min-w-0 flex-1 items-center gap-2 overflow-hidden border-2 border-border bg-secondary px-3 py-2.5">
+                <Link2 size={14} className="shrink-0 text-muted-foreground" />
+                <span className="truncate text-xs text-foreground">
                   {inviteLink}
                 </span>
               </div>
-              <button
+              <Button
+                variant="outline"
+                size="icon"
                 onClick={handleCopyLink}
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-gray-100 text-gray-500 transition-colors hover:bg-gray-50 active:scale-[0.96]"
                 aria-label="Copy invite link"
               >
                 {linkCopied ? (
@@ -121,22 +123,22 @@ export function InviteMembersModal({
                 ) : (
                   <Copy size={15} />
                 )}
-              </button>
+              </Button>
             </div>
           </div>
 
           {/* Email Invites */}
           <div className="space-y-2 px-6 pt-4">
-            <label className="text-xs font-medium text-gray-500">
+            <label className="text-xs font-medium text-muted-foreground">
               Invite by Email
             </label>
             <div className="relative">
               <Mail
                 size={14}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
               />
               <Input
-                className="rounded-xl border-gray-100 bg-gray-50 pl-9 text-xs"
+                className="border-border bg-secondary pl-9 text-xs"
                 placeholder="email@example.com, comma separated"
                 value={emails}
                 onChange={(e) => setEmails(e.target.value)}
@@ -152,26 +154,18 @@ export function InviteMembersModal({
               </p>
             )}
             <div className="flex justify-end gap-2">
-              <button
-                onClick={handleClose}
-                className="rounded-xl px-4 py-2 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-50"
-              >
+              <Button variant="ghost" onClick={handleClose}>
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={handleSendInvites}
                 disabled={!emails.trim() || sendInvitations.isPending}
-                className={`flex items-center gap-2 rounded-xl bg-skolaroid-blue px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-skolaroid-blue/90 active:scale-[0.98] ${
-                  !emails.trim() || sendInvitations.isPending
-                    ? 'cursor-not-allowed opacity-50'
-                    : ''
-                }`}
               >
                 {sendInvitations.isPending && (
                   <Loader2 size={14} className="animate-spin" />
                 )}
                 Send Invites
-              </button>
+              </Button>
             </div>
           </div>
         </div>

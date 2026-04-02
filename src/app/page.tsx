@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { LoginForm } from '@/components/login-form';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
 import { AccountMenu } from '@/components/account-menu';
+import { Button } from '@/components/ui/button';
 
 const batches = [
   {
@@ -128,19 +129,16 @@ export default function Home() {
   };
 
   return (
-    <main className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <main className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-background">
       {/* Auth Buttons - Fixed top right */}
       <div className="fixed right-5 top-3 z-50 flex items-center gap-3">
         {!loading && isAuthenticated ? (
           <AccountMenu />
         ) : (
           <>
-            <button
-              onClick={() => setLoginOpen(true)}
-              className="rounded-md bg-skolaroid-blue px-4 py-2 text-xs text-white transition hover:bg-blue-700"
-            >
+            <Button onClick={() => setLoginOpen(true)} size="sm">
               Sign in
-            </button>
+            </Button>
           </>
         )}
       </div>
@@ -167,7 +165,7 @@ export default function Home() {
       {/* Overlay - Click to close drawer */}
       {drawerOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/20 transition-opacity duration-300"
+          className="fixed inset-0 z-30 bg-[#2d2d2d]/20 transition-opacity duration-300"
           onClick={() => setDrawerOpen(false)}
           aria-label="Close drawer overlay"
         />
@@ -193,7 +191,7 @@ export default function Home() {
 
         {/* Hero Section - Centered */}
         <div className="pointer-events-auto absolute inset-0 flex flex-col items-center justify-center gap-4 px-4 text-center">
-          <h1 className="!text-5xl font-normal tracking-tight text-gray-800 dark:text-gray-100 md:text-4xl lg:text-5xl">
+          <h1 className="!text-5xl font-normal tracking-tight text-foreground md:text-4xl lg:text-5xl">
             turn your memories
             <br />
             into{' '}
@@ -204,11 +202,11 @@ export default function Home() {
 
           <button
             onClick={() => setDrawerOpen(!drawerOpen)}
-            className="group relative h-16 w-40 overflow-hidden rounded-[10px] outline outline-1 outline-neutral-300 transition-all"
+            className="group relative h-16 w-40 overflow-hidden border-2 border-border shadow-[4px_4px_0px_0px_#2d2d2d] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#2d2d2d] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
             aria-label="Explore Skolaroid"
           >
-            <div className="absolute left-0 top-0 h-16 w-40 rounded-[5px] bg-gradient-to-b from-neutral-50/50 to-gray-400/50 transition-all group-hover:bg-skolaroid-blue group-active:bg-skolaroid-blue" />
-            <div className="relative flex h-16 w-40 items-center justify-center text-center font-['Inter'] text-lg font-medium text-neutral-700 transition-colors group-hover:text-white group-active:text-white">
+            <div className="absolute left-0 top-0 h-16 w-40 bg-card transition-all group-hover:bg-skolaroid-blue group-active:bg-skolaroid-blue" />
+            <div className="relative flex h-16 w-40 items-center justify-center text-center text-lg font-medium text-foreground transition-colors group-hover:text-white group-active:text-white">
               {drawerOpen ? 'Close' : 'Explore'}
             </div>
           </button>

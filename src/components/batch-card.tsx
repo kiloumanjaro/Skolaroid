@@ -24,11 +24,11 @@ export function BatchCard({ year, message, position }: BatchCardProps) {
             : 'pointer-events-none translate-y-2 opacity-0'
         )}
       >
-        <div className="relative max-w-xs rounded-2xl bg-blue-500 px-4 py-2.5 text-white shadow-lg backdrop-blur-sm">
+        <div className="relative max-w-xs border-2 border-border bg-primary px-4 py-2.5 text-primary-foreground shadow-[4px_4px_0px_0px_#2d2d2d]">
           <p className="whitespace-nowrap text-sm font-medium">{message}</p>
           {/* Bubble tail */}
           <div className="absolute left-1/2 top-full -mt-px -translate-x-1/2">
-            <div className="h-0 w-0 border-l-[8px] border-r-[8px] border-t-[8px] border-l-transparent border-r-transparent border-t-blue-500" />
+            <div className="h-0 w-0 border-l-[8px] border-r-[8px] border-t-[8px] border-l-transparent border-r-transparent border-t-primary" />
           </div>
         </div>
       </div>
@@ -42,8 +42,8 @@ export function BatchCard({ year, message, position }: BatchCardProps) {
         onBlur={() => setIsHovered(false)}
         aria-label={`Batch ${year} - ${message}`}
       >
-        <div className="absolute left-0 top-0 h-16 w-16 rounded-[5px] bg-gradient-to-b from-neutral-50/50 to-gray-400/50 outline outline-1 outline-neutral-300" />
-        <div className="absolute text-center font-['Inter'] text-3xl font-medium text-neutral-700">
+        <div className="absolute left-0 top-0 h-16 w-16 rounded-[5px] border-2 border-border bg-card shadow-[2px_2px_0px_0px_#2d2d2d]" />
+        <div className="absolute text-center text-3xl font-medium text-foreground">
           {displayYear}
         </div>
       </button>

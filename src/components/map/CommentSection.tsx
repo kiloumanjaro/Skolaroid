@@ -39,8 +39,8 @@ export function CommentSection({
     <div className="flex flex-1 flex-col gap-3">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <h3 className="text-base font-medium text-black">Comments</h3>
-        <span className="rounded-lg bg-gray-200 px-2 py-0.5 text-sm font-medium text-black">
+        <h3 className="text-base font-medium text-foreground">Comments</h3>
+        <span className="bg-secondary px-2 py-0.5 text-sm font-medium text-foreground">
           {commentCount}
         </span>
       </div>
@@ -50,23 +50,23 @@ export function CommentSection({
         {comments.map((comment) => (
           <div key={comment.id} className="flex items-start gap-2">
             <Avatar className="h-9 w-9 shrink-0">
-              <AvatarFallback className="bg-zinc-300 text-sm text-slate-600">
+              <AvatarFallback className="bg-secondary text-sm text-foreground">
                 {comment.author.firstName.charAt(0)}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1">
               <div className="flex items-center justify-between">
-                <p className="text-sm font-semibold text-slate-800">
+                <p className="text-sm font-semibold text-foreground">
                   {comment.author.firstName} {comment.author.lastName}
                 </p>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-muted-foreground">
                     {formatRelativeDate(comment.createdAt)}
                   </span>
                   {currentUserId === comment.author.id && (
                     <button
                       onClick={() => onDelete(comment.id)}
-                      className="text-gray-400 transition-colors hover:text-red-500"
+                      className="text-muted-foreground transition-colors hover:text-red-500"
                       aria-label="Delete comment"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -74,7 +74,7 @@ export function CommentSection({
                   )}
                 </div>
               </div>
-              <p className="text-sm text-slate-800">{comment.content}</p>
+              <p className="text-sm text-foreground">{comment.content}</p>
             </div>
           </div>
         ))}
@@ -150,12 +150,12 @@ function CommentInput({
         onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
         placeholder="Write a comment…"
         maxLength={2000}
-        className="flex-1 rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-slate-800 outline-none placeholder:text-gray-400 focus:border-skolaroid-blue"
+        className="flex-1 border-2 border-border px-3 py-1.5 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-skolaroid-blue"
       />
       <button
         onClick={handleSubmit}
         disabled={!text.trim() || isSubmitting}
-        className="rounded-lg bg-skolaroid-blue px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50"
+        className="bg-skolaroid-blue px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50"
       >
         {isSubmitting ? 'Posting…' : 'Post'}
       </button>

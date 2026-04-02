@@ -120,7 +120,7 @@ function OnboardingContent() {
   const allCompleted = completedCount === steps.length;
 
   return (
-    <div className="flex h-screen w-screen items-center justify-center overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="flex h-screen w-screen items-center justify-center overflow-hidden bg-gradient-to-br from-background to-secondary">
       <Header />
       <div className="flex max-h-[90vh] w-full max-w-2xl flex-col px-6 py-8 pt-20">
         {/* Header */}
@@ -132,23 +132,23 @@ function OnboardingContent() {
                 {getAuthFirstName()}
               </span>
             </h1>
-            <p className="mt-0.5 text-xs text-gray-500">
+            <p className="mt-0.5 text-xs text-muted-foreground">
               We&apos;re very excited to get started with you
             </p>
           </div>
-          <button className="flex-shrink-0 rounded-lg bg-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-300">
+          <button className="flex-shrink-0 bg-secondary px-3 py-1.5 text-xs font-medium text-foreground transition hover:bg-secondary/80">
             ❓ Need Help
           </button>
         </div>
 
         {/* Main Card - Flex to fill remaining space */}
-        <div className="mt-6 flex min-h-0 flex-grow flex-col rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="mt-6 flex min-h-0 flex-grow flex-col border-2 border-border bg-card p-6 shadow-[4px_4px_0px_0px_#2d2d2d]">
           {/* Card Title */}
           <div className="flex-shrink-0">
-            <h2 className="text-xl font-semibold text-gray-900">
+            <h2 className="text-xl font-semibold text-foreground">
               Finish Onboarding
             </h2>
-            <p className="mt-1 text-xs text-gray-600">
+            <p className="mt-1 text-xs text-muted-foreground">
               Please ensure the following items are complete so that your use
               all of Skolaroid&apos;s feature
             </p>
@@ -160,29 +160,29 @@ function OnboardingContent() {
               <button
                 key={step.id}
                 onClick={() => handleStepClick(step.id)}
-                className="group flex w-full items-center justify-between rounded-lg border border-gray-100 bg-gray-50 px-4 py-3 text-sm transition hover:border-skolaroid-blue hover:bg-blue-50"
+                className="group flex w-full items-center justify-between border border-border bg-secondary/50 px-4 py-3 text-sm transition hover:border-skolaroid-blue hover:bg-blue-50"
               >
                 <div className="flex min-w-0 items-center gap-3">
                   <input
                     type="checkbox"
                     checked={step.completed}
                     disabled
-                    className="h-4 w-4 flex-shrink-0 cursor-not-allowed rounded border-gray-300 bg-white"
+                    className="h-4 w-4 flex-shrink-0 cursor-not-allowed rounded border-border bg-card"
                   />
                   <div className="flex min-w-0 items-center gap-2">
                     <span className="flex-shrink-0 text-lg">{step.icon}</span>
-                    <span className="text-left font-medium text-gray-900">
+                    <span className="text-left font-medium text-foreground">
                       {step.title}
                     </span>
                   </div>
                 </div>
-                <ChevronRight className="ml-2 h-4 w-4 flex-shrink-0 text-gray-400 transition group-hover:text-skolaroid-blue" />
+                <ChevronRight className="ml-2 h-4 w-4 flex-shrink-0 text-muted-foreground transition group-hover:text-skolaroid-blue" />
               </button>
             ))}
           </div>
 
           {/* Progress Info */}
-          <div className="mt-4 flex-shrink-0 text-xs text-gray-500">
+          <div className="mt-4 flex-shrink-0 text-xs text-muted-foreground">
             {completedCount} of {steps.length} steps completed
           </div>
 
@@ -191,17 +191,17 @@ function OnboardingContent() {
           )}
 
           {/* Footer Actions */}
-          <div className="mt-4 flex flex-shrink-0 items-center justify-between border-t border-gray-200 pt-4">
+          <div className="mt-4 flex flex-shrink-0 items-center justify-between border-t border-border pt-4">
             <a
               href="#"
-              className="text-xs font-medium text-gray-700 underline hover:text-gray-900"
+              className="text-xs font-medium text-foreground underline hover:text-foreground/80"
             >
               More info ↗
             </a>
             <div className="flex gap-2">
               <button
                 onClick={() => router.push('/')}
-                className="rounded-lg bg-gray-100 px-4 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-200"
+                className="bg-secondary px-4 py-1.5 text-xs font-medium text-foreground transition hover:bg-secondary/80"
               >
                 Back
               </button>
@@ -235,10 +235,10 @@ function OnboardingContent() {
                     );
                   }
                 }}
-                className={`rounded-lg px-4 py-1.5 text-xs font-medium text-white transition ${
+                className={`px-4 py-1.5 text-xs font-medium text-white transition ${
                   allCompleted && !onboardUser.isPending
                     ? 'cursor-pointer bg-skolaroid-blue hover:bg-blue-700'
-                    : 'cursor-not-allowed bg-gray-300 opacity-50'
+                    : 'cursor-not-allowed bg-muted-foreground opacity-50'
                 }`}
               >
                 {onboardUser.isPending ? 'Creating account...' : 'Next Step'}

@@ -31,7 +31,7 @@ export function LandmarkMemoriesPanel({
   return (
     <div
       className={cn(
-        'absolute right-0 top-0 z-20 flex h-full w-full max-w-md flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out',
+        'absolute right-0 top-0 z-20 flex h-full w-full max-w-md flex-col bg-card shadow-[6px_6px_0px_0px_#2d2d2d] transition-transform duration-300 ease-in-out',
         open ? 'translate-x-0' : 'translate-x-full'
       )}
       aria-hidden={!open}

@@ -126,7 +126,7 @@ export function MembersTab({
     return (
       <Badge
         variant="outline"
-        className="border-gray-200 bg-gray-50 text-gray-600"
+        className="border-border bg-secondary text-muted-foreground"
       >
         Member
       </Badge>
@@ -137,20 +137,22 @@ export function MembersTab({
     <>
       <div className="flex flex-col">
         {/* Header with member count */}
-        <div className="flex items-center justify-between border-b border-gray-100 px-5 py-3">
+        <div className="flex items-center justify-between border-b border-border px-5 py-3">
           <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-gray-500" />
-            <span className="text-sm font-semibold text-gray-900">Members</span>
-            <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">
+            <Users className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm font-semibold text-foreground">
+              Members
+            </span>
+            <span className="bg-secondary px-2 py-0.5 text-xs font-medium text-foreground">
               {members.length}
             </span>
           </div>
         </div>
 
         {/* Search and Filter Controls */}
-        <div className="border-b border-gray-100 px-5 py-3">
+        <div className="border-b border-border px-5 py-3">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               type="text"
               placeholder="Search by name or email..."
@@ -161,17 +163,19 @@ export function MembersTab({
           </div>
 
           <div className="mt-3 flex items-center gap-2">
-            <span className="text-xs font-medium text-gray-600">Role:</span>
+            <span className="text-xs font-medium text-muted-foreground">
+              Role:
+            </span>
             <div className="flex gap-1">
               {(['ALL', 'OWNER', 'ADMIN', 'MEMBER'] as const).map((role) => (
                 <button
                   key={role}
                   onClick={() => setRoleFilter(role)}
                   className={cn(
-                    'rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+                    'px-3 py-1.5 text-xs font-medium transition-colors',
                     roleFilter === role
-                      ? 'bg-gray-900 text-white'
-                      : 'text-gray-700 hover:bg-gray-100'
+                      ? 'bg-foreground text-background'
+                      : 'text-muted-foreground hover:bg-secondary'
                   )}
                 >
                   {role === 'ALL'
@@ -188,22 +192,22 @@ export function MembersTab({
           {filteredMembers.length > 0 ? (
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-100 text-left">
-                  <th className="px-5 py-2.5 text-xs font-medium uppercase tracking-wider text-gray-400">
+                <tr className="border-b border-border text-left">
+                  <th className="px-5 py-2.5 text-xs font-medium uppercase tracking-wider text-muted-foreground">
                     Member
                   </th>
-                  <th className="px-3 py-2.5 text-xs font-medium uppercase tracking-wider text-gray-400">
+                  <th className="px-3 py-2.5 text-xs font-medium uppercase tracking-wider text-muted-foreground">
                     Role
                   </th>
-                  <th className="hidden px-3 py-2.5 text-xs font-medium uppercase tracking-wider text-gray-400 md:table-cell">
+                  <th className="hidden px-3 py-2.5 text-xs font-medium uppercase tracking-wider text-muted-foreground md:table-cell">
                     Joined
                   </th>
-                  <th className="px-3 py-2.5 text-right text-xs font-medium uppercase tracking-wider text-gray-400">
+                  <th className="px-3 py-2.5 text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+              <tbody className="divide-y divide-border">
                 {filteredMembers.map((member) => {
                   const isCurrentUser = member.id === currentUserId;
                   const canRemove =
@@ -212,7 +216,7 @@ export function MembersTab({
                   return (
                     <tr
                       key={member.id}
-                      className="transition-colors hover:bg-gray-50/50"
+                      className="transition-colors hover:bg-secondary/50"
                     >
                       {/* Member info */}
                       <td className="px-5 py-3">
@@ -229,15 +233,15 @@ export function MembersTab({
                             </AvatarFallback>
                           </Avatar>
                           <div className="min-w-0">
-                            <p className="truncate text-sm font-medium text-gray-900">
+                            <p className="truncate text-sm font-medium text-foreground">
                               {member.name}
                               {isCurrentUser && (
-                                <span className="ml-1 text-xs text-gray-400">
+                                <span className="ml-1 text-xs text-muted-foreground">
                                   (you)
                                 </span>
                               )}
                             </p>
-                            <p className="truncate text-xs text-gray-500">
+                            <p className="truncate text-xs text-muted-foreground">
                               {member.email}
                             </p>
                           </div>
@@ -249,7 +253,7 @@ export function MembersTab({
 
                       {/* Joined date */}
                       <td className="hidden px-3 py-3 md:table-cell">
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-muted-foreground">
                           {formatJoinDate(member.joinedAt)}
                         </span>
                       </td>
@@ -264,7 +268,7 @@ export function MembersTab({
                             onClick={() => setMemberToView(member)}
                             title="View details"
                           >
-                            <Eye className="h-3.5 w-3.5 text-gray-500" />
+                            <Eye className="h-3.5 w-3.5 text-muted-foreground" />
                           </Button>
                           {canRemove && (
                             <Button
@@ -286,13 +290,13 @@ export function MembersTab({
             </table>
           ) : (
             <div className="flex flex-col items-center justify-center py-12">
-              <div className="rounded-full bg-gray-100 p-4">
-                <Search className="h-6 w-6 text-gray-400" />
+              <div className="bg-secondary p-4">
+                <Search className="h-6 w-6 text-muted-foreground" />
               </div>
-              <h4 className="mt-3 text-sm font-medium text-gray-900">
+              <h4 className="mt-3 text-sm font-medium text-foreground">
                 No members found
               </h4>
-              <p className="mt-1 text-center text-sm text-gray-600">
+              <p className="mt-1 text-center text-sm text-muted-foreground">
                 {searchQuery.trim()
                   ? `No members match "${searchQuery}"`
                   : 'No members with this role'}
@@ -332,7 +336,7 @@ export function MembersTab({
         }}
       >
         <DialogContent
-          className="max-w-sm gap-0 overflow-hidden rounded-2xl border-gray-100 p-0 shadow-2xl"
+          className="max-w-sm gap-0 overflow-hidden p-0"
           showCloseButton={false}
         >
           <DialogTitle className="sr-only">
@@ -342,8 +346,8 @@ export function MembersTab({
           {memberToView && (
             <div className="flex flex-col">
               {/* Header */}
-              <div className="flex items-center justify-between border-b border-gray-100 px-5 py-3.5">
-                <h2 className="text-sm font-semibold text-gray-900">
+              <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
+                <h2 className="text-sm font-semibold text-foreground">
                   Member Details
                 </h2>
                 <Button
@@ -369,23 +373,26 @@ export function MembersTab({
                     {getMemberInitials(memberToView.name)}
                   </AvatarFallback>
                 </Avatar>
-                <h3 className="mt-3 text-base font-semibold text-gray-900">
+                <h3 className="mt-3 text-base font-semibold text-foreground">
                   {memberToView.name}
                 </h3>
                 <div className="mt-1.5">{getRoleBadge(memberToView.role)}</div>
               </div>
 
               {/* Details */}
-              <div className="space-y-3 border-t border-gray-100 px-6 py-4">
+              <div className="space-y-3 border-t border-border px-6 py-4">
                 <div className="flex items-center gap-3">
-                  <Mail size={15} className="shrink-0 text-gray-400" />
-                  <span className="truncate text-sm text-gray-600">
+                  <Mail size={15} className="shrink-0 text-muted-foreground" />
+                  <span className="truncate text-sm text-muted-foreground">
                     {memberToView.email}
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Calendar size={15} className="shrink-0 text-gray-400" />
-                  <span className="text-sm text-gray-600">
+                  <Calendar
+                    size={15}
+                    className="shrink-0 text-muted-foreground"
+                  />
+                  <span className="text-sm text-muted-foreground">
                     Joined {formatJoinDate(memberToView.joinedAt)}
                   </span>
                 </div>
@@ -395,7 +402,7 @@ export function MembersTab({
               {isOwner &&
                 memberToView.id !== currentUserId &&
                 memberToView.role !== 'OWNER' && (
-                  <div className="border-t border-gray-100 px-6 py-4">
+                  <div className="border-t border-border px-6 py-4">
                     <Button
                       variant="outline"
                       className="w-full border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"

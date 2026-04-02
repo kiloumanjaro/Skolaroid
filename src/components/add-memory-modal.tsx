@@ -635,13 +635,13 @@ export function AddMemoryModal({
         <button
           type="button"
           onClick={() => handleSelectOnMap('custom')}
-          className="flex flex-col items-center gap-2 rounded-xl border-2 border-gray-200 bg-gray-50/50 px-4 py-5 transition-colors hover:border-gray-300 hover:bg-gray-100"
+          className="flex flex-col items-center gap-2 rounded-xl border-2 border-border bg-card px-4 py-5 transition-colors hover:border-foreground/30 hover:bg-secondary"
         >
-          <MapPinned className="h-6 w-6 text-gray-500" />
-          <span className="text-sm font-semibold text-gray-700">
+          <MapPinned className="h-6 w-6 text-muted-foreground" />
+          <span className="text-sm font-semibold text-foreground">
             Pinpoint Custom Location
           </span>
-          <span className="text-xs text-gray-400">
+          <span className="text-xs text-muted-foreground">
             Click anywhere on campus
           </span>
         </button>
@@ -649,19 +649,19 @@ export function AddMemoryModal({
 
       {/* Search bar */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search landmarks..."
-          className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-9 pr-8 text-sm text-gray-700 placeholder:text-gray-400 focus:border-skolaroid-blue focus:outline-none focus:ring-1 focus:ring-skolaroid-blue"
+          className="w-full border-2 border-border bg-card py-2 pl-9 pr-8 text-sm text-foreground placeholder:text-muted-foreground focus:border-skolaroid-blue focus:outline-none focus:ring-1 focus:ring-skolaroid-blue"
         />
         {searchQuery && (
           <button
             type="button"
             onClick={() => setSearchQuery('')}
-            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-gray-400 hover:text-gray-600"
+            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground hover:text-foreground"
           >
             <X className="h-3.5 w-3.5" />
           </button>
@@ -671,15 +671,11 @@ export function AddMemoryModal({
       {/* Landmark list */}
       <div className="flex flex-col gap-1">
         <div className="flex items-center justify-between">
-          <p className="text-xs font-medium text-gray-500">
-            {searchQuery
-              ? `${filteredLandmarks.length} landmark${filteredLandmarks.length !== 1 ? 's' : ''} found`
-              : 'Or select from list'}
-          </p>
+          <p className="text-xs font-medium text-muted-foreground"></p>
         </div>
         <div className="-mr-2 max-h-44 overflow-y-auto pr-2">
           {filteredLandmarks.length === 0 ? (
-            <p className="py-4 text-center text-sm text-gray-400">
+            <p className="py-4 text-center text-sm text-muted-foreground">
               No landmarks found
             </p>
           ) : (
@@ -693,14 +689,14 @@ export function AddMemoryModal({
                   className={`flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm transition-colors ${
                     isSelected
                       ? 'bg-emerald-50 text-emerald-800'
-                      : 'text-gray-700 hover:bg-gray-50'
+                      : 'text-foreground hover:bg-secondary'
                   }`}
                 >
                   <span
                     className={`h-2 w-2 shrink-0 rounded-full ${LANDMARK_TYPE_COLORS[landmark.type]}`}
                   />
                   <span className="flex-1 truncate">{landmark.name}</span>
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-muted-foreground">
                     {LANDMARK_TYPE_LABELS[landmark.type]}
                   </span>
                   {isSelected && (
@@ -802,14 +798,14 @@ export function AddMemoryModal({
         className={`flex h-40 w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed transition-colors ${
           isDragging
             ? 'border-skolaroid-blue bg-blue-50/50'
-            : 'border-gray-300 hover:border-skolaroid-blue hover:bg-blue-50/30'
+            : 'border-border hover:border-skolaroid-blue hover:bg-blue-50/30'
         }`}
       >
-        <Upload className="h-5 w-5 text-gray-400" />
-        <p className="text-sm font-medium text-gray-600">
+        <Upload className="h-5 w-5 text-muted-foreground" />
+        <p className="text-sm font-medium text-muted-foreground">
           Drag and drop or click to browse
         </p>
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-muted-foreground">
           Supports images and videos up to 10MB
         </p>
       </div>
@@ -836,17 +832,17 @@ export function AddMemoryModal({
             .map((f) => (
               <div key={f.id} className="flex items-center gap-3">
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-xs font-medium text-gray-700">
+                  <p className="truncate text-xs font-medium text-foreground">
                     {f.file.name}
                   </p>
-                  <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-gray-200">
+                  <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
                     <div
                       className="h-full rounded-full bg-skolaroid-blue transition-all duration-300"
                       style={{ width: `${f.progress}%` }}
                     />
                   </div>
                 </div>
-                <span className="text-xs tabular-nums text-gray-500">
+                <span className="text-xs tabular-nums text-muted-foreground">
                   {f.progress}%
                 </span>
               </div>
@@ -892,7 +888,7 @@ export function AddMemoryModal({
       {completedFiles.length > 0 && (
         <>
           <div className="flex items-center justify-between">
-            <p className="text-xs font-medium text-gray-500">
+            <p className="text-xs font-medium text-muted-foreground">
               {completedFiles.length} file
               {completedFiles.length !== 1 ? 's' : ''} uploaded
             </p>
@@ -901,19 +897,19 @@ export function AddMemoryModal({
                 type="button"
                 onClick={() => setViewMode('grid')}
                 className={`rounded p-1 ${
-                  viewMode === 'grid' ? 'bg-gray-200' : 'hover:bg-gray-100'
+                  viewMode === 'grid' ? 'bg-secondary' : 'hover:bg-secondary'
                 }`}
               >
-                <Grid3X3 className="h-4 w-4 text-gray-600" />
+                <Grid3X3 className="h-4 w-4 text-muted-foreground" />
               </button>
               <button
                 type="button"
                 onClick={() => setViewMode('list')}
                 className={`rounded p-1 ${
-                  viewMode === 'list' ? 'bg-gray-200' : 'hover:bg-gray-100'
+                  viewMode === 'list' ? 'bg-secondary' : 'hover:bg-secondary'
                 }`}
               >
-                <List className="h-4 w-4 text-gray-600" />
+                <List className="h-4 w-4 text-muted-foreground" />
               </button>
             </div>
           </div>
@@ -952,7 +948,7 @@ export function AddMemoryModal({
               {completedFiles.map((f) => (
                 <div
                   key={f.id}
-                  className="flex items-center gap-3 rounded-md border border-gray-200 p-2"
+                  className="flex items-center gap-3 rounded-md border border-border p-2"
                 >
                   <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded">
                     <Image
@@ -964,10 +960,10 @@ export function AddMemoryModal({
                     />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-gray-700">
+                    <p className="truncate text-sm font-medium text-foreground">
                       {f.file.name}
                     </p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-muted-foreground">
                       {formatFileSize(f.file.size)}
                     </p>
                   </div>
@@ -976,7 +972,7 @@ export function AddMemoryModal({
                     <button
                       type="button"
                       onClick={() => handleRemoveFile(f.id)}
-                      className="text-gray-400 hover:text-red-500"
+                      className="text-muted-foreground hover:text-red-500"
                     >
                       <X className="h-4 w-4" />
                     </button>
@@ -986,7 +982,7 @@ export function AddMemoryModal({
             </div>
           )}
 
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-muted-foreground">
             You can upload multiple photos and videos to your memory.
           </p>
         </>
@@ -1062,10 +1058,12 @@ export function AddMemoryModal({
       {/* Live */}
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-3">
-          <FileText className="mt-0.5 h-5 w-5 text-gray-700" />
+          <FileText className="mt-0.5 h-5 w-5 text-foreground" />
           <div>
-            <p className="text-sm font-semibold text-gray-900">Live</p>
-            <p className="text-xs text-gray-500">2 Months Ago by user</p>
+            <p className="text-sm font-semibold text-foreground">Live</p>
+            <p className="text-xs text-muted-foreground">
+              2 Months Ago by user
+            </p>
           </div>
         </div>
       </div>
@@ -1073,10 +1071,10 @@ export function AddMemoryModal({
       {/* Moderation */}
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-3">
-          <Info className="mt-0.5 h-5 w-5 text-gray-700" />
+          <Info className="mt-0.5 h-5 w-5 text-foreground" />
           <div>
-            <p className="text-sm font-semibold text-gray-900">Moderation</p>
-            <p className="text-xs text-gray-500">
+            <p className="text-sm font-semibold text-foreground">Moderation</p>
+            <p className="text-xs text-muted-foreground">
               Approved 7 days ago by Kint Borbano
             </p>
           </div>
@@ -1096,9 +1094,9 @@ export function AddMemoryModal({
       {/* English */}
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-3">
-          <Globe className="mt-0.5 h-5 w-5 text-gray-700" />
+          <Globe className="mt-0.5 h-5 w-5 text-foreground" />
           <div>
-            <p className="text-sm font-semibold text-gray-900">English</p>
+            <p className="text-sm font-semibold text-foreground">English</p>
           </div>
         </div>
         <button
@@ -1116,12 +1114,14 @@ export function AddMemoryModal({
       {/* Visible to all */}
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-3">
-          <Eye className="mt-0.5 h-5 w-5 text-gray-700" />
+          <Eye className="mt-0.5 h-5 w-5 text-foreground" />
           <div>
-            <p className="text-sm font-semibold text-gray-900">
+            <p className="text-sm font-semibold text-foreground">
               Visible to all
             </p>
-            <p className="text-xs text-gray-500">Once live, anyone can see</p>
+            <p className="text-xs text-muted-foreground">
+              Once live, anyone can see
+            </p>
           </div>
         </div>
         <button
@@ -1165,10 +1165,10 @@ export function AddMemoryModal({
       {/* Exit confirmation dialog */}
       <Dialog open={showExitConfirm} onOpenChange={setShowExitConfirm}>
         <DialogContent className="max-w-sm">
-          <DialogTitle className="text-lg font-semibold text-gray-900">
+          <DialogTitle className="text-lg font-semibold text-foreground">
             Discard changes?
           </DialogTitle>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             You have unsaved changes that will be lost.
           </p>
           <div className="flex justify-end gap-3 pt-2">
@@ -1194,7 +1194,7 @@ export function AddMemoryModal({
         }}
       >
         <DialogContent
-          className="flex h-[85vh] w-[70vw] max-w-none gap-0 overflow-hidden rounded-2xl p-0 sm:max-w-none"
+          className="flex h-[85vh] w-[70vw] max-w-none gap-0 overflow-hidden p-0 sm:max-w-none"
           showCloseButton={false}
         >
           {/* Success toast overlay */}
@@ -1218,7 +1218,7 @@ export function AddMemoryModal({
           </AnimatePresence>
 
           {/* Left Sidebar */}
-          <div className="flex w-48 flex-col border-r bg-gray-50">
+          <div className="flex w-48 flex-col border-r bg-secondary/50">
             <div className="flex-1 p-6">
               <DialogTitle className="sr-only">Add Memory</DialogTitle>
               <div className="space-y-3">
@@ -1238,8 +1238,8 @@ export function AddMemoryModal({
                         isActive
                           ? 'bg-blue-50 text-skolaroid-blue'
                           : isAccessible
-                            ? 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'
-                            : 'cursor-not-allowed text-gray-300'
+                            ? 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+                            : 'cursor-not-allowed text-muted-foreground/50'
                       }`}
                     >
                       {isActive && (
@@ -1255,8 +1255,8 @@ export function AddMemoryModal({
 
             {/* Thumbnail info box */}
             <div className="mx-3 mb-4 rounded-lg bg-amber-100 p-3">
-              <ImageIcon className="mb-1 h-5 w-5 text-gray-700" />
-              <p className="text-xs text-gray-700">
+              <ImageIcon className="mb-1 h-5 w-5 text-foreground" />
+              <p className="text-xs text-foreground">
                 The first image uploaded will be used as thumbnail
               </p>
             </div>
@@ -1266,9 +1266,9 @@ export function AddMemoryModal({
             <button
               type="button"
               onClick={handleAttemptClose}
-              className="absolute right-3 top-3 z-10 rounded-full p-1 hover:bg-gray-100"
+              className="absolute right-3 top-3 z-10 rounded-full p-1 hover:bg-secondary"
             >
-              <X className="h-4 w-4 text-gray-500" />
+              <X className="h-4 w-4 text-muted-foreground" />
             </button>
 
             {/* Body */}
@@ -1277,12 +1277,12 @@ export function AddMemoryModal({
             </div>
 
             {/* Footer */}
-            <div className="flex justify-end gap-3 border-t bg-white px-6 py-4">
+            <div className="flex justify-end gap-3 border-t bg-card px-6 py-4">
               {activeTab === 'upload' && (
                 <>
                   <Button
                     variant="outline"
-                    className="text-gray-700"
+                    className="text-foreground"
                     onClick={handleAttemptClose}
                   >
                     Cancel
@@ -1300,7 +1300,7 @@ export function AddMemoryModal({
                 <>
                   <Button
                     variant="outline"
-                    className="text-gray-700"
+                    className="text-foreground"
                     onClick={handleBack}
                   >
                     Back
@@ -1326,7 +1326,7 @@ export function AddMemoryModal({
                 <>
                   <Button
                     variant="outline"
-                    className="text-gray-700"
+                    className="text-foreground"
                     onClick={handleBack}
                   >
                     Back
@@ -1344,7 +1344,7 @@ export function AddMemoryModal({
                 <>
                   <Button
                     variant="outline"
-                    className="text-gray-700"
+                    className="text-foreground"
                     onClick={handleBack}
                   >
                     Back

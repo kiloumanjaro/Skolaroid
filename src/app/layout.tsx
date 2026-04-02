@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, Grape_Nuts } from 'next/font/google';
+import { Kalam, Patrick_Hand, Grape_Nuts } from 'next/font/google';
 import { QueryProvider } from '@/providers/query-provider';
 import '@/styles/globals.css';
 
@@ -14,10 +14,18 @@ export const metadata: Metadata = {
     'A living memory platform for University of the Philippines Cebu. Preserve, celebrate, and explore achievements and shared experiences of every batch.',
 };
 
-const inter = Inter({
-  variable: '--font-inter',
+const kalam = Kalam({
+  variable: '--font-kalam',
   display: 'swap',
   subsets: ['latin'],
+  weight: ['400', '700'],
+});
+
+const patrickHand = Patrick_Hand({
+  variable: '--font-hand',
+  display: 'swap',
+  subsets: ['latin'],
+  weight: '400',
 });
 
 const grapeNuts = Grape_Nuts({
@@ -34,7 +42,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} ${grapeNuts.variable} antialiased`}>
+      <body
+        className={`${patrickHand.className} ${kalam.variable} ${patrickHand.variable} ${grapeNuts.variable} antialiased`}
+      >
         <QueryProvider>{children}</QueryProvider>
       </body>
     </html>

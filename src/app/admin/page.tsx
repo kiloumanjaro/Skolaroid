@@ -154,15 +154,15 @@ const tabLabels: Record<AdminTab, string> = {
 
 function PostCard({ post }: { post: Post }) {
   return (
-    <div className="flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm">
+    <div className="flex items-center gap-4 border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]">
       {/* Checkbox */}
       <input
         type="checkbox"
-        className="h-4 w-4 shrink-0 rounded border-gray-300"
+        className="h-4 w-4 shrink-0 rounded border-border"
       />
 
       {/* Thumbnail */}
-      <div className="relative h-28 w-40 shrink-0 overflow-hidden rounded-lg bg-gray-200">
+      <div className="relative h-28 w-40 shrink-0 overflow-hidden bg-secondary">
         <Image
           src={post.thumbnail}
           alt="Post thumbnail"
@@ -173,7 +173,7 @@ function PostCard({ post }: { post: Post }) {
 
       {/* Content */}
       <div className="flex min-w-0 flex-1 flex-col gap-2">
-        <p className="text-sm leading-relaxed text-gray-700">
+        <p className="text-sm leading-relaxed text-foreground">
           {post.description}
         </p>
 
@@ -186,10 +186,10 @@ function PostCard({ post }: { post: Post }) {
 
           {/* Actions */}
           <div className="flex items-center gap-2">
-            <button className="text-gray-400 transition-colors hover:text-gray-600">
+            <button className="text-muted-foreground transition-colors hover:text-foreground">
               <Pencil size={14} />
             </button>
-            <button className="text-gray-400 transition-colors hover:text-gray-600">
+            <button className="text-muted-foreground transition-colors hover:text-foreground">
               <Copy size={14} />
             </button>
             <button className="text-red-300 transition-colors hover:text-red-500">
@@ -198,7 +198,7 @@ function PostCard({ post }: { post: Post }) {
           </div>
 
           {/* Send for review button */}
-          <button className="flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs text-gray-600 transition-colors hover:bg-gray-50">
+          <button className="flex items-center gap-1.5 border-2 border-border px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-secondary">
             <Upload size={12} />
             Send for client review
             <ChevronDown size={12} />
@@ -226,13 +226,13 @@ function PostCard({ post }: { post: Post }) {
             </div>
           )}
         </div>
-        <span className="text-xs font-medium text-gray-800">
+        <span className="text-xs font-medium text-foreground">
           {post.author.name}
         </span>
-        <span className="text-[10px] text-gray-400">
+        <span className="text-[10px] text-muted-foreground">
           Posted on Batch {post.author.batch}
         </span>
-        <span className="flex items-center gap-1 text-[10px] text-gray-400">
+        <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
           <Clock size={10} />
           {post.status}
         </span>
@@ -248,7 +248,7 @@ function PublishedPostsContent({ searchQuery }: { searchQuery: string }) {
 
   if (filtered.length === 0) {
     return (
-      <div className="py-16 text-center text-sm text-gray-400">
+      <div className="py-16 text-center text-sm text-muted-foreground">
         No published posts found.
       </div>
     );
@@ -270,7 +270,7 @@ function PendingReviewContent({ searchQuery }: { searchQuery: string }) {
 
   if (filtered.length === 0) {
     return (
-      <div className="py-16 text-center text-sm text-gray-400">
+      <div className="py-16 text-center text-sm text-muted-foreground">
         No posts pending review.
       </div>
     );
@@ -294,7 +294,7 @@ function ReportsContent({ searchQuery }: { searchQuery: string }) {
 
   if (filtered.length === 0) {
     return (
-      <div className="py-16 text-center text-sm text-gray-400">
+      <div className="py-16 text-center text-sm text-muted-foreground">
         No reports found.
       </div>
     );
@@ -303,7 +303,7 @@ function ReportsContent({ searchQuery }: { searchQuery: string }) {
   const statusStyles: Record<Report['status'], string> = {
     open: 'bg-red-50 text-red-600',
     resolved: 'bg-green-50 text-green-600',
-    dismissed: 'bg-gray-100 text-gray-500',
+    dismissed: 'bg-secondary text-muted-foreground',
   };
 
   return (
@@ -311,19 +311,21 @@ function ReportsContent({ searchQuery }: { searchQuery: string }) {
       {filtered.map((report) => (
         <div
           key={report.id}
-          className="flex items-start gap-4 rounded-xl bg-white p-4 shadow-sm"
+          className="flex items-start gap-4 border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]"
         >
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-50">
             {report.status === 'open' ? (
               <AlertTriangle size={18} className="text-red-500" />
             ) : (
-              <Flag size={18} className="text-gray-400" />
+              <Flag size={18} className="text-muted-foreground" />
             )}
           </div>
 
           <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-            <p className="text-sm font-medium text-gray-800">{report.reason}</p>
-            <div className="flex items-center gap-3 text-xs text-gray-400">
+            <p className="text-sm font-medium text-foreground">
+              {report.reason}
+            </p>
+            <div className="flex items-center gap-3 text-xs text-muted-foreground">
               <span>Post #{report.postId}</span>
               <span>Reported by {report.reportedBy}</span>
               <span className="flex items-center gap-1">
@@ -352,7 +354,7 @@ export default function AdminPage() {
   const tabs: AdminTab[] = ['published', 'pending', 'reports'];
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#f0f4fa]">
+    <div className="flex min-h-screen flex-col bg-background">
       <Header />
 
       <main className="flex-1 px-8 pb-8 pt-24">
@@ -361,9 +363,9 @@ export default function AdminPage() {
           <div className="flex items-center gap-6">
             <button
               onClick={() => router.back()}
-              className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-white"
+              className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-secondary"
             >
-              <ArrowLeft size={20} className="text-gray-700" />
+              <ArrowLeft size={20} className="text-foreground" />
             </button>
 
             {/* Tabs */}
@@ -374,8 +376,8 @@ export default function AdminPage() {
                   onClick={() => setCurrentTab(tab)}
                   className={`text-sm font-medium transition-colors ${
                     currentTab === tab
-                      ? 'text-gray-900'
-                      : 'text-gray-400 hover:text-gray-600'
+                      ? 'text-foreground'
+                      : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   {tabLabels[tab]}
@@ -389,17 +391,17 @@ export default function AdminPage() {
             <div className="relative">
               <Search
                 size={16}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
               />
               <input
                 type="text"
                 placeholder="Search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-56 rounded-lg border border-gray-200 bg-white py-2 pl-9 pr-4 text-sm placeholder-gray-400 focus:border-skolaroid-blue focus:outline-none"
+                className="w-56 border-2 border-border bg-card py-2 pl-9 pr-4 text-sm placeholder-muted-foreground focus:border-skolaroid-blue focus:outline-none"
               />
             </div>
-            <button className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm text-gray-600 transition-colors hover:bg-gray-50">
+            <button className="flex items-center gap-2 border-2 border-border bg-card px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary">
               <Filter size={14} />
               Filter Posts
             </button>

@@ -13,6 +13,8 @@ export default {
     extend: {
       fontFamily: {
         dancing: ['var(--font-dancing)'],
+        kalam: ['var(--font-kalam)'],
+        hand: ['var(--font-hand)'],
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -49,13 +51,7 @@ export default {
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
         'skolaroid-blue': '#3F83DB',
-        chart: {
-          '1': 'hsl(var(--chart-1))',
-          '2': 'hsl(var(--chart-2))',
-          '3': 'hsl(var(--chart-3))',
-          '4': 'hsl(var(--chart-4))',
-          '5': 'hsl(var(--chart-5))',
-        },
+        postit: 'hsl(var(--postit))',
       },
       borderRadius: {
         lg: 'var(--radius)',

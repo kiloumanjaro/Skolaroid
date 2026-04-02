@@ -7,6 +7,7 @@ import { FormInput } from '@/components/ui/form-input';
 import { FormButton } from '@/components/ui/form-button';
 import { FormError } from '@/components/ui/form-error';
 import { Label } from '@/components/ui/label';
+import { WOBBLY_RADIUS_MD } from '@/lib/hand-drawn';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -58,11 +59,12 @@ export function SignUpForm({
   return (
     // D1: p-8 = 32px internal padding
     <div
-      className={cn('flex flex-col gap-4 rounded-2xl p-6', className)}
+      className={cn('flex flex-col gap-4 p-6', className)}
+      style={{ borderRadius: WOBBLY_RADIUS_MD }}
       {...props}
     >
       {/* D2: h1 + font-bold for clear visual hierarchy */}
-      <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+      <h1 className="font-kalam text-2xl font-bold tracking-tight text-foreground">
         Get Started
       </h1>
       <form onSubmit={handleSignUp}>
@@ -76,8 +78,8 @@ export function SignUpForm({
             required
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            labelClassName="font-semibold text-gray-700"
-            className="h-10 border border-gray-300"
+            labelClassName="font-semibold text-foreground"
+            className="h-10 border border-border"
           />
           <FormInput
             label="Alumni email address"
@@ -86,8 +88,8 @@ export function SignUpForm({
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            labelClassName="font-semibold text-gray-700"
-            className="h-10 border border-gray-300"
+            labelClassName="font-semibold text-foreground"
+            className="h-10 border border-border"
           />
           <FormInput
             label="Student ID"
@@ -96,8 +98,8 @@ export function SignUpForm({
             required
             value={studentId}
             onChange={(e) => setStudentId(e.target.value)}
-            labelClassName="font-semibold text-gray-700"
-            className="h-10 border border-gray-300"
+            labelClassName="font-semibold text-foreground"
+            className="h-10 border border-border"
           />
           <FormInput
             label="Create new password"
@@ -106,8 +108,8 @@ export function SignUpForm({
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            labelClassName="font-semibold text-gray-700"
-            className="h-10 border border-gray-300"
+            labelClassName="font-semibold text-foreground"
+            className="h-10 border border-border"
           />
           {/* D5: gap-3 between rows; py-1 on each row for mobile tap targets */}
           <div className="flex flex-col gap-3">
@@ -119,7 +121,7 @@ export function SignUpForm({
               />
               <Label
                 htmlFor="signup-accept-terms"
-                className="cursor-pointer text-sm font-normal text-gray-600"
+                className="cursor-pointer text-sm font-normal text-muted-foreground"
               >
                 By registering, I agree to accept the{' '}
                 <Link
@@ -140,7 +142,7 @@ export function SignUpForm({
               />
               <Label
                 htmlFor="signup-remember-device"
-                className="cursor-pointer text-sm font-normal text-gray-600"
+                className="cursor-pointer text-sm font-normal text-muted-foreground"
               >
                 Remember this device
               </Label>
@@ -162,14 +164,14 @@ export function SignUpForm({
               <button
                 type="button"
                 onClick={onSwitchToLogin}
-                className="text-sm text-gray-600 hover:text-gray-900"
+                className="text-sm text-muted-foreground hover:text-foreground"
               >
                 Log to existing
               </button>
             ) : (
               <Link
                 href="/auth/login"
-                className="text-sm text-gray-600 hover:text-gray-900"
+                className="text-sm text-muted-foreground hover:text-foreground"
               >
                 Log to existing
               </Link>

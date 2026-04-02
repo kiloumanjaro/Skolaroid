@@ -369,7 +369,7 @@ export function MemoryDetailModal({
             <DialogPrimitive.Portal forceMount>
               {/* Overlay */}
               <motion.div
-                className="fixed inset-0 z-50 bg-black/50"
+                className="fixed inset-0 z-50 bg-[#2d2d2d]/50"
                 variants={overlayVariants}
                 initial="closed"
                 animate="open"
@@ -390,7 +390,7 @@ export function MemoryDetailModal({
                     <motion.button
                       onClick={handlePrevious}
                       disabled={!hasPrevious || isFlipping}
-                      className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-lg backdrop-blur-sm transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-30"
+                      className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-border bg-card text-foreground shadow-[3px_3px_0px_0px_#2d2d2d] transition-colors hover:shadow-[4px_4px_0px_0px_#2d2d2d] disabled:cursor-not-allowed disabled:opacity-30"
                       variants={chevronVariants}
                       initial="idle"
                       whileHover={hasPrevious ? 'hover' : 'disabled'}
@@ -420,7 +420,7 @@ export function MemoryDetailModal({
                       >
                         {/* Notebook tab */}
                         <div className="absolute -top-5 left-3 rounded-t-md bg-sky-200 px-3 py-0.5">
-                          <span className="text-[10px] text-slate-600">
+                          <span className="text-[10px] text-muted-foreground">
                             {memory.location?.buildingName || 'Memory'}
                           </span>
                         </div>
@@ -451,7 +451,7 @@ export function MemoryDetailModal({
                                   {baseLeftDateInfo.month}{' '}
                                   {baseLeftDateInfo.dayNumber}
                                 </p>
-                                <p className="text-[8px] text-gray-400">
+                                <p className="text-[8px] text-muted-foreground">
                                   {baseLeftDateInfo.uploadTime.replace(
                                     /:/g,
                                     '-'
@@ -484,8 +484,8 @@ export function MemoryDetailModal({
                                   </div>
                                 ) : (
                                   <div className="bg-white p-2 pb-8 shadow-[0px_2px_8px_2px_rgba(0,0,0,0.15)]">
-                                    <div className="flex h-80 w-full items-center justify-center bg-gray-100">
-                                      <span className="text-xs text-gray-400">
+                                    <div className="flex h-80 w-full items-center justify-center bg-secondary">
+                                      <span className="text-xs text-muted-foreground">
                                         No image
                                       </span>
                                     </div>
@@ -501,7 +501,7 @@ export function MemoryDetailModal({
                                   key={day.label + day.number}
                                   className="flex h-20 w-14 flex-col items-center overflow-hidden rounded bg-stone-50"
                                 >
-                                  <span className="mt-1 text-[10px] text-gray-400">
+                                  <span className="mt-1 text-[10px] text-muted-foreground">
                                     {day.label}
                                   </span>
                                   <div className="flex flex-1 items-center justify-center">
@@ -512,7 +512,7 @@ export function MemoryDetailModal({
                                         </span>
                                       </div>
                                     ) : (
-                                      <span className="text-sm font-medium text-slate-700">
+                                      <span className="text-sm font-medium text-foreground">
                                         {day.number}
                                       </span>
                                     )}
@@ -540,15 +540,15 @@ export function MemoryDetailModal({
                             {/* Author header */}
                             <div className="flex items-start gap-3">
                               <Avatar className="h-9 w-9">
-                                <AvatarFallback className="bg-zinc-300 text-sm text-slate-600">
+                                <AvatarFallback className="bg-secondary text-sm text-foreground">
                                   {authorInitial}
                                 </AvatarFallback>
                               </Avatar>
                               <div className="flex-1">
-                                <p className="text-sm font-semibold text-slate-800">
+                                <p className="text-sm font-semibold text-foreground">
                                   {authorName}
                                 </p>
-                                <div className="flex items-center gap-1 text-xs text-gray-400">
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
                                   <Globe className="h-3 w-3" />
                                   <span>Public</span>
                                 </div>
@@ -557,7 +557,7 @@ export function MemoryDetailModal({
                                 <DropdownMenu>
                                   <DropdownMenuTrigger asChild>
                                     <button
-                                      className="text-gray-400 hover:text-slate-600"
+                                      className="text-muted-foreground hover:text-foreground"
                                       aria-label="More options"
                                     >
                                       <MoreHorizontal className="h-5 w-5" />
@@ -575,7 +575,7 @@ export function MemoryDetailModal({
                                 </DropdownMenu>
                               ) : (
                                 <button
-                                  className="cursor-not-allowed text-gray-300"
+                                  className="cursor-not-allowed text-muted-foreground"
                                   aria-label="No actions available"
                                   disabled
                                 >
@@ -585,8 +585,8 @@ export function MemoryDetailModal({
                             </div>
 
                             {/* Caption card */}
-                            <div className="rounded-2xl bg-gradient-to-b from-slate-100 to-gray-100 p-5 shadow-[0px_1px_2px_0.5px_rgba(0,0,0,0.25)] outline outline-[3px] outline-white">
-                              <p className="text-center font-dancing text-2xl leading-relaxed text-slate-800">
+                            <div className="rounded-2xl bg-gradient-to-b from-secondary to-secondary p-5 shadow-[0px_1px_2px_0.5px_rgba(0,0,0,0.25)] outline outline-[3px] outline-white">
+                              <p className="text-center font-dancing text-2xl leading-relaxed text-foreground">
                                 {baseRightMemory.description ||
                                   'A memorable moment...'}
                               </p>
@@ -701,7 +701,7 @@ export function MemoryDetailModal({
                                         {cachedDateInfo.month}{' '}
                                         {cachedDateInfo.dayNumber}
                                       </p>
-                                      <p className="text-[8px] text-gray-400">
+                                      <p className="text-[8px] text-muted-foreground">
                                         {cachedDateInfo.uploadTime.replace(
                                           /:/g,
                                           '-'
@@ -734,8 +734,8 @@ export function MemoryDetailModal({
                                         </div>
                                       ) : (
                                         <div className="bg-white p-2 pb-8 shadow-[0px_2px_8px_2px_rgba(0,0,0,0.15)]">
-                                          <div className="flex h-80 w-full items-center justify-center bg-gray-100">
-                                            <span className="text-xs text-gray-400">
+                                          <div className="flex h-80 w-full items-center justify-center bg-secondary">
+                                            <span className="text-xs text-muted-foreground">
                                               No image
                                             </span>
                                           </div>
@@ -751,7 +751,7 @@ export function MemoryDetailModal({
                                         key={day.label + day.number}
                                         className="flex h-20 w-14 flex-col items-center overflow-hidden rounded bg-stone-50"
                                       >
-                                        <span className="mt-1 text-[10px] text-gray-400">
+                                        <span className="mt-1 text-[10px] text-muted-foreground">
                                           {day.label}
                                         </span>
                                         <div className="flex flex-1 items-center justify-center">
@@ -762,7 +762,7 @@ export function MemoryDetailModal({
                                               </span>
                                             </div>
                                           ) : (
-                                            <span className="text-sm font-medium text-slate-700">
+                                            <span className="text-sm font-medium text-foreground">
                                               {day.number}
                                             </span>
                                           )}
@@ -785,21 +785,21 @@ export function MemoryDetailModal({
                                   {/* Author header */}
                                   <div className="flex items-start gap-3">
                                     <Avatar className="h-9 w-9">
-                                      <AvatarFallback className="bg-zinc-300 text-sm text-slate-600">
+                                      <AvatarFallback className="bg-secondary text-sm text-foreground">
                                         {authorInitial}
                                       </AvatarFallback>
                                     </Avatar>
                                     <div className="flex-1">
-                                      <p className="text-sm font-semibold text-slate-800">
+                                      <p className="text-sm font-semibold text-foreground">
                                         {authorName}
                                       </p>
-                                      <div className="flex items-center gap-1 text-xs text-gray-400">
+                                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
                                         <Globe className="h-3 w-3" />
                                         <span>Public</span>
                                       </div>
                                     </div>
                                     <button
-                                      className="text-gray-400 hover:text-slate-600"
+                                      className="text-muted-foreground hover:text-foreground"
                                       aria-label="More options"
                                     >
                                       <MoreHorizontal className="h-5 w-5" />
@@ -807,8 +807,8 @@ export function MemoryDetailModal({
                                   </div>
 
                                   {/* Caption card */}
-                                  <div className="rounded-2xl bg-gradient-to-b from-slate-100 to-gray-100 p-5 shadow-[0px_1px_2px_0.5px_rgba(0,0,0,0.25)] outline outline-[3px] outline-white">
-                                    <p className="text-center font-dancing text-2xl leading-relaxed text-slate-800">
+                                  <div className="rounded-2xl bg-gradient-to-b from-secondary to-secondary p-5 shadow-[0px_1px_2px_0.5px_rgba(0,0,0,0.25)] outline outline-[3px] outline-white">
+                                    <p className="text-center font-dancing text-2xl leading-relaxed text-foreground">
                                       {memory.description ||
                                         'A memorable moment...'}
                                     </p>
@@ -863,21 +863,21 @@ export function MemoryDetailModal({
                                 {/* Author header */}
                                 <div className="flex items-start gap-3">
                                   <Avatar className="h-9 w-9">
-                                    <AvatarFallback className="bg-zinc-300 text-sm text-slate-600">
+                                    <AvatarFallback className="bg-secondary text-sm text-foreground">
                                       {authorInitial}
                                     </AvatarFallback>
                                   </Avatar>
                                   <div className="flex-1">
-                                    <p className="text-sm font-semibold text-slate-800">
+                                    <p className="text-sm font-semibold text-foreground">
                                       {authorName}
                                     </p>
-                                    <div className="flex items-center gap-1 text-xs text-gray-400">
+                                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
                                       <Globe className="h-3 w-3" />
                                       <span>Public</span>
                                     </div>
                                   </div>
                                   <button
-                                    className="text-gray-400 hover:text-slate-600"
+                                    className="text-muted-foreground hover:text-foreground"
                                     aria-label="More options"
                                   >
                                     <MoreHorizontal className="h-5 w-5" />
@@ -885,8 +885,8 @@ export function MemoryDetailModal({
                                 </div>
 
                                 {/* Caption card - cached content */}
-                                <div className="rounded-2xl bg-gradient-to-b from-slate-100 to-gray-100 p-5 shadow-[0px_1px_2px_0.5px_rgba(0,0,0,0.25)] outline outline-[3px] outline-white">
-                                  <p className="text-center font-dancing text-2xl leading-relaxed text-slate-800">
+                                <div className="rounded-2xl bg-gradient-to-b from-secondary to-secondary p-5 shadow-[0px_1px_2px_0.5px_rgba(0,0,0,0.25)] outline outline-[3px] outline-white">
+                                  <p className="text-center font-dancing text-2xl leading-relaxed text-foreground">
                                     {cachedMemory.description ||
                                       'A memorable moment...'}
                                   </p>
@@ -931,7 +931,7 @@ export function MemoryDetailModal({
                                       {dateInfo.dayOfWeek}, {dateInfo.month}{' '}
                                       {dateInfo.dayNumber}
                                     </p>
-                                    <p className="text-[8px] text-gray-400">
+                                    <p className="text-[8px] text-muted-foreground">
                                       {dateInfo.uploadTime.replace(/:/g, '-')}
                                     </p>
                                   </div>
@@ -961,8 +961,8 @@ export function MemoryDetailModal({
                                       </div>
                                     ) : (
                                       <div className="bg-white p-2 pb-8 shadow-[0px_2px_8px_2px_rgba(0,0,0,0.15)]">
-                                        <div className="flex h-80 w-full items-center justify-center bg-gray-100">
-                                          <span className="text-xs text-gray-400">
+                                        <div className="flex h-80 w-full items-center justify-center bg-secondary">
+                                          <span className="text-xs text-muted-foreground">
                                             No image
                                           </span>
                                         </div>
@@ -978,7 +978,7 @@ export function MemoryDetailModal({
                                       key={day.label + day.number}
                                       className="flex h-20 w-14 flex-col items-center overflow-hidden rounded bg-stone-50"
                                     >
-                                      <span className="mt-1 text-[10px] text-gray-400">
+                                      <span className="mt-1 text-[10px] text-muted-foreground">
                                         {day.label}
                                       </span>
                                       <div className="flex flex-1 items-center justify-center">
@@ -989,7 +989,7 @@ export function MemoryDetailModal({
                                             </span>
                                           </div>
                                         ) : (
-                                          <span className="text-sm font-medium text-slate-700">
+                                          <span className="text-sm font-medium text-foreground">
                                             {day.number}
                                           </span>
                                         )}
@@ -1098,7 +1098,7 @@ export function MemoryDetailModal({
                     <motion.button
                       onClick={handleNext}
                       disabled={!hasNext || isFlipping}
-                      className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-lg backdrop-blur-sm transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-30"
+                      className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-border bg-card text-foreground shadow-[3px_3px_0px_0px_#2d2d2d] transition-colors hover:shadow-[4px_4px_0px_0px_#2d2d2d] disabled:cursor-not-allowed disabled:opacity-30"
                       variants={chevronVariants}
                       initial="idle"
                       whileHover={hasNext ? 'hover' : 'disabled'}
