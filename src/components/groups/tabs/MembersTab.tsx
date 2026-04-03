@@ -7,7 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { RemoveMemberDialog } from '@/components/groups/RemoveMemberDialog';
-import { useRemoveGroupMember } from '@/lib/hooks/useGroupMembers';
+import {
+  useRemoveGroupMember,
+  useUpdateGroupMemberRole,
+} from '@/lib/hooks/useGroupMembers';
 import { type GroupMember, type GroupMemberRole } from '@/lib/types/group';
 import { cn } from '@/lib/utils';
 import {
@@ -24,20 +27,22 @@ import {
 
 interface MembersTabProps {
   members: GroupMember[];
-  isOwner: boolean;
+  canManageMembers: boolean;
+  canChangeRoles: boolean;
   currentUserId: string;
   groupId: string;
-  onMemberRemoved?: () => void;
+  onMembersChanged?: () => void;
 }
 
 type RoleFilterType = 'ALL' | GroupMemberRole;
 
 export function MembersTab({
   members,
-  isOwner,
+  canManageMembers,
+  canChangeRoles,
   currentUserId,
   groupId,
-  onMemberRemoved,
+  onMembersChanged,
 }: MembersTabProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState<RoleFilterType>('ALL');
@@ -45,8 +50,12 @@ export function MembersTab({
     null
   );
   const [memberToView, setMemberToView] = useState<GroupMember | null>(null);
+  const [roleUpdatingMemberId, setRoleUpdatingMemberId] = useState<
+    string | null
+  >(null);
 
   const removeMember = useRemoveGroupMember();
+  const updateMemberRole = useUpdateGroupMemberRole();
 
   const filteredMembers = useMemo(() => {
     let filtered = members;
@@ -75,14 +84,37 @@ export function MembersTab({
       {
         onSuccess: () => {
           setMemberToRemove(null);
-          onMemberRemoved?.();
+          onMembersChanged?.();
         },
         onError: () => {
           // Keep dialog open so user can retry or cancel
         },
       }
     );
-  }, [memberToRemove, groupId, removeMember, onMemberRemoved]);
+  }, [memberToRemove, groupId, removeMember, onMembersChanged]);
+
+  const handleRoleChange = useCallback(
+    (member: GroupMember, role: 'ADMIN' | 'MEMBER') => {
+      setRoleUpdatingMemberId(member.id);
+
+      updateMemberRole.mutate(
+        {
+          groupId,
+          email: member.email,
+          role,
+        },
+        {
+          onSuccess: () => {
+            onMembersChanged?.();
+          },
+          onSettled: () => {
+            setRoleUpdatingMemberId(null);
+          },
+        }
+      );
+    },
+    [groupId, onMembersChanged, updateMemberRole]
+  );
 
   const formatJoinDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -211,7 +243,12 @@ export function MembersTab({
                 {filteredMembers.map((member) => {
                   const isCurrentUser = member.id === currentUserId;
                   const canRemove =
-                    isOwner && !isCurrentUser && member.role !== 'OWNER';
+                    canManageMembers &&
+                    !isCurrentUser &&
+                    member.role !== 'OWNER';
+                  const canEditRole =
+                    canChangeRoles && !isCurrentUser && member.role !== 'OWNER';
+                  const isUpdatingRole = roleUpdatingMemberId === member.id;
 
                   return (
                     <tr
@@ -249,7 +286,43 @@ export function MembersTab({
                       </td>
 
                       {/* Role */}
-                      <td className="px-3 py-3">{getRoleBadge(member.role)}</td>
+                      <td className="space-y-1 px-3 py-3">
+                        {getRoleBadge(member.role)}
+                        {canEditRole && (
+                          <div className="flex items-center gap-1">
+                            <Button
+                              size="sm"
+                              variant={
+                                member.role === 'ADMIN'
+                                  ? 'secondary'
+                                  : 'outline'
+                              }
+                              className="h-7 px-2.5 text-xs"
+                              disabled={
+                                isUpdatingRole || updateMemberRole.isPending
+                              }
+                              onClick={() => handleRoleChange(member, 'ADMIN')}
+                            >
+                              Admin
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant={
+                                member.role === 'MEMBER'
+                                  ? 'secondary'
+                                  : 'outline'
+                              }
+                              className="h-7 px-2.5 text-xs"
+                              disabled={
+                                isUpdatingRole || updateMemberRole.isPending
+                              }
+                              onClick={() => handleRoleChange(member, 'MEMBER')}
+                            >
+                              Member
+                            </Button>
+                          </div>
+                        )}
+                      </td>
 
                       {/* Joined date */}
                       <td className="hidden px-3 py-3 md:table-cell">
@@ -399,7 +472,7 @@ export function MembersTab({
               </div>
 
               {/* Remove action for owner */}
-              {isOwner &&
+              {canManageMembers &&
                 memberToView.id !== currentUserId &&
                 memberToView.role !== 'OWNER' && (
                   <div className="border-t border-border px-6 py-4">

@@ -100,7 +100,24 @@ export async function POST(request: NextRequest) {
     await prisma.$transaction([
       prisma.privateGroup.update({
         where: { id: invitation.group.id },
-        data: { members: { connect: { id: dbUser.id } } },
+        data: {
+          members: { connect: { id: dbUser.id } },
+          groupMemberships: {
+            upsert: {
+              where: {
+                groupId_userId: {
+                  groupId: invitation.group.id,
+                  userId: dbUser.id,
+                },
+              },
+              create: {
+                userId: dbUser.id,
+                role: 'MEMBER',
+              },
+              update: {},
+            },
+          },
+        },
       }),
       prisma.invitation.delete({ where: { id: invitation.id } }),
     ]);

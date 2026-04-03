@@ -33,6 +33,9 @@ export async function GET() {
         members: {
           select: { id: true, firstName: true, lastName: true, email: true },
         },
+        groupMemberships: {
+          select: { userId: true, role: true, joinedAt: true },
+        },
         _count: { select: { members: true, memories: true } },
       },
       orderBy: { createdAt: 'desc' },

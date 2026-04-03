@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
+import {
+  normaliseGroupRolePrivileges,
+  resolveGroupMemberRole,
+} from '@/lib/group-permissions';
 
 /**
  * GET /api/prisma/group/[groupId]
@@ -34,6 +38,9 @@ export async function GET(
         members: {
           select: { id: true, firstName: true, lastName: true, email: true },
         },
+        groupMemberships: {
+          select: { userId: true, role: true, joinedAt: true },
+        },
         _count: { select: { members: true, memories: true } },
       },
     });
@@ -51,9 +58,42 @@ export async function GET(
       );
     }
 
+    const membershipByUser = new Map(
+      group.groupMemberships.map((membership) => [
+        membership.userId,
+        membership,
+      ])
+    );
+
+    const members = group.members.map((member) => {
+      const membership = membershipByUser.get(member.id);
+      const role = resolveGroupMemberRole(
+        member.id,
+        group.creatorId,
+        membership?.role
+      );
+
+      return {
+        ...member,
+        role,
+        joinedAt: (membership?.joinedAt ?? group.createdAt).toISOString(),
+      };
+    });
+
+    const currentUserRole = resolveGroupMemberRole(
+      authUser.id,
+      group.creatorId,
+      membershipByUser.get(authUser.id)?.role
+    );
+
     return NextResponse.json({
       success: true,
-      data: group,
+      data: {
+        ...group,
+        rolePrivileges: normaliseGroupRolePrivileges(group.rolePrivileges),
+        currentUserRole,
+        members,
+      },
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';

@@ -11,6 +11,12 @@ interface SendInvitationsResult {
   expiresAt: string;
 }
 
+interface CreateInvitationLinkResult {
+  id: string;
+  inviteLink: string;
+  expiresAt: string;
+}
+
 export interface ValidateInvitationData {
   invitation: {
     id: string;
@@ -67,6 +73,32 @@ export function useSendInvitations() {
 
       const body = await res.json();
       if (!res.ok) throw new Error(body.error ?? 'Failed to send invitations');
+      return body.data;
+    },
+  });
+}
+
+/**
+ * TEMPORARY PATCH:
+ * Generates a tokenized invitation link for quick verification flows.
+ * Existing invitation-by-email hooks remain unchanged.
+ */
+export function useCreateInvitationLink() {
+  return useMutation({
+    mutationFn: async (
+      groupId: string
+    ): Promise<CreateInvitationLinkResult> => {
+      const res = await fetch('/api/prisma/invitation/link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ groupId }),
+      });
+
+      const body = await res.json();
+      if (!res.ok) {
+        throw new Error(body.error ?? 'Failed to generate invitation link');
+      }
+
       return body.data;
     },
   });

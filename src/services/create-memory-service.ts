@@ -2,6 +2,10 @@ import { prisma } from '@/lib/prisma';
 import { slugify } from '@/lib/slugify';
 import { findNearestLandmark } from '@/lib/utils/map-utils';
 import { MAX_TAGS, type MemoryVisibility } from '@/lib/schemas';
+import {
+  canRoleUsePermission,
+  resolveGroupMemberRole,
+} from '@/lib/group-permissions';
 
 interface CreateMemoryInput {
   title: string;
@@ -89,6 +93,43 @@ export async function createMemoryService(
     creatorId,
     privateGroupId,
   } = input;
+
+  if (visibility === 'GROUP_ONLY' && !privateGroupId) {
+    throw new Error('Group ID is required for group-only memories');
+  }
+
+  if (privateGroupId) {
+    const group = await prisma.privateGroup.findUnique({
+      where: { id: privateGroupId, deletedAt: null },
+      select: {
+        id: true,
+        creatorId: true,
+        rolePrivileges: true,
+        members: {
+          where: { id: creatorId },
+          select: { id: true },
+        },
+        groupMemberships: {
+          where: { userId: creatorId },
+          select: { role: true },
+        },
+      },
+    });
+
+    if (!group || group.members.length === 0) {
+      throw new Error('You are not a member of this group');
+    }
+
+    const role = resolveGroupMemberRole(
+      creatorId,
+      group.creatorId,
+      group.groupMemberships[0]?.role
+    );
+
+    if (!canRoleUsePermission(group.rolePrivileges, role, 'editContent')) {
+      throw new Error('Your role cannot post in this group');
+    }
+  }
 
   // Generate auto-tags
   const autoTags = await generateAutoTags(locationId, memoryDate);

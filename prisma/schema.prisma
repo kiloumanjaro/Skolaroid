@@ -8,24 +8,24 @@ datasource db {
 }
 
 model User {
-  id             String         @id @default(uuid()) @db.Uuid
-  studentId      String         @unique @db.VarChar(50)
-  email          String         @unique @db.VarChar(255)
-  firstName      String         @db.VarChar(100)
-  lastName       String         @db.VarChar(100)
-  status         Status         @default(STUDENT)
-  role           UserRole       @default(USER)
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-  deletedAt      DateTime?
-  programBatchId    String         @db.Uuid
-  memories          Memory[]
-  votes             MemoryVote[]
-  comments          MemoryComment[]
-  groups            PrivateGroup[] @relation("GroupMembers")
-  createdGroups     PrivateGroup[] @relation("GroupCreator")
-  programBatch      ProgramBatch   @relation(fields: [programBatchId], references: [id])
-  sentInvitations   Invitation[]   @relation("SentInvitations")
+  id              String          @id @default(uuid()) @db.Uuid
+  studentId       String          @unique @db.VarChar(50)
+  email           String          @unique @db.VarChar(255)
+  firstName       String          @db.VarChar(100)
+  lastName        String          @db.VarChar(100)
+  status          Status          @default(STUDENT)
+  role            UserRole        @default(USER)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  deletedAt       DateTime?
+  programBatchId  String          @db.Uuid
+  sentInvitations Invitation[]    @relation("SentInvitations")
+  memories        Memory[]
+  comments        MemoryComment[]
+  votes           MemoryVote[]
+  createdGroups   PrivateGroup[]  @relation("GroupCreator")
+  programBatch    ProgramBatch    @relation(fields: [programBatchId], references: [id])
+  groups          PrivateGroup[]  @relation("GroupMembers")
 
   @@index([email])
   @@index([studentId])
@@ -78,29 +78,23 @@ model Memory {
   description    String?
   mediaURL       String?          @db.VarChar(2048)
   uploadDate     DateTime         @default(now())
-  memoryDate     DateTime?
-  visibility     MemoryVisibility @default(PUBLIC)
-  
-  // Relations
-  tags           Tag[]            @relation("MemoryTags")
-  votes          MemoryVote[]
-  comments       MemoryComment[]
-
-  // Private group (required when visibility = GROUP_ONLY)
-  privateGroupId String?          @db.Uuid
-  privateGroup   PrivateGroup?    @relation(fields: [privateGroupId], references: [id], onDelete: Restrict)
-  
-  // Creator (nullable to preserve memories if user deleted)
   creatorId      String?          @db.Uuid
   locationId     String           @db.Uuid
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
   deletedAt      DateTime?
   isArchived     Boolean          @default(false)
+  visibility     MemoryVisibility @default(PUBLIC)
   programBatchId String           @db.Uuid
+  privateGroupId String?          @db.Uuid
+  memoryDate     DateTime?
   creator        User?            @relation(fields: [creatorId], references: [id])
   location       Location         @relation(fields: [locationId], references: [id])
+  privateGroup   PrivateGroup?    @relation(fields: [privateGroupId], references: [id], onDelete: Restrict)
   programBatch   ProgramBatch     @relation(fields: [programBatchId], references: [id])
+  comments       MemoryComment[]
+  votes          MemoryVote[]
+  tags           Tag[]            @relation("MemoryTags")
 
   @@index([creatorId])
   @@index([programBatchId])
@@ -113,30 +107,22 @@ model Memory {
   @@index([privateGroupId])
 }
 
-// ============================================================================
-// MEMORY COMMENT SYSTEM
-// ============================================================================
-
 model MemoryComment {
   id        String    @id @default(uuid()) @db.Uuid
-  content   String    @db.Text
+  content   String
   memoryId  String    @db.Uuid
-  memory    Memory    @relation(fields: [memoryId], references: [id], onDelete: Cascade)
   authorId  String    @db.Uuid
-  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   deletedAt DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  memory    Memory    @relation(fields: [memoryId], references: [id], onDelete: Cascade)
 
   @@index([memoryId])
   @@index([authorId])
   @@index([createdAt])
   @@index([deletedAt])
 }
-
-// ============================================================================
-// MEMORY VOTING SYSTEM
-// ============================================================================
 
 model MemoryVote {
   id        String   @id @default(uuid()) @db.Uuid
@@ -186,10 +172,10 @@ model PrivateGroup {
   deletedAt   DateTime?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+  invitations Invitation[]
   memories    Memory[]
   creator     User?        @relation("GroupCreator", fields: [creatorId], references: [id])
   members     User[]       @relation("GroupMembers")
-  invitations Invitation[]
 
   @@index([name])
   @@index([creatorId])
