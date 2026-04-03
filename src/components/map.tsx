@@ -31,6 +31,7 @@ import {
   useAllMemoriesWithCoordinates,
   type MemoryWithCoordinates,
 } from '@/lib/hooks/useAllMemoriesWithCoordinates';
+import { useUserGroups } from '@/lib/hooks/useUserGroups';
 import { LANDMARKS, type Landmark } from '@/lib/constants/landmarks';
 import type {
   LocationSelectionMode,
@@ -133,6 +134,7 @@ export function MapComponent() {
     selectedYear: null,
     sortBy: 'date-newest',
     visibility: 'ALL',
+    selectedGroupId: null,
   });
 
   // Location selection mode for Add Memory flow
@@ -170,6 +172,15 @@ export function MapComponent() {
   const { data: memoriesData, isLoading: memoriesLoading } =
     useAllMemoriesWithCoordinates();
   const memories = useMemo(() => memoriesData?.data ?? [], [memoriesData]);
+  const { data: userGroups = [] } = useUserGroups();
+
+  const availableGroups = useMemo(
+    () =>
+      userGroups
+        .map((group) => ({ id: group.id, name: group.name }))
+        .sort((a, b) => a.name.localeCompare(b.name)),
+    [userGroups]
+  );
 
   // Only show memory pins for the active era (based on batch tag)
   const eraFilteredMemories = useMemo(() => {
@@ -201,6 +212,11 @@ export function MapComponent() {
       // Visibility filter
       if (filters.visibility !== 'ALL') {
         if (memory.visibility !== filters.visibility) return false;
+      }
+
+      // Group filter
+      if (filters.selectedGroupId) {
+        if (memory.privateGroupId !== filters.selectedGroupId) return false;
       }
 
       return true;
@@ -834,7 +850,8 @@ export function MapComponent() {
             (isFilterOpen ||
             filters.selectedTags.length > 0 ||
             filters.selectedYear ||
-            filters.visibility !== 'ALL'
+            filters.visibility !== 'ALL' ||
+            filters.selectedGroupId
               ? 'bg-skolaroid-blue text-white'
               : 'hover:bg-gray-100')
           }
@@ -844,11 +861,13 @@ export function MapComponent() {
           Filter
           {(filters.selectedTags.length > 0 ||
             filters.selectedYear ||
-            filters.visibility !== 'ALL') && (
+            filters.visibility !== 'ALL' ||
+            filters.selectedGroupId) && (
             <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-white text-xs font-bold text-skolaroid-blue">
               {filters.selectedTags.length +
                 (filters.selectedYear ? 1 : 0) +
-                (filters.visibility !== 'ALL' ? 1 : 0)}
+                (filters.visibility !== 'ALL' ? 1 : 0) +
+                (filters.selectedGroupId ? 1 : 0)}
             </span>
           )}
         </button>
@@ -939,6 +958,7 @@ export function MapComponent() {
         onApply={setFilters}
         availableTags={availableTags}
         availableYears={availableYears}
+        availableGroups={availableGroups}
       />
 
       {/* Memory Detail Modal */}

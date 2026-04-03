@@ -19,7 +19,7 @@ export function AboutTab({ group }: AboutTabProps) {
   const ownerMember = group.members.find((m) => m.role === 'OWNER');
 
   return (
-    <div className="space-y-6 px-1">
+    <div className="space-y-6 p-4">
       {/* Description */}
       <div className="space-y-2">
         <h3 className="text-xs font-medium uppercase tracking-wider text-gray-400">

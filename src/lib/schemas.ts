@@ -219,6 +219,7 @@ export interface MemoryWithRelations {
   mediaURL?: string | null;
   visibility: MemoryVisibility;
   creatorId?: string | null;
+  privateGroupId?: string | null;
   createdAt?: string;
   tags?: { id: string; name: string }[];
   location?: { buildingName: string };
