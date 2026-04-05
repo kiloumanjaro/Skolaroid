@@ -445,27 +445,6 @@ export function MapComponent() {
     };
   }, [locationSelectionMode, handleLocationSelected]);
 
-  const handleRequestMapSelection = useCallback(
-    (
-      mode: 'landmark' | 'custom',
-      onSelect: (selection: MapLocationSelection) => void
-    ) => {
-      locationSelectionCallbackRef.current = onSelect;
-      setLocationSelectionMode(mode);
-      setPendingLocationSelection(null);
-
-      // Show landmarks when selecting landmark, hide memory pins during selection
-      if (mode === 'landmark') {
-        setShowLandmarks(true);
-      }
-      setShowMemoryPins(false);
-
-      // Re-open the modal after selection or cancel
-      setAddMemoryOpen(true);
-    },
-    []
-  );
-
   useLayoutEffect(() => {
     setIsClient(true);
     if (!MAPBOX_TOKEN) {
@@ -908,7 +887,6 @@ export function MapComponent() {
           }
         }}
         defaultEra={addMemoryEra}
-        onRequestMapSelection={handleRequestMapSelection}
       />
 
       {/* Map Location Selector Overlay */}
