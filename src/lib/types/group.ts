@@ -26,6 +26,7 @@ export interface Group {
   id: string;
   name: string;
   description?: string | null;
+  message?: string | null;
   privacy: GroupPrivacy;
   visibility: GroupVisibility;
   coverPhotoUrl?: string | null;

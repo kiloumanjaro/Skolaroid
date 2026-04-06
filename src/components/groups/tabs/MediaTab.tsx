@@ -48,7 +48,7 @@ export function MediaTab({ group }: MediaTabProps) {
   const hasMemories = memories && memories.length > 0;
 
   return (
-    <div className="space-y-4 p-4">
+    <div className="space-y-4 px-5 py-4">
       {/* Header with post count and add button */}
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold">
