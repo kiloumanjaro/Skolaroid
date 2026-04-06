@@ -182,6 +182,7 @@ model PrivateGroup {
   id          String       @id @default(uuid()) @db.Uuid
   name        String       @unique @db.VarChar(50)
   description String?
+  message     String?      @db.VarChar(300)
   creatorId   String?      @db.Uuid
   deletedAt   DateTime?
   createdAt   DateTime     @default(now())

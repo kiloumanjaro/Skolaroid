@@ -265,6 +265,11 @@ export const updateGroupServerSchema = z.object({
     .trim()
     .max(500, 'Description must be 500 characters or less')
     .optional(),
+  message: z
+    .string()
+    .trim()
+    .max(300, 'Message must be 300 characters or less')
+    .optional(),
 });
 
 /** Schema for adding/removing a member by email. */
