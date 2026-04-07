@@ -119,6 +119,7 @@ export function MapComponent() {
   const processedMemoryParamRef = useRef<string | null>(null);
   const cameraFocusedMemoryParamRef = useRef<string | null>(null);
   const [mapError, setMapError] = useState<string | null>(null);
+  const [mapReady, setMapReady] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [addMemoryOpen, setAddMemoryOpen] = useState(false);
   const [addMemoryEra, setAddMemoryEra] = useState<number | null>(null);
@@ -535,6 +536,9 @@ export function MapComponent() {
         });
 
         mapRef.current = map;
+        map.once('load', () => {
+          setMapReady(true);
+        });
 
         map.addControl(new mapboxgl.NavigationControl(), 'top-left');
         map.addControl(new mapboxgl.FullscreenControl(), 'top-left');
@@ -587,6 +591,7 @@ export function MapComponent() {
           memoryRootsRef.current = [];
           map.remove();
           mapRef.current = null;
+          setMapReady(false);
         };
       } catch (error) {
         console.error('Failed to initialize map:', error);
@@ -599,65 +604,83 @@ export function MapComponent() {
     }
   }, [isClient, handleLandmarkClick, mapError]);
 
-  // Handle memoryId URL param (for gallery → map navigation)
+  // Phase 1: open notebook immediately when a memoryId is present
   useEffect(() => {
-    if (!mapRef.current || memoriesLoading || !memories) return;
+    if (memoriesLoading || memories.length === 0) return;
 
     const params = new URLSearchParams(window.location.search);
     const memoryIdParam = params.get('memoryId');
-    const eraParam = params.get('era');
 
     if (!memoryIdParam) return;
+    if (processedMemoryParamRef.current === memoryIdParam) return;
 
     // Find the memory by ID
     const targetMemory = memories.find((m) => m.id === memoryIdParam);
     if (!targetMemory) {
       console.warn(`Memory with ID ${memoryIdParam} not found`);
+      processedMemoryParamRef.current = memoryIdParam;
       return;
     }
+
+    processedMemoryParamRef.current = memoryIdParam;
+    setSelectedMemory(targetMemory);
+    setMemoryDetailOpen(true);
+  }, [memories, memoriesLoading]);
+
+  // Phase 2: once map is ready, align era and camera for the selected memory
+  useEffect(() => {
+    if (
+      !mapRef.current ||
+      !mapReady ||
+      memoriesLoading ||
+      memories.length === 0
+    )
+      return;
+
+    const params = new URLSearchParams(window.location.search);
+    const memoryIdParam = params.get('memoryId');
+
+    if (!memoryIdParam) return;
+    if (cameraFocusedMemoryParamRef.current === memoryIdParam) return;
+
+    const targetMemory = memories.find((m) => m.id === memoryIdParam);
+    if (!targetMemory) {
+      cameraFocusedMemoryParamRef.current = memoryIdParam;
+      return;
+    }
+
+    cameraFocusedMemoryParamRef.current = memoryIdParam;
 
     // Switch era if needed
     const memoryEra = getEraFromBatchTag(
       targetMemory.tags ?? [],
       targetMemory.createdAt
     );
-    if (eraParam && memoryEra !== activeMapEra) {
-      setActiveMapEra(memoryEra);
-      mapRef.current.setStyle(ERA_MAP_STYLES[memoryEra]);
-    }
-
-    // Wait for style to load, then fly to memory and open modal
-    const onStyleLoad = () => {
-      mapRef.current?.off('style.load', onStyleLoad);
-      setTimeout(() => {
-        flyToMemoryWithSequence(targetMemory, () => {
-          setSelectedMemory(targetMemory);
-          setMemoryDetailOpen(true);
-        });
-      }, 300);
-    };
 
     if (memoryEra !== activeMapEra) {
-      mapRef.current.on('style.load', onStyleLoad);
+      const map = mapRef.current;
+      if (!map) return;
+
+      const onStyleLoad = () => {
+        map.off('style.load', onStyleLoad);
+        setTimeout(() => {
+          flyToMemoryWithSequence(targetMemory);
+        }, 300);
+      };
+
+      map.on('style.load', onStyleLoad);
+      setActiveMapEra(memoryEra);
     } else {
       setTimeout(() => {
-        flyToMemoryWithSequence(targetMemory, () => {
-          setSelectedMemory(targetMemory);
-          setMemoryDetailOpen(true);
-        });
+        flyToMemoryWithSequence(targetMemory);
       }, 300);
     }
-
-    // Clear URL params after processing (optional - keeps URL clean)
-    window.history.replaceState({}, '', window.location.pathname);
   }, [
     memories,
     memoriesLoading,
     activeMapEra,
+    mapReady,
     flyToMemoryWithSequence,
-    setActiveMapEra,
-    setSelectedMemory,
-    setMemoryDetailOpen,
   ]);
 
   // Switch Mapbox style when the active era changes
