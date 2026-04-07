@@ -16,6 +16,7 @@ import { Plus, Filter } from 'lucide-react';
 import { AddMemoryModal } from './add-memory-modal';
 import {
   FilterMemoriesModal,
+  DEFAULT_FILTERS,
   type MemoryFilters,
 } from './map/FilterMemoriesModal';
 import { GroupPanel } from './groups/GroupPanel';
@@ -115,6 +116,8 @@ export function MapComponent() {
   const router = useRouter();
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
+  const processedMemoryParamRef = useRef<string | null>(null);
+  const cameraFocusedMemoryParamRef = useRef<string | null>(null);
   const [mapError, setMapError] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
   const [addMemoryOpen, setAddMemoryOpen] = useState(false);
@@ -156,6 +159,9 @@ export function MapComponent() {
 
   // Read era URL parameter on mount (for homepage → map navigation)
   useEffect(() => {
+    // Always start with clean filters on fresh map entry.
+    setFilters(DEFAULT_FILTERS);
+
     const params = new URLSearchParams(window.location.search);
     const eraParam = params.get('era');
 
