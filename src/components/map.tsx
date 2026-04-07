@@ -112,7 +112,9 @@ export function MapComponent() {
   const router = useRouter();
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
+  const processedMemoryParamRef = useRef<string | null>(null);
   const [mapError, setMapError] = useState<string | null>(null);
+  const [mapReady, setMapReady] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [addMemoryOpen, setAddMemoryOpen] = useState(false);
   const [addMemoryEra, setAddMemoryEra] = useState<number | null>(null);
@@ -150,9 +152,6 @@ export function MapComponent() {
 
   // Pending memory for the flyTo → open detail flow
   const pendingMemoryRef = useRef<MemoryWithCoordinates | null>(null);
-
-  // Track whether the gallery → map memoryId URL param has been processed
-  const galleryNavProcessedRef = useRef(false);
 
   // Read era URL parameter on mount (for homepage → map navigation)
   useEffect(() => {
@@ -486,6 +485,9 @@ export function MapComponent() {
         });
 
         mapRef.current = map;
+        map.once('load', () => {
+          setMapReady(true);
+        });
 
         map.addControl(new mapboxgl.NavigationControl(), 'top-left');
         map.addControl(new mapboxgl.FullscreenControl(), 'top-left');
@@ -538,6 +540,7 @@ export function MapComponent() {
           memoryRootsRef.current = [];
           map.remove();
           mapRef.current = null;
+          setMapReady(false);
         };
       } catch (error) {
         console.error('Failed to initialize map:', error);
@@ -550,55 +553,71 @@ export function MapComponent() {
     }
   }, [isClient, handleLandmarkClick, mapError]);
 
-  // Handle gallery → map navigation via sessionStorage
+  // Handle memoryId URL param (for gallery → map navigation)
   useEffect(() => {
-    if (galleryNavProcessedRef.current) return;
     if (
       !mapRef.current ||
+      !mapReady ||
       memoriesLoading ||
-      !memories ||
       memories.length === 0
     )
       return;
 
-    const memoryId = sessionStorage.getItem('gallery_selected_memory');
-    if (!memoryId) return;
+    const params = new URLSearchParams(window.location.search);
+    const memoryIdParam = params.get('memoryId');
 
-    // Consume immediately so it doesn't re-trigger
-    galleryNavProcessedRef.current = true;
-    sessionStorage.removeItem('gallery_selected_memory');
+    if (!memoryIdParam) return;
+    if (processedMemoryParamRef.current === memoryIdParam) return;
 
-    const targetMemory = memories.find((m) => m.id === memoryId);
+    // Find the memory by ID
+    const targetMemory = memories.find((m) => m.id === memoryIdParam);
     if (!targetMemory) {
-      console.warn(`Memory with ID ${memoryId} not found`);
+      console.warn(`Memory with ID ${memoryIdParam} not found`);
+      processedMemoryParamRef.current = memoryIdParam;
       return;
     }
 
-    const map = mapRef.current;
+    processedMemoryParamRef.current = memoryIdParam;
+
+    // Switch era if needed
     const memoryEra = getEraFromBatchTag(
       targetMemory.tags ?? [],
       targetMemory.createdAt
     );
-    const needsEraSwitch = memoryEra !== activeMapEra;
+    if (memoryEra !== activeMapEra) {
+      const map = mapRef.current;
+      if (!map) return;
 
-    const openMemoryDetail = () => {
-      flyToMemoryWithSequence(targetMemory, () => {
-        setSelectedMemory(targetMemory);
-        setMemoryDetailOpen(true);
-      });
-    };
-
-    if (needsEraSwitch) {
       const onStyleLoad = () => {
         map.off('style.load', onStyleLoad);
-        setTimeout(openMemoryDetail, 300);
+        setTimeout(() => {
+          flyToMemoryWithSequence(targetMemory, () => {
+            setSelectedMemory(targetMemory);
+            setMemoryDetailOpen(true);
+          });
+        }, 300);
       };
+
       map.on('style.load', onStyleLoad);
       setActiveMapEra(memoryEra);
     } else {
-      setTimeout(openMemoryDetail, 300);
+      setTimeout(() => {
+        flyToMemoryWithSequence(targetMemory, () => {
+          setSelectedMemory(targetMemory);
+          setMemoryDetailOpen(true);
+        });
+      }, 300);
     }
-  }, [memories, memoriesLoading, activeMapEra, flyToMemoryWithSequence]);
+  }, [
+    memories,
+    memoriesLoading,
+    activeMapEra,
+    mapReady,
+    flyToMemoryWithSequence,
+    setActiveMapEra,
+    setSelectedMemory,
+    setMemoryDetailOpen,
+  ]);
 
   // Switch Mapbox style when the active era changes
   useEffect(() => {
