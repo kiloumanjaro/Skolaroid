@@ -151,6 +151,9 @@ export function MapComponent() {
   // Pending memory for the flyTo → open detail flow
   const pendingMemoryRef = useRef<MemoryWithCoordinates | null>(null);
 
+  // Track whether the gallery → map memoryId URL param has been processed
+  const galleryNavProcessedRef = useRef(false);
+
   // Read era URL parameter on mount (for homepage → map navigation)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -549,13 +552,26 @@ export function MapComponent() {
 
   // Handle memoryId URL param (for gallery → map navigation)
   useEffect(() => {
-    if (!mapRef.current || memoriesLoading || !memories) return;
+    // Only process once per page load to avoid re-entry on state changes
+    if (galleryNavProcessedRef.current) return;
+    if (
+      !mapRef.current ||
+      memoriesLoading ||
+      !memories ||
+      memories.length === 0
+    )
+      return;
 
     const params = new URLSearchParams(window.location.search);
     const memoryIdParam = params.get('memoryId');
-    const eraParam = params.get('era');
 
     if (!memoryIdParam) return;
+
+    // Mark as processed immediately so re-renders don't re-trigger this
+    galleryNavProcessedRef.current = true;
+
+    // Clear URL params right away (we've captured what we need)
+    window.history.replaceState({}, '', window.location.pathname);
 
     // Find the memory by ID
     const targetMemory = memories.find((m) => m.id === memoryIdParam);
@@ -564,49 +580,33 @@ export function MapComponent() {
       return;
     }
 
-    // Switch era if needed
+    const map = mapRef.current;
     const memoryEra = getEraFromBatchTag(
       targetMemory.tags ?? [],
       targetMemory.createdAt
     );
-    if (eraParam && memoryEra !== activeMapEra) {
-      setActiveMapEra(memoryEra);
-      mapRef.current.setStyle(ERA_MAP_STYLES[memoryEra]);
-    }
+    const needsEraSwitch = memoryEra !== activeMapEra;
 
-    // Wait for style to load, then fly to memory and open modal
-    const onStyleLoad = () => {
-      mapRef.current?.off('style.load', onStyleLoad);
-      setTimeout(() => {
-        flyToMemoryWithSequence(targetMemory, () => {
-          setSelectedMemory(targetMemory);
-          setMemoryDetailOpen(true);
-        });
-      }, 300);
+    const openMemoryDetail = () => {
+      flyToMemoryWithSequence(targetMemory, () => {
+        setSelectedMemory(targetMemory);
+        setMemoryDetailOpen(true);
+      });
     };
 
-    if (memoryEra !== activeMapEra) {
-      mapRef.current.on('style.load', onStyleLoad);
+    if (needsEraSwitch) {
+      // Switch era and wait for the new style to load before flying
+      const onStyleLoad = () => {
+        map.off('style.load', onStyleLoad);
+        setTimeout(openMemoryDetail, 300);
+      };
+      map.on('style.load', onStyleLoad);
+      setActiveMapEra(memoryEra);
+      // Note: the activeMapEra useEffect (line ~612) will call setStyle
     } else {
-      setTimeout(() => {
-        flyToMemoryWithSequence(targetMemory, () => {
-          setSelectedMemory(targetMemory);
-          setMemoryDetailOpen(true);
-        });
-      }, 300);
+      setTimeout(openMemoryDetail, 300);
     }
-
-    // Clear URL params after processing (optional - keeps URL clean)
-    window.history.replaceState({}, '', window.location.pathname);
-  }, [
-    memories,
-    memoriesLoading,
-    activeMapEra,
-    flyToMemoryWithSequence,
-    setActiveMapEra,
-    setSelectedMemory,
-    setMemoryDetailOpen,
-  ]);
+  }, [memories, memoriesLoading, activeMapEra, flyToMemoryWithSequence]);
 
   // Switch Mapbox style when the active era changes
   useEffect(() => {
