@@ -68,8 +68,9 @@ function GalleryPageContent() {
   const currentEraStyle = ERA_STYLES[activeEra] || ERA_STYLES[2020];
 
   const handleMemoryClick = (memoryId: string) => {
-    sessionStorage.setItem('gallery_selected_memory', memoryId);
-    router.push('/map');
+    router.push(
+      `/map?memoryId=${encodeURIComponent(memoryId)}&era=${activeEra}`
+    );
   };
 
   // Wheel-to-horizontal scroll handler

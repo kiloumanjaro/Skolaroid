@@ -286,6 +286,39 @@ export function MapComponent() {
     handleMemoryClickRef.current(memory);
   }, []);
 
+  const closeNotebookView = useCallback(() => {
+    setMemoryDetailOpen(false);
+    setSelectedMemory(null);
+    setSelectedLandmark(null);
+
+    const params = new URLSearchParams(window.location.search);
+    params.delete('memoryId');
+    params.set('era', String(activeMapEra));
+
+    processedMemoryParamRef.current = null;
+    cameraFocusedMemoryParamRef.current = null;
+
+    const nextUrl = `/map?${params.toString()}`;
+    const currentUrl = `${window.location.pathname}${window.location.search}`;
+    if (currentUrl !== nextUrl) {
+      router.replace(nextUrl, { scroll: false });
+    }
+  }, [activeMapEra, router]);
+
+  // Force Escape behavior for notebook mode: close and return to era map URL.
+  useEffect(() => {
+    if (!memoryDetailOpen) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      closeNotebookView();
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [memoryDetailOpen, closeNotebookView]);
+
   // ---------------------------------------------------------------------------
   // Batches → FlyTo → Detail handler
   // ---------------------------------------------------------------------------
@@ -642,6 +675,50 @@ export function MapComponent() {
     mapRef.current.setStyle(targetStyle);
   }, [activeMapEra]);
 
+  // Keep URL in sync with notebook state so each opened memory has a stable deep link.
+  useEffect(() => {
+    if (!isClient) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const currentMemoryIdParam = params.get('memoryId');
+
+    // If a memoryId came from an external navigation (e.g., gallery click),
+    // preserve it only until initial notebook selection is established.
+    const hasPendingIncomingMemoryId =
+      !selectedMemory &&
+      !!currentMemoryIdParam &&
+      processedMemoryParamRef.current !== currentMemoryIdParam;
+
+    // Preserve active era in URL for consistency when sharing/reloading.
+    params.set('era', String(activeMapEra));
+
+    if (memoryDetailOpen && selectedMemory?.id) {
+      params.set('memoryId', selectedMemory.id);
+    } else if (!hasPendingIncomingMemoryId) {
+      params.delete('memoryId');
+
+      // Reset processed refs when leaving notebook mode so reopening via URL works
+      // for the same memory ID in a later navigation.
+      processedMemoryParamRef.current = null;
+      cameraFocusedMemoryParamRef.current = null;
+    }
+
+    const nextSearch = params.toString();
+    const nextUrl = nextSearch ? `/map?${nextSearch}` : '/map';
+    const currentUrl = `${window.location.pathname}${window.location.search}`;
+
+    if (currentUrl !== nextUrl) {
+      router.replace(nextUrl, { scroll: false });
+    }
+  }, [
+    isClient,
+    activeMapEra,
+    memoryDetailOpen,
+    selectedMemory,
+    selectedMemory?.id,
+    router,
+  ]);
+
   // Re-render marker roots when memory counts update or visibility changes
   useEffect(() => {
     for (const { root, landmark } of markerRootsRef.current) {
@@ -950,7 +1027,13 @@ export function MapComponent() {
       <MemoryDetailModal
         memory={selectedMemory}
         open={memoryDetailOpen}
-        onOpenChange={setMemoryDetailOpen}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            closeNotebookView();
+            return;
+          }
+          setMemoryDetailOpen(true);
+        }}
         onMemoryDeleted={() => setSelectedMemory(null)}
         hasPrevious={
           selectedMemory
