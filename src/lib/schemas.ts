@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { GROUP_ROLES } from '@/lib/group-permissions';
 
 export const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -272,9 +273,55 @@ export const groupMemberSchema = z.object({
   email: z.string().email('Invalid email address'),
 });
 
+export const groupRoleEnum = z.enum(GROUP_ROLES);
+
+export const groupRolePrivilegesSchema = z.object({
+  OWNER: z.object({
+    editContent: z.boolean(),
+    manageMembers: z.boolean(),
+    viewAnalytics: z.boolean(),
+    sendInvitations: z.boolean(),
+  }),
+  ADMIN: z.object({
+    editContent: z.boolean(),
+    manageMembers: z.boolean(),
+    viewAnalytics: z.boolean(),
+    sendInvitations: z.boolean(),
+  }),
+  MEMBER: z.object({
+    editContent: z.boolean(),
+    manageMembers: z.boolean(),
+    viewAnalytics: z.boolean(),
+    sendInvitations: z.boolean(),
+  }),
+});
+
+/** Schema for assigning or updating a group member role. */
+export const updateGroupMemberRoleSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  role: groupRoleEnum.refine((role) => role !== 'OWNER', {
+    message: 'Only the group creator can have owner role',
+  }),
+});
+
+/** Schema for updating the role privileges map of a group. */
+export const updateGroupRolePrivilegesSchema = z.object({
+  privileges: groupRolePrivilegesSchema,
+});
+
 export type CreateGroupServerInput = z.infer<typeof createGroupServerSchema>;
 export type UpdateGroupServerInput = z.infer<typeof updateGroupServerSchema>;
 export type GroupMemberInput = z.infer<typeof groupMemberSchema>;
+export type GroupMemberRole = z.infer<typeof groupRoleEnum>;
+export type GroupRolePrivilegesInput = z.infer<
+  typeof groupRolePrivilegesSchema
+>;
+export type UpdateGroupMemberRoleInput = z.infer<
+  typeof updateGroupMemberRoleSchema
+>;
+export type UpdateGroupRolePrivilegesInput = z.infer<
+  typeof updateGroupRolePrivilegesSchema
+>;
 
 // ============================================================================
 // INVITATION SCHEMAS

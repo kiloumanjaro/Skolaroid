@@ -1,25 +1,9 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import type { GroupResponse } from '@/lib/hooks/useCreateGroup';
 
-interface GroupMemberResponse {
-  id: string;
-  firstName: string | null;
-  lastName: string | null;
-  email: string;
-}
-
-interface GroupDetailResponse {
-  id: string;
-  name: string;
-  description: string | null;
-  creatorId: string | null;
-  creator: GroupMemberResponse | null;
-  members: GroupMemberResponse[];
-  _count: { members: number; memories: number };
-  createdAt: string;
-  updatedAt: string;
-}
+type GroupDetailResponse = GroupResponse;
 
 export function useGroupById(groupId: string) {
   return useQuery({

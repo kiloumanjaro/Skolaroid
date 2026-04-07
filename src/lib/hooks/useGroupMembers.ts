@@ -7,6 +7,10 @@ interface MemberAction {
   email: string;
 }
 
+interface MemberRoleAction extends MemberAction {
+  role: 'ADMIN' | 'MEMBER';
+}
+
 export function useAddGroupMember() {
   const queryClient = useQueryClient();
 
@@ -50,6 +54,34 @@ export function useRemoveGroupMember() {
 
       const body = await res.json();
       if (!res.ok) throw new Error(body.error ?? 'Failed to remove member');
+      return body.data;
+    },
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ['groups', variables.groupId],
+      });
+      queryClient.invalidateQueries({ queryKey: ['groups', 'mine'] });
+    },
+  });
+}
+
+export function useUpdateGroupMemberRole() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ groupId, email, role }: MemberRoleAction) => {
+      const res = await fetch(
+        `/api/prisma/group/${encodeURIComponent(groupId)}/members`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, role }),
+        }
+      );
+
+      const body = await res.json();
+      if (!res.ok)
+        throw new Error(body.error ?? 'Failed to update member role');
       return body.data;
     },
     onSuccess: (_data, variables) => {

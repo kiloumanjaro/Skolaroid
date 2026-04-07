@@ -11,16 +11,22 @@ import { DeleteGroupModal } from '@/components/groups/DeleteGroupModal';
 import { MembersTab } from '@/components/groups/tabs/MembersTab';
 import { MediaTab } from '@/components/groups/tabs/MediaTab';
 import { AboutTab } from '@/components/groups/tabs/AboutTab';
+import { RolesTab } from '@/components/groups/tabs/RolesTab';
 import { type Group, type GroupMember } from '@/lib/types/group';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
 import {
   type GroupResponse,
+  type GroupMembershipResponse,
   type GroupMemberResponse,
 } from '@/lib/hooks/useCreateGroup';
 import { useUserGroups } from '@/lib/hooks/useUserGroups';
 import { useGroupById } from '@/lib/hooks/useGroupById';
 import { useDeleteGroup } from '@/lib/hooks/useDeleteGroup';
 import { useRemoveGroupMember } from '@/lib/hooks/useGroupMembers';
+import {
+  canRoleUsePermission,
+  normaliseGroupRolePrivileges,
+} from '@/lib/group-permissions';
 import { cn } from '@/lib/utils';
 import {
   X,
@@ -35,6 +41,7 @@ import {
   Globe,
   Lock,
   Loader2,
+  Shield,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -52,23 +59,36 @@ interface GroupPanelProps {
 }
 
 type TabType = 'members' | 'media' | 'about';
+type ExtendedTabType = TabType | 'roles';
 
 /** Transform an API member response to the frontend GroupMember shape. */
 function toGroupMember(
   m: GroupMemberResponse,
-  creatorId: string | null
+  creatorId: string | null,
+  membership?: GroupMembershipResponse
 ): GroupMember {
   return {
     id: m.id,
     name: `${m.firstName ?? ''} ${m.lastName ?? ''}`.trim() || m.email,
     email: m.email,
-    role: m.id === creatorId ? ('OWNER' as const) : ('MEMBER' as const),
-    joinedAt: new Date().toISOString(),
+    role:
+      m.role ??
+      (m.id === creatorId
+        ? ('OWNER' as const)
+        : (membership?.role ?? 'MEMBER')),
+    joinedAt: m.joinedAt ?? membership?.joinedAt ?? new Date().toISOString(),
   };
 }
 
 /** Transform an API GroupResponse to the frontend Group shape. */
 function toGroup(g: GroupResponse): Group {
+  const membershipByUser = new Map(
+    (g.groupMemberships ?? []).map((membership) => [
+      membership.userId,
+      membership,
+    ])
+  );
+
   return {
     id: g.id,
     name: g.name,
@@ -79,7 +99,11 @@ function toGroup(g: GroupResponse): Group {
     memberCount: g._count.members,
     postCount: g._count.memories,
     ownerId: g.creatorId ?? '',
-    members: g.members.map((m) => toGroupMember(m, g.creatorId)),
+    members: g.members.map((m) =>
+      toGroupMember(m, g.creatorId, membershipByUser.get(m.id))
+    ),
+    rolePrivileges: normaliseGroupRolePrivileges(g.rolePrivileges),
+    currentUserRole: g.currentUserRole,
     createdAt: g.createdAt,
   };
 }
@@ -91,7 +115,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [leaveModalOpen, setLeaveModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<TabType>('members');
+  const [activeTab, setActiveTab] = useState<ExtendedTabType>('members');
 
   const { showSuccess, showError } = useGroupToast();
   const { user } = useUserAuth();
@@ -131,7 +155,16 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
   const currentUserMember = selectedGroup?.members.find(
     (m) => m.id === currentUserId
   );
-  const isAdmin = currentUserMember?.role === 'ADMIN';
+  const currentUserRole =
+    currentUserMember?.role ??
+    (isOwner ? ('OWNER' as const) : ('MEMBER' as const));
+  const rolePrivileges = selectedGroup?.rolePrivileges;
+  const canManageMembers =
+    !!selectedGroup &&
+    canRoleUsePermission(rolePrivileges, currentUserRole, 'manageMembers');
+  const canSendInvitations =
+    !!selectedGroup &&
+    canRoleUsePermission(rolePrivileges, currentUserRole, 'sendInvitations');
 
   // ─── Handlers ────────────────────────────────────────────────────
   const handleSelectGroup = useCallback((group: Group) => {
@@ -266,6 +299,19 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                     <Info className="h-4 w-4" />
                     <span>About</span>
                   </button>
+
+                  <button
+                    onClick={() => setActiveTab('roles')}
+                    className={cn(
+                      'flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium transition-colors',
+                      activeTab === 'roles'
+                        ? 'bg-secondary text-foreground'
+                        : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+                    )}
+                  >
+                    <Shield className="h-4 w-4" />
+                    <span>Roles</span>
+                  </button>
                 </nav>
               </div>
             )}
@@ -318,7 +364,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-48">
-                        {(isOwner || isAdmin) && (
+                        {canSendInvitations && (
                           <>
                             <DropdownMenuItem
                               onClick={() => setInviteModalOpen(true)}
@@ -374,14 +420,23 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                   {activeTab === 'members' && (
                     <MembersTab
                       members={selectedGroup.members}
-                      isOwner={isOwner}
+                      canManageMembers={canManageMembers}
+                      canChangeRoles={isOwner}
                       currentUserId={currentUserId}
                       groupId={selectedGroup.id}
-                      onMemberRemoved={handleMemberRemoved}
+                      onMembersChanged={handleMemberRemoved}
                     />
                   )}
                   {activeTab === 'media' && <MediaTab group={selectedGroup} />}
                   {activeTab === 'about' && <AboutTab group={selectedGroup} />}
+                  {activeTab === 'roles' && selectedGroup.rolePrivileges && (
+                    <RolesTab
+                      groupId={selectedGroup.id}
+                      rolePrivileges={selectedGroup.rolePrivileges}
+                      currentUserRole={currentUserRole}
+                      onPrivilegesSaved={handleMemberRemoved}
+                    />
+                  )}
                 </div>
               </>
             ) : (

@@ -1,9 +1,8 @@
 import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
-import { sendInvitationsSchema } from '@/lib/schemas';
-import { sendInvitationEmail } from '@/lib/email';
 import {
   canRoleUsePermission,
   resolveGroupMemberRole,
@@ -11,12 +10,17 @@ import {
 
 const INVITATION_EXPIRY_DAYS = 7;
 
+const createInvitationLinkSchema = z.object({
+  groupId: z.string().uuid('Invalid group ID'),
+});
+
 /**
- * POST /api/prisma/invitation/send
+ * TEMPORARY PATCH:
+ * This endpoint exists so invitation links can work right now for role-privilege
+ * verification while the invitation system is still being finalized.
  *
- * Sends invitations to one or more email addresses.
- * Requires sendInvitations privilege for the actor role.
- * Creates Invitation records and returns invite links.
+ * It keeps the existing invitation system untouched and only adds a link-only
+ * token generation path.
  */
 export async function POST(request: NextRequest) {
   try {
@@ -32,7 +36,7 @@ export async function POST(request: NextRequest) {
 
     // ── 2. Validate ──────────────────────────────────────────────────
     const body = await request.json();
-    const parsed = sendInvitationsSchema.safeParse(body);
+    const parsed = createInvitationLinkSchema.safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json(
@@ -41,14 +45,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { groupId, emails } = parsed.data;
+    const { groupId } = parsed.data;
 
-    // ── 3. Fetch group and verify ownership ──────────────────────────
+    // ── 3. Authorise actor by current role privileges ────────────────
     const group = await prisma.privateGroup.findUnique({
       where: { id: groupId, deletedAt: null },
       select: {
         id: true,
-        name: true,
         creatorId: true,
         rolePrivileges: true,
         members: {
@@ -88,69 +91,41 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // ── 4. Create invitations ────────────────────────────────────────
+    // ── 4. Create invitation token ───────────────────────────────────
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + INVITATION_EXPIRY_DAYS);
 
-    const invitations = await Promise.all(
-      emails.map(async (email) => {
-        const token = crypto.randomBytes(32).toString('hex');
-        return prisma.invitation.create({
-          data: {
-            groupId,
-            invitedBy: authUser.id,
-            email: email.toLowerCase(),
-            token,
-            expiresAt,
-          },
-          select: { id: true, email: true, token: true, expiresAt: true },
-        });
-      })
-    );
+    const invitation = await prisma.invitation.create({
+      data: {
+        groupId,
+        invitedBy: authUser.id,
+        // Keep the current schema intact: invitation requires an email.
+        // For link-only generation, we store the actor email as audit metadata.
+        email:
+          authUser.email?.toLowerCase() ?? 'temporary-link@skolaroid.local',
+        token: crypto.randomBytes(32).toString('hex'),
+        expiresAt,
+      },
+      select: {
+        id: true,
+        token: true,
+        expiresAt: true,
+      },
+    });
 
-    // ── 5. Build invite links ────────────────────────────────────────
     const origin = request.headers.get('origin') ?? request.nextUrl.origin;
-    const results = invitations.map((inv) => ({
-      id: inv.id,
-      email: inv.email,
-      inviteLink: `${origin}/invite?token=${inv.token}`,
-      expiresAt: inv.expiresAt.toISOString(),
-    }));
-
-    // ── 6. Send invitation emails ────────────────────────────────────
-    const inviterName =
-      authUser.user_metadata?.full_name ?? authUser.email ?? 'A Skolaroid user';
-
-    const emailResults = await Promise.allSettled(
-      results.map((inv) =>
-        sendInvitationEmail({
-          to: inv.email,
-          inviterName,
-          groupName: group.name,
-          inviteLink: inv.inviteLink,
-          expiresAt: inv.expiresAt,
-        })
-      )
-    );
-
-    const failedEmails = emailResults
-      .map((r, i) => (r.status === 'rejected' ? results[i].email : null))
-      .filter(Boolean);
-
-    if (failedEmails.length > 0) {
-      console.warn(
-        `[invitation/send] Failed to email: ${failedEmails.join(', ')}`
-      );
-    }
 
     return NextResponse.json({
       success: true,
-      message: `${invitations.length} invitation(s) created, ${invitations.length - failedEmails.length} email(s) sent`,
-      data: results,
+      data: {
+        id: invitation.id,
+        inviteLink: `${origin}/invite?token=${invitation.token}`,
+        expiresAt: invitation.expiresAt.toISOString(),
+      },
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
-    console.error('[invitation/send] Error:', message);
+    console.error('[invitation/link] Error:', message);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

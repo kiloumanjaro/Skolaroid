@@ -16,6 +16,7 @@
 export { MembersTab } from './tabs/MembersTab';
 export { MediaTab } from './tabs/MediaTab';
 export { AboutTab } from './tabs/AboutTab';
+export { RolesTab } from './tabs/RolesTab';
 
 /**
  * GroupDetailView is no longer used as a component.
