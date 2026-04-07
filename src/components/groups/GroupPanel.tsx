@@ -60,6 +60,7 @@ interface GroupPanelProps {
 
 type TabType = 'members' | 'media' | 'about';
 type ExtendedTabType = TabType | 'roles';
+type MemberChangeAction = 'removed' | 'role-updated' | 'ownership-transferred';
 
 /** Transform an API member response to the frontend GroupMember shape. */
 function toGroupMember(
@@ -205,12 +206,17 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
 
   const handleGroupLeft = useCallback(() => {
     if (!selectedGroup || !user?.email) return;
+    const leavingAsOwner = selectedGroup.ownerId === currentUserId;
 
     leaveGroup.mutate(
       { groupId: selectedGroup.id, email: user.email },
       {
         onSuccess: () => {
-          showSuccess(`You left "${selectedGroup.name}".`);
+          showSuccess(
+            leavingAsOwner
+              ? `You left "${selectedGroup.name}" and ownership was transferred.`
+              : `You left "${selectedGroup.name}".`
+          );
           setSelectedGroupId(
             groups.find((g) => g.id !== selectedGroup.id)?.id ?? null
           );
@@ -220,11 +226,37 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
         },
       }
     );
-  }, [selectedGroup, user?.email, groups, leaveGroup, showSuccess, showError]);
+  }, [
+    selectedGroup,
+    user?.email,
+    currentUserId,
+    groups,
+    leaveGroup,
+    showSuccess,
+    showError,
+  ]);
 
-  const handleMemberRemoved = useCallback(() => {
+  const handleMembersChanged = useCallback(
+    (action: MemberChangeAction) => {
+      refetchGroupDetail();
+      if (action === 'removed') {
+        showSuccess('Member removed successfully.');
+        return;
+      }
+
+      if (action === 'role-updated') {
+        showSuccess('Member role updated successfully.');
+        return;
+      }
+
+      showSuccess('Ownership transferred successfully.');
+    },
+    [refetchGroupDetail, showSuccess]
+  );
+
+  const handlePrivilegesSaved = useCallback(() => {
     refetchGroupDetail();
-    showSuccess('Member removed successfully.');
+    showSuccess('Role privileges updated successfully.');
   }, [refetchGroupDetail, showSuccess]);
 
   return (
@@ -382,23 +414,24 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                           Share Group
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        {!isOwner && (
-                          <DropdownMenuItem
-                            onClick={() => setLeaveModalOpen(true)}
-                            className="text-red-600 focus:text-red-600"
-                          >
-                            <LogOut className="mr-2 h-4 w-4" />
-                            Leave Group
-                          </DropdownMenuItem>
-                        )}
+                        <DropdownMenuItem
+                          onClick={() => setLeaveModalOpen(true)}
+                          className="text-red-600 focus:text-red-600"
+                        >
+                          <LogOut className="mr-2 h-4 w-4" />
+                          Leave Group
+                        </DropdownMenuItem>
                         {isOwner && (
-                          <DropdownMenuItem
-                            onClick={() => setDeleteModalOpen(true)}
-                            className="text-red-600 focus:text-red-600"
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete Group
-                          </DropdownMenuItem>
+                          <>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onClick={() => setDeleteModalOpen(true)}
+                              className="text-red-600 focus:text-red-600"
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Delete Group
+                            </DropdownMenuItem>
+                          </>
                         )}
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -424,7 +457,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                       canChangeRoles={isOwner}
                       currentUserId={currentUserId}
                       groupId={selectedGroup.id}
-                      onMembersChanged={handleMemberRemoved}
+                      onMembersChanged={handleMembersChanged}
                     />
                   )}
                   {activeTab === 'media' && <MediaTab group={selectedGroup} />}
@@ -434,7 +467,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                       groupId={selectedGroup.id}
                       rolePrivileges={selectedGroup.rolePrivileges}
                       currentUserRole={currentUserRole}
-                      onPrivilegesSaved={handleMemberRemoved}
+                      onPrivilegesSaved={handlePrivilegesSaved}
                     />
                   )}
                 </div>
@@ -489,6 +522,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
             open={leaveModalOpen}
             onOpenChange={setLeaveModalOpen}
             groupName={selectedGroup.name}
+            isOwner={isOwner}
             onConfirmLeave={handleGroupLeft}
           />
 

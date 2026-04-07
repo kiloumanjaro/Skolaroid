@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { RemoveMemberDialog } from '@/components/groups/RemoveMemberDialog';
 import {
   useRemoveGroupMember,
+  useTransferGroupOwnership,
   useUpdateGroupMemberRole,
 } from '@/lib/hooks/useGroupMembers';
 import { type GroupMember, type GroupMemberRole } from '@/lib/types/group';
@@ -31,7 +32,9 @@ interface MembersTabProps {
   canChangeRoles: boolean;
   currentUserId: string;
   groupId: string;
-  onMembersChanged?: () => void;
+  onMembersChanged?: (
+    action: 'removed' | 'role-updated' | 'ownership-transferred'
+  ) => void;
 }
 
 type RoleFilterType = 'ALL' | GroupMemberRole;
@@ -50,12 +53,16 @@ export function MembersTab({
     null
   );
   const [memberToView, setMemberToView] = useState<GroupMember | null>(null);
+  const [memberToTransfer, setMemberToTransfer] = useState<GroupMember | null>(
+    null
+  );
   const [roleUpdatingMemberId, setRoleUpdatingMemberId] = useState<
     string | null
   >(null);
 
   const removeMember = useRemoveGroupMember();
   const updateMemberRole = useUpdateGroupMemberRole();
+  const transferOwnership = useTransferGroupOwnership();
 
   const filteredMembers = useMemo(() => {
     let filtered = members;
@@ -84,7 +91,7 @@ export function MembersTab({
       {
         onSuccess: () => {
           setMemberToRemove(null);
-          onMembersChanged?.();
+          onMembersChanged?.('removed');
         },
         onError: () => {
           // Keep dialog open so user can retry or cancel
@@ -105,7 +112,7 @@ export function MembersTab({
         },
         {
           onSuccess: () => {
-            onMembersChanged?.();
+            onMembersChanged?.('role-updated');
           },
           onSettled: () => {
             setRoleUpdatingMemberId(null);
@@ -115,6 +122,24 @@ export function MembersTab({
     },
     [groupId, onMembersChanged, updateMemberRole]
   );
+
+  const handleConfirmOwnershipTransfer = useCallback(() => {
+    if (!memberToTransfer) return;
+
+    transferOwnership.mutate(
+      { groupId, email: memberToTransfer.email },
+      {
+        onSuccess: () => {
+          setMemberToTransfer(null);
+          setMemberToView(null);
+          onMembersChanged?.('ownership-transferred');
+        },
+        onError: () => {
+          // Keep dialog open so user can retry or cancel
+        },
+      }
+    );
+  }, [memberToTransfer, groupId, transferOwnership, onMembersChanged]);
 
   const formatJoinDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -248,6 +273,8 @@ export function MembersTab({
                     member.role !== 'OWNER';
                   const canEditRole =
                     canChangeRoles && !isCurrentUser && member.role !== 'OWNER';
+                  const canTransferOwnership =
+                    canChangeRoles && !isCurrentUser && member.role !== 'OWNER';
                   const isUpdatingRole = roleUpdatingMemberId === member.id;
 
                   return (
@@ -334,6 +361,18 @@ export function MembersTab({
                       {/* Actions */}
                       <td className="px-3 py-3 text-right">
                         <div className="flex items-center justify-end gap-1">
+                          {canTransferOwnership && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7"
+                              disabled={transferOwnership.isPending}
+                              onClick={() => setMemberToTransfer(member)}
+                              title="Transfer ownership"
+                            >
+                              <Crown className="h-3.5 w-3.5 text-amber-600" />
+                            </Button>
+                          )}
                           <Button
                             variant="ghost"
                             size="icon"
@@ -471,24 +510,84 @@ export function MembersTab({
                 </div>
               </div>
 
-              {/* Remove action for owner */}
-              {canManageMembers &&
-                memberToView.id !== currentUserId &&
-                memberToView.role !== 'OWNER' && (
-                  <div className="border-t border-border px-6 py-4">
-                    <Button
-                      variant="outline"
-                      className="w-full border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
-                      onClick={() => {
-                        setMemberToRemove(memberToView);
-                        setMemberToView(null);
-                      }}
-                    >
-                      <UserMinus className="mr-2 h-4 w-4" />
-                      Remove from Group
-                    </Button>
+              {memberToView.id !== currentUserId &&
+                memberToView.role !== 'OWNER' &&
+                (canManageMembers || canChangeRoles) && (
+                  <div className="space-y-2 border-t border-border px-6 py-4">
+                    {canChangeRoles && (
+                      <Button
+                        variant="secondary"
+                        className="w-full"
+                        disabled={transferOwnership.isPending}
+                        onClick={() => setMemberToTransfer(memberToView)}
+                      >
+                        <Crown className="mr-2 h-4 w-4" />
+                        Transfer Ownership
+                      </Button>
+                    )}
+                    {canManageMembers && (
+                      <Button
+                        variant="outline"
+                        className="w-full border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+                        onClick={() => {
+                          setMemberToRemove(memberToView);
+                          setMemberToView(null);
+                        }}
+                      >
+                        <UserMinus className="mr-2 h-4 w-4" />
+                        Remove from Group
+                      </Button>
+                    )}
                   </div>
                 )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={!!memberToTransfer}
+        onOpenChange={(open) => {
+          if (!open) setMemberToTransfer(null);
+        }}
+      >
+        <DialogContent
+          className="max-w-sm gap-0 overflow-hidden p-0"
+          showCloseButton={false}
+        >
+          <DialogTitle className="sr-only">Transfer ownership</DialogTitle>
+
+          {memberToTransfer && (
+            <div className="flex flex-col">
+              <div className="border-b border-border px-6 py-4">
+                <h2 className="font-kalam text-lg font-semibold text-foreground">
+                  Transfer Ownership?
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {memberToTransfer.name} will become the new owner and you will
+                  be changed to admin.
+                </p>
+              </div>
+
+              <div className="bg-secondary/40 px-6 py-4 text-sm text-muted-foreground">
+                Group memories remain in this group after ownership changes.
+              </div>
+
+              <div className="flex justify-end gap-2 px-6 py-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setMemberToTransfer(null)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="default"
+                  disabled={transferOwnership.isPending}
+                  onClick={handleConfirmOwnershipTransfer}
+                >
+                  Transfer Ownership
+                </Button>
+              </div>
             </div>
           )}
         </DialogContent>

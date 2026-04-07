@@ -8,7 +8,7 @@ interface MemberAction {
 }
 
 interface MemberRoleAction extends MemberAction {
-  role: 'ADMIN' | 'MEMBER';
+  role: 'OWNER' | 'ADMIN' | 'MEMBER';
 }
 
 export function useAddGroupMember() {
@@ -82,6 +82,34 @@ export function useUpdateGroupMemberRole() {
       const body = await res.json();
       if (!res.ok)
         throw new Error(body.error ?? 'Failed to update member role');
+      return body.data;
+    },
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ['groups', variables.groupId],
+      });
+      queryClient.invalidateQueries({ queryKey: ['groups', 'mine'] });
+    },
+  });
+}
+
+export function useTransferGroupOwnership() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ groupId, email }: MemberAction) => {
+      const res = await fetch(
+        `/api/prisma/group/${encodeURIComponent(groupId)}/members`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, role: 'OWNER' }),
+        }
+      );
+
+      const body = await res.json();
+      if (!res.ok)
+        throw new Error(body.error ?? 'Failed to transfer group ownership');
       return body.data;
     },
     onSuccess: (_data, variables) => {

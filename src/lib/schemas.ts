@@ -300,9 +300,12 @@ export const groupRolePrivilegesSchema = z.object({
 /** Schema for assigning or updating a group member role. */
 export const updateGroupMemberRoleSchema = z.object({
   email: z.string().email('Invalid email address'),
-  role: groupRoleEnum.refine((role) => role !== 'OWNER', {
-    message: 'Only the group creator can have owner role',
-  }),
+  role: groupRoleEnum,
+});
+
+/** Schema for transferring group ownership to another member by email. */
+export const transferGroupOwnershipSchema = z.object({
+  email: z.string().email('Invalid email address'),
 });
 
 /** Schema for updating the role privileges map of a group. */
@@ -319,6 +322,9 @@ export type GroupRolePrivilegesInput = z.infer<
 >;
 export type UpdateGroupMemberRoleInput = z.infer<
   typeof updateGroupMemberRoleSchema
+>;
+export type TransferGroupOwnershipInput = z.infer<
+  typeof transferGroupOwnershipSchema
 >;
 export type UpdateGroupRolePrivilegesInput = z.infer<
   typeof updateGroupRolePrivilegesSchema

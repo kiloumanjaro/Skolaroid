@@ -8,6 +8,7 @@ interface LeaveGroupModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   groupName: string;
+  isOwner?: boolean;
   onConfirmLeave: () => void;
 }
 
@@ -15,6 +16,7 @@ export function LeaveGroupModal({
   open,
   onOpenChange,
   groupName,
+  isOwner = false,
   onConfirmLeave,
 }: LeaveGroupModalProps) {
   const handleClose = () => {
@@ -37,9 +39,20 @@ export function LeaveGroupModal({
             Leave Group?
           </h2>
           <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
-            Are you sure you want to leave{' '}
-            <span className="font-medium text-foreground">{groupName}</span>?
-            You&apos;ll need a new invite to rejoin.
+            {isOwner ? (
+              <>
+                If you leave{' '}
+                <span className="font-medium text-foreground">{groupName}</span>
+                , ownership will automatically transfer to an admin. If there is
+                no admin, ownership will transfer to a member.
+              </>
+            ) : (
+              <>
+                Are you sure you want to leave{' '}
+                <span className="font-medium text-foreground">{groupName}</span>
+                ? You&apos;ll need a new invite to rejoin.
+              </>
+            )}
           </p>
 
           <div className="mt-5 flex w-full gap-2">
@@ -54,7 +67,7 @@ export function LeaveGroupModal({
               }}
               className="flex-1"
             >
-              Leave
+              {isOwner ? 'Transfer & Leave' : 'Leave'}
             </Button>
           </div>
         </div>

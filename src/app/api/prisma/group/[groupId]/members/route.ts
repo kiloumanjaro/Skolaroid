@@ -30,6 +30,13 @@ type GroupWithMembers = {
   };
 };
 
+type NextOwnerCandidate = {
+  userId: string;
+  email: string;
+  role: 'ADMIN' | 'MEMBER';
+  joinedAt: Date;
+};
+
 async function getGroupWithMembers(
   groupId: string
 ): Promise<GroupWithMembers | null> {
@@ -76,6 +83,39 @@ function toGroupResponse(group: GroupWithMembers) {
     rolePrivileges: normaliseGroupRolePrivileges(group.rolePrivileges),
     members,
   };
+}
+
+function selectNextOwnerCandidate(
+  group: GroupWithMembers,
+  leavingUserId: string
+): NextOwnerCandidate | null {
+  const membershipByUser = new Map(
+    group.groupMemberships.map((membership) => [membership.userId, membership])
+  );
+
+  const candidates = group.members
+    .filter((member) => member.id !== leavingUserId)
+    .map((member) => {
+      const membership = membershipByUser.get(member.id);
+      const rawRole = membership?.role ?? 'MEMBER';
+      const prioritisedRole: NextOwnerCandidate['role'] =
+        rawRole === 'ADMIN' || rawRole === 'OWNER' ? 'ADMIN' : 'MEMBER';
+
+      return {
+        userId: member.id,
+        email: member.email,
+        // Legacy data may still have OWNER in membership rows for non-creators.
+        role: prioritisedRole,
+        joinedAt: membership?.joinedAt ?? group.createdAt,
+      };
+    })
+    .sort((a, b) => a.joinedAt.getTime() - b.joinedAt.getTime());
+
+  return (
+    candidates.find((candidate) => candidate.role === 'ADMIN') ??
+    candidates.find((candidate) => candidate.role === 'MEMBER') ??
+    null
+  );
 }
 
 /**
@@ -312,14 +352,6 @@ export async function DELETE(
       );
     }
 
-    // Prevent creator from removing themselves (they should delete the group)
-    if (isSelf && actorRole === 'OWNER') {
-      return NextResponse.json(
-        { error: 'The group creator cannot leave. Delete the group instead.' },
-        { status: 400 }
-      );
-    }
-
     const targetRole = resolveGroupMemberRole(
       targetUser.id,
       group.creatorId,
@@ -333,6 +365,63 @@ export async function DELETE(
         { error: 'The group owner cannot be removed' },
         { status: 403 }
       );
+    }
+
+    if (isSelf && actorRole === 'OWNER') {
+      const nextOwner = selectNextOwnerCandidate(group, targetUser.id);
+
+      if (!nextOwner) {
+        return NextResponse.json(
+          {
+            error:
+              'You are the only member in this group. Delete the group instead.',
+          },
+          { status: 400 }
+        );
+      }
+
+      await prisma.$transaction([
+        prisma.privateGroup.update({
+          where: { id: groupId },
+          data: {
+            creatorId: nextOwner.userId,
+            members: { disconnect: { id: targetUser.id } },
+          },
+        }),
+        prisma.groupMembership.upsert({
+          where: {
+            groupId_userId: {
+              groupId,
+              userId: nextOwner.userId,
+            },
+          },
+          create: {
+            groupId,
+            userId: nextOwner.userId,
+            role: 'OWNER',
+          },
+          update: {
+            role: 'OWNER',
+          },
+        }),
+        prisma.groupMembership.deleteMany({
+          where: {
+            groupId,
+            userId: targetUser.id,
+          },
+        }),
+      ]);
+
+      const updated = await getGroupWithMembers(groupId);
+      if (!updated) {
+        return NextResponse.json({ error: 'Group not found' }, { status: 404 });
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: `You left the group. Ownership was transferred to ${nextOwner.email}.`,
+        data: toGroupResponse(updated),
+      });
     }
 
     // ── 6. Remove member ─────────────────────────────────────────────
@@ -369,7 +458,8 @@ export async function DELETE(
 /**
  * PATCH /api/prisma/group/[groupId]/members
  *
- * Updates the role of a member. Only the group owner can change roles.
+ * Updates the role of a member. Only the group owner can change roles,
+ * including transferring ownership.
  */
 export async function PATCH(
   request: NextRequest,
@@ -439,6 +529,65 @@ export async function PATCH(
         { error: 'User is not a member of this group' },
         { status: 404 }
       );
+    }
+
+    if (parsed.data.role === 'OWNER') {
+      if (targetUser.id === group.creatorId) {
+        return NextResponse.json(
+          { error: 'This user is already the group owner' },
+          { status: 400 }
+        );
+      }
+
+      await prisma.$transaction([
+        prisma.privateGroup.update({
+          where: { id: groupId },
+          data: { creatorId: targetUser.id },
+        }),
+        prisma.groupMembership.upsert({
+          where: {
+            groupId_userId: {
+              groupId,
+              userId: targetUser.id,
+            },
+          },
+          create: {
+            groupId,
+            userId: targetUser.id,
+            role: 'OWNER',
+          },
+          update: {
+            role: 'OWNER',
+          },
+        }),
+        prisma.groupMembership.upsert({
+          where: {
+            groupId_userId: {
+              groupId,
+              userId: authUser.id,
+            },
+          },
+          create: {
+            groupId,
+            userId: authUser.id,
+            role: 'ADMIN',
+          },
+          update: {
+            role: 'ADMIN',
+          },
+        }),
+      ]);
+
+      const updated = await getGroupWithMembers(groupId);
+      if (!updated) {
+        return NextResponse.json({ error: 'Group not found' }, { status: 404 });
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: 'Ownership transferred successfully',
+        data: toGroupResponse(updated),
+      });
     }
 
     if (targetUser.id === group.creatorId) {
