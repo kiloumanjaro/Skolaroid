@@ -113,6 +113,7 @@ export function MapComponent() {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const processedMemoryParamRef = useRef<string | null>(null);
+  const cameraFocusedMemoryParamRef = useRef<string | null>(null);
   const [mapError, setMapError] = useState<string | null>(null);
   const [mapReady, setMapReady] = useState(false);
   const [isClient, setIsClient] = useState(false);
@@ -553,15 +554,9 @@ export function MapComponent() {
     }
   }, [isClient, handleLandmarkClick, mapError]);
 
-  // Handle memoryId URL param (for gallery → map navigation)
+  // Phase 1: open notebook immediately when a memoryId is present
   useEffect(() => {
-    if (
-      !mapRef.current ||
-      !mapReady ||
-      memoriesLoading ||
-      memories.length === 0
-    )
-      return;
+    if (memoriesLoading || memories.length === 0) return;
 
     const params = new URLSearchParams(window.location.search);
     const memoryIdParam = params.get('memoryId');
@@ -578,12 +573,39 @@ export function MapComponent() {
     }
 
     processedMemoryParamRef.current = memoryIdParam;
+    setSelectedMemory(targetMemory);
+    setMemoryDetailOpen(true);
+  }, [memories, memoriesLoading]);
 
-    // Switch era if needed
+  // Phase 2: once map is ready, align era and camera for the selected memory
+  useEffect(() => {
+    if (
+      !mapRef.current ||
+      !mapReady ||
+      memoriesLoading ||
+      memories.length === 0
+    )
+      return;
+
+    const params = new URLSearchParams(window.location.search);
+    const memoryIdParam = params.get('memoryId');
+
+    if (!memoryIdParam) return;
+    if (cameraFocusedMemoryParamRef.current === memoryIdParam) return;
+
+    const targetMemory = memories.find((m) => m.id === memoryIdParam);
+    if (!targetMemory) {
+      cameraFocusedMemoryParamRef.current = memoryIdParam;
+      return;
+    }
+
+    cameraFocusedMemoryParamRef.current = memoryIdParam;
+
     const memoryEra = getEraFromBatchTag(
       targetMemory.tags ?? [],
       targetMemory.createdAt
     );
+
     if (memoryEra !== activeMapEra) {
       const map = mapRef.current;
       if (!map) return;
@@ -591,10 +613,7 @@ export function MapComponent() {
       const onStyleLoad = () => {
         map.off('style.load', onStyleLoad);
         setTimeout(() => {
-          flyToMemoryWithSequence(targetMemory, () => {
-            setSelectedMemory(targetMemory);
-            setMemoryDetailOpen(true);
-          });
+          flyToMemoryWithSequence(targetMemory);
         }, 300);
       };
 
@@ -602,10 +621,7 @@ export function MapComponent() {
       setActiveMapEra(memoryEra);
     } else {
       setTimeout(() => {
-        flyToMemoryWithSequence(targetMemory, () => {
-          setSelectedMemory(targetMemory);
-          setMemoryDetailOpen(true);
-        });
+        flyToMemoryWithSequence(targetMemory);
       }, 300);
     }
   }, [
