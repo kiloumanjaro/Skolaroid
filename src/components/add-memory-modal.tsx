@@ -521,17 +521,6 @@ export function AddMemoryModal({
 
     const firstCompleted = completedFiles[0];
 
-    // TODO: re-enable upload requirement once backend is wired up
-    if (!firstCompleted) {
-      // No uploaded files — show success toast directly for testing
-      setShowSuccess(true);
-      setTimeout(() => {
-        resetState();
-        onOpenChange(false);
-      }, 2000);
-      return;
-    }
-
     const locationId = selectedLocationId ?? locations[0]?.id ?? '';
 
     if (visibility === 'GROUP_ONLY' && !defaultGroupId) {
@@ -548,7 +537,7 @@ export function AddMemoryModal({
         programBatchId: MOCK_PROGRAM_BATCH_ID,
         memoryDate: memoryDate ? new Date(memoryDate) : undefined,
         tags,
-        mediaFile: firstCompleted.file,
+        mediaFile: firstCompleted?.file,
         ...(visibility === 'GROUP_ONLY' && defaultGroupId
           ? { privateGroupId: defaultGroupId }
           : {}),
@@ -1210,7 +1199,7 @@ export function AddMemoryModal({
                 <div className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 shadow-md">
                   <CheckCircle className="h-5 w-5 text-emerald-600" />
                   <p className="text-sm font-medium text-emerald-800">
-                    Memory uploaded successfully!
+                    Memory saved successfully!
                   </p>
                 </div>
               </motion.div>

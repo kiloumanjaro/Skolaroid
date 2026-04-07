@@ -116,7 +116,14 @@ export async function createMemoryService(
       },
     });
 
-    if (!group || group.members.length === 0) {
+    if (!group) {
+      throw new Error('Group not found');
+    }
+
+    const isMemberInGroup =
+      group.members.length > 0 || group.groupMemberships.length > 0;
+
+    if (!isMemberInGroup) {
       throw new Error('You are not a member of this group');
     }
 
