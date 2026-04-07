@@ -550,9 +550,8 @@ export function MapComponent() {
     }
   }, [isClient, handleLandmarkClick, mapError]);
 
-  // Handle memoryId URL param (for gallery → map navigation)
+  // Handle gallery → map navigation via sessionStorage
   useEffect(() => {
-    // Only process once per page load to avoid re-entry on state changes
     if (galleryNavProcessedRef.current) return;
     if (
       !mapRef.current ||
@@ -562,21 +561,16 @@ export function MapComponent() {
     )
       return;
 
-    const params = new URLSearchParams(window.location.search);
-    const memoryIdParam = params.get('memoryId');
+    const memoryId = sessionStorage.getItem('gallery_selected_memory');
+    if (!memoryId) return;
 
-    if (!memoryIdParam) return;
-
-    // Mark as processed immediately so re-renders don't re-trigger this
+    // Consume immediately so it doesn't re-trigger
     galleryNavProcessedRef.current = true;
+    sessionStorage.removeItem('gallery_selected_memory');
 
-    // Clear URL params right away (we've captured what we need)
-    window.history.replaceState({}, '', window.location.pathname);
-
-    // Find the memory by ID
-    const targetMemory = memories.find((m) => m.id === memoryIdParam);
+    const targetMemory = memories.find((m) => m.id === memoryId);
     if (!targetMemory) {
-      console.warn(`Memory with ID ${memoryIdParam} not found`);
+      console.warn(`Memory with ID ${memoryId} not found`);
       return;
     }
 
@@ -595,14 +589,12 @@ export function MapComponent() {
     };
 
     if (needsEraSwitch) {
-      // Switch era and wait for the new style to load before flying
       const onStyleLoad = () => {
         map.off('style.load', onStyleLoad);
         setTimeout(openMemoryDetail, 300);
       };
       map.on('style.load', onStyleLoad);
       setActiveMapEra(memoryEra);
-      // Note: the activeMapEra useEffect (line ~612) will call setStyle
     } else {
       setTimeout(openMemoryDetail, 300);
     }

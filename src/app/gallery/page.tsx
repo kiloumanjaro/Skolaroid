@@ -68,7 +68,8 @@ function GalleryPageContent() {
   const currentEraStyle = ERA_STYLES[activeEra] || ERA_STYLES[2020];
 
   const handleMemoryClick = (memoryId: string) => {
-    router.push(`/map?memoryId=${memoryId}&era=${activeEra}`);
+    sessionStorage.setItem('gallery_selected_memory', memoryId);
+    router.push('/map');
   };
 
   // Wheel-to-horizontal scroll handler
