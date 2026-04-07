@@ -108,6 +108,9 @@ const CAMERA_ANIMATION = {
   essential: true, // Ensures animation is not skipped even if user prefers reduced motion
 };
 
+const DEFAULT_MAP_CENTER: [number, number] = [123.8986, 10.3224];
+const DEFAULT_MAP_ZOOM = 17;
+
 export function MapComponent() {
   const router = useRouter();
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
@@ -287,9 +290,19 @@ export function MapComponent() {
   }, []);
 
   const closeNotebookView = useCallback(() => {
+    const map = mapRef.current;
+
     setMemoryDetailOpen(false);
     setSelectedMemory(null);
     setSelectedLandmark(null);
+
+    // Return to the default overview camera after leaving notebook mode.
+    map?.easeTo({
+      center: DEFAULT_MAP_CENTER,
+      zoom: DEFAULT_MAP_ZOOM,
+      duration: 900,
+      essential: true,
+    });
 
     const params = new URLSearchParams(window.location.search);
     params.delete('memoryId');
@@ -507,8 +520,8 @@ export function MapComponent() {
         const map = new mapboxgl.Map({
           container: mapContainerRef.current,
           style: 'mapbox://styles/mapbox/streets-v12',
-          center: [123.8986, 10.3224],
-          zoom: 17,
+          center: DEFAULT_MAP_CENTER,
+          zoom: DEFAULT_MAP_ZOOM,
           minZoom: 16,
           maxZoom: 22,
           maxBounds: [
