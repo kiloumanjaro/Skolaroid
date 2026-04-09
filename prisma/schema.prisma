@@ -25,6 +25,9 @@ model User {
   votes           MemoryVote[]
   createdGroups   PrivateGroup[]  @relation("GroupCreator")
   groupMemberships GroupMembership[]
+  submittedReports Report[]        @relation("ReportReporter")
+  resolvedReports  Report[]        @relation("ReportResolver")
+  moderationActions ModerationActionLog[] @relation("ModerationActionsByAdmin")
   programBatch    ProgramBatch    @relation(fields: [programBatchId], references: [id])
   groups          PrivateGroup[]  @relation("GroupMembers")
 
@@ -86,6 +89,7 @@ model Memory {
   deletedAt      DateTime?
   isArchived     Boolean          @default(false)
   visibility     MemoryVisibility @default(PUBLIC)
+  moderationStatus MemoryModerationStatus @default(PENDING)
   programBatchId String           @db.Uuid
   privateGroupId String?          @db.Uuid
   memoryDate     DateTime?
@@ -96,12 +100,15 @@ model Memory {
   comments       MemoryComment[]
   votes          MemoryVote[]
   tags           Tag[]            @relation("MemoryTags")
+  reports        Report[]
+  moderationActions ModerationActionLog[] @relation("MemoryModerationActions")
 
   @@index([creatorId])
   @@index([programBatchId])
   @@index([locationId])
   @@index([uploadDate])
   @@index([visibility])
+  @@index([moderationStatus])
   @@index([isArchived])
   @@index([deletedAt])
   @@index([createdAt])
@@ -136,6 +143,50 @@ model MemoryVote {
   @@unique([memoryId, userId])
   @@index([memoryId])
   @@index([userId])
+  @@index([createdAt])
+}
+
+model Report {
+  id               String     @id @default(uuid()) @db.Uuid
+  state            ReportState @default(OPEN)
+  reason           String
+  reporterId       String     @db.Uuid
+  memoryId         String     @db.Uuid
+  resolvedById     String?    @db.Uuid
+  resolutionNote   String?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  resolvedAt       DateTime?
+  reporter         User       @relation("ReportReporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  memory           Memory     @relation(fields: [memoryId], references: [id], onDelete: Cascade)
+  resolvedBy       User?      @relation("ReportResolver", fields: [resolvedById], references: [id], onDelete: SetNull)
+  moderationActions ModerationActionLog[] @relation("ReportModerationActions")
+
+  @@index([state])
+  @@index([reporterId])
+  @@index([memoryId])
+  @@index([resolvedById])
+  @@index([createdAt])
+}
+
+model ModerationActionLog {
+  id             String               @id @default(uuid()) @db.Uuid
+  adminId        String               @db.Uuid
+  action         ModerationActionType
+  targetType     ModerationTargetType
+  targetMemoryId String?              @db.Uuid
+  targetReportId String?              @db.Uuid
+  reason         String?
+  createdAt      DateTime             @default(now())
+  admin          User                 @relation("ModerationActionsByAdmin", fields: [adminId], references: [id], onDelete: Restrict)
+  targetMemory   Memory?              @relation("MemoryModerationActions", fields: [targetMemoryId], references: [id], onDelete: SetNull)
+  targetReport   Report?              @relation("ReportModerationActions", fields: [targetReportId], references: [id], onDelete: SetNull)
+
+  @@index([adminId])
+  @@index([action])
+  @@index([targetType])
+  @@index([targetMemoryId])
+  @@index([targetReportId])
   @@index([createdAt])
 }
 
@@ -242,4 +293,32 @@ enum MemoryVisibility {
   BATCH_ONLY
   PRIVATE
   GROUP_ONLY
+}
+
+enum MemoryModerationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  REMOVED
+}
+
+enum ReportState {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
+enum ModerationActionType {
+  MEMORY_APPROVED
+  MEMORY_REJECTED
+  MEMORY_REMOVED
+  MEMORY_RESTORED
+  REPORT_OPENED
+  REPORT_RESOLVED
+  REPORT_DISMISSED
+}
+
+enum ModerationTargetType {
+  MEMORY
+  REPORT
 }
