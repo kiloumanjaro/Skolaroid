@@ -1,18 +1,41 @@
 'use client';
 
-import { Suspense } from 'react';
+import {
+  Suspense,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+} from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
 import { Header } from '@/components/header';
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 import { GalleryMemoryCard } from '@/components/gallery/GalleryMemoryCard';
 import { useAllMemoriesWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 import { getEraFromBatchTag } from '@/lib/utils';
 
+type GalleryStripStyle = CSSProperties & {
+  '--gallery-card-scale': string;
+};
+
 function GalleryPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeEra = parseInt(searchParams.get('era') || '2020', 10);
+  const galleryRef = useRef<HTMLDivElement>(null);
+  const wheelAnimationFrameRef = useRef<number | null>(null);
+  const wheelTargetRef = useRef(0);
+  const wheelIdleTimeoutRef = useRef<number | null>(null);
+  const dragStateRef = useRef({
+    pointerId: null as number | null,
+    startX: 0,
+    scrollLeft: 0,
+    hasMoved: false,
+  });
+  const suppressClickRef = useRef(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isWheelScrolling, setIsWheelScrolling] = useState(false);
 
   const { data: response, isLoading, error } = useAllMemoriesWithCoordinates();
 
@@ -71,19 +94,189 @@ function GalleryPageContent() {
     router.push(`/map?memoryId=${memoryId}&era=${activeEra}`);
   };
 
+  const stopWheelAnimation = () => {
+    if (wheelAnimationFrameRef.current !== null) {
+      window.cancelAnimationFrame(wheelAnimationFrameRef.current);
+      wheelAnimationFrameRef.current = null;
+    }
+  };
+
+  const clearWheelIdleTimeout = () => {
+    if (wheelIdleTimeoutRef.current !== null) {
+      window.clearTimeout(wheelIdleTimeoutRef.current);
+      wheelIdleTimeoutRef.current = null;
+    }
+  };
+
+  const clampScrollTarget = (container: HTMLDivElement, value: number) =>
+    Math.max(0, Math.min(value, container.scrollWidth - container.clientWidth));
+
+  const animateWheelScroll = () => {
+    const container = galleryRef.current;
+
+    if (!container) {
+      stopWheelAnimation();
+      return;
+    }
+
+    const distance = wheelTargetRef.current - container.scrollLeft;
+
+    if (Math.abs(distance) < 0.5) {
+      container.scrollLeft = wheelTargetRef.current;
+      stopWheelAnimation();
+      return;
+    }
+
+    container.scrollLeft += distance * 0.18;
+    wheelAnimationFrameRef.current =
+      window.requestAnimationFrame(animateWheelScroll);
+  };
+
+  const finishDrag = () => {
+    const container = galleryRef.current;
+    const { pointerId, hasMoved } = dragStateRef.current;
+
+    if (
+      container &&
+      pointerId !== null &&
+      container.hasPointerCapture(pointerId)
+    ) {
+      container.releasePointerCapture(pointerId);
+    }
+
+    if (hasMoved) {
+      suppressClickRef.current = true;
+      window.setTimeout(() => {
+        suppressClickRef.current = false;
+      }, 0);
+    }
+
+    dragStateRef.current = {
+      pointerId: null,
+      startX: 0,
+      scrollLeft: 0,
+      hasMoved: false,
+    };
+    setIsDragging(false);
+  };
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) {
+      return;
+    }
+
+    const container = galleryRef.current;
+
+    if (!container) {
+      return;
+    }
+
+    clearWheelIdleTimeout();
+    stopWheelAnimation();
+    setIsWheelScrolling(false);
+    wheelTargetRef.current = container.scrollLeft;
+
+    dragStateRef.current = {
+      pointerId: e.pointerId,
+      startX: e.clientX,
+      scrollLeft: container.scrollLeft,
+      hasMoved: false,
+    };
+
+    container.setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const container = galleryRef.current;
+    const dragState = dragStateRef.current;
+
+    if (!container || dragState.pointerId !== e.pointerId) {
+      return;
+    }
+
+    const deltaX = e.clientX - dragState.startX;
+
+    if (!dragState.hasMoved && Math.abs(deltaX) < 6) {
+      return;
+    }
+
+    if (!dragState.hasMoved) {
+      dragState.hasMoved = true;
+      setIsDragging(true);
+    }
+
+    const nextScrollLeft = clampScrollTarget(
+      container,
+      dragState.scrollLeft - deltaX
+    );
+    container.scrollLeft = nextScrollLeft;
+    wheelTargetRef.current = nextScrollLeft;
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (dragStateRef.current.pointerId !== e.pointerId) {
+      return;
+    }
+
+    finishDrag();
+  };
+
+  const handleClickCapture = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!suppressClickRef.current) {
+      return;
+    }
+
+    e.preventDefault();
+    e.stopPropagation();
+    suppressClickRef.current = false;
+  };
+
   // Wheel-to-horizontal scroll handler
   const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     const container = e.currentTarget;
     if (!container) return;
 
-    // Translate vertical wheel to horizontal scroll
-    container.scrollLeft += e.deltaY;
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+      return;
+    }
+
+    e.preventDefault();
+    setIsWheelScrolling(true);
+    wheelTargetRef.current = clampScrollTarget(
+      container,
+      wheelTargetRef.current + e.deltaY * 0.9
+    );
+
+    if (wheelAnimationFrameRef.current === null) {
+      wheelAnimationFrameRef.current =
+        window.requestAnimationFrame(animateWheelScroll);
+    }
+
+    clearWheelIdleTimeout();
+    wheelIdleTimeoutRef.current = window.setTimeout(() => {
+      setIsWheelScrolling(false);
+    }, 140);
+  };
+
+  useEffect(() => {
+    return () => {
+      stopWheelAnimation();
+      clearWheelIdleTimeout();
+    };
+  }, []);
+
+  const galleryStripStyle: GalleryStripStyle = {
+    scrollBehavior: isDragging || isWheelScrolling ? 'auto' : 'smooth',
+    scrollSnapType: isDragging || isWheelScrolling ? 'none' : 'x proximity',
+    overscrollBehaviorX: 'contain',
+    touchAction: 'pan-y',
+    '--gallery-card-scale': 'clamp(0.28, calc((100dvh - 24rem) / 560), 0.48)',
   };
 
   return (
-    <div className="flex h-screen flex-col bg-gray-50">
+    <div className="flex h-dvh flex-col overflow-hidden bg-gray-50">
       <Header />
-      <div className="flex flex-1 pt-16">
+      <div className="flex min-h-0 min-w-0 flex-1 pt-16">
         {/* Color Strip - Left Edge */}
         <div className="flex w-2.5 shrink-0 flex-col">
           <div className="flex-1 bg-[#8E1537]" />
@@ -93,25 +286,15 @@ function GalleryPageContent() {
           <div className="flex-1 bg-[#208CD4]" />
         </div>
 
-        {/* Era badge */}
-        <div className="absolute left-6 top-20 z-20">
-          <div
-            className={`flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-sm font-semibold shadow-md backdrop-blur-sm ${currentEraStyle.badge}`}
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
-            {currentEraStyle.label} Gallery
-          </div>
-        </div>
-
         {/* Loading/Error States */}
         {isLoading && (
-          <div className="flex flex-1 items-center justify-center">
+          <div className="flex min-w-0 flex-1 items-center justify-center">
             <p className="text-lg text-gray-600">Loading memories...</p>
           </div>
         )}
 
         {error && (
-          <div className="flex flex-1 items-center justify-center">
+          <div className="flex min-w-0 flex-1 items-center justify-center">
             <p className="text-lg text-red-600">
               Failed to load memories. Please try again.
             </p>
@@ -121,11 +304,18 @@ function GalleryPageContent() {
         {/* Horizontal scroll gallery */}
         {!isLoading && !error && (
           <div
-            className="scrollbar-hide flex flex-1 items-center gap-16 overflow-x-auto overflow-y-hidden px-16 py-8"
-            style={{
-              scrollBehavior: 'smooth',
-              scrollSnapType: 'x mandatory',
-            }}
+            ref={galleryRef}
+            className={`scrollbar-hide flex min-w-0 flex-1 items-center gap-8 overflow-x-auto overflow-y-hidden px-8 py-6 md:gap-12 md:px-12 lg:gap-16 lg:px-16 lg:py-8 ${
+              isDragging ? 'cursor-grabbing select-none' : 'cursor-grab'
+            }`}
+            style={galleryStripStyle}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={finishDrag}
+            onLostPointerCapture={finishDrag}
+            onClickCapture={handleClickCapture}
+            onDragStart={(e) => e.preventDefault()}
             onWheel={handleWheel}
           >
             {eraFilteredMemories.length === 0 ? (
@@ -159,7 +349,7 @@ export default function GalleryPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex h-screen flex-col bg-gray-50">
+        <div className="flex h-dvh flex-col overflow-hidden bg-gray-50">
           <Header />
           <div className="flex flex-1 items-center justify-center pt-16">
             <p className="text-lg text-gray-600">Loading gallery...</p>
