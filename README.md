@@ -92,11 +92,20 @@ For more detailed documentation on the system architecture and development patte
 
 - [Architecture Guide](ARCHITECTURE.md) - Complete architecture overview, data flow patterns, and best practices
 - [GitHub Copilot Instructions](.github/copilot-instructions.md) - Development guidelines and project conventions
+- [Swagger/OpenAPI Spec](swagger/swagger.yaml) - API contract for all route handlers under `src/app/api`
 
 Quick links:
 
 - [System Architecture](docs/architecture/SYSTEM_ARCHITECTURE.md)
 - [Tech Stack](docs/architecture/TECH_STACK.md)
+
+### API Documentation (Swagger)
+
+Use the OpenAPI file at [swagger/swagger.yaml](swagger/swagger.yaml).
+
+Local Swagger UI endpoint: `http://localhost:3000/swagger`
+
+You can open it in [Swagger Editor](https://editor.swagger.io/) by importing the YAML file.
 
 ## 💻 Getting Started
 

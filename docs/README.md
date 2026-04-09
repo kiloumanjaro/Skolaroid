@@ -88,6 +88,22 @@ This folder contains comprehensive documentation for the Prisma v7 implementatio
 
 **Best for:** Learning by example and API integration
 
+### 5. [swagger.yaml](../swagger/swagger.yaml) - OpenAPI/Swagger Specification
+
+**Start here for:**
+
+- Importing API docs into Swagger Editor / Swagger UI
+- Reviewing endpoint methods, params, request bodies, and status codes
+- API client generation workflows
+
+**Key Topics:**
+
+- Full API inventory for `src/app/api/*`
+- Shared request schemas mapped from Zod validations
+- Authentication and authorization requirements by endpoint
+
+**Best for:** API integration, QA validation, and contract-first development
+
 ## 🚀 Quick Start
 
 ### Step 1: Initial Setup
