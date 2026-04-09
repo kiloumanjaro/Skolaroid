@@ -153,6 +153,27 @@ export type GetCommentsQuery = z.infer<typeof getCommentsQuerySchema>;
 export type DeleteCommentInput = z.infer<typeof deleteCommentSchema>;
 
 // ============================================================================
+// REPORT SCHEMAS
+// ============================================================================
+
+export const MAX_REPORT_REASON_LENGTH = 1000;
+
+/** Payload for reporting a memory — reporterId is resolved server-side. */
+export const createReportSchema = z.object({
+  memoryId: z.string().uuid('Invalid memory ID'),
+  reason: z
+    .string()
+    .trim()
+    .min(1, 'Reason is required')
+    .max(
+      MAX_REPORT_REASON_LENGTH,
+      `Reason must be ${MAX_REPORT_REASON_LENGTH} characters or less`
+    ),
+});
+
+export type CreateReportInput = z.infer<typeof createReportSchema>;
+
+// ============================================================================
 // MEMORY TYPE EXPORTS
 // ============================================================================
 
