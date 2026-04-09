@@ -142,6 +142,7 @@ export function MapComponent() {
     sortBy: 'date-newest',
     visibility: 'ALL',
     selectedGroupId: null,
+    selectedLocationId: null,
   });
 
   // Location selection mode for Add Memory flow
