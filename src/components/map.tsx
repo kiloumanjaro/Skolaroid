@@ -12,12 +12,9 @@ import {
 import { getEraFromBatchTag } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { createRoot, type Root } from 'react-dom/client';
-import { Plus, Filter } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { AddMemoryModal } from './add-memory-modal';
-import {
-  FilterMemoriesModal,
-  type MemoryFilters,
-} from './map/FilterMemoriesModal';
+import type { MemoryFilters } from './map/FilterMemoriesModal';
 import { GroupPanel } from './groups/GroupPanel';
 import { BatchesModal } from './batches-modal';
 import { ExpandableToolbar } from './expandable-toolbar';
@@ -108,7 +105,18 @@ const CAMERA_ANIMATION = {
   essential: true, // Ensures animation is not skipped even if user prefers reduced motion
 };
 
-export function MapComponent() {
+interface MapComponentProps {
+  filters: MemoryFilters;
+  onFilterOptionsChange?: (options: {
+    availableTags: string[];
+    availableYears: number[];
+  }) => void;
+}
+
+export function MapComponent({
+  filters,
+  onFilterOptionsChange,
+}: MapComponentProps) {
   const router = useRouter();
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -127,13 +135,6 @@ export function MapComponent() {
   const [memoryDetailOpen, setMemoryDetailOpen] = useState(false);
   const [showLandmarks, setShowLandmarks] = useState(false);
   const [showMemoryPins, setShowMemoryPins] = useState(true);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [filters, setFilters] = useState<MemoryFilters>({
-    selectedTags: [],
-    selectedYear: null,
-    sortBy: 'date-newest',
-    visibility: 'ALL',
-  });
 
   // Location selection mode for Add Memory flow
   const [locationSelectionMode, setLocationSelectionMode] =
@@ -256,6 +257,13 @@ export function MapComponent() {
       ).sort((a, b) => b - a),
     [eraFilteredMemories]
   );
+
+  useEffect(() => {
+    onFilterOptionsChange?.({
+      availableTags,
+      availableYears,
+    });
+  }, [availableTags, availableYears, onFilterOptionsChange]);
 
   // Keep a stable ref for the click handler so detached roots always call the latest version
   const handleClickRef = useRef<(landmark: Landmark) => void>(() => {});
@@ -769,7 +777,7 @@ export function MapComponent() {
 
   if (mapError) {
     return (
-      <div className="flex h-screen w-full items-center justify-center bg-red-50">
+      <div className="flex h-full w-full items-center justify-center bg-red-50">
         <div className="text-center">
           <h2 className="mb-2 text-2xl font-bold text-red-600">{mapError}</h2>
           <p className="text-red-600">
@@ -825,34 +833,8 @@ export function MapComponent() {
         );
       })()}
 
-      {/* Add Memory + Filter Buttons - Bottom Right */}
+      {/* Add Memory Button - Bottom Right */}
       <div className="absolute bottom-6 right-6 z-10 flex flex-col items-end gap-3">
-        <button
-          onClick={() => setIsFilterOpen(!isFilterOpen)}
-          className={
-            'inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition ' +
-            (isFilterOpen ||
-            filters.selectedTags.length > 0 ||
-            filters.selectedYear ||
-            filters.visibility !== 'ALL'
-              ? 'bg-skolaroid-blue text-white'
-              : 'hover:bg-gray-100')
-          }
-          aria-label="Filter memories"
-        >
-          <Filter size={16} />
-          Filter
-          {(filters.selectedTags.length > 0 ||
-            filters.selectedYear ||
-            filters.visibility !== 'ALL') && (
-            <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-white text-xs font-bold text-skolaroid-blue">
-              {filters.selectedTags.length +
-                (filters.selectedYear ? 1 : 0) +
-                (filters.visibility !== 'ALL' ? 1 : 0)}
-            </span>
-          )}
-        </button>
-
         <div className="group flex items-center gap-0 rounded-full bg-white p-2 shadow-lg transition-all duration-300 hover:gap-3">
           <button
             onClick={() => setAddMemoryOpen(true)}
@@ -929,16 +911,6 @@ export function MapComponent() {
           selectedLandmark ? (memoryCounts[selectedLandmark.id] ?? 0) : 0
         }
         onClose={() => setSelectedLandmark(null)}
-      />
-
-      {/* Filter Modal */}
-      <FilterMemoriesModal
-        open={isFilterOpen}
-        onClose={() => setIsFilterOpen(false)}
-        filters={filters}
-        onApply={setFilters}
-        availableTags={availableTags}
-        availableYears={availableYears}
       />
 
       {/* Memory Detail Modal */}

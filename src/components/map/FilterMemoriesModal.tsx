@@ -49,6 +49,16 @@ interface FilterMemoriesModalProps {
   availableYears: number[];
 }
 
+interface FilterMemoriesPanelProps {
+  active?: boolean;
+  onClose?: () => void;
+  filters: MemoryFilters;
+  onApply: (filters: MemoryFilters) => void;
+  availableTags: string[];
+  availableYears: number[];
+  className?: string;
+}
+
 // =============================================================================
 // CONSTANTS
 // =============================================================================
@@ -72,21 +82,22 @@ const VISIBILITY_OPTIONS: { value: VisibilityFilter; label: string }[] = [
 // COMPONENT
 // =============================================================================
 
-export function FilterMemoriesModal({
-  open,
+export function FilterMemoriesPanel({
+  active = true,
   onClose,
   filters,
   onApply,
   availableTags,
   availableYears,
-}: FilterMemoriesModalProps) {
+  className,
+}: FilterMemoriesPanelProps) {
   const [draft, setDraft] = useState<MemoryFilters>(filters);
 
   useEffect(() => {
-    if (open) {
+    if (active) {
       setDraft(filters);
     }
-  }, [open, filters]);
+  }, [active, filters]);
 
   const handleClearAll = useCallback(() => {
     setDraft(DEFAULT_FILTERS);
@@ -94,7 +105,7 @@ export function FilterMemoriesModal({
 
   const handleApply = useCallback(() => {
     onApply(draft);
-    onClose();
+    onClose?.();
   }, [draft, onApply, onClose]);
 
   const toggleTag = useCallback((tag: string) => {
@@ -115,175 +126,191 @@ export function FilterMemoriesModal({
 
   return (
     <div
-      className={cn(
-        'fixed left-0 top-0 z-30 flex h-full transition-all duration-300 ease-in-out',
-        open ? '' : 'pointer-events-none'
-      )}
-      aria-hidden={!open}
+      className={cn('flex h-full flex-col overflow-hidden bg-card', className)}
     >
-      {/* Filter Panel Content */}
-      <div
-        className={cn(
-          'flex flex-col overflow-hidden bg-card transition-all duration-300 ease-in-out',
-          open
-            ? 'w-[288px] opacity-100 shadow-[6px_6px_0px_0px_#2d2d2d]'
-            : 'w-0 opacity-0'
-        )}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between border-b px-5 py-3">
-          <h2 className="text-sm font-semibold text-foreground">Filters</h2>
+      <div className="flex items-center justify-between border-b px-5 py-3">
+        <h2 className="text-sm font-semibold text-foreground">Filters</h2>
+        {onClose ? (
           <button
+            type="button"
             onClick={onClose}
             className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             aria-label="Close filters"
           >
             <X className="h-4 w-4" />
           </button>
-        </div>
-
-        {/* Scrollable Content */}
-        <div className="scrollbar-hide flex-1 overflow-y-auto px-6 py-4">
-          {/* Sort By */}
-          <div className="mb-6">
-            <h3 className="mb-3 text-sm font-semibold text-foreground">
-              Sort By
-            </h3>
-            <div className="space-y-1">
-              {SORT_OPTIONS.map((option) => (
-                <button
-                  key={option.value}
-                  onClick={() =>
-                    setDraft((prev) => ({ ...prev, sortBy: option.value }))
-                  }
-                  className={cn(
-                    'w-full px-4 py-3 text-left text-sm font-medium transition-colors',
-                    draft.sortBy === option.value
-                      ? 'bg-foreground text-background'
-                      : 'text-muted-foreground hover:bg-secondary'
-                  )}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Visibility */}
-          <div className="mb-6">
-            <h3 className="mb-3 text-sm font-semibold text-foreground">
-              Visibility
-            </h3>
-            <div className="space-y-1">
-              {VISIBILITY_OPTIONS.map((option) => (
-                <button
-                  key={option.value}
-                  onClick={() =>
-                    setDraft((prev) => ({ ...prev, visibility: option.value }))
-                  }
-                  className={cn(
-                    'w-full px-4 py-3 text-left text-sm font-medium transition-colors',
-                    draft.visibility === option.value
-                      ? 'bg-foreground text-background'
-                      : 'text-muted-foreground hover:bg-secondary'
-                  )}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Tags (dynamic from loaded memories) */}
-          {availableTags.length > 0 && (
-            <div className="mb-6">
-              <h3 className="mb-3 text-sm font-semibold text-foreground">
-                Tags
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {availableTags.map((tag) => {
-                  const isSelected = draft.selectedTags.includes(tag);
-                  return (
-                    <Badge
-                      key={tag}
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => toggleTag(tag)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          toggleTag(tag);
-                        }
-                      }}
-                      className={cn(
-                        'cursor-pointer select-none rounded-full px-3 py-1.5 text-sm transition-colors',
-                        isSelected
-                          ? 'border-foreground bg-foreground text-background hover:bg-foreground/90'
-                          : 'border-border bg-card text-muted-foreground hover:bg-secondary'
-                      )}
-                      variant="outline"
-                    >
-                      #{tag}
-                    </Badge>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Year (dynamic from loaded memories) */}
-          {availableYears.length > 0 && (
-            <div>
-              <h3 className="mb-3 text-sm font-semibold text-foreground">
-                Year
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {availableYears.map((year) => {
-                  const isSelected = draft.selectedYear === year;
-                  return (
-                    <Badge
-                      key={year}
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => toggleYear(year)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          toggleYear(year);
-                        }
-                      }}
-                      className={cn(
-                        'cursor-pointer select-none rounded-full px-3 py-1.5 text-sm transition-colors',
-                        isSelected
-                          ? 'border-foreground bg-foreground text-background hover:bg-foreground/90'
-                          : 'border-border bg-card text-muted-foreground hover:bg-secondary'
-                      )}
-                      variant="outline"
-                    >
-                      {year}
-                    </Badge>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Footer */}
-        <div className="flex gap-3 border-t px-6 py-4">
-          <Button variant="outline" className="flex-1" onClick={handleClearAll}>
-            Clear All
-          </Button>
-          <Button
-            className="flex-1 bg-foreground text-background hover:bg-foreground/90"
-            onClick={handleApply}
-          >
-            Apply
-          </Button>
-        </div>
+        ) : null}
       </div>
 
-      {/* Color Strip Trigger - Always visible */}
+      <div className="scrollbar-hide flex-1 overflow-y-auto px-6 py-4">
+        <div className="mb-6">
+          <h3 className="mb-3 text-sm font-semibold text-foreground">
+            Sort By
+          </h3>
+          <div className="space-y-1">
+            {SORT_OPTIONS.map((option) => (
+              <button
+                type="button"
+                key={option.value}
+                onClick={() =>
+                  setDraft((prev) => ({ ...prev, sortBy: option.value }))
+                }
+                className={cn(
+                  'w-full px-4 py-3 text-left text-sm font-medium transition-colors',
+                  draft.sortBy === option.value
+                    ? 'bg-foreground text-background'
+                    : 'text-muted-foreground hover:bg-secondary'
+                )}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <h3 className="mb-3 text-sm font-semibold text-foreground">
+            Visibility
+          </h3>
+          <div className="space-y-1">
+            {VISIBILITY_OPTIONS.map((option) => (
+              <button
+                type="button"
+                key={option.value}
+                onClick={() =>
+                  setDraft((prev) => ({ ...prev, visibility: option.value }))
+                }
+                className={cn(
+                  'w-full px-4 py-3 text-left text-sm font-medium transition-colors',
+                  draft.visibility === option.value
+                    ? 'bg-foreground text-background'
+                    : 'text-muted-foreground hover:bg-secondary'
+                )}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {availableTags.length > 0 && (
+          <div className="mb-6">
+            <h3 className="mb-3 text-sm font-semibold text-foreground">Tags</h3>
+            <div className="flex flex-wrap gap-2">
+              {availableTags.map((tag) => {
+                const isSelected = draft.selectedTags.includes(tag);
+                return (
+                  <Badge
+                    key={tag}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => toggleTag(tag)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleTag(tag);
+                      }
+                    }}
+                    className={cn(
+                      'cursor-pointer select-none rounded-full px-3 py-1.5 text-sm transition-colors',
+                      isSelected
+                        ? 'border-foreground bg-foreground text-background hover:bg-foreground/90'
+                        : 'border-border bg-card text-muted-foreground hover:bg-secondary'
+                    )}
+                    variant="outline"
+                  >
+                    #{tag}
+                  </Badge>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {availableYears.length > 0 && (
+          <div>
+            <h3 className="mb-3 text-sm font-semibold text-foreground">Year</h3>
+            <div className="flex flex-wrap gap-2">
+              {availableYears.map((year) => {
+                const isSelected = draft.selectedYear === year;
+                return (
+                  <Badge
+                    key={year}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => toggleYear(year)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleYear(year);
+                      }
+                    }}
+                    className={cn(
+                      'cursor-pointer select-none rounded-full px-3 py-1.5 text-sm transition-colors',
+                      isSelected
+                        ? 'border-foreground bg-foreground text-background hover:bg-foreground/90'
+                        : 'border-border bg-card text-muted-foreground hover:bg-secondary'
+                    )}
+                    variant="outline"
+                  >
+                    {year}
+                  </Badge>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="flex gap-3 border-t px-6 py-4">
+        <Button variant="outline" className="flex-1" onClick={handleClearAll}>
+          Clear All
+        </Button>
+        <Button
+          className="flex-1 bg-foreground text-background hover:bg-foreground/90"
+          onClick={handleApply}
+        >
+          Apply
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+export function FilterMemoriesModal({
+  open,
+  onClose,
+  filters,
+  onApply,
+  availableTags,
+  availableYears,
+}: FilterMemoriesModalProps) {
+  return (
+    <div
+      className={cn(
+        'fixed left-0 top-0 z-30 flex h-full transition-all duration-300 ease-in-out',
+        open ? '' : 'pointer-events-none'
+      )}
+      aria-hidden={!open}
+    >
+      <div
+        className={cn(
+          'overflow-hidden transition-all duration-300 ease-in-out',
+          open
+            ? 'w-[288px] opacity-100 shadow-[6px_6px_0px_0px_#2d2d2d]'
+            : 'w-0 opacity-0'
+        )}
+      >
+        <FilterMemoriesPanel
+          active={open}
+          onClose={onClose}
+          filters={filters}
+          onApply={onApply}
+          availableTags={availableTags}
+          availableYears={availableYears}
+        />
+      </div>
+
       <ColorStrip
         interactive
         onClick={onClose}
