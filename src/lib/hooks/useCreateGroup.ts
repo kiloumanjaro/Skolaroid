@@ -43,6 +43,7 @@ export interface GroupResponse {
   id: string;
   name: string;
   description: string | null;
+  message: string | null;
   creatorId: string | null;
   creator: GroupMemberResponse | null;
   members: GroupMemberResponse[];

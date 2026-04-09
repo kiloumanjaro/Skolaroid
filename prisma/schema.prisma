@@ -24,6 +24,7 @@ model User {
   comments        MemoryComment[]
   votes           MemoryVote[]
   createdGroups   PrivateGroup[]  @relation("GroupCreator")
+  groupMemberships GroupMembership[]
   programBatch    ProgramBatch    @relation(fields: [programBatchId], references: [id])
   groups          PrivateGroup[]  @relation("GroupMembers")
 
@@ -168,6 +169,8 @@ model PrivateGroup {
   id          String       @id @default(uuid()) @db.Uuid
   name        String       @unique @db.VarChar(50)
   description String?
+  message     String?      @db.VarChar(300)
+  rolePrivileges Json?
   creatorId   String?      @db.Uuid
   deletedAt   DateTime?
   createdAt   DateTime     @default(now())
@@ -176,10 +179,28 @@ model PrivateGroup {
   memories    Memory[]
   creator     User?        @relation("GroupCreator", fields: [creatorId], references: [id])
   members     User[]       @relation("GroupMembers")
+  groupMemberships GroupMembership[]
 
   @@index([name])
   @@index([creatorId])
   @@index([deletedAt])
+}
+
+model GroupMembership {
+  id        String          @id @default(uuid()) @db.Uuid
+  groupId   String          @db.Uuid
+  userId    String          @db.Uuid
+  role      GroupMemberRole @default(MEMBER)
+  joinedAt  DateTime        @default(now())
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  group     PrivateGroup    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, userId])
+  @@index([groupId])
+  @@index([userId])
+  @@index([role])
 }
 
 model Invitation {
@@ -207,6 +228,12 @@ enum Status {
 enum UserRole {
   USER
   ADMIN
+}
+
+enum GroupMemberRole {
+  OWNER
+  ADMIN
+  MEMBER
 }
 
 enum MemoryVisibility {

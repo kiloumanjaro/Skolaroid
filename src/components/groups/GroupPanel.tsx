@@ -12,6 +12,7 @@ import { MembersTab } from '@/components/groups/tabs/MembersTab';
 import { MediaTab } from '@/components/groups/tabs/MediaTab';
 import { AboutTab } from '@/components/groups/tabs/AboutTab';
 import { RolesTab } from '@/components/groups/tabs/RolesTab';
+import { SettingsTab } from '@/components/groups/tabs/SettingsTab';
 import { type Group, type GroupMember } from '@/lib/types/group';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
 import {
@@ -34,6 +35,7 @@ import {
   Users,
   Image as ImageIcon,
   Info,
+  Settings,
   UserPlus,
   Share2,
   Trash2,
@@ -58,8 +60,7 @@ interface GroupPanelProps {
   onOpenChange: (open: boolean) => void;
 }
 
-type TabType = 'members' | 'media' | 'about';
-type ExtendedTabType = TabType | 'roles';
+type TabType = 'members' | 'media' | 'settings' | 'about' | 'roles';
 type MemberChangeAction = 'removed' | 'role-updated' | 'ownership-transferred';
 
 /** Transform an API member response to the frontend GroupMember shape. */
@@ -94,6 +95,7 @@ function toGroup(g: GroupResponse): Group {
     id: g.id,
     name: g.name,
     description: g.description ?? undefined,
+    message: g.message ?? undefined,
     privacy: 'PRIVATE',
     visibility: 'VISIBLE',
     coverPhotoUrl: undefined,
@@ -116,7 +118,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [leaveModalOpen, setLeaveModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<ExtendedTabType>('members');
+  const [activeTab, setActiveTab] = useState<TabType>('members');
 
   const { showSuccess, showError } = useGroupToast();
   const { user } = useUserAuth();
@@ -319,6 +321,21 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                     <span>Media</span>
                   </button>
 
+                  {isOwner && (
+                    <button
+                      onClick={() => setActiveTab('settings')}
+                      className={cn(
+                        'flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium transition-colors',
+                        activeTab === 'settings'
+                          ? 'bg-secondary text-foreground'
+                          : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+                      )}
+                    >
+                      <Settings className="h-4 w-4" />
+                      <span>Settings</span>
+                    </button>
+                  )}
+
                   <button
                     onClick={() => setActiveTab('about')}
                     className={cn(
@@ -461,6 +478,12 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                     />
                   )}
                   {activeTab === 'media' && <MediaTab group={selectedGroup} />}
+                  {activeTab === 'settings' && isOwner && (
+                    <SettingsTab
+                      group={selectedGroup}
+                      onUpdated={() => refetchGroupDetail()}
+                    />
+                  )}
                   {activeTab === 'about' && <AboutTab group={selectedGroup} />}
                   {activeTab === 'roles' && selectedGroup.rolePrivileges && (
                     <RolesTab
