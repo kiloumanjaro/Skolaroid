@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+
 import { BatchCard } from '@/components/batch-card';
 import { BatchSidebar } from '@/components/batch-sidebar';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
@@ -50,7 +50,6 @@ const batches = [
 
 export default function Home() {
   const { isAuthenticated, loading } = useUserAuth();
-  const router = useRouter();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const drawerContentRef = useRef<HTMLDivElement>(null);
@@ -85,17 +84,6 @@ export default function Home() {
       imageUrl: '', // TODO: Add Oblation statue photo from 1990s era
     },
   ];
-
-  // After login, check for a stored invite redirect
-  useEffect(() => {
-    if (!loading && isAuthenticated) {
-      const pendingRedirect = sessionStorage.getItem('invite_redirect');
-      if (pendingRedirect) {
-        sessionStorage.removeItem('invite_redirect');
-        router.push(pendingRedirect);
-      }
-    }
-  }, [loading, isAuthenticated, router]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
