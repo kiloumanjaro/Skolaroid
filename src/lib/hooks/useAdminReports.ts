@@ -1,0 +1,45 @@
+'use client';
+
+import { useQuery } from '@tanstack/react-query';
+
+export interface AdminReportItem {
+  id: string;
+  reason: string;
+  state: 'OPEN' | 'RESOLVED' | 'DISMISSED';
+  createdAt: string;
+  resolutionNote: string | null;
+  resolvedAt: string | null;
+  reporter: {
+    firstName: string;
+    lastName: string;
+  };
+  memory: {
+    id: string;
+    title: string;
+    mediaURL: string | null;
+  };
+  resolvedBy: {
+    firstName: string;
+    lastName: string;
+  } | null;
+}
+
+interface AdminReportsResponse {
+  success: boolean;
+  message: string;
+  data: AdminReportItem[];
+}
+
+export function useAdminReports(state?: 'OPEN' | 'RESOLVED' | 'DISMISSED') {
+  return useQuery({
+    queryKey: ['admin-reports', state],
+    queryFn: async () => {
+      const params = state ? `?state=${encodeURIComponent(state)}` : '';
+      const res = await fetch(`/api/prisma/report/admin/get-all${params}`);
+      if (!res.ok) throw new Error('Failed to fetch reports');
+      return res.json() as Promise<AdminReportsResponse>;
+    },
+    staleTime: 5 * 60 * 1000,
+    retry: 1,
+  });
+}

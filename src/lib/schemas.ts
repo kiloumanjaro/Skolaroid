@@ -384,6 +384,47 @@ export type InvitationTokenInput = z.infer<typeof invitationTokenSchema>;
 export type InvitationActionInput = z.infer<typeof invitationActionSchema>;
 
 // ============================================================================
+// ADMIN / MODERATION SCHEMAS
+// ============================================================================
+
+export const moderationStatusEnum = z.enum([
+  'PENDING',
+  'APPROVED',
+  'REJECTED',
+  'REMOVED',
+]);
+
+/** Query params for fetching memories by moderation status (admin). */
+export const adminMemoriesQuerySchema = z.object({
+  status: moderationStatusEnum,
+});
+
+/** Payload for approving, rejecting, or removing a memory (admin). */
+export const moderateMemorySchema = z.object({
+  memoryId: z.string().uuid('Invalid memory ID'),
+  action: z.enum(['APPROVED', 'REJECTED', 'REMOVED']),
+  reason: z.string().trim().max(1000).optional(),
+});
+
+export const reportStateEnum = z.enum(['OPEN', 'RESOLVED', 'DISMISSED']);
+
+/** Query params for fetching reports with optional state filter (admin). */
+export const adminReportsQuerySchema = z.object({
+  state: reportStateEnum.optional(),
+});
+
+/** Payload for resolving or dismissing a report (admin). */
+export const resolveReportSchema = z.object({
+  reportId: z.string().uuid('Invalid report ID'),
+  action: z.enum(['RESOLVED', 'DISMISSED']),
+  resolutionNote: z.string().trim().max(1000).optional(),
+});
+
+export type ModerationStatus = z.infer<typeof moderationStatusEnum>;
+export type ModerateMemoryInput = z.infer<typeof moderateMemorySchema>;
+export type ResolveReportInput = z.infer<typeof resolveReportSchema>;
+
+// ============================================================================
 // AUTH TYPE EXPORTS
 // ============================================================================
 

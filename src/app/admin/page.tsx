@@ -7,144 +7,28 @@ import {
   ArrowLeft,
   Search,
   Filter,
-  Pencil,
-  Copy,
   Trash2,
-  Upload,
-  ChevronDown,
   Clock,
   AlertTriangle,
   Flag,
+  CheckCircle,
+  XCircle,
+  Loader2,
+  RefreshCw,
 } from 'lucide-react';
 import Image from 'next/image';
+import {
+  useAdminMemories,
+  type AdminMemoryItem,
+} from '@/lib/hooks/useAdminMemories';
+import { useModerateMemory } from '@/lib/hooks/useModerateMemory';
+import {
+  useAdminReports,
+  type AdminReportItem,
+} from '@/lib/hooks/useAdminReports';
+import { useResolveReport } from '@/lib/hooks/useResolveReport';
 
 type AdminTab = 'published' | 'pending' | 'reports';
-
-interface Post {
-  id: string;
-  thumbnail: string;
-  description: string;
-  date: string;
-  author: {
-    name: string;
-    avatar: string;
-    batch: number;
-    verified: boolean;
-  };
-  status: string;
-}
-
-interface Report {
-  id: string;
-  postId: string;
-  reason: string;
-  reportedBy: string;
-  date: string;
-  status: 'open' | 'resolved' | 'dismissed';
-}
-
-const mockPublishedPosts: Post[] = [
-  {
-    id: '1',
-    thumbnail: '/assets/images/temporary_map.png',
-    description:
-      "From freshman orientations to professional milestones, the [School Name] bond stays strong. We're building a digital time capsule on our new Alumni Memory site, and we want your story to be part of it.",
-    date: 'January 10, 2026, 12:30 PM',
-    author: {
-      name: 'Kint Louise',
-      avatar: '',
-      batch: 27,
-      verified: true,
-    },
-    status: 'Published',
-  },
-  {
-    id: '2',
-    thumbnail: '/assets/images/temporary_map.png',
-    description:
-      "From freshman orientations to professional milestones, the [School Name] bond stays strong. We're building a digital time capsule on our new Alumni Memory site, and we want your story to be part of it.",
-    date: 'January 10, 2026, 12:30 PM',
-    author: {
-      name: 'Kint Louise',
-      avatar: '',
-      batch: 27,
-      verified: true,
-    },
-    status: 'Published',
-  },
-];
-
-const mockPendingPosts: Post[] = [
-  {
-    id: '3',
-    thumbnail: '/assets/images/temporary_map.png',
-    description:
-      "From freshman orientations to professional milestones, the [School Name] bond stays strong. We're building a digital time capsule on our new Alumni Memory site, and we want your story to be part of it.",
-    date: 'January 10, 2026, 12:30 PM',
-    author: {
-      name: 'Kint Louise',
-      avatar: '',
-      batch: 27,
-      verified: true,
-    },
-    status: 'Awaiting Approval',
-  },
-  {
-    id: '4',
-    thumbnail: '/assets/images/temporary_map.png',
-    description:
-      "From freshman orientations to professional milestones, the [School Name] bond stays strong. We're building a digital time capsule on our new Alumni Memory site, and we want your story to be part of it.",
-    date: 'January 10, 2026, 12:30 PM',
-    author: {
-      name: 'Kint Louise',
-      avatar: '',
-      batch: 27,
-      verified: true,
-    },
-    status: 'Awaiting Approval',
-  },
-  {
-    id: '5',
-    thumbnail: '/assets/images/temporary_map.png',
-    description:
-      "From freshman orientations to professional milestones, the [School Name] bond stays strong. We're building a digital time capsule on our new Alumni Memory site, and we want your story to be part of it.",
-    date: 'January 10, 2026, 12:30 PM',
-    author: {
-      name: 'Kint Louise',
-      avatar: '',
-      batch: 27,
-      verified: true,
-    },
-    status: 'Awaiting Approval',
-  },
-];
-
-const mockReports: Report[] = [
-  {
-    id: 'r1',
-    postId: '1',
-    reason: 'Inappropriate content — contains offensive language',
-    reportedBy: 'Jane Doe',
-    date: 'January 12, 2026, 3:45 PM',
-    status: 'open',
-  },
-  {
-    id: 'r2',
-    postId: '2',
-    reason: 'Spam or misleading information',
-    reportedBy: 'John Smith',
-    date: 'January 11, 2026, 9:15 AM',
-    status: 'open',
-  },
-  {
-    id: 'r3',
-    postId: '1',
-    reason: 'Copyright violation — image used without permission',
-    reportedBy: 'Alex Cruz',
-    date: 'January 10, 2026, 5:00 PM',
-    status: 'resolved',
-  },
-];
 
 const tabLabels: Record<AdminTab, string> = {
   published: 'Published Posts',
@@ -152,19 +36,73 @@ const tabLabels: Record<AdminTab, string> = {
   reports: 'Reports',
 };
 
-function PostCard({ post }: { post: Post }) {
+function formatDate(dateString: string): string {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  });
+}
+
+function LoadingState() {
+  return (
+    <div className="flex items-center justify-center py-16">
+      <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      <span className="ml-2 text-sm text-muted-foreground">Loading...</span>
+    </div>
+  );
+}
+
+function ErrorState({ onRetry }: { onRetry: () => void }) {
+  return (
+    <div className="flex flex-col items-center justify-center gap-3 py-16">
+      <p className="text-sm text-red-500">
+        Failed to load data. Please try again.
+      </p>
+      <button
+        onClick={onRetry}
+        className="flex items-center gap-1.5 border-2 border-border px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-secondary"
+      >
+        <RefreshCw size={12} />
+        Retry
+      </button>
+    </div>
+  );
+}
+
+function PostCard({
+  memory,
+  onApprove,
+  onReject,
+  onRemove,
+  isPending,
+}: {
+  memory: AdminMemoryItem;
+  onApprove?: () => void;
+  onReject?: () => void;
+  onRemove?: () => void;
+  isPending?: boolean;
+}) {
+  const authorName = memory.creator
+    ? `${memory.creator.firstName} ${memory.creator.lastName}`
+    : 'Unknown';
+  const batchYear = memory.programBatch?.batch?.year;
+  const statusLabel =
+    memory.moderationStatus === 'APPROVED'
+      ? 'Published'
+      : memory.moderationStatus === 'PENDING'
+        ? 'Awaiting Approval'
+        : memory.moderationStatus;
+
   return (
     <div className="flex items-center gap-4 border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]">
-      {/* Checkbox */}
-      <input
-        type="checkbox"
-        className="h-4 w-4 shrink-0 rounded border-border"
-      />
-
       {/* Thumbnail */}
       <div className="relative h-28 w-40 shrink-0 overflow-hidden bg-secondary">
         <Image
-          src={post.thumbnail}
+          src={memory.mediaURL || '/assets/images/temporary_map.png'}
           alt="Post thumbnail"
           fill
           className="object-cover"
@@ -173,78 +111,103 @@ function PostCard({ post }: { post: Post }) {
 
       {/* Content */}
       <div className="flex min-w-0 flex-1 flex-col gap-2">
-        <p className="text-sm leading-relaxed text-foreground">
-          {post.description}
-        </p>
+        <p className="text-sm font-medium text-foreground">{memory.title}</p>
+        {memory.description && (
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            {memory.description}
+          </p>
+        )}
 
         <div className="flex items-center gap-4">
           {/* Date */}
           <span className="flex items-center gap-1.5 text-xs text-skolaroid-blue">
             <Clock size={12} />
-            {post.date}
+            {formatDate(memory.createdAt)}
           </span>
 
           {/* Actions */}
           <div className="flex items-center gap-2">
-            <button className="text-muted-foreground transition-colors hover:text-foreground">
-              <Pencil size={14} />
-            </button>
-            <button className="text-muted-foreground transition-colors hover:text-foreground">
-              <Copy size={14} />
-            </button>
-            <button className="text-red-300 transition-colors hover:text-red-500">
-              <Trash2 size={14} />
-            </button>
+            {onApprove && (
+              <button
+                onClick={onApprove}
+                disabled={isPending}
+                className="flex items-center gap-1 text-green-500 transition-colors hover:text-green-700 disabled:opacity-50"
+                title="Approve"
+              >
+                <CheckCircle size={14} />
+                <span className="text-xs">Approve</span>
+              </button>
+            )}
+            {onReject && (
+              <button
+                onClick={onReject}
+                disabled={isPending}
+                className="flex items-center gap-1 text-yellow-500 transition-colors hover:text-yellow-700 disabled:opacity-50"
+                title="Reject"
+              >
+                <XCircle size={14} />
+                <span className="text-xs">Reject</span>
+              </button>
+            )}
+            {onRemove && (
+              <button
+                onClick={onRemove}
+                disabled={isPending}
+                className="flex items-center gap-1 text-red-300 transition-colors hover:text-red-500 disabled:opacity-50"
+                title="Remove"
+              >
+                <Trash2 size={14} />
+                <span className="text-xs">Remove</span>
+              </button>
+            )}
           </div>
-
-          {/* Send for review button */}
-          <button className="flex items-center gap-1.5 border-2 border-border px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-secondary">
-            <Upload size={12} />
-            Send for client review
-            <ChevronDown size={12} />
-          </button>
         </div>
       </div>
 
       {/* Author Info */}
       <div className="flex shrink-0 flex-col items-center gap-1.5 pl-4">
-        <div className="relative">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-skolaroid-blue text-sm font-medium text-white">
-            {post.author.name.charAt(0)}
-          </div>
-          {post.author.verified && (
-            <div className="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-skolaroid-blue text-white">
-              <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
-                <path
-                  d="M6.5 2L3 5.5L1.5 4"
-                  stroke="white"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-          )}
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-skolaroid-blue text-sm font-medium text-white">
+          {authorName.charAt(0)}
         </div>
         <span className="text-xs font-medium text-foreground">
-          {post.author.name}
+          {authorName}
         </span>
-        <span className="text-[10px] text-muted-foreground">
-          Posted on Batch {post.author.batch}
-        </span>
+        {batchYear && (
+          <span className="text-[10px] text-muted-foreground">
+            Batch {batchYear}
+          </span>
+        )}
         <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
           <Clock size={10} />
-          {post.status}
+          {statusLabel}
         </span>
+        {memory._count.reports > 0 && (
+          <span className="text-[10px] text-red-500">
+            {memory._count.reports} report{memory._count.reports > 1 ? 's' : ''}
+          </span>
+        )}
       </div>
     </div>
   );
 }
 
 function PublishedPostsContent({ searchQuery }: { searchQuery: string }) {
-  const filtered = mockPublishedPosts.filter((post) =>
-    post.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const { data, isLoading, isError, refetch } = useAdminMemories('APPROVED');
+  const moderateMemory = useModerateMemory();
+
+  if (isLoading) return <LoadingState />;
+  if (isError) return <ErrorState onRetry={() => refetch()} />;
+
+  const memories = data?.data ?? [];
+  const filtered = memories.filter((m) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      m.title.toLowerCase().includes(query) ||
+      m.description?.toLowerCase().includes(query) ||
+      m.creator?.firstName.toLowerCase().includes(query) ||
+      m.creator?.lastName.toLowerCase().includes(query)
+    );
+  });
 
   if (filtered.length === 0) {
     return (
@@ -256,17 +219,37 @@ function PublishedPostsContent({ searchQuery }: { searchQuery: string }) {
 
   return (
     <div className="space-y-4">
-      {filtered.map((post) => (
-        <PostCard key={post.id} post={post} />
+      {filtered.map((memory) => (
+        <PostCard
+          key={memory.id}
+          memory={memory}
+          onRemove={() =>
+            moderateMemory.mutate({ memoryId: memory.id, action: 'REMOVED' })
+          }
+          isPending={moderateMemory.isPending}
+        />
       ))}
     </div>
   );
 }
 
 function PendingReviewContent({ searchQuery }: { searchQuery: string }) {
-  const filtered = mockPendingPosts.filter((post) =>
-    post.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const { data, isLoading, isError, refetch } = useAdminMemories('PENDING');
+  const moderateMemory = useModerateMemory();
+
+  if (isLoading) return <LoadingState />;
+  if (isError) return <ErrorState onRetry={() => refetch()} />;
+
+  const memories = data?.data ?? [];
+  const filtered = memories.filter((m) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      m.title.toLowerCase().includes(query) ||
+      m.description?.toLowerCase().includes(query) ||
+      m.creator?.firstName.toLowerCase().includes(query) ||
+      m.creator?.lastName.toLowerCase().includes(query)
+    );
+  });
 
   if (filtered.length === 0) {
     return (
@@ -278,19 +261,40 @@ function PendingReviewContent({ searchQuery }: { searchQuery: string }) {
 
   return (
     <div className="space-y-4">
-      {filtered.map((post) => (
-        <PostCard key={post.id} post={post} />
+      {filtered.map((memory) => (
+        <PostCard
+          key={memory.id}
+          memory={memory}
+          onApprove={() =>
+            moderateMemory.mutate({ memoryId: memory.id, action: 'APPROVED' })
+          }
+          onReject={() =>
+            moderateMemory.mutate({ memoryId: memory.id, action: 'REJECTED' })
+          }
+          isPending={moderateMemory.isPending}
+        />
       ))}
     </div>
   );
 }
 
 function ReportsContent({ searchQuery }: { searchQuery: string }) {
-  const filtered = mockReports.filter(
-    (report) =>
-      report.reason.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      report.reportedBy.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const { data, isLoading, isError, refetch } = useAdminReports();
+  const resolveReport = useResolveReport();
+
+  if (isLoading) return <LoadingState />;
+  if (isError) return <ErrorState onRetry={() => refetch()} />;
+
+  const reports = data?.data ?? [];
+  const filtered = reports.filter((report) => {
+    const query = searchQuery.toLowerCase();
+    const reporterName =
+      `${report.reporter.firstName} ${report.reporter.lastName}`.toLowerCase();
+    return (
+      report.reason.toLowerCase().includes(query) ||
+      reporterName.includes(query)
+    );
+  });
 
   if (filtered.length === 0) {
     return (
@@ -300,10 +304,10 @@ function ReportsContent({ searchQuery }: { searchQuery: string }) {
     );
   }
 
-  const statusStyles: Record<Report['status'], string> = {
-    open: 'bg-red-50 text-red-600',
-    resolved: 'bg-green-50 text-green-600',
-    dismissed: 'bg-secondary text-muted-foreground',
+  const statusStyles: Record<AdminReportItem['state'], string> = {
+    OPEN: 'bg-red-50 text-red-600',
+    RESOLVED: 'bg-green-50 text-green-600',
+    DISMISSED: 'bg-secondary text-muted-foreground',
   };
 
   return (
@@ -314,7 +318,7 @@ function ReportsContent({ searchQuery }: { searchQuery: string }) {
           className="flex items-start gap-4 border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]"
         >
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-50">
-            {report.status === 'open' ? (
+            {report.state === 'OPEN' ? (
               <AlertTriangle size={18} className="text-red-500" />
             ) : (
               <Flag size={18} className="text-muted-foreground" />
@@ -326,19 +330,54 @@ function ReportsContent({ searchQuery }: { searchQuery: string }) {
               {report.reason}
             </p>
             <div className="flex items-center gap-3 text-xs text-muted-foreground">
-              <span>Post #{report.postId}</span>
-              <span>Reported by {report.reportedBy}</span>
+              <span>Memory: {report.memory.title}</span>
+              <span>
+                Reported by {report.reporter.firstName}{' '}
+                {report.reporter.lastName}
+              </span>
               <span className="flex items-center gap-1">
                 <Clock size={10} />
-                {report.date}
+                {formatDate(report.createdAt)}
               </span>
             </div>
+
+            {/* Action buttons for open reports */}
+            {report.state === 'OPEN' && (
+              <div className="mt-2 flex items-center gap-2">
+                <button
+                  onClick={() =>
+                    resolveReport.mutate({
+                      reportId: report.id,
+                      action: 'RESOLVED',
+                    })
+                  }
+                  disabled={resolveReport.isPending}
+                  className="flex items-center gap-1 text-xs text-green-600 transition-colors hover:text-green-800 disabled:opacity-50"
+                >
+                  <CheckCircle size={12} />
+                  Resolve
+                </button>
+                <button
+                  onClick={() =>
+                    resolveReport.mutate({
+                      reportId: report.id,
+                      action: 'DISMISSED',
+                    })
+                  }
+                  disabled={resolveReport.isPending}
+                  className="flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground disabled:opacity-50"
+                >
+                  <XCircle size={12} />
+                  Dismiss
+                </button>
+              </div>
+            )}
           </div>
 
           <span
-            className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium capitalize ${statusStyles[report.status]}`}
+            className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium capitalize ${statusStyles[report.state]}`}
           >
-            {report.status}
+            {report.state.toLowerCase()}
           </span>
         </div>
       ))}
