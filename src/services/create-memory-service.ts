@@ -6,6 +6,10 @@ import {
   canRoleUsePermission,
   resolveGroupMemberRole,
 } from '@/lib/group-permissions';
+import {
+  isContentPrescreeningEnabled,
+  moderationPolicyService,
+} from '@/services/moderation-policy-service';
 
 interface CreateMemoryInput {
   title: string;
@@ -94,6 +98,11 @@ export async function createMemoryService(
     privateGroupId,
   } = input;
 
+  const prescreeningEnabled = isContentPrescreeningEnabled();
+  const moderationResult = prescreeningEnabled
+    ? moderationPolicyService({ title, description })
+    : null;
+
   if (visibility === 'GROUP_ONLY' && !privateGroupId) {
     throw new Error('Group ID is required for group-only memories');
   }
@@ -170,6 +179,10 @@ export async function createMemoryService(
     description,
     mediaURL,
     visibility,
+    ...(prescreeningEnabled && {
+      moderationStatus:
+        moderationResult?.status === 'flag' ? 'PENDING' : 'APPROVED',
+    }),
     creator: {
       connect: { id: creatorId },
     },
