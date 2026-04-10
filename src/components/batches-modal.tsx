@@ -10,7 +10,9 @@ import {
   FilterMemoriesModal,
   DEFAULT_FILTERS,
   type MemoryFilters,
+  type LocationFilterOption,
 } from './map/FilterMemoriesModal';
+import { useLocations } from '@/lib/hooks/useLocations';
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 
 // =============================================================================
@@ -85,6 +87,7 @@ export function BatchesModal({
   );
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [filters, setFilters] = useState<MemoryFilters>(DEFAULT_FILTERS);
+  const { data: locationsData } = useLocations();
 
   // Resolve memory source: prop data from the map (real API) or MOCK_MEMORIES fallback
   const allMemories = useMemo<MemoryWithCoordinates[]>(() => {
@@ -124,6 +127,24 @@ export function BatchesModal({
     });
     return Array.from(yearSet).sort((a, b) => b - a);
   }, [allMemories]);
+
+  const availableLocations = useMemo<LocationFilterOption[]>(() => {
+    // Prefer real API data sorted A–Z
+    if (locationsData?.data?.length) {
+      return [...locationsData.data]
+        .sort((a, b) => a.buildingName.localeCompare(b.buildingName))
+        .map((l) => ({ id: l.id, name: l.buildingName }));
+    }
+    // Fallback: derive unique building names from loaded memories
+    const seen = new Map<string, string>();
+    allMemories.forEach((m) => {
+      const name = m.location?.buildingName;
+      if (name && !seen.has(name)) seen.set(name, name);
+    });
+    return Array.from(seen.values())
+      .sort((a, b) => a.localeCompare(b))
+      .map((name) => ({ id: name, name }));
+  }, [locationsData, allMemories]);
 
   // Filter memories by era (batch tag), search, and applied filters (AND logic)
   const displayedMemories = useMemo<MemoryWithCoordinates[]>(() => {
@@ -169,6 +190,18 @@ export function BatchesModal({
       );
     }
 
+    // Location filter — match memory's building name against selected location
+    if (filters.selectedLocationId !== null) {
+      const selectedLocation = availableLocations.find(
+        (l) => l.id === filters.selectedLocationId
+      );
+      if (selectedLocation) {
+        result = result.filter(
+          (m) => m.location?.buildingName === selectedLocation.name
+        );
+      }
+    }
+
     // Sort
     switch (filters.sortBy) {
       case 'date-newest':
@@ -194,7 +227,7 @@ export function BatchesModal({
     }
 
     return result;
-  }, [allMemories, selectedDecade, searchQuery, filters]);
+  }, [allMemories, selectedDecade, searchQuery, filters, availableLocations]);
 
   // Handle clicking a memory card — always delegates to the parent
   const handleMemoryCardClick = (memory: MemoryWithCoordinates) => {
@@ -379,6 +412,7 @@ export function BatchesModal({
             onApply={setFilters}
             availableTags={availableTags}
             availableYears={availableYears}
+            availableLocations={availableLocations}
           />
         </div>
       </DialogContent>

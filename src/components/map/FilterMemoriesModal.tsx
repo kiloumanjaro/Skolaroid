@@ -1,11 +1,20 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ColorStrip } from '@/components/ui/color-strip';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { LocationCombobox } from '@/components/ui/location-combobox';
+import { WOBBLY_RADIUS, WOBBLY_RADIUS_MD } from '@/lib/hand-drawn';
 
 // =============================================================================
 // TYPES
@@ -30,6 +39,7 @@ export interface MemoryFilters {
   selectedTags: string[];
   selectedYear: number | null;
   selectedGroupId: string | null;
+  selectedLocationId: string | null;
 }
 
 export const DEFAULT_FILTERS: MemoryFilters = {
@@ -38,9 +48,15 @@ export const DEFAULT_FILTERS: MemoryFilters = {
   selectedTags: [],
   selectedYear: null,
   selectedGroupId: null,
+  selectedLocationId: null,
 };
 
 export interface GroupFilterOption {
+  id: string;
+  name: string;
+}
+
+export interface LocationFilterOption {
   id: string;
   name: string;
 }
@@ -56,6 +72,8 @@ interface FilterMemoriesModalProps {
   availableYears: number[];
   /** Groups available to the current user */
   availableGroups?: GroupFilterOption[];
+  /** Locations available for filtering */
+  availableLocations?: LocationFilterOption[];
 }
 
 // =============================================================================
@@ -89,6 +107,7 @@ export function FilterMemoriesModal({
   availableTags,
   availableYears,
   availableGroups = [],
+  availableLocations = [],
 }: FilterMemoriesModalProps) {
   const [draft, setDraft] = useState<MemoryFilters>(filters);
 
@@ -159,24 +178,52 @@ export function FilterMemoriesModal({
             <h3 className="mb-3 text-sm font-semibold text-foreground">
               Sort By
             </h3>
-            <div className="space-y-1">
-              {SORT_OPTIONS.map((option) => (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
                 <button
-                  key={option.value}
-                  onClick={() =>
-                    setDraft((prev) => ({ ...prev, sortBy: option.value }))
-                  }
                   className={cn(
-                    'w-full px-4 py-3 text-left text-sm font-medium transition-colors',
-                    draft.sortBy === option.value
-                      ? 'bg-foreground text-background'
-                      : 'text-muted-foreground hover:bg-secondary'
+                    'flex w-full items-center justify-between border-2 border-border bg-card',
+                    'px-3 py-2 font-hand text-sm text-foreground',
+                    'shadow-[4px_4px_0px_0px_#2d2d2d]',
+                    'hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#2d2d2d]',
+                    'active:translate-x-[4px] active:translate-y-[4px] active:shadow-none',
+                    'transition-all'
                   )}
+                  style={{ borderRadius: WOBBLY_RADIUS }}
                 >
-                  {option.label}
+                  <span>
+                    {SORT_OPTIONS.find((o) => o.value === draft.sortBy)?.label}
+                  </span>
+                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
                 </button>
-              ))}
-            </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-[var(--radix-dropdown-menu-trigger-width)] border-2 border-border bg-card p-1 shadow-[4px_4px_0px_0px_#2d2d2d]"
+                style={{ borderRadius: WOBBLY_RADIUS_MD }}
+                sideOffset={6}
+              >
+                <DropdownMenuRadioGroup
+                  value={draft.sortBy}
+                  onValueChange={(v) =>
+                    setDraft((prev) => ({ ...prev, sortBy: v as SortOption }))
+                  }
+                >
+                  {SORT_OPTIONS.map((option) => (
+                    <DropdownMenuRadioItem
+                      key={option.value}
+                      value={option.value}
+                      className={cn(
+                        'font-hand text-sm text-foreground',
+                        'focus:bg-secondary focus:text-foreground',
+                        'data-[state=checked]:bg-foreground data-[state=checked]:text-background'
+                      )}
+                    >
+                      {option.label}
+                    </DropdownMenuRadioItem>
+                  ))}
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Visibility */}
@@ -184,24 +231,59 @@ export function FilterMemoriesModal({
             <h3 className="mb-3 text-sm font-semibold text-foreground">
               Visibility
             </h3>
-            <div className="space-y-1">
-              {VISIBILITY_OPTIONS.map((option) => (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
                 <button
-                  key={option.value}
-                  onClick={() =>
-                    setDraft((prev) => ({ ...prev, visibility: option.value }))
-                  }
                   className={cn(
-                    'w-full px-4 py-3 text-left text-sm font-medium transition-colors',
-                    draft.visibility === option.value
-                      ? 'bg-foreground text-background'
-                      : 'text-muted-foreground hover:bg-secondary'
+                    'flex w-full items-center justify-between border-2 border-border bg-card',
+                    'px-3 py-2 font-hand text-sm text-foreground',
+                    'shadow-[4px_4px_0px_0px_#2d2d2d]',
+                    'hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#2d2d2d]',
+                    'active:translate-x-[4px] active:translate-y-[4px] active:shadow-none',
+                    'transition-all'
                   )}
+                  style={{ borderRadius: WOBBLY_RADIUS }}
                 >
-                  {option.label}
+                  <span>
+                    {
+                      VISIBILITY_OPTIONS.find(
+                        (o) => o.value === draft.visibility
+                      )?.label
+                    }
+                  </span>
+                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
                 </button>
-              ))}
-            </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-[var(--radix-dropdown-menu-trigger-width)] border-2 border-border bg-card p-1 shadow-[4px_4px_0px_0px_#2d2d2d]"
+                style={{ borderRadius: WOBBLY_RADIUS_MD }}
+                sideOffset={6}
+              >
+                <DropdownMenuRadioGroup
+                  value={draft.visibility}
+                  onValueChange={(v) =>
+                    setDraft((prev) => ({
+                      ...prev,
+                      visibility: v as VisibilityFilter,
+                    }))
+                  }
+                >
+                  {VISIBILITY_OPTIONS.map((option) => (
+                    <DropdownMenuRadioItem
+                      key={option.value}
+                      value={option.value}
+                      className={cn(
+                        'font-hand text-sm text-foreground',
+                        'focus:bg-secondary focus:text-foreground',
+                        'data-[state=checked]:bg-foreground data-[state=checked]:text-background'
+                      )}
+                    >
+                      {option.label}
+                    </DropdownMenuRadioItem>
+                  ))}
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Group */}
@@ -245,6 +327,26 @@ export function FilterMemoriesModal({
                   </button>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Location */}
+          {availableLocations.length > 0 && (
+            <div className="mb-6">
+              <h3 className="mb-3 text-sm font-semibold text-foreground">
+                Location
+              </h3>
+              <LocationCombobox
+                options={availableLocations.map((l) => ({
+                  id: l.id,
+                  label: l.name,
+                }))}
+                value={draft.selectedLocationId}
+                onChange={(id) =>
+                  setDraft((prev) => ({ ...prev, selectedLocationId: id }))
+                }
+                placeholder="Search location..."
+              />
             </div>
           )}
 
