@@ -12,6 +12,37 @@ import {
   type MemoryFilters,
 } from '@/components/map/FilterMemoriesModal';
 
+function areStringArraysEqual(a: string[], b: string[]) {
+  return a.length === b.length && a.every((value, index) => value === b[index]);
+}
+
+function areNumberArraysEqual(a: number[], b: number[]) {
+  return a.length === b.length && a.every((value, index) => value === b[index]);
+}
+
+function areGroupOptionsEqual(a: GroupFilterOption[], b: GroupFilterOption[]) {
+  return (
+    a.length === b.length &&
+    a.every(
+      (value, index) =>
+        value.id === b[index]?.id && value.name === b[index]?.name
+    )
+  );
+}
+
+function areLocationOptionsEqual(
+  a: LocationFilterOption[],
+  b: LocationFilterOption[]
+) {
+  return (
+    a.length === b.length &&
+    a.every(
+      (value, index) =>
+        value.id === b[index]?.id && value.name === b[index]?.name
+    )
+  );
+}
+
 export default function MapPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [filters, setFilters] = useState<MemoryFilters>(DEFAULT_FILTERS);
@@ -31,10 +62,26 @@ export default function MapPage() {
       availableGroups: GroupFilterOption[];
       availableLocations: LocationFilterOption[];
     }) => {
-      setAvailableTags(options.availableTags);
-      setAvailableYears(options.availableYears);
-      setAvailableGroups(options.availableGroups);
-      setAvailableLocations(options.availableLocations);
+      setAvailableTags((prev) =>
+        areStringArraysEqual(prev, options.availableTags)
+          ? prev
+          : options.availableTags
+      );
+      setAvailableYears((prev) =>
+        areNumberArraysEqual(prev, options.availableYears)
+          ? prev
+          : options.availableYears
+      );
+      setAvailableGroups((prev) =>
+        areGroupOptionsEqual(prev, options.availableGroups)
+          ? prev
+          : options.availableGroups
+      );
+      setAvailableLocations((prev) =>
+        areLocationOptionsEqual(prev, options.availableLocations)
+          ? prev
+          : options.availableLocations
+      );
     },
     []
   );

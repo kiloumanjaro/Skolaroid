@@ -113,6 +113,7 @@ const CAMERA_ANIMATION = {
 
 const DEFAULT_MAP_CENTER: [number, number] = [123.8986, 10.3224];
 const DEFAULT_MAP_ZOOM = 17;
+const EMPTY_USER_GROUPS: { id: string; name: string }[] = [];
 
 interface MapComponentProps {
   filters: MemoryFilters;
@@ -186,7 +187,8 @@ export function MapComponent({
     useAllMemoriesWithCoordinates();
   const memories = useMemo(() => memoriesData?.data ?? [], [memoriesData]);
   const { data: locationsData } = useLocations();
-  const { data: userGroups = [] } = useUserGroups();
+  const { data: userGroupsData } = useUserGroups();
+  const userGroups = userGroupsData ?? EMPTY_USER_GROUPS;
 
   const availableGroups = useMemo<GroupFilterOption[]>(
     () =>
