@@ -88,7 +88,22 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // ── 5. Check if already a member ─────────────────────────────────
+    // ── 5. Verify token belongs to the authenticated user ────────────
+    if (
+      invitation.email &&
+      authUser.email?.toLowerCase() !== invitation.email.toLowerCase()
+    ) {
+      return NextResponse.json(
+        {
+          error: 'Invalid invitation link',
+          code: 'WRONG_USER',
+          groupName: invitation.group.name,
+        },
+        { status: 403 }
+      );
+    }
+
+    // ── 6. Check if already a member ─────────────────────────────────
     const isMember = invitation.group.members.some((m) => m.id === authUser.id);
 
     return NextResponse.json({

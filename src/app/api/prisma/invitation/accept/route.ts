@@ -73,13 +73,24 @@ export async function POST(request: NextRequest) {
     // ── 6. Check if user exists in DB ────────────────────────────────
     const dbUser = await prisma.user.findUnique({
       where: { id: authUser.id },
-      select: { id: true },
+      select: { id: true, email: true },
     });
 
     if (!dbUser) {
       return NextResponse.json(
         { error: 'User not found. Complete onboarding first.' },
         { status: 404 }
+      );
+    }
+
+    // ── 6b. Verify token belongs to the authenticated user ──────────
+    if (
+      invitation.email &&
+      dbUser.email.toLowerCase() !== invitation.email.toLowerCase()
+    ) {
+      return NextResponse.json(
+        { error: 'Invalid invitation link' },
+        { status: 403 }
       );
     }
 

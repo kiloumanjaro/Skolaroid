@@ -24,15 +24,16 @@ export function LoginForm({
       const siteUrl =
         process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
-      const callbackUrl = new URL(`${siteUrl}/auth/callback`);
+      // Store the redirect destination in a cookie so the auth callback
+      // can read it server-side after the OAuth round-trip
       if (redirectAfterLogin) {
-        callbackUrl.searchParams.set('redirect', redirectAfterLogin);
+        document.cookie = `post_login_redirect=${encodeURIComponent(redirectAfterLogin)};path=/;max-age=600;SameSite=Lax`;
       }
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: callbackUrl.toString(),
+          redirectTo: `${siteUrl}/auth/callback`,
         },
       });
       if (error) throw error;

@@ -74,7 +74,7 @@ function InviteContent() {
   const declineInvitation = useDeclineInvitation();
 
   // Only validate once auth is resolved, to avoid premature 401
-  const shouldValidate = !authLoading && !!token;
+  const shouldValidate = !authLoading && isAuthenticated && !!token;
   const {
     data: validateData,
     error: validateError,
@@ -106,6 +106,9 @@ function InviteContent() {
           break;
         case 'NOT_AUTHENTICATED':
           setState('not-authenticated');
+          break;
+        case 'WRONG_USER':
+          setState('invalid');
           break;
         default:
           setState('error');
