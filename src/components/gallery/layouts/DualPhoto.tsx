@@ -14,29 +14,44 @@ export function DualPhoto({ photos, onPhotoClick }: DualPhotoProps) {
   }
 
   return (
-    <div className="relative" style={{ width: 480, height: 580 }}>
-      <GalleryPolaroid
-        src={photos[0].src}
-        alt={photos[0].alt}
-        width={360}
-        height={540}
-        rotation="-6deg"
-        offsetX="-20px"
-        offsetY="20px"
-        zIndex={1}
-        onClick={() => onPhotoClick?.(0)}
-      />
-      <GalleryPolaroid
-        src={photos[1].src}
-        alt={photos[1].alt}
-        width={360}
-        height={540}
-        rotation="5deg"
-        offsetX="140px"
-        offsetY="0px"
-        zIndex={2}
-        onClick={() => onPhotoClick?.(1)}
-      />
+    <div
+      style={{
+        width: 'calc(480px * var(--gallery-card-scale, 1))',
+        height: 'calc(580px * var(--gallery-card-scale, 1))',
+      }}
+    >
+      <div
+        className="relative"
+        style={{
+          width: 480,
+          height: 580,
+          transform: 'scale(var(--gallery-card-scale, 1))',
+          transformOrigin: 'left top',
+        }}
+      >
+        <GalleryPolaroid
+          src={photos[0].src}
+          alt={photos[0].alt}
+          width={360}
+          height={540}
+          rotation="-6deg"
+          offsetX="-20px"
+          offsetY="20px"
+          zIndex={1}
+          onClick={() => onPhotoClick?.(0)}
+        />
+        <GalleryPolaroid
+          src={photos[1].src}
+          alt={photos[1].alt}
+          width={360}
+          height={540}
+          rotation="5deg"
+          offsetX="140px"
+          offsetY="0px"
+          zIndex={2}
+          onClick={() => onPhotoClick?.(1)}
+        />
+      </div>
     </div>
   );
 }

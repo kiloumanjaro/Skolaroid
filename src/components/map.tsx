@@ -12,12 +12,12 @@ import {
 import { getEraFromBatchTag } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { createRoot, type Root } from 'react-dom/client';
-import { Plus, Filter } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { AddMemoryModal } from './add-memory-modal';
-import {
-  FilterMemoriesModal,
-  DEFAULT_FILTERS,
-  type MemoryFilters,
+import type {
+  GroupFilterOption,
+  LocationFilterOption,
+  MemoryFilters,
 } from './map/FilterMemoriesModal';
 import { GroupPanel } from './groups/GroupPanel';
 import { BatchesModal } from './batches-modal';
@@ -32,6 +32,7 @@ import {
   useAllMemoriesWithCoordinates,
   type MemoryWithCoordinates,
 } from '@/lib/hooks/useAllMemoriesWithCoordinates';
+import { useLocations } from '@/lib/hooks/useLocations';
 import { useUserGroups } from '@/lib/hooks/useUserGroups';
 import { LANDMARKS, type Landmark } from '@/lib/constants/landmarks';
 import type {
@@ -113,7 +114,20 @@ const CAMERA_ANIMATION = {
 const DEFAULT_MAP_CENTER: [number, number] = [123.8986, 10.3224];
 const DEFAULT_MAP_ZOOM = 17;
 
-export function MapComponent() {
+interface MapComponentProps {
+  filters: MemoryFilters;
+  onFilterOptionsChange?: (options: {
+    availableTags: string[];
+    availableYears: number[];
+    availableGroups: GroupFilterOption[];
+    availableLocations: LocationFilterOption[];
+  }) => void;
+}
+
+export function MapComponent({
+  filters,
+  onFilterOptionsChange,
+}: MapComponentProps) {
   const router = useRouter();
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -135,15 +149,6 @@ export function MapComponent() {
   const [memoryDetailOpen, setMemoryDetailOpen] = useState(false);
   const [showLandmarks, setShowLandmarks] = useState(false);
   const [showMemoryPins, setShowMemoryPins] = useState(true);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [filters, setFilters] = useState<MemoryFilters>({
-    selectedTags: [],
-    selectedYear: null,
-    sortBy: 'date-newest',
-    visibility: 'ALL',
-    selectedGroupId: null,
-    selectedLocationId: null,
-  });
 
   // Location selection mode for Add Memory flow
   const [locationSelectionMode, setLocationSelectionMode] =
@@ -163,9 +168,6 @@ export function MapComponent() {
 
   // Read era URL parameter on mount (for homepage → map navigation)
   useEffect(() => {
-    // Always start with clean filters on fresh map entry.
-    setFilters(DEFAULT_FILTERS);
-
     const params = new URLSearchParams(window.location.search);
     const eraParam = params.get('era');
 
@@ -183,9 +185,10 @@ export function MapComponent() {
   const { data: memoriesData, isLoading: memoriesLoading } =
     useAllMemoriesWithCoordinates();
   const memories = useMemo(() => memoriesData?.data ?? [], [memoriesData]);
+  const { data: locationsData } = useLocations();
   const { data: userGroups = [] } = useUserGroups();
 
-  const availableGroups = useMemo(
+  const availableGroups = useMemo<GroupFilterOption[]>(
     () =>
       userGroups
         .map((group) => ({ id: group.id, name: group.name }))
@@ -228,6 +231,12 @@ export function MapComponent() {
       // Group filter
       if (filters.selectedGroupId) {
         if (memory.privateGroupId !== filters.selectedGroupId) return false;
+      }
+
+      // Location filter
+      if (filters.selectedLocationId) {
+        const locationId = (memory.location as { id?: string } | undefined)?.id;
+        if (locationId !== filters.selectedLocationId) return false;
       }
 
       return true;
@@ -283,6 +292,61 @@ export function MapComponent() {
       ).sort((a, b) => b - a),
     [eraFilteredMemories]
   );
+
+  const availableLocations = useMemo<LocationFilterOption[]>(() => {
+    const locationIdsInEra = new Set(
+      eraFilteredMemories
+        .map((memory) => (memory.location as { id?: string } | undefined)?.id)
+        .filter((id): id is string => Boolean(id))
+    );
+
+    if (locationsData?.data?.length) {
+      return locationsData.data
+        .filter(
+          (location) =>
+            locationIdsInEra.size === 0 || locationIdsInEra.has(location.id)
+        )
+        .map((location) => ({
+          id: location.id,
+          name: location.buildingName,
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    const fallbackLocations = new Map<string, LocationFilterOption>();
+
+    for (const memory of eraFilteredMemories) {
+      const location = memory.location as
+        | { id?: string; buildingName: string }
+        | undefined;
+
+      if (!location?.id) continue;
+
+      fallbackLocations.set(location.id, {
+        id: location.id,
+        name: location.buildingName,
+      });
+    }
+
+    return Array.from(fallbackLocations.values()).sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+  }, [eraFilteredMemories, locationsData]);
+
+  useEffect(() => {
+    onFilterOptionsChange?.({
+      availableTags,
+      availableYears,
+      availableGroups,
+      availableLocations,
+    });
+  }, [
+    availableTags,
+    availableYears,
+    availableGroups,
+    availableLocations,
+    onFilterOptionsChange,
+  ]);
 
   // Keep a stable ref for the click handler so detached roots always call the latest version
   const handleClickRef = useRef<(landmark: Landmark) => void>(() => {});
@@ -514,6 +578,24 @@ export function MapComponent() {
       setSelectedLandmark(landmark);
     };
   }, [locationSelectionMode, handleLocationSelected]);
+
+  const handleRequestMapSelection = useCallback(
+    (
+      mode: 'landmark' | 'custom',
+      onSelect: (selection: MapLocationSelection) => void
+    ) => {
+      locationSelectionCallbackRef.current = onSelect;
+      setLocationSelectionMode(mode);
+      setPendingLocationSelection(null);
+
+      if (mode === 'landmark') {
+        setShowLandmarks(true);
+      }
+      setShowMemoryPins(false);
+      setAddMemoryOpen(true);
+    },
+    []
+  );
 
   useLayoutEffect(() => {
     setIsClient(true);
@@ -884,7 +966,7 @@ export function MapComponent() {
 
   if (mapError) {
     return (
-      <div className="flex h-screen w-full items-center justify-center bg-red-50">
+      <div className="flex h-full w-full items-center justify-center bg-red-50">
         <div className="text-center">
           <h2 className="mb-2 text-2xl font-bold text-red-600">{mapError}</h2>
           <p className="text-red-600">
@@ -940,37 +1022,8 @@ export function MapComponent() {
         );
       })()}
 
-      {/* Add Memory + Filter Buttons - Bottom Right */}
+      {/* Add Memory Button - Bottom Right */}
       <div className="absolute bottom-6 right-6 z-10 flex flex-col items-end gap-3">
-        <button
-          onClick={() => setIsFilterOpen(!isFilterOpen)}
-          className={
-            'inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition ' +
-            (isFilterOpen ||
-            filters.selectedTags.length > 0 ||
-            filters.selectedYear ||
-            filters.visibility !== 'ALL' ||
-            filters.selectedGroupId
-              ? 'bg-skolaroid-blue text-white'
-              : 'hover:bg-gray-100')
-          }
-          aria-label="Filter memories"
-        >
-          <Filter size={16} />
-          Filter
-          {(filters.selectedTags.length > 0 ||
-            filters.selectedYear ||
-            filters.visibility !== 'ALL' ||
-            filters.selectedGroupId) && (
-            <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-white text-xs font-bold text-skolaroid-blue">
-              {filters.selectedTags.length +
-                (filters.selectedYear ? 1 : 0) +
-                (filters.visibility !== 'ALL' ? 1 : 0) +
-                (filters.selectedGroupId ? 1 : 0)}
-            </span>
-          )}
-        </button>
-
         <div className="group flex items-center gap-0 rounded-full bg-white p-2 shadow-lg transition-all duration-300 hover:gap-3">
           <button
             onClick={() => setAddMemoryOpen(true)}
@@ -1026,6 +1079,7 @@ export function MapComponent() {
           }
         }}
         defaultEra={addMemoryEra}
+        onRequestMapSelection={handleRequestMapSelection}
       />
 
       {/* Map Location Selector Overlay */}
@@ -1046,17 +1100,6 @@ export function MapComponent() {
           selectedLandmark ? (memoryCounts[selectedLandmark.id] ?? 0) : 0
         }
         onClose={() => setSelectedLandmark(null)}
-      />
-
-      {/* Filter Modal */}
-      <FilterMemoriesModal
-        open={isFilterOpen}
-        onClose={() => setIsFilterOpen(false)}
-        filters={filters}
-        onApply={setFilters}
-        availableTags={availableTags}
-        availableYears={availableYears}
-        availableGroups={availableGroups}
       />
 
       {/* Memory Detail Modal */}
