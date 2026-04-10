@@ -29,6 +29,7 @@ export interface MemoryFilters {
   visibility: VisibilityFilter;
   selectedTags: string[];
   selectedYear: number | null;
+  selectedGroupId: string | null;
 }
 
 export const DEFAULT_FILTERS: MemoryFilters = {
@@ -36,7 +37,13 @@ export const DEFAULT_FILTERS: MemoryFilters = {
   visibility: 'ALL',
   selectedTags: [],
   selectedYear: null,
+  selectedGroupId: null,
 };
+
+export interface GroupFilterOption {
+  id: string;
+  name: string;
+}
 
 interface FilterMemoriesModalProps {
   open: boolean;
@@ -47,6 +54,8 @@ interface FilterMemoriesModalProps {
   availableTags: string[];
   /** Unique years extracted from the current memory set */
   availableYears: number[];
+  /** Groups available to the current user */
+  availableGroups?: GroupFilterOption[];
 }
 
 interface FilterMemoriesPanelProps {
@@ -56,6 +65,7 @@ interface FilterMemoriesPanelProps {
   onApply: (filters: MemoryFilters) => void;
   availableTags: string[];
   availableYears: number[];
+  availableGroups?: GroupFilterOption[];
   className?: string;
 }
 
@@ -89,6 +99,7 @@ export function FilterMemoriesPanel({
   onApply,
   availableTags,
   availableYears,
+  availableGroups = [],
   className,
 }: FilterMemoriesPanelProps) {
   const [draft, setDraft] = useState<MemoryFilters>(filters);
@@ -193,6 +204,51 @@ export function FilterMemoriesPanel({
           </div>
         </div>
 
+        {availableGroups.length > 0 && (
+          <div className="mb-6">
+            <h3 className="mb-3 text-sm font-semibold text-foreground">
+              Group
+            </h3>
+            <div className="space-y-1">
+              <button
+                type="button"
+                onClick={() =>
+                  setDraft((prev) => ({ ...prev, selectedGroupId: null }))
+                }
+                className={cn(
+                  'w-full px-4 py-3 text-left text-sm font-medium transition-colors',
+                  draft.selectedGroupId === null
+                    ? 'bg-foreground text-background'
+                    : 'text-muted-foreground hover:bg-secondary'
+                )}
+              >
+                All My Groups
+              </button>
+              {availableGroups.map((group) => (
+                <button
+                  type="button"
+                  key={group.id}
+                  onClick={() =>
+                    setDraft((prev) => ({
+                      ...prev,
+                      selectedGroupId: group.id,
+                      visibility: 'GROUP_ONLY',
+                    }))
+                  }
+                  className={cn(
+                    'w-full px-4 py-3 text-left text-sm font-medium transition-colors',
+                    draft.selectedGroupId === group.id
+                      ? 'bg-foreground text-background'
+                      : 'text-muted-foreground hover:bg-secondary'
+                  )}
+                >
+                  {group.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {availableTags.length > 0 && (
           <div className="mb-6">
             <h3 className="mb-3 text-sm font-semibold text-foreground">Tags</h3>
@@ -284,6 +340,7 @@ export function FilterMemoriesModal({
   onApply,
   availableTags,
   availableYears,
+  availableGroups = [],
 }: FilterMemoriesModalProps) {
   return (
     <div
@@ -308,6 +365,7 @@ export function FilterMemoriesModal({
           onApply={onApply}
           availableTags={availableTags}
           availableYears={availableYears}
+          availableGroups={availableGroups}
         />
       </div>
 

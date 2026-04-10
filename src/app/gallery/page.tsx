@@ -91,7 +91,9 @@ function GalleryPageContent() {
   const currentEraStyle = ERA_STYLES[activeEra] || ERA_STYLES[2020];
 
   const handleMemoryClick = (memoryId: string) => {
-    router.push(`/map?memoryId=${memoryId}&era=${activeEra}`);
+    router.push(
+      `/map?memoryId=${encodeURIComponent(memoryId)}&era=${activeEra}`
+    );
   };
 
   const stopWheelAnimation = () => {

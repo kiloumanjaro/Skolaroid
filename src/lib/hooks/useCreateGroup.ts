@@ -8,15 +8,48 @@ export interface GroupMemberResponse {
   firstName: string | null;
   lastName: string | null;
   email: string;
+  role?: 'OWNER' | 'ADMIN' | 'MEMBER';
+  joinedAt?: string;
+}
+
+export interface GroupMembershipResponse {
+  userId: string;
+  role: 'OWNER' | 'ADMIN' | 'MEMBER';
+  joinedAt: string;
+}
+
+export interface GroupRolePrivilegesResponse {
+  OWNER: {
+    editContent: boolean;
+    manageMembers: boolean;
+    viewAnalytics: boolean;
+    sendInvitations: boolean;
+  };
+  ADMIN: {
+    editContent: boolean;
+    manageMembers: boolean;
+    viewAnalytics: boolean;
+    sendInvitations: boolean;
+  };
+  MEMBER: {
+    editContent: boolean;
+    manageMembers: boolean;
+    viewAnalytics: boolean;
+    sendInvitations: boolean;
+  };
 }
 
 export interface GroupResponse {
   id: string;
   name: string;
   description: string | null;
+  message: string | null;
   creatorId: string | null;
   creator: GroupMemberResponse | null;
   members: GroupMemberResponse[];
+  groupMemberships?: GroupMembershipResponse[];
+  rolePrivileges?: GroupRolePrivilegesResponse;
+  currentUserRole?: 'OWNER' | 'ADMIN' | 'MEMBER';
   _count: { members: number; memories: number };
   createdAt: string;
   updatedAt: string;

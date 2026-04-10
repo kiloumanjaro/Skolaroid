@@ -1,25 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-
-interface GroupMemberResponse {
-  id: string;
-  firstName: string | null;
-  lastName: string | null;
-  email: string;
-}
-
-interface GroupResponse {
-  id: string;
-  name: string;
-  description: string | null;
-  creatorId: string | null;
-  creator: GroupMemberResponse | null;
-  members: GroupMemberResponse[];
-  _count: { members: number; memories: number };
-  createdAt: string;
-  updatedAt: string;
-}
+import type { GroupResponse } from '@/lib/hooks/useCreateGroup';
 
 interface ListGroupsResponse {
   success: boolean;

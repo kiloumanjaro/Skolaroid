@@ -14,7 +14,10 @@ import { useRouter } from 'next/navigation';
 import { createRoot, type Root } from 'react-dom/client';
 import { Plus } from 'lucide-react';
 import { AddMemoryModal } from './add-memory-modal';
-import type { MemoryFilters } from './map/FilterMemoriesModal';
+import type {
+  GroupFilterOption,
+  MemoryFilters,
+} from './map/FilterMemoriesModal';
 import { GroupPanel } from './groups/GroupPanel';
 import { BatchesModal } from './batches-modal';
 import { ExpandableToolbar } from './expandable-toolbar';
@@ -28,6 +31,7 @@ import {
   useAllMemoriesWithCoordinates,
   type MemoryWithCoordinates,
 } from '@/lib/hooks/useAllMemoriesWithCoordinates';
+import { useUserGroups } from '@/lib/hooks/useUserGroups';
 import { LANDMARKS, type Landmark } from '@/lib/constants/landmarks';
 import type {
   LocationSelectionMode,
@@ -105,11 +109,15 @@ const CAMERA_ANIMATION = {
   essential: true, // Ensures animation is not skipped even if user prefers reduced motion
 };
 
+const DEFAULT_MAP_CENTER: [number, number] = [123.8986, 10.3224];
+const DEFAULT_MAP_ZOOM = 17;
+
 interface MapComponentProps {
   filters: MemoryFilters;
   onFilterOptionsChange?: (options: {
     availableTags: string[];
     availableYears: number[];
+    availableGroups: GroupFilterOption[];
   }) => void;
 }
 
@@ -120,7 +128,10 @@ export function MapComponent({
   const router = useRouter();
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
+  const processedMemoryParamRef = useRef<string | null>(null);
+  const cameraFocusedMemoryParamRef = useRef<string | null>(null);
   const [mapError, setMapError] = useState<string | null>(null);
+  const [mapReady, setMapReady] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [addMemoryOpen, setAddMemoryOpen] = useState(false);
   const [addMemoryEra, setAddMemoryEra] = useState<number | null>(null);
@@ -171,6 +182,15 @@ export function MapComponent({
   const { data: memoriesData, isLoading: memoriesLoading } =
     useAllMemoriesWithCoordinates();
   const memories = useMemo(() => memoriesData?.data ?? [], [memoriesData]);
+  const { data: userGroups = [] } = useUserGroups();
+
+  const availableGroups = useMemo<GroupFilterOption[]>(
+    () =>
+      userGroups
+        .map((group) => ({ id: group.id, name: group.name }))
+        .sort((a, b) => a.name.localeCompare(b.name)),
+    [userGroups]
+  );
 
   // Only show memory pins for the active era (based on batch tag)
   const eraFilteredMemories = useMemo(() => {
@@ -202,6 +222,11 @@ export function MapComponent({
       // Visibility filter
       if (filters.visibility !== 'ALL') {
         if (memory.visibility !== filters.visibility) return false;
+      }
+
+      // Group filter
+      if (filters.selectedGroupId) {
+        if (memory.privateGroupId !== filters.selectedGroupId) return false;
       }
 
       return true;
@@ -262,8 +287,9 @@ export function MapComponent({
     onFilterOptionsChange?.({
       availableTags,
       availableYears,
+      availableGroups,
     });
-  }, [availableTags, availableYears, onFilterOptionsChange]);
+  }, [availableTags, availableYears, availableGroups, onFilterOptionsChange]);
 
   // Keep a stable ref for the click handler so detached roots always call the latest version
   const handleClickRef = useRef<(landmark: Landmark) => void>(() => {});
@@ -290,6 +316,49 @@ export function MapComponent({
   const handleMemoryClick = useCallback((memory: MemoryWithCoordinates) => {
     handleMemoryClickRef.current(memory);
   }, []);
+
+  const closeNotebookView = useCallback(() => {
+    const map = mapRef.current;
+
+    setMemoryDetailOpen(false);
+    setSelectedMemory(null);
+    setSelectedLandmark(null);
+
+    // Return to the default overview camera after leaving notebook mode.
+    map?.easeTo({
+      center: DEFAULT_MAP_CENTER,
+      zoom: DEFAULT_MAP_ZOOM,
+      duration: 900,
+      essential: true,
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    params.delete('memoryId');
+    params.set('era', String(activeMapEra));
+
+    processedMemoryParamRef.current = null;
+    cameraFocusedMemoryParamRef.current = null;
+
+    const nextUrl = `/map?${params.toString()}`;
+    const currentUrl = `${window.location.pathname}${window.location.search}`;
+    if (currentUrl !== nextUrl) {
+      router.replace(nextUrl, { scroll: false });
+    }
+  }, [activeMapEra, router]);
+
+  // Force Escape behavior for notebook mode: close and return to era map URL.
+  useEffect(() => {
+    if (!memoryDetailOpen) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      closeNotebookView();
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [memoryDetailOpen, closeNotebookView]);
 
   // ---------------------------------------------------------------------------
   // Batches → FlyTo → Detail handler
@@ -462,13 +531,10 @@ export function MapComponent({
       setLocationSelectionMode(mode);
       setPendingLocationSelection(null);
 
-      // Show landmarks when selecting landmark, hide memory pins during selection
       if (mode === 'landmark') {
         setShowLandmarks(true);
       }
       setShowMemoryPins(false);
-
-      // Re-open the modal after selection or cancel
       setAddMemoryOpen(true);
     },
     []
@@ -500,8 +566,8 @@ export function MapComponent({
         const map = new mapboxgl.Map({
           container: mapContainerRef.current,
           style: 'mapbox://styles/mapbox/streets-v12',
-          center: [123.8986, 10.3224],
-          zoom: 17,
+          center: DEFAULT_MAP_CENTER,
+          zoom: DEFAULT_MAP_ZOOM,
           minZoom: 16,
           maxZoom: 22,
           maxBounds: [
@@ -512,6 +578,9 @@ export function MapComponent({
         });
 
         mapRef.current = map;
+        map.once('load', () => {
+          setMapReady(true);
+        });
 
         map.addControl(new mapboxgl.NavigationControl(), 'top-left');
         map.addControl(new mapboxgl.FullscreenControl(), 'top-left');
@@ -564,6 +633,7 @@ export function MapComponent({
           memoryRootsRef.current = [];
           map.remove();
           mapRef.current = null;
+          setMapReady(false);
         };
       } catch (error) {
         console.error('Failed to initialize map:', error);
@@ -576,65 +646,83 @@ export function MapComponent({
     }
   }, [isClient, handleLandmarkClick, mapError]);
 
-  // Handle memoryId URL param (for gallery → map navigation)
+  // Phase 1: open notebook immediately when a memoryId is present
   useEffect(() => {
-    if (!mapRef.current || memoriesLoading || !memories) return;
+    if (memoriesLoading || memories.length === 0) return;
 
     const params = new URLSearchParams(window.location.search);
     const memoryIdParam = params.get('memoryId');
-    const eraParam = params.get('era');
 
     if (!memoryIdParam) return;
+    if (processedMemoryParamRef.current === memoryIdParam) return;
 
     // Find the memory by ID
     const targetMemory = memories.find((m) => m.id === memoryIdParam);
     if (!targetMemory) {
       console.warn(`Memory with ID ${memoryIdParam} not found`);
+      processedMemoryParamRef.current = memoryIdParam;
       return;
     }
+
+    processedMemoryParamRef.current = memoryIdParam;
+    setSelectedMemory(targetMemory);
+    setMemoryDetailOpen(true);
+  }, [memories, memoriesLoading]);
+
+  // Phase 2: once map is ready, align era and camera for the selected memory
+  useEffect(() => {
+    if (
+      !mapRef.current ||
+      !mapReady ||
+      memoriesLoading ||
+      memories.length === 0
+    )
+      return;
+
+    const params = new URLSearchParams(window.location.search);
+    const memoryIdParam = params.get('memoryId');
+
+    if (!memoryIdParam) return;
+    if (cameraFocusedMemoryParamRef.current === memoryIdParam) return;
+
+    const targetMemory = memories.find((m) => m.id === memoryIdParam);
+    if (!targetMemory) {
+      cameraFocusedMemoryParamRef.current = memoryIdParam;
+      return;
+    }
+
+    cameraFocusedMemoryParamRef.current = memoryIdParam;
 
     // Switch era if needed
     const memoryEra = getEraFromBatchTag(
       targetMemory.tags ?? [],
       targetMemory.createdAt
     );
-    if (eraParam && memoryEra !== activeMapEra) {
-      setActiveMapEra(memoryEra);
-      mapRef.current.setStyle(ERA_MAP_STYLES[memoryEra]);
-    }
-
-    // Wait for style to load, then fly to memory and open modal
-    const onStyleLoad = () => {
-      mapRef.current?.off('style.load', onStyleLoad);
-      setTimeout(() => {
-        flyToMemoryWithSequence(targetMemory, () => {
-          setSelectedMemory(targetMemory);
-          setMemoryDetailOpen(true);
-        });
-      }, 300);
-    };
 
     if (memoryEra !== activeMapEra) {
-      mapRef.current.on('style.load', onStyleLoad);
+      const map = mapRef.current;
+      if (!map) return;
+
+      const onStyleLoad = () => {
+        map.off('style.load', onStyleLoad);
+        setTimeout(() => {
+          flyToMemoryWithSequence(targetMemory);
+        }, 300);
+      };
+
+      map.on('style.load', onStyleLoad);
+      setActiveMapEra(memoryEra);
     } else {
       setTimeout(() => {
-        flyToMemoryWithSequence(targetMemory, () => {
-          setSelectedMemory(targetMemory);
-          setMemoryDetailOpen(true);
-        });
+        flyToMemoryWithSequence(targetMemory);
       }, 300);
     }
-
-    // Clear URL params after processing (optional - keeps URL clean)
-    window.history.replaceState({}, '', window.location.pathname);
   }, [
     memories,
     memoriesLoading,
     activeMapEra,
+    mapReady,
     flyToMemoryWithSequence,
-    setActiveMapEra,
-    setSelectedMemory,
-    setMemoryDetailOpen,
   ]);
 
   // Switch Mapbox style when the active era changes
@@ -643,6 +731,50 @@ export function MapComponent({
     const targetStyle = ERA_MAP_STYLES[activeMapEra] ?? DEFAULT_MAP_STYLE;
     mapRef.current.setStyle(targetStyle);
   }, [activeMapEra]);
+
+  // Keep URL in sync with notebook state so each opened memory has a stable deep link.
+  useEffect(() => {
+    if (!isClient) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const currentMemoryIdParam = params.get('memoryId');
+
+    // If a memoryId came from an external navigation (e.g., gallery click),
+    // preserve it only until initial notebook selection is established.
+    const hasPendingIncomingMemoryId =
+      !selectedMemory &&
+      !!currentMemoryIdParam &&
+      processedMemoryParamRef.current !== currentMemoryIdParam;
+
+    // Preserve active era in URL for consistency when sharing/reloading.
+    params.set('era', String(activeMapEra));
+
+    if (memoryDetailOpen && selectedMemory?.id) {
+      params.set('memoryId', selectedMemory.id);
+    } else if (!hasPendingIncomingMemoryId) {
+      params.delete('memoryId');
+
+      // Reset processed refs when leaving notebook mode so reopening via URL works
+      // for the same memory ID in a later navigation.
+      processedMemoryParamRef.current = null;
+      cameraFocusedMemoryParamRef.current = null;
+    }
+
+    const nextSearch = params.toString();
+    const nextUrl = nextSearch ? `/map?${nextSearch}` : '/map';
+    const currentUrl = `${window.location.pathname}${window.location.search}`;
+
+    if (currentUrl !== nextUrl) {
+      router.replace(nextUrl, { scroll: false });
+    }
+  }, [
+    isClient,
+    activeMapEra,
+    memoryDetailOpen,
+    selectedMemory,
+    selectedMemory?.id,
+    router,
+  ]);
 
   // Re-render marker roots when memory counts update or visibility changes
   useEffect(() => {
@@ -917,7 +1049,13 @@ export function MapComponent({
       <MemoryDetailModal
         memory={selectedMemory}
         open={memoryDetailOpen}
-        onOpenChange={setMemoryDetailOpen}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            closeNotebookView();
+            return;
+          }
+          setMemoryDetailOpen(true);
+        }}
         onMemoryDeleted={() => setSelectedMemory(null)}
         hasPrevious={
           selectedMemory

@@ -1,6 +1,15 @@
 'use client';
 
-import { Globe, Lock, Eye, EyeOff, Users, Calendar, Crown } from 'lucide-react';
+import {
+  Globe,
+  Lock,
+  Eye,
+  EyeOff,
+  Users,
+  Calendar,
+  Crown,
+  MessageSquare,
+} from 'lucide-react';
 import { type Group } from '@/lib/types/group';
 
 function formatFullDate(dateStr: string): string {
@@ -19,7 +28,7 @@ export function AboutTab({ group }: AboutTabProps) {
   const ownerMember = group.members.find((m) => m.role === 'OWNER');
 
   return (
-    <div className="space-y-6 px-1">
+    <div className="space-y-6 p-4">
       {/* Description */}
       <div className="space-y-2">
         <h3 className="text-xs font-medium uppercase tracking-wider text-gray-400">
@@ -33,6 +42,26 @@ export function AboutTab({ group }: AboutTabProps) {
           <p className="text-sm italic text-gray-400">
             No description provided.
           </p>
+        )}
+      </div>
+
+      {/* Group Message */}
+      <div className="space-y-2">
+        <h3 className="text-xs font-medium uppercase tracking-wider text-gray-400">
+          Group Message
+        </h3>
+        {group.message ? (
+          <div className="flex items-start gap-2.5 rounded border border-border/50 bg-postit/30 px-3 py-2.5">
+            <MessageSquare
+              size={15}
+              className="mt-0.5 shrink-0 text-gray-400"
+            />
+            <p className="text-sm leading-relaxed text-gray-700">
+              {group.message}
+            </p>
+          </div>
+        ) : (
+          <p className="text-sm italic text-gray-400">No message set.</p>
         )}
       </div>
 

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { GroupRolePrivileges } from '@/lib/group-permissions';
 
 // ─── GROUP ENUMS ────────────────────────────────────────────────────
 
@@ -25,6 +26,7 @@ export interface Group {
   id: string;
   name: string;
   description?: string | null;
+  message?: string | null;
   privacy: GroupPrivacy;
   visibility: GroupVisibility;
   coverPhotoUrl?: string | null;
@@ -32,6 +34,8 @@ export interface Group {
   postCount: number;
   ownerId: string;
   members: GroupMember[];
+  rolePrivileges?: GroupRolePrivileges;
+  currentUserRole?: GroupMemberRole;
   createdAt: string; // ISO date string
 }
 

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
 import { createGroupServerSchema } from '@/lib/schemas';
+import { createDefaultGroupRolePrivileges } from '@/lib/group-permissions';
 
 /**
  * POST /api/prisma/group/create
@@ -63,7 +64,14 @@ export async function POST(request: NextRequest) {
         name: parsed.data.name,
         description: parsed.data.description ?? null,
         creatorId: dbUser.id,
+        rolePrivileges: createDefaultGroupRolePrivileges(),
         members: { connect: { id: dbUser.id } },
+        groupMemberships: {
+          create: {
+            userId: dbUser.id,
+            role: 'OWNER',
+          },
+        },
       },
       include: {
         creator: {
@@ -71,6 +79,9 @@ export async function POST(request: NextRequest) {
         },
         members: {
           select: { id: true, firstName: true, lastName: true, email: true },
+        },
+        groupMemberships: {
+          select: { userId: true, role: true, joinedAt: true },
         },
         _count: { select: { members: true, memories: true } },
       },

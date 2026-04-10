@@ -7,6 +7,7 @@ import { Header } from '@/components/header';
 import {
   DEFAULT_FILTERS,
   FilterMemoriesPanel,
+  type GroupFilterOption,
   type MemoryFilters,
 } from '@/components/map/FilterMemoriesModal';
 
@@ -15,11 +16,19 @@ export default function MapPage() {
   const [filters, setFilters] = useState<MemoryFilters>(DEFAULT_FILTERS);
   const [availableTags, setAvailableTags] = useState<string[]>([]);
   const [availableYears, setAvailableYears] = useState<number[]>([]);
+  const [availableGroups, setAvailableGroups] = useState<GroupFilterOption[]>(
+    []
+  );
 
   const handleFilterOptionsChange = useCallback(
-    (options: { availableTags: string[]; availableYears: number[] }) => {
+    (options: {
+      availableTags: string[];
+      availableYears: number[];
+      availableGroups: GroupFilterOption[];
+    }) => {
       setAvailableTags(options.availableTags);
       setAvailableYears(options.availableYears);
+      setAvailableGroups(options.availableGroups);
     },
     []
   );
@@ -44,6 +53,7 @@ export default function MapPage() {
             onApply={setFilters}
             availableTags={availableTags}
             availableYears={availableYears}
+            availableGroups={availableGroups}
           />
         </Sidebar>
 

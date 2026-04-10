@@ -5,7 +5,10 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Link2, Mail, Copy, Check, Loader2 } from 'lucide-react';
-import { useSendInvitations } from '@/lib/hooks/useInvitation';
+import {
+  useCreateInvitationLink,
+  useSendInvitations,
+} from '@/lib/hooks/useInvitation';
 
 interface InviteMembersModalProps {
   open: boolean;
@@ -24,14 +27,31 @@ export function InviteMembersModal({
 }: InviteMembersModalProps) {
   const [emails, setEmails] = useState('');
   const [linkCopied, setLinkCopied] = useState(false);
+  const [temporaryInviteLink, setTemporaryInviteLink] = useState('');
   const sendInvitations = useSendInvitations();
+  const createInvitationLink = useCreateInvitationLink();
 
   // TODO: Replace with real invite link generation via API
-  const inviteLink = `${typeof window !== 'undefined' ? window.location.origin : ''}/invite/${groupId}`;
+  // NOTE: Kept as-is to preserve the current invitation system behavior.
+  //const inviteLink = `${typeof window !== 'undefined' ? window.location.origin : ''}/invite/${groupId}`;
 
   const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText(inviteLink);
+      // Legacy behavior (kept intentionally, not removed):
+      // await navigator.clipboard.writeText(inviteLink);
+
+      // TEMPORARY PATCH:
+      // Use tokenized invite link generation to make invites work immediately
+      // for role-privilege verification.
+      const generatedLink =
+        temporaryInviteLink ||
+        (await createInvitationLink.mutateAsync(groupId)).inviteLink;
+
+      if (!temporaryInviteLink) {
+        setTemporaryInviteLink(generatedLink);
+      }
+
+      await navigator.clipboard.writeText(generatedLink);
       setLinkCopied(true);
       showSuccess('Invite link copied!');
       setTimeout(() => setLinkCopied(false), 2000);
@@ -75,7 +95,9 @@ export function InviteMembersModal({
   const handleClose = () => {
     setEmails('');
     setLinkCopied(false);
+    setTemporaryInviteLink('');
     sendInvitations.reset();
+    createInvitationLink.reset();
     onOpenChange(false);
   };
 
@@ -109,16 +131,19 @@ export function InviteMembersModal({
               <div className="flex min-w-0 flex-1 items-center gap-2 overflow-hidden border-2 border-border bg-secondary px-3 py-2.5">
                 <Link2 size={14} className="shrink-0 text-muted-foreground" />
                 <span className="truncate text-xs text-foreground">
-                  {inviteLink}
+                  {temporaryInviteLink}
                 </span>
               </div>
               <Button
                 variant="outline"
                 size="icon"
                 onClick={handleCopyLink}
+                disabled={createInvitationLink.isPending}
                 aria-label="Copy invite link"
               >
-                {linkCopied ? (
+                {createInvitationLink.isPending ? (
+                  <Loader2 size={15} className="animate-spin" />
+                ) : linkCopied ? (
                   <Check size={15} className="text-green-500" />
                 ) : (
                   <Copy size={15} />
@@ -151,6 +176,12 @@ export function InviteMembersModal({
             {sendInvitations.isError && (
               <p className="text-xs text-red-500">
                 {sendInvitations.error?.message ?? 'Failed to send invitations'}
+              </p>
+            )}
+            {createInvitationLink.isError && (
+              <p className="text-xs text-red-500">
+                {createInvitationLink.error?.message ??
+                  'Failed to generate invitation link'}
               </p>
             )}
             <div className="flex justify-end gap-2">

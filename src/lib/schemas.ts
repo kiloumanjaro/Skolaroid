@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { GROUP_ROLES } from '@/lib/group-permissions';
 
 export const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -218,6 +219,7 @@ export interface MemoryWithRelations {
   mediaURL?: string | null;
   visibility: MemoryVisibility;
   creatorId?: string | null;
+  privateGroupId?: string | null;
   createdAt?: string;
   tags?: { id: string; name: string }[];
   location?: { buildingName: string };
@@ -265,6 +267,11 @@ export const updateGroupServerSchema = z.object({
     .trim()
     .max(500, 'Description must be 500 characters or less')
     .optional(),
+  message: z
+    .string()
+    .trim()
+    .max(300, 'Message must be 300 characters or less')
+    .optional(),
 });
 
 /** Schema for adding/removing a member by email. */
@@ -272,9 +279,61 @@ export const groupMemberSchema = z.object({
   email: z.string().email('Invalid email address'),
 });
 
+export const groupRoleEnum = z.enum(GROUP_ROLES);
+
+export const groupRolePrivilegesSchema = z.object({
+  OWNER: z.object({
+    editContent: z.boolean(),
+    manageMembers: z.boolean(),
+    viewAnalytics: z.boolean(),
+    sendInvitations: z.boolean(),
+  }),
+  ADMIN: z.object({
+    editContent: z.boolean(),
+    manageMembers: z.boolean(),
+    viewAnalytics: z.boolean(),
+    sendInvitations: z.boolean(),
+  }),
+  MEMBER: z.object({
+    editContent: z.boolean(),
+    manageMembers: z.boolean(),
+    viewAnalytics: z.boolean(),
+    sendInvitations: z.boolean(),
+  }),
+});
+
+/** Schema for assigning or updating a group member role. */
+export const updateGroupMemberRoleSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  role: groupRoleEnum,
+});
+
+/** Schema for transferring group ownership to another member by email. */
+export const transferGroupOwnershipSchema = z.object({
+  email: z.string().email('Invalid email address'),
+});
+
+/** Schema for updating the role privileges map of a group. */
+export const updateGroupRolePrivilegesSchema = z.object({
+  privileges: groupRolePrivilegesSchema,
+});
+
 export type CreateGroupServerInput = z.infer<typeof createGroupServerSchema>;
 export type UpdateGroupServerInput = z.infer<typeof updateGroupServerSchema>;
 export type GroupMemberInput = z.infer<typeof groupMemberSchema>;
+export type GroupMemberRole = z.infer<typeof groupRoleEnum>;
+export type GroupRolePrivilegesInput = z.infer<
+  typeof groupRolePrivilegesSchema
+>;
+export type UpdateGroupMemberRoleInput = z.infer<
+  typeof updateGroupMemberRoleSchema
+>;
+export type TransferGroupOwnershipInput = z.infer<
+  typeof transferGroupOwnershipSchema
+>;
+export type UpdateGroupRolePrivilegesInput = z.infer<
+  typeof updateGroupRolePrivilegesSchema
+>;
 
 // ============================================================================
 // INVITATION SCHEMAS

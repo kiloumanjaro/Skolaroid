@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createMemoryServerSchema } from '@/lib/schemas';
 import { createMemoryService } from '@/services/create-memory-service';
 import { createClient } from '@/lib/supabase/server';
+import { prisma } from '@/lib/prisma';
 
 export async function POST(request: NextRequest) {
   try {
@@ -34,10 +35,26 @@ export async function POST(request: NextRequest) {
 
     const data = validation.data;
 
+    const dbUser = await prisma.user.findUnique({
+      where: { id: authUser.id },
+      select: { programBatchId: true },
+    });
+
+    if (!dbUser) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'User not found. Complete onboarding first.',
+        },
+        { status: 404 }
+      );
+    }
+
     // Call service layer
     const memory = await createMemoryService({
       ...data,
       creatorId: authUser.id,
+      programBatchId: dbUser.programBatchId,
     });
 
     return NextResponse.json({
