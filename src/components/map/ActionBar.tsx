@@ -1,6 +1,6 @@
 'use client';
 
-import { Copy, Heart, Share } from 'lucide-react';
+import { Copy, Heart, Share, Flag } from 'lucide-react';
 import { useState } from 'react';
 import type { MemoryWithRelations } from '@/lib/schemas';
 import { useVoteStatus } from '@/lib/hooks/useVoteStatus';
@@ -10,6 +10,7 @@ import { formatVoteCount } from '@/lib/utils';
 
 interface ActionBarProps {
   memory: MemoryWithRelations;
+  onReport?: () => void;
 }
 
 /**
@@ -19,7 +20,7 @@ interface ActionBarProps {
  *   ♥ 42          ← vote count strip (left-aligned)
  *   📋  ♥  ↗       ← Copy | Like | Share (centred)
  */
-export function ActionBar({ memory }: ActionBarProps) {
+export function ActionBar({ memory, onReport }: ActionBarProps) {
   const { isAuthenticated } = useUserAuth();
   const { data: voteStatusRes, isLoading } = useVoteStatus(memory.id);
   const toggleVote = useToggleVote();
@@ -104,6 +105,19 @@ export function ActionBar({ memory }: ActionBarProps) {
           aria-label="Share"
         >
           <Share className="h-5 w-5" />
+        </button>
+
+        <button
+          onClick={onReport}
+          disabled={!isAuthenticated}
+          className={`transition-colors ${
+            !isAuthenticated
+              ? 'cursor-default text-slate-300'
+              : 'text-slate-600 hover:text-amber-500'
+          }`}
+          aria-label="Report memory"
+        >
+          <Flag className="h-5 w-5" />
         </button>
       </div>
     </div>
