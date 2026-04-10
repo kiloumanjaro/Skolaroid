@@ -28,9 +28,19 @@ export async function refreshSession(request: NextRequest) {
   });
 
   // Do not add code between createServerClient and getUser.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user = null;
+
+  try {
+    const { data, error } = await supabase.auth.getUser();
+
+    // Missing/invalid refresh tokens are expected for unauthenticated users.
+    // Treat auth refresh failures as anonymous requests instead of throwing.
+    if (!error) {
+      user = data.user;
+    }
+  } catch {
+    user = null;
+  }
 
   return { user, supabaseResponse };
 }

@@ -9,8 +9,9 @@ import { useState } from 'react';
 
 export function LoginForm({
   className,
+  redirectAfterLogin,
   ...props
-}: React.ComponentPropsWithoutRef<'div'>) {
+}: React.ComponentPropsWithoutRef<'div'> & { redirectAfterLogin?: string }) {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -23,10 +24,15 @@ export function LoginForm({
       const siteUrl =
         process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
+      const callbackUrl = new URL(`${siteUrl}/auth/callback`);
+      if (redirectAfterLogin) {
+        callbackUrl.searchParams.set('redirect', redirectAfterLogin);
+      }
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${siteUrl}/auth/callback`,
+          redirectTo: callbackUrl.toString(),
         },
       });
       if (error) throw error;
