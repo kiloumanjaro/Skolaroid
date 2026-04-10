@@ -1,0 +1,1341 @@
+openapi: 3.0.3
+info:
+  title: Skolaroid API
+  version: 1.0.0
+  description: |
+    OpenAPI (Swagger) documentation for Skolaroid API route handlers under `src/app/api`.
+
+    Notes:
+    - Many successful responses include additional fields besides `success`, `message`, and `data`.
+    - Some endpoints are currently placeholders or transitional implementations.
+    - Auth is primarily Supabase session cookie-based unless otherwise noted.
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+
+tags:
+  - name: Users
+  - name: Groups
+  - name: Invitations
+  - name: Memories
+  - name: Votes
+  - name: Comments
+  - name: Locations
+  - name: Tags
+  - name: Storage
+
+paths:
+  /api/prisma/user/create:
+    post:
+      tags: [Users]
+      summary: Create or onboard current authenticated user
+      operationId: createUser
+      security:
+        - SupabaseSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OnboardUserInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/user/get-current:
+    get:
+      tags: [Users]
+      summary: Get currently authenticated user profile
+      operationId: getCurrentUser
+      security:
+        - SupabaseSession: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/user/get-all:
+    get:
+      tags: [Users]
+      summary: Get all users
+      operationId: getAllUsers
+      security: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/user/create-many:
+    post:
+      tags: [Users]
+      summary: Create users in bulk
+      operationId: createManyUsers
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateManyUsersInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/user/delete:
+    delete:
+      tags: [Users]
+      summary: Delete a user by id
+      operationId: deleteUser
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteUserInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/user/delete-many:
+    delete:
+      tags: [Users]
+      summary: Delete all users
+      operationId: deleteManyUsers
+      security: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/group/create:
+    post:
+      tags: [Groups]
+      summary: Create private group
+      operationId: createGroup
+      security:
+        - SupabaseSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGroupInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/group/list:
+    get:
+      tags: [Groups]
+      summary: List groups for current user
+      operationId: listGroups
+      security:
+        - SupabaseSession: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/group/{groupId}:
+    get:
+      tags: [Groups]
+      summary: Get a private group by id
+      operationId: getGroupById
+      security:
+        - SupabaseSession: []
+      parameters:
+        - $ref: '#/components/parameters/groupId'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    patch:
+      tags: [Groups]
+      summary: Update group settings
+      operationId: updateGroup
+      security:
+        - SupabaseSession: []
+      parameters:
+        - $ref: '#/components/parameters/groupId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGroupInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/group/{groupId}/delete:
+    delete:
+      tags: [Groups]
+      summary: Soft-delete a group
+      operationId: deleteGroup
+      security:
+        - SupabaseSession: []
+      parameters:
+        - $ref: '#/components/parameters/groupId'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/group/{groupId}/members:
+    post:
+      tags: [Groups]
+      summary: Add member by email
+      operationId: addGroupMember
+      security:
+        - SupabaseSession: []
+      parameters:
+        - $ref: '#/components/parameters/groupId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupMemberInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags: [Groups]
+      summary: Remove member by email
+      operationId: removeGroupMember
+      security:
+        - SupabaseSession: []
+      parameters:
+        - $ref: '#/components/parameters/groupId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupMemberInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    patch:
+      tags: [Groups]
+      summary: Update group member role (including ownership transfer)
+      operationId: updateGroupMemberRole
+      security:
+        - SupabaseSession: []
+      parameters:
+        - $ref: '#/components/parameters/groupId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGroupMemberRoleInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/group/{groupId}/privileges:
+    get:
+      tags: [Groups]
+      summary: Get role privileges for a group
+      operationId: getGroupPrivileges
+      security:
+        - SupabaseSession: []
+      parameters:
+        - $ref: '#/components/parameters/groupId'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    patch:
+      tags: [Groups]
+      summary: Update group role privileges (owner only)
+      operationId: updateGroupPrivileges
+      security:
+        - SupabaseSession: []
+      parameters:
+        - $ref: '#/components/parameters/groupId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGroupRolePrivilegesInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/invitation/send:
+    post:
+      tags: [Invitations]
+      summary: Send invitations to a group
+      operationId: sendInvitations
+      security:
+        - SupabaseSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendInvitationsInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/invitation/accept:
+    post:
+      tags: [Invitations]
+      summary: Accept invitation by token
+      operationId: acceptInvitation
+      security:
+        - SupabaseSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvitationActionInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '410':
+          description: Invitation token expired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/invitation/decline:
+    post:
+      tags: [Invitations]
+      summary: Decline invitation by token
+      operationId: declineInvitation
+      security:
+        - SupabaseSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvitationActionInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/invitation/validate:
+    get:
+      tags: [Invitations]
+      summary: Validate invitation token
+      operationId: validateInvitation
+      description: |
+        Public endpoint. If user is authenticated, response may include membership context.
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/tokenQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '410':
+          description: Invitation token expired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/invitation/link:
+    post:
+      tags: [Invitations]
+      summary: Create invitation link token
+      operationId: createInvitationLink
+      description: Temporary endpoint while invitation system finalization is in progress.
+      security:
+        - SupabaseSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInvitationLinkInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/invitation/cleanup:
+    post:
+      tags: [Invitations]
+      summary: Delete expired invitations (cron endpoint)
+      operationId: cleanupInvitations
+      security:
+        - CronBearer: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/location/get-all:
+    get:
+      tags: [Locations]
+      summary: Get all locations
+      operationId: getAllLocations
+      security: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/location/create-custom:
+    post:
+      tags: [Locations]
+      summary: Create custom location or reuse nearby location
+      operationId: createCustomLocation
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCustomLocationInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/tag/get-all:
+    get:
+      tags: [Tags]
+      summary: Get all tags
+      operationId: getAllTags
+      security: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/memory/create:
+    post:
+      tags: [Memories]
+      summary: Create memory
+      operationId: createMemory
+      security:
+        - SupabaseSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMemoryInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/memory/get-by-creator:
+    get:
+      tags: [Memories]
+      summary: Get memories by creator user id
+      operationId: getMemoriesByCreator
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/userIdQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/memory/get-by-group:
+    get:
+      tags: [Memories]
+      summary: Get group-only memories for a private group
+      operationId: getMemoriesByGroup
+      security:
+        - SupabaseSession: []
+      parameters:
+        - $ref: '#/components/parameters/groupIdQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/memory/get-by-location:
+    get:
+      tags: [Memories]
+      summary: Get visible memories at a location
+      operationId: getMemoriesByLocation
+      security:
+        - SupabaseSession: []
+      parameters:
+        - $ref: '#/components/parameters/locationIdQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/memory/get-all-with-coordinates:
+    get:
+      tags: [Memories]
+      summary: Get all visible memories with map coordinates
+      operationId: getAllMemoriesWithCoordinates
+      security:
+        - SupabaseSession: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/memory/counts-by-landmark:
+    get:
+      tags: [Memories]
+      summary: Get memory counts per landmark
+      operationId: getMemoryCountsByLandmark
+      security: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/memory/update-tags:
+    patch:
+      tags: [Memories]
+      summary: Update tags for a memory
+      operationId: updateMemoryTags
+      description: Endpoint currently has no authentication check.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMemoryTagsInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/memory/{memoryId}/delete:
+    delete:
+      tags: [Memories]
+      summary: Soft-delete memory
+      operationId: deleteMemory
+      security:
+        - SupabaseSession: []
+      parameters:
+        - $ref: '#/components/parameters/memoryId'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/memory/vote/toggle:
+    post:
+      tags: [Votes]
+      summary: Toggle vote on memory
+      operationId: toggleMemoryVote
+      security:
+        - SupabaseSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ToggleVoteInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/memory/vote/status:
+    get:
+      tags: [Votes]
+      summary: Get vote status and count for a memory
+      operationId: getMemoryVoteStatus
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/memoryIdQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/memory/comment/create:
+    post:
+      tags: [Comments]
+      summary: Create comment on memory
+      operationId: createComment
+      security:
+        - SupabaseSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommentInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/memory/comment/get:
+    get:
+      tags: [Comments]
+      summary: Get paginated comments for a memory
+      operationId: getComments
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/memoryIdQuery'
+        - $ref: '#/components/parameters/cursorQuery'
+        - $ref: '#/components/parameters/limitQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/memory/comment/{commentId}/delete:
+    delete:
+      tags: [Comments]
+      summary: Soft-delete comment
+      operationId: deleteComment
+      security:
+        - SupabaseSession: []
+      parameters:
+        - $ref: '#/components/parameters/commentId'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/storage/upload-memory-media:
+    post:
+      tags: [Storage]
+      summary: Upload image/video media for memories
+      operationId: uploadMemoryMedia
+      security: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UploadMemoryMediaInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  securitySchemes:
+    SupabaseSession:
+      type: apiKey
+      in: cookie
+      name: sb-access-token
+      description: Supabase access token cookie used for authenticated user session.
+    CronBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: CRON_SECRET
+      description: Bearer token matching server-side `CRON_SECRET` for cron-only endpoints.
+
+  parameters:
+    groupId:
+      name: groupId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Private group id
+    memoryId:
+      name: memoryId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Memory id
+    commentId:
+      name: commentId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Comment id
+    tokenQuery:
+      name: token
+      in: query
+      required: true
+      schema:
+        type: string
+      description: Invitation token
+    memoryIdQuery:
+      name: memoryId
+      in: query
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Memory id
+    locationIdQuery:
+      name: locationId
+      in: query
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Location id
+    userIdQuery:
+      name: userId
+      in: query
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: User id
+    groupIdQuery:
+      name: groupId
+      in: query
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Group id
+    cursorQuery:
+      name: cursor
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+      description: Cursor for pagination
+    limitQuery:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 50
+        default: 10
+      description: Page size for paginated results
+
+  responses:
+    Success:
+      description: Successful operation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SuccessResponse'
+    BadRequest:
+      description: Invalid request data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Authentication required or invalid auth
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: Authenticated but not authorized for this action
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Requested resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Conflict:
+      description: Conflict with current resource state
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    TooManyRequests:
+      description: Rate limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerError:
+      description: Unexpected server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+        data:
+          nullable: true
+        count:
+          type: integer
+        deletedCount:
+          type: integer
+        url:
+          type: string
+          format: uri
+      additionalProperties: true
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          nullable: true
+          example: false
+        error:
+          type: string
+        message:
+          type: string
+        detail:
+          type: string
+      additionalProperties: true
+
+    OnboardUserInput:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - batchYear
+        - programName
+        - studentId
+        - status
+      properties:
+        firstName:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: Letters and single spaces only
+        lastName:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: Letters and single spaces only
+        batchYear:
+          type: integer
+          minimum: 1900
+          description: Must not be in the future
+        programName:
+          type: string
+          minLength: 1
+        studentId:
+          type: string
+          pattern: '^\\d{4}-\\d{5}$'
+          example: 2023-00981
+        status:
+          type: string
+          enum: [STUDENT, ALUMNI]
+
+    CreateManyUsersInput:
+      type: object
+      required:
+        - users
+      properties:
+        users:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+              - email
+              - studentId
+              - firstName
+              - lastName
+              - programBatchId
+            properties:
+              email:
+                type: string
+                format: email
+              studentId:
+                type: string
+              firstName:
+                type: string
+              lastName:
+                type: string
+              programBatchId:
+                type: string
+
+    DeleteUserInput:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          description: User id
+
+    CreateGroupInput:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+        description:
+          type: string
+          maxLength: 500
+
+    UpdateGroupInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+        description:
+          type: string
+          maxLength: 500
+        message:
+          type: string
+          maxLength: 300
+
+    GroupMemberInput:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+
+    GroupRolePermissionSet:
+      type: object
+      required:
+        - editContent
+        - manageMembers
+        - viewAnalytics
+        - sendInvitations
+      properties:
+        editContent:
+          type: boolean
+        manageMembers:
+          type: boolean
+        viewAnalytics:
+          type: boolean
+        sendInvitations:
+          type: boolean
+
+    GroupRolePrivileges:
+      type: object
+      required:
+        - OWNER
+        - ADMIN
+        - MEMBER
+      properties:
+        OWNER:
+          $ref: '#/components/schemas/GroupRolePermissionSet'
+        ADMIN:
+          $ref: '#/components/schemas/GroupRolePermissionSet'
+        MEMBER:
+          $ref: '#/components/schemas/GroupRolePermissionSet'
+
+    UpdateGroupRolePrivilegesInput:
+      type: object
+      required:
+        - privileges
+      properties:
+        privileges:
+          $ref: '#/components/schemas/GroupRolePrivileges'
+
+    UpdateGroupMemberRoleInput:
+      type: object
+      required:
+        - email
+        - role
+      properties:
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [OWNER, ADMIN, MEMBER]
+
+    SendInvitationsInput:
+      type: object
+      required:
+        - groupId
+        - emails
+      properties:
+        groupId:
+          type: string
+          format: uuid
+        emails:
+          type: array
+          minItems: 1
+          maxItems: 20
+          items:
+            type: string
+            format: email
+
+    InvitationActionInput:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          minLength: 1
+
+    CreateInvitationLinkInput:
+      type: object
+      required:
+        - groupId
+      properties:
+        groupId:
+          type: string
+          format: uuid
+
+    CreateCustomLocationInput:
+      type: object
+      required:
+        - buildingName
+        - latitude
+        - longitude
+      properties:
+        buildingName:
+          type: string
+          minLength: 1
+          maxLength: 200
+        latitude:
+          type: number
+          minimum: -90
+          maximum: 90
+        longitude:
+          type: number
+          minimum: -180
+          maximum: 180
+        description:
+          type: string
+          maxLength: 500
+
+    MemoryVisibility:
+      type: string
+      enum: [PUBLIC, PROGRAM_ONLY, BATCH_ONLY, GROUP_ONLY, PRIVATE]
+
+    CreateMemoryInput:
+      type: object
+      required:
+        - title
+        - visibility
+        - locationId
+        - programBatchId
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          maxLength: 5000
+        visibility:
+          $ref: '#/components/schemas/MemoryVisibility'
+        locationId:
+          type: string
+          minLength: 1
+        programBatchId:
+          type: string
+          minLength: 1
+        memoryDate:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          maxItems: 10
+          items:
+            type: string
+            minLength: 1
+            maxLength: 50
+        privateGroupId:
+          type: string
+          format: uuid
+        mediaURL:
+          type: string
+          format: uri
+
+    UpdateMemoryTagsInput:
+      type: object
+      required:
+        - memoryId
+        - tags
+      properties:
+        memoryId:
+          type: string
+          format: uuid
+        tags:
+          type: array
+          maxItems: 10
+          items:
+            type: string
+            minLength: 1
+            maxLength: 50
+
+    ToggleVoteInput:
+      type: object
+      required:
+        - memoryId
+      properties:
+        memoryId:
+          type: string
+          format: uuid
+
+    CreateCommentInput:
+      type: object
+      required:
+        - memoryId
+        - content
+      properties:
+        memoryId:
+          type: string
+          format: uuid
+        content:
+          type: string
+          minLength: 1
+          maxLength: 2000
+
+    UploadMemoryMediaInput:
+      type: object
+      required:
+        - file
+      properties:
+        file:
+          type: string
+          format: binary
+          description: Image or video file up to 10 MB

@@ -9,7 +9,8 @@ import {
   useDeclineInvitation,
   type ValidateInvitationData,
 } from '@/lib/hooks/useInvitation';
-import { createClient } from '@/lib/supabase/client';
+import { LoginForm } from '@/components/login-form';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import {
   Users,
   AlertCircle,
@@ -67,6 +68,7 @@ function InviteContent() {
     null
   );
   const [errorMessage, setErrorMessage] = useState('');
+  const [loginOpen, setLoginOpen] = useState(false);
 
   const acceptInvitation = useAcceptInvitation();
   const declineInvitation = useDeclineInvitation();
@@ -135,21 +137,6 @@ function InviteContent() {
       setState('not-authenticated');
     }
   }, [authLoading, isAuthenticated, token]);
-
-  const handleLogin = async () => {
-    // Store the current invite URL for redirect after login
-    sessionStorage.setItem('invite_redirect', window.location.href);
-
-    const supabase = createClient();
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${siteUrl}/auth/callback`,
-      },
-    });
-  };
 
   const handleAccept = async () => {
     if (!token) return;
@@ -269,8 +256,8 @@ function InviteContent() {
             <p className="mt-1 text-center text-sm text-gray-500">
               You need to sign in to accept this group invitation.
             </p>
-            <Button onClick={handleLogin} className="mt-5 w-full">
-              Sign in with Google
+            <Button onClick={() => setLoginOpen(true)} className="mt-5 w-full">
+              Sign In
             </Button>
           </InviteCard>
         )}
@@ -415,6 +402,14 @@ function InviteContent() {
           </InviteCard>
         )}
       </div>
+
+      {/* Login Modal */}
+      <Dialog open={loginOpen} onOpenChange={setLoginOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogTitle className="sr-only">Login</DialogTitle>
+          <LoginForm redirectAfterLogin={`/invite?token=${token}`} />
+        </DialogContent>
+      </Dialog>
     </main>
   );
 }

@@ -1,11 +1,20 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ColorStrip } from '@/components/ui/color-strip';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { LocationCombobox } from '@/components/ui/location-combobox';
+import { WOBBLY_RADIUS, WOBBLY_RADIUS_MD } from '@/lib/hand-drawn';
 
 // =============================================================================
 // TYPES
@@ -30,6 +39,7 @@ export interface MemoryFilters {
   selectedTags: string[];
   selectedYear: number | null;
   selectedGroupId: string | null;
+  selectedLocationId: string | null;
 }
 
 export const DEFAULT_FILTERS: MemoryFilters = {
@@ -38,9 +48,15 @@ export const DEFAULT_FILTERS: MemoryFilters = {
   selectedTags: [],
   selectedYear: null,
   selectedGroupId: null,
+  selectedLocationId: null,
 };
 
 export interface GroupFilterOption {
+  id: string;
+  name: string;
+}
+
+export interface LocationFilterOption {
   id: string;
   name: string;
 }
@@ -50,12 +66,10 @@ interface FilterMemoriesModalProps {
   onClose: () => void;
   filters: MemoryFilters;
   onApply: (filters: MemoryFilters) => void;
-  /** Unique tag names extracted from the current memory set */
   availableTags: string[];
-  /** Unique years extracted from the current memory set */
   availableYears: number[];
-  /** Groups available to the current user */
   availableGroups?: GroupFilterOption[];
+  availableLocations?: LocationFilterOption[];
 }
 
 interface FilterMemoriesPanelProps {
@@ -66,6 +80,7 @@ interface FilterMemoriesPanelProps {
   availableTags: string[];
   availableYears: number[];
   availableGroups?: GroupFilterOption[];
+  availableLocations?: LocationFilterOption[];
   className?: string;
 }
 
@@ -88,6 +103,24 @@ const VISIBILITY_OPTIONS: { value: VisibilityFilter; label: string }[] = [
   { value: 'GROUP_ONLY', label: 'Group Only' },
 ];
 
+const SELECT_TRIGGER_CLASSNAME = cn(
+  'flex w-full items-center justify-between border-2 border-border bg-card',
+  'px-3 py-2 font-hand text-sm text-foreground',
+  'shadow-[4px_4px_0px_0px_#2d2d2d]',
+  'hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#2d2d2d]',
+  'active:translate-x-[4px] active:translate-y-[4px] active:shadow-none',
+  'transition-all'
+);
+
+const SELECT_CONTENT_CLASSNAME =
+  'w-[var(--radix-dropdown-menu-trigger-width)] min-w-[var(--radix-dropdown-menu-trigger-width)] border-2 border-border bg-card p-1 shadow-[4px_4px_0px_0px_#2d2d2d]';
+
+const SELECT_ITEM_CLASSNAME = cn(
+  'font-hand text-sm text-foreground',
+  'focus:bg-secondary focus:text-foreground',
+  'data-[state=checked]:bg-foreground data-[state=checked]:text-background'
+);
+
 // =============================================================================
 // COMPONENT
 // =============================================================================
@@ -100,6 +133,7 @@ export function FilterMemoriesPanel({
   availableTags,
   availableYears,
   availableGroups = [],
+  availableLocations = [],
   className,
 }: FilterMemoriesPanelProps) {
   const [draft, setDraft] = useState<MemoryFilters>(filters);
@@ -158,50 +192,90 @@ export function FilterMemoriesPanel({
           <h3 className="mb-3 text-sm font-semibold text-foreground">
             Sort By
           </h3>
-          <div className="space-y-1">
-            {SORT_OPTIONS.map((option) => (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                key={option.value}
-                onClick={() =>
-                  setDraft((prev) => ({ ...prev, sortBy: option.value }))
-                }
-                className={cn(
-                  'w-full px-4 py-3 text-left text-sm font-medium transition-colors',
-                  draft.sortBy === option.value
-                    ? 'bg-foreground text-background'
-                    : 'text-muted-foreground hover:bg-secondary'
-                )}
+                className={SELECT_TRIGGER_CLASSNAME}
+                style={{ borderRadius: WOBBLY_RADIUS }}
               >
-                {option.label}
+                <span>
+                  {SORT_OPTIONS.find((option) => option.value === draft.sortBy)
+                    ?.label ?? 'Sort'}
+                </span>
+                <ChevronDown className="h-4 w-4 text-muted-foreground" />
               </button>
-            ))}
-          </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              className={SELECT_CONTENT_CLASSNAME}
+              style={{ borderRadius: WOBBLY_RADIUS_MD }}
+              sideOffset={6}
+            >
+              <DropdownMenuRadioGroup
+                value={draft.sortBy}
+                onValueChange={(value) =>
+                  setDraft((prev) => ({ ...prev, sortBy: value as SortOption }))
+                }
+              >
+                {SORT_OPTIONS.map((option) => (
+                  <DropdownMenuRadioItem
+                    key={option.value}
+                    value={option.value}
+                    className={SELECT_ITEM_CLASSNAME}
+                  >
+                    {option.label}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         <div className="mb-6">
           <h3 className="mb-3 text-sm font-semibold text-foreground">
             Visibility
           </h3>
-          <div className="space-y-1">
-            {VISIBILITY_OPTIONS.map((option) => (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                key={option.value}
-                onClick={() =>
-                  setDraft((prev) => ({ ...prev, visibility: option.value }))
-                }
-                className={cn(
-                  'w-full px-4 py-3 text-left text-sm font-medium transition-colors',
-                  draft.visibility === option.value
-                    ? 'bg-foreground text-background'
-                    : 'text-muted-foreground hover:bg-secondary'
-                )}
+                className={SELECT_TRIGGER_CLASSNAME}
+                style={{ borderRadius: WOBBLY_RADIUS }}
               >
-                {option.label}
+                <span>
+                  {VISIBILITY_OPTIONS.find(
+                    (option) => option.value === draft.visibility
+                  )?.label ?? 'Visibility'}
+                </span>
+                <ChevronDown className="h-4 w-4 text-muted-foreground" />
               </button>
-            ))}
-          </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              className={SELECT_CONTENT_CLASSNAME}
+              style={{ borderRadius: WOBBLY_RADIUS_MD }}
+              sideOffset={6}
+            >
+              <DropdownMenuRadioGroup
+                value={draft.visibility}
+                onValueChange={(value) =>
+                  setDraft((prev) => ({
+                    ...prev,
+                    visibility: value as VisibilityFilter,
+                  }))
+                }
+              >
+                {VISIBILITY_OPTIONS.map((option) => (
+                  <DropdownMenuRadioItem
+                    key={option.value}
+                    value={option.value}
+                    className={SELECT_ITEM_CLASSNAME}
+                  >
+                    {option.label}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         {availableGroups.length > 0 && (
@@ -249,6 +323,25 @@ export function FilterMemoriesPanel({
           </div>
         )}
 
+        {availableLocations.length > 0 && (
+          <div className="mb-6">
+            <h3 className="mb-3 text-sm font-semibold text-foreground">
+              Location
+            </h3>
+            <LocationCombobox
+              options={availableLocations.map((location) => ({
+                id: location.id,
+                label: location.name,
+              }))}
+              value={draft.selectedLocationId}
+              onChange={(id) =>
+                setDraft((prev) => ({ ...prev, selectedLocationId: id }))
+              }
+              placeholder="Search location..."
+            />
+          </div>
+        )}
+
         {availableTags.length > 0 && (
           <div className="mb-6">
             <h3 className="mb-3 text-sm font-semibold text-foreground">Tags</h3>
@@ -261,9 +354,9 @@ export function FilterMemoriesPanel({
                     role="button"
                     tabIndex={0}
                     onClick={() => toggleTag(tag)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
                         toggleTag(tag);
                       }
                     }}
@@ -295,9 +388,9 @@ export function FilterMemoriesPanel({
                     role="button"
                     tabIndex={0}
                     onClick={() => toggleYear(year)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
                         toggleYear(year);
                       }
                     }}
@@ -341,6 +434,7 @@ export function FilterMemoriesModal({
   availableTags,
   availableYears,
   availableGroups = [],
+  availableLocations = [],
 }: FilterMemoriesModalProps) {
   return (
     <div
@@ -366,6 +460,7 @@ export function FilterMemoriesModal({
           availableTags={availableTags}
           availableYears={availableYears}
           availableGroups={availableGroups}
+          availableLocations={availableLocations}
         />
       </div>
 

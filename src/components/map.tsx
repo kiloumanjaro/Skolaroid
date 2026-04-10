@@ -16,6 +16,7 @@ import { Plus } from 'lucide-react';
 import { AddMemoryModal } from './add-memory-modal';
 import type {
   GroupFilterOption,
+  LocationFilterOption,
   MemoryFilters,
 } from './map/FilterMemoriesModal';
 import { GroupPanel } from './groups/GroupPanel';
@@ -31,6 +32,7 @@ import {
   useAllMemoriesWithCoordinates,
   type MemoryWithCoordinates,
 } from '@/lib/hooks/useAllMemoriesWithCoordinates';
+import { useLocations } from '@/lib/hooks/useLocations';
 import { useUserGroups } from '@/lib/hooks/useUserGroups';
 import { LANDMARKS, type Landmark } from '@/lib/constants/landmarks';
 import type {
@@ -118,6 +120,7 @@ interface MapComponentProps {
     availableTags: string[];
     availableYears: number[];
     availableGroups: GroupFilterOption[];
+    availableLocations: LocationFilterOption[];
   }) => void;
 }
 
@@ -182,6 +185,7 @@ export function MapComponent({
   const { data: memoriesData, isLoading: memoriesLoading } =
     useAllMemoriesWithCoordinates();
   const memories = useMemo(() => memoriesData?.data ?? [], [memoriesData]);
+  const { data: locationsData } = useLocations();
   const { data: userGroups = [] } = useUserGroups();
 
   const availableGroups = useMemo<GroupFilterOption[]>(
@@ -227,6 +231,12 @@ export function MapComponent({
       // Group filter
       if (filters.selectedGroupId) {
         if (memory.privateGroupId !== filters.selectedGroupId) return false;
+      }
+
+      // Location filter
+      if (filters.selectedLocationId) {
+        const locationId = (memory.location as { id?: string } | undefined)?.id;
+        if (locationId !== filters.selectedLocationId) return false;
       }
 
       return true;
@@ -283,13 +293,60 @@ export function MapComponent({
     [eraFilteredMemories]
   );
 
+  const availableLocations = useMemo<LocationFilterOption[]>(() => {
+    const locationIdsInEra = new Set(
+      eraFilteredMemories
+        .map((memory) => (memory.location as { id?: string } | undefined)?.id)
+        .filter((id): id is string => Boolean(id))
+    );
+
+    if (locationsData?.data?.length) {
+      return locationsData.data
+        .filter(
+          (location) =>
+            locationIdsInEra.size === 0 || locationIdsInEra.has(location.id)
+        )
+        .map((location) => ({
+          id: location.id,
+          name: location.buildingName,
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    const fallbackLocations = new Map<string, LocationFilterOption>();
+
+    for (const memory of eraFilteredMemories) {
+      const location = memory.location as
+        | { id?: string; buildingName: string }
+        | undefined;
+
+      if (!location?.id) continue;
+
+      fallbackLocations.set(location.id, {
+        id: location.id,
+        name: location.buildingName,
+      });
+    }
+
+    return Array.from(fallbackLocations.values()).sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+  }, [eraFilteredMemories, locationsData]);
+
   useEffect(() => {
     onFilterOptionsChange?.({
       availableTags,
       availableYears,
       availableGroups,
+      availableLocations,
     });
-  }, [availableTags, availableYears, availableGroups, onFilterOptionsChange]);
+  }, [
+    availableTags,
+    availableYears,
+    availableGroups,
+    availableLocations,
+    onFilterOptionsChange,
+  ]);
 
   // Keep a stable ref for the click handler so detached roots always call the latest version
   const handleClickRef = useRef<(landmark: Landmark) => void>(() => {});

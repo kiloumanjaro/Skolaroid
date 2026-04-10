@@ -8,6 +8,7 @@ import {
   DEFAULT_FILTERS,
   FilterMemoriesPanel,
   type GroupFilterOption,
+  type LocationFilterOption,
   type MemoryFilters,
 } from '@/components/map/FilterMemoriesModal';
 
@@ -19,16 +20,21 @@ export default function MapPage() {
   const [availableGroups, setAvailableGroups] = useState<GroupFilterOption[]>(
     []
   );
+  const [availableLocations, setAvailableLocations] = useState<
+    LocationFilterOption[]
+  >([]);
 
   const handleFilterOptionsChange = useCallback(
     (options: {
       availableTags: string[];
       availableYears: number[];
       availableGroups: GroupFilterOption[];
+      availableLocations: LocationFilterOption[];
     }) => {
       setAvailableTags(options.availableTags);
       setAvailableYears(options.availableYears);
       setAvailableGroups(options.availableGroups);
+      setAvailableLocations(options.availableLocations);
     },
     []
   );
@@ -54,6 +60,7 @@ export default function MapPage() {
             availableTags={availableTags}
             availableYears={availableYears}
             availableGroups={availableGroups}
+            availableLocations={availableLocations}
           />
         </Sidebar>
 

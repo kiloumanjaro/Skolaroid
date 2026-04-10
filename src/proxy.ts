@@ -7,6 +7,8 @@ const PUBLIC_ROUTES = [
   '/auth/callback',
   '/auth/auth-code-error',
   '/invite',
+  '/swagger',
+  '/api/swagger',
 ];
 
 /** Routes accessible to authenticated-but-not-onboarded users. */
