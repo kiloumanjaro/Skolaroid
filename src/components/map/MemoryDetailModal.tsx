@@ -5,6 +5,7 @@ import {
   Globe,
   ChevronLeft,
   ChevronRight,
+  X,
   Trash2,
   CircleOff,
 } from 'lucide-react';
@@ -374,6 +375,7 @@ export function MemoryDetailModal({
                 initial="closed"
                 animate="open"
                 exit="closed"
+                onClick={() => onOpenChange(false)}
               />
 
               {/* Content Container */}
@@ -410,6 +412,15 @@ export function MemoryDetailModal({
                         transformStyle: 'preserve-3d',
                       }}
                     >
+                      <button
+                        type="button"
+                        onClick={() => onOpenChange(false)}
+                        className="absolute right-4 top-4 z-30 flex h-10 w-10 items-center justify-center rounded-full border-2 border-border bg-card text-foreground shadow-[3px_3px_0px_0px_#2d2d2d] transition-colors hover:shadow-[4px_4px_0px_0px_#2d2d2d]"
+                        aria-label="Close memory details"
+                      >
+                        <X className="h-5 w-5" />
+                      </button>
+
                       {/* Pages Layer (always visible) */}
                       <div
                         className="absolute inset-0 rounded-2xl bg-sky-200 p-2 shadow-[0px_2px_4px_0px_rgba(0,0,0,0.25)]"
