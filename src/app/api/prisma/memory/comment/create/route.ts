@@ -77,7 +77,20 @@ export async function POST(request: NextRequest) {
 
     const { memoryId, content } = parsed.data;
 
-    // ── 3. Create comment ──────────────────────────────────────────────────
+    // ── 3. Verify memory is approved ────────────────────────────────────────
+    const memory = await prisma.memory.findFirst({
+      where: { id: memoryId, deletedAt: null, moderationStatus: 'APPROVED' },
+      select: { id: true },
+    });
+
+    if (!memory) {
+      return NextResponse.json(
+        { success: false, message: 'Memory not found' },
+        { status: 404 }
+      );
+    }
+
+    // ── 4. Create comment ──────────────────────────────────────────────────
     const comment = await prisma.memoryComment.create({
       data: { memoryId, authorId: userId, content },
       select: {

@@ -59,6 +59,7 @@ export async function GET(request: Request) {
         privateGroupId: groupId,
         visibility: 'GROUP_ONLY',
         deletedAt: null,
+        OR: [{ moderationStatus: 'APPROVED' }, { creatorId: user.id }],
       },
       include: {
         creator: {

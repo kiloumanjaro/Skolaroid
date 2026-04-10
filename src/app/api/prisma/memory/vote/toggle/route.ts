@@ -114,7 +114,20 @@ export async function POST(request: NextRequest) {
 
     const { memoryId } = parsed.data;
 
-    // ── 3. Rate limit ──────────────────────────────────────────────────────
+    // ── 3. Verify memory is approved ────────────────────────────────────────
+    const memory = await prisma.memory.findFirst({
+      where: { id: memoryId, deletedAt: null, moderationStatus: 'APPROVED' },
+      select: { id: true },
+    });
+
+    if (!memory) {
+      return NextResponse.json(
+        { success: false, message: 'Memory not found' },
+        { status: 404 }
+      );
+    }
+
+    // ── 4. Rate limit ──────────────────────────────────────────────────────
     if (isRateLimited(userId, memoryId)) {
       return NextResponse.json(
         { success: false, message: 'Too many requests — slow down.' },
@@ -122,7 +135,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // ── 4. Toggle vote ─────────────────────────────────────────────────────
+    // ── 5. Toggle vote ─────────────────────────────────────────────────────
     const result = await toggleVoteService(memoryId, userId);
 
     return NextResponse.json({
