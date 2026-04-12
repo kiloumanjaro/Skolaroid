@@ -8,6 +8,7 @@ import {
   type TouchEvent as ReactTouchEvent,
 } from 'react';
 import { useRouter } from 'next/navigation';
+import { User } from 'lucide-react';
 import { BatchSidebar, type Era } from '@/components/batch-sidebar';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { LoginForm } from '@/components/login-form';
@@ -623,7 +624,11 @@ export default function Home() {
   return (
     <main className="relative flex min-h-screen w-full items-center justify-center overflow-hidden">
       <div className="fixed right-5 top-3 z-50 flex items-center gap-3">
-        {!loading && isAuthenticated ? (
+        {loading ? (
+          <div className="flex h-8 w-8 animate-pulse items-center justify-center rounded-full border-2 border-foreground bg-card text-foreground">
+            <User className="h-4 w-4" />
+          </div>
+        ) : isAuthenticated ? (
           <AccountMenu />
         ) : (
           <Button onClick={() => setLoginOpen(true)} size="sm">

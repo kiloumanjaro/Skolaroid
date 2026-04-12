@@ -34,7 +34,7 @@ export function ProfileHero({ user, dbUser }: ProfileHeroProps) {
             className="h-24 w-24 rounded-full object-cover"
           />
         ) : (
-          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-skolaroid-blue text-white">
+          <div className="flex h-24 w-24 items-center justify-center rounded-full border-[3px] border-foreground bg-card text-foreground">
             <UserIcon className="h-10 w-10" />
           </div>
         )}
