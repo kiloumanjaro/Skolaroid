@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { resolveReportSchema } from '@/lib/schemas';
 import { requireAdmin } from '@/lib/utils/require-admin';
 import { prisma } from '@/lib/prisma';
+import { notifyReportResolution } from '@/services/notification-service';
 
 const ACTION_MAP = {
   RESOLVED: 'REPORT_RESOLVED',
@@ -72,6 +73,9 @@ export async function PATCH(request: NextRequest) {
         },
       }),
     ]);
+
+    // Fire-and-forget: notification delivery failure must not affect the response
+    notifyReportResolution(reportId, action, resolutionNote).catch(() => {});
 
     return NextResponse.json({
       success: true,

@@ -448,6 +448,42 @@ export const auditLogQuerySchema = z.object({
 export type AuditLogQuery = z.infer<typeof auditLogQuerySchema>;
 
 // ============================================================================
+// NOTIFICATION SCHEMAS
+// ============================================================================
+
+export const notificationTypeEnum = z.enum([
+  'MEMORY_APPROVED',
+  'MEMORY_REJECTED',
+  'MEMORY_REMOVED',
+  'REPORT_RESOLVED',
+  'REPORT_DISMISSED',
+]);
+
+/** Query params for fetching user notifications. */
+export const getNotificationsQuerySchema = z.object({
+  cursor: z.string().uuid('Invalid cursor').optional(),
+  limit: z.coerce.number().int().min(1).max(50).default(20),
+  unreadOnly: z
+    .string()
+    .optional()
+    .transform((v) => v === 'true'),
+});
+
+/** Payload for marking notifications as read. */
+export const markNotificationsReadSchema = z.object({
+  notificationIds: z
+    .array(z.string().uuid('Invalid notification ID'))
+    .min(1, 'At least one notification ID is required')
+    .max(50, 'Maximum 50 notifications at once'),
+});
+
+export type NotificationType = z.infer<typeof notificationTypeEnum>;
+export type GetNotificationsQuery = z.infer<typeof getNotificationsQuerySchema>;
+export type MarkNotificationsReadInput = z.infer<
+  typeof markNotificationsReadSchema
+>;
+
+// ============================================================================
 // AUTH TYPE EXPORTS
 // ============================================================================
 

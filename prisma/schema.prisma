@@ -28,6 +28,7 @@ model User {
   submittedReports Report[]        @relation("ReportReporter")
   resolvedReports  Report[]        @relation("ReportResolver")
   moderationActions ModerationActionLog[] @relation("ModerationActionsByAdmin")
+  notifications    Notification[]
   programBatch    ProgramBatch    @relation(fields: [programBatchId], references: [id])
   groups          PrivateGroup[]  @relation("GroupMembers")
 
@@ -102,6 +103,7 @@ model Memory {
   tags           Tag[]            @relation("MemoryTags")
   reports        Report[]
   moderationActions ModerationActionLog[] @relation("MemoryModerationActions")
+  notifications  Notification[] @relation("NotificationMemory")
 
   @@index([creatorId])
   @@index([programBatchId])
@@ -161,6 +163,7 @@ model Report {
   memory           Memory     @relation(fields: [memoryId], references: [id], onDelete: Cascade)
   resolvedBy       User?      @relation("ReportResolver", fields: [resolvedById], references: [id], onDelete: SetNull)
   moderationActions ModerationActionLog[] @relation("ReportModerationActions")
+  notifications    Notification[] @relation("NotificationReport")
 
   @@index([state])
   @@index([reporterId])
@@ -321,4 +324,34 @@ enum ModerationActionType {
 enum ModerationTargetType {
   MEMORY
   REPORT
+}
+
+enum NotificationType {
+  MEMORY_APPROVED
+  MEMORY_REJECTED
+  MEMORY_REMOVED
+  REPORT_RESOLVED
+  REPORT_DISMISSED
+}
+
+model Notification {
+  id             String           @id @default(uuid()) @db.Uuid
+  userId         String           @db.Uuid
+  type           NotificationType
+  title          String           @db.VarChar(255)
+  message        String
+  targetMemoryId String?          @db.Uuid
+  targetReportId String?          @db.Uuid
+  reason         String?
+  read           Boolean          @default(false)
+  createdAt      DateTime         @default(now())
+
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetMemory Memory? @relation("NotificationMemory", fields: [targetMemoryId], references: [id], onDelete: SetNull)
+  targetReport Report? @relation("NotificationReport", fields: [targetReportId], references: [id], onDelete: SetNull)
+
+  @@index([userId, read])
+  @@index([userId, createdAt])
+  @@index([targetMemoryId])
+  @@index([targetReportId])
 }
