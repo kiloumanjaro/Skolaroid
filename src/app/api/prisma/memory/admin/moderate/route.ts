@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { moderateMemorySchema } from '@/lib/schemas';
 import { requireAdmin } from '@/lib/utils/require-admin';
 import { prisma } from '@/lib/prisma';
+import { notifyMemoryModeration } from '@/services/notification-service';
 
 const ACTION_MAP = {
   APPROVED: 'MEMORY_APPROVED',
@@ -58,6 +59,9 @@ export async function PATCH(request: NextRequest) {
         },
       }),
     ]);
+
+    // Fire-and-forget: notification delivery failure must not affect the response
+    notifyMemoryModeration(memoryId, action, reason).catch(() => {});
 
     return NextResponse.json({
       success: true,
