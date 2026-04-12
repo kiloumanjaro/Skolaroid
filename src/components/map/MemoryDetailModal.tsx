@@ -7,7 +7,7 @@ import {
   ChevronRight,
   X,
   Trash2,
-  CircleOff,
+  Flag,
 } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -22,6 +22,7 @@ import {
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 import { ActionBar } from '@/components/map/ActionBar';
 import { DeleteMemoryModal } from '@/components/map/DeleteMemoryModal';
+import { ReportMemoryModal } from '@/components/map/ReportMemoryModal';
 import { useDeleteMemory } from '@/lib/hooks/useDeleteMemory';
 import { CommentSection } from '@/components/map/CommentSection';
 import { useCommentsByMemory } from '@/lib/hooks/useCommentsByMemory';
@@ -154,6 +155,7 @@ export function MemoryDetailModal({
   const { user: authUser } = useUserAuth();
   const deleteMemory = useDeleteMemory();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [reportModalOpen, setReportModalOpen] = useState(false);
   const isOwner = !!(
     authUser &&
     memory?.creatorId &&
@@ -576,6 +578,13 @@ export function MemoryDetailModal({
                                   </DropdownMenuTrigger>
                                   <DropdownMenuContent align="end">
                                     <DropdownMenuItem
+                                      className="text-amber-600 focus:text-amber-600"
+                                      onClick={() => setReportModalOpen(true)}
+                                    >
+                                      <Flag className="mr-2 h-4 w-4" />
+                                      Report Memory
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
                                       className="text-red-600 focus:text-red-600"
                                       onClick={() => setDeleteModalOpen(true)}
                                     >
@@ -585,13 +594,25 @@ export function MemoryDetailModal({
                                   </DropdownMenuContent>
                                 </DropdownMenu>
                               ) : (
-                                <button
-                                  className="cursor-not-allowed text-muted-foreground"
-                                  aria-label="No actions available"
-                                  disabled
-                                >
-                                  <CircleOff className="h-5 w-5" />
-                                </button>
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <button
+                                      className="text-muted-foreground hover:text-foreground"
+                                      aria-label="More options"
+                                    >
+                                      <MoreHorizontal className="h-5 w-5" />
+                                    </button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end">
+                                    <DropdownMenuItem
+                                      className="text-amber-600 focus:text-amber-600"
+                                      onClick={() => setReportModalOpen(true)}
+                                    >
+                                      <Flag className="mr-2 h-4 w-4" />
+                                      Report Memory
+                                    </DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
                               )}
                             </div>
 
@@ -604,7 +625,10 @@ export function MemoryDetailModal({
                             </div>
 
                             {/* Action bar */}
-                            <ActionBar memory={baseRightMemory} />
+                            <ActionBar
+                              memory={baseRightMemory}
+                              onReport={() => setReportModalOpen(true)}
+                            />
 
                             {/* Tags section */}
                             {baseRightMemory.tags &&
@@ -1141,6 +1165,13 @@ export function MemoryDetailModal({
             },
           });
         }}
+      />
+
+      <ReportMemoryModal
+        open={reportModalOpen}
+        onOpenChange={setReportModalOpen}
+        memoryId={memory?.id ?? ''}
+        memoryTitle={memory?.title ?? ''}
       />
     </>
   );
