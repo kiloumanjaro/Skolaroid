@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { User } from 'lucide-react';
 import { ClientNav } from './client-nav';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
 import { AccountMenu } from './account-menu';
@@ -30,7 +31,11 @@ export function Header() {
 
         {/* Auth - Right */}
         <div className="ml-auto flex items-center gap-3">
-          {!loading && isAuthenticated ? (
+          {loading ? (
+            <div className="flex h-8 w-8 animate-pulse items-center justify-center rounded-full border-2 border-foreground bg-card text-foreground">
+              <User className="h-4 w-4" />
+            </div>
+          ) : isAuthenticated ? (
             <>
               <NotificationsMenu />
               <AccountMenu />

@@ -285,14 +285,14 @@ export function MembersTab({
                       {/* Member info */}
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-3">
-                          <Avatar className="h-8 w-8">
+                          <Avatar className="h-8 w-8 border-2 border-foreground">
                             {member.avatarUrl ? (
                               <AvatarImage
                                 src={member.avatarUrl}
                                 alt={member.name}
                               />
                             ) : null}
-                            <AvatarFallback className="bg-gradient-to-br from-skolaroid-blue to-blue-600 text-xs text-white">
+                            <AvatarFallback className="bg-card text-xs text-foreground">
                               {getMemberInitials(member.name)}
                             </AvatarFallback>
                           </Avatar>
@@ -474,14 +474,14 @@ export function MembersTab({
 
               {/* Profile */}
               <div className="flex flex-col items-center px-6 py-6">
-                <Avatar className="h-16 w-16">
+                <Avatar className="h-16 w-16 border-2 border-foreground">
                   {memberToView.avatarUrl ? (
                     <AvatarImage
                       src={memberToView.avatarUrl}
                       alt={memberToView.name}
                     />
                   ) : null}
-                  <AvatarFallback className="bg-gradient-to-br from-skolaroid-blue to-blue-600 text-lg text-white">
+                  <AvatarFallback className="bg-card text-lg text-foreground">
                     {getMemberInitials(memberToView.name)}
                   </AvatarFallback>
                 </Avatar>
