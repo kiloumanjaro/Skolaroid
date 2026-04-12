@@ -32,8 +32,8 @@ export async function GET(request: NextRequest) {
         creatorId: result.data.userId,
         deletedAt: null,
         isArchived: false,
-        // Non-owners can only see public memories
-        ...(!isOwner && { visibility: 'PUBLIC' }),
+        // Non-owners can only see approved public memories
+        ...(!isOwner && { visibility: 'PUBLIC', moderationStatus: 'APPROVED' }),
       },
       include: {
         tags: true,

@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const counts = await prisma.memory.groupBy({
       by: ['locationId'],
-      where: { deletedAt: null },
+      where: { deletedAt: null, moderationStatus: 'APPROVED' },
       _count: { id: true },
     });
 

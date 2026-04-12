@@ -39,25 +39,32 @@ export async function GET(request: NextRequest) {
       where: {
         locationId,
         deletedAt: null,
-        OR: [
-          { visibility: 'PUBLIC' },
-          { creator: { id: user.id } },
+        AND: [
           {
-            AND: [
-              { visibility: 'PROGRAM_ONLY' },
-              { programBatch: { students: { some: { id: user.id } } } },
-            ],
+            OR: [{ moderationStatus: 'APPROVED' }, { creatorId: user.id }],
           },
           {
-            AND: [
-              { visibility: 'BATCH_ONLY' },
-              { programBatch: { students: { some: { id: user.id } } } },
-            ],
-          },
-          {
-            AND: [
-              { visibility: 'GROUP_ONLY' },
-              { privateGroup: { members: { some: { id: user.id } } } },
+            OR: [
+              { visibility: 'PUBLIC' },
+              { creator: { id: user.id } },
+              {
+                AND: [
+                  { visibility: 'PROGRAM_ONLY' },
+                  { programBatch: { students: { some: { id: user.id } } } },
+                ],
+              },
+              {
+                AND: [
+                  { visibility: 'BATCH_ONLY' },
+                  { programBatch: { students: { some: { id: user.id } } } },
+                ],
+              },
+              {
+                AND: [
+                  { visibility: 'GROUP_ONLY' },
+                  { privateGroup: { members: { some: { id: user.id } } } },
+                ],
+              },
             ],
           },
         ],
