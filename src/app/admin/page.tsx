@@ -15,6 +15,8 @@ import {
   XCircle,
   Loader2,
   RefreshCw,
+  ChevronDown,
+  ArrowUpDown,
 } from 'lucide-react';
 import Image from 'next/image';
 import {
@@ -27,13 +29,19 @@ import {
   type AdminReportItem,
 } from '@/lib/hooks/useAdminReports';
 import { useResolveReport } from '@/lib/hooks/useResolveReport';
+import {
+  useAuditLog,
+  type AuditLogFilters,
+  type AuditLogEntry,
+} from '@/lib/hooks/useAuditLog';
 
-type AdminTab = 'published' | 'pending' | 'reports';
+type AdminTab = 'published' | 'pending' | 'reports' | 'audit';
 
 const tabLabels: Record<AdminTab, string> = {
   published: 'Published Posts',
   pending: 'Pending Review',
   reports: 'Reports',
+  audit: 'Audit Log',
 };
 
 function formatDate(dateString: string): string {
@@ -385,12 +393,224 @@ function ReportsContent({ searchQuery }: { searchQuery: string }) {
   );
 }
 
+const ACTION_LABELS: Record<string, string> = {
+  MEMORY_APPROVED: 'Memory Approved',
+  MEMORY_REJECTED: 'Memory Rejected',
+  MEMORY_REMOVED: 'Memory Removed',
+  MEMORY_RESTORED: 'Memory Restored',
+  REPORT_OPENED: 'Report Opened',
+  REPORT_RESOLVED: 'Report Resolved',
+  REPORT_DISMISSED: 'Report Dismissed',
+};
+
+const ACTION_COLORS: Record<string, string> = {
+  MEMORY_APPROVED: 'bg-green-50 text-green-600',
+  MEMORY_REJECTED: 'bg-yellow-50 text-yellow-600',
+  MEMORY_REMOVED: 'bg-red-50 text-red-600',
+  MEMORY_RESTORED: 'bg-blue-50 text-blue-600',
+  REPORT_OPENED: 'bg-red-50 text-red-600',
+  REPORT_RESOLVED: 'bg-green-50 text-green-600',
+  REPORT_DISMISSED: 'bg-secondary text-muted-foreground',
+};
+
+const ALL_ACTIONS = [
+  'MEMORY_APPROVED',
+  'MEMORY_REJECTED',
+  'MEMORY_REMOVED',
+  'MEMORY_RESTORED',
+  'REPORT_OPENED',
+  'REPORT_RESOLVED',
+  'REPORT_DISMISSED',
+] as const;
+
+function AuditLogContent({ searchQuery }: { searchQuery: string }) {
+  const [actionFilter, setActionFilter] = useState<string>('');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [sort, setSort] = useState<'asc' | 'desc'>('desc');
+
+  const filters: AuditLogFilters = {
+    action: actionFilter || undefined,
+    dateFrom: dateFrom ? new Date(dateFrom).toISOString() : undefined,
+    dateTo: dateTo
+      ? new Date(dateTo + 'T23:59:59.999Z').toISOString()
+      : undefined,
+    sort,
+  };
+
+  const {
+    data,
+    isLoading,
+    isError,
+    refetch,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useAuditLog(filters);
+
+  if (isLoading) return <LoadingState />;
+  if (isError) return <ErrorState onRetry={() => refetch()} />;
+
+  const allEntries = data?.pages.flatMap((page) => page.data.items) ?? [];
+
+  const filtered = allEntries.filter((entry) => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    const adminName =
+      `${entry.admin.firstName} ${entry.admin.lastName}`.toLowerCase();
+    const targetTitle =
+      entry.targetMemory?.title?.toLowerCase() ??
+      entry.targetReport?.reason?.toLowerCase() ??
+      '';
+    return adminName.includes(query) || targetTitle.includes(query);
+  });
+
+  function getTargetLabel(entry: AuditLogEntry): string {
+    if (entry.targetType === 'MEMORY') {
+      return entry.targetMemory?.title ?? 'Deleted memory';
+    }
+    if (entry.targetType === 'REPORT') {
+      return entry.targetReport
+        ? `Report: ${entry.targetReport.reason}`
+        : 'Deleted report';
+    }
+    return 'Unknown target';
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Filter Bar */}
+      <div className="flex flex-wrap items-center gap-3 border-2 border-border bg-card p-3">
+        {/* Action type filter */}
+        <div className="relative">
+          <select
+            value={actionFilter}
+            onChange={(e) => setActionFilter(e.target.value)}
+            className="appearance-none border-2 border-border bg-background py-1.5 pl-3 pr-8 text-xs focus:border-skolaroid-blue focus:outline-none"
+          >
+            <option value="">All Actions</option>
+            {ALL_ACTIONS.map((action) => (
+              <option key={action} value={action}>
+                {ACTION_LABELS[action]}
+              </option>
+            ))}
+          </select>
+          <ChevronDown
+            size={12}
+            className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+          />
+        </div>
+
+        {/* Date range */}
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <span>From</span>
+          <input
+            type="date"
+            value={dateFrom}
+            onChange={(e) => setDateFrom(e.target.value)}
+            className="border-2 border-border bg-background px-2 py-1.5 text-xs focus:border-skolaroid-blue focus:outline-none"
+          />
+          <span>to</span>
+          <input
+            type="date"
+            value={dateTo}
+            onChange={(e) => setDateTo(e.target.value)}
+            className="border-2 border-border bg-background px-2 py-1.5 text-xs focus:border-skolaroid-blue focus:outline-none"
+          />
+        </div>
+
+        {/* Sort toggle */}
+        <button
+          onClick={() => setSort((s) => (s === 'desc' ? 'asc' : 'desc'))}
+          className="flex items-center gap-1.5 border-2 border-border px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-secondary"
+        >
+          <ArrowUpDown size={12} />
+          {sort === 'desc' ? 'Newest first' : 'Oldest first'}
+        </button>
+      </div>
+
+      {/* Entries */}
+      {filtered.length === 0 ? (
+        <div className="py-16 text-center text-sm text-muted-foreground">
+          No moderation actions found.
+        </div>
+      ) : (
+        <>
+          {filtered.map((entry) => {
+            const adminName = `${entry.admin.firstName} ${entry.admin.lastName}`;
+            return (
+              <div
+                key={entry.id}
+                className="flex items-start gap-4 border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]"
+              >
+                {/* Admin avatar */}
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-skolaroid-blue text-sm font-medium text-white">
+                  {entry.admin.firstName.charAt(0)}
+                </div>
+
+                {/* Content */}
+                <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-foreground">
+                      {adminName}
+                    </span>
+                    <span
+                      className={`rounded-full px-2.5 py-0.5 text-[10px] font-medium ${ACTION_COLORS[entry.action] ?? 'bg-secondary text-muted-foreground'}`}
+                    >
+                      {ACTION_LABELS[entry.action] ?? entry.action}
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-muted-foreground">
+                    {getTargetLabel(entry)}
+                  </p>
+
+                  {entry.reason && (
+                    <p className="text-xs italic text-muted-foreground">
+                      Reason: {entry.reason}
+                    </p>
+                  )}
+
+                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Clock size={10} />
+                    {formatDate(entry.createdAt)}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Load More */}
+          {hasNextPage && (
+            <div className="flex justify-center pt-2">
+              <button
+                onClick={() => fetchNextPage()}
+                disabled={isFetchingNextPage}
+                className="flex items-center gap-1.5 border-2 border-border px-4 py-2 text-xs text-muted-foreground transition-colors hover:bg-secondary disabled:opacity-50"
+              >
+                {isFetchingNextPage ? (
+                  <>
+                    <Loader2 size={12} className="animate-spin" />
+                    Loading...
+                  </>
+                ) : (
+                  'Load More'
+                )}
+              </button>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
 export default function AdminPage() {
   const router = useRouter();
   const [currentTab, setCurrentTab] = useState<AdminTab>('published');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const tabs: AdminTab[] = ['published', 'pending', 'reports'];
+  const tabs: AdminTab[] = ['published', 'pending', 'reports', 'audit'];
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -456,6 +676,9 @@ export default function AdminPage() {
         )}
         {currentTab === 'reports' && (
           <ReportsContent searchQuery={searchQuery} />
+        )}
+        {currentTab === 'audit' && (
+          <AuditLogContent searchQuery={searchQuery} />
         )}
       </main>
     </div>

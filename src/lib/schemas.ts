@@ -424,6 +424,29 @@ export type ModerationStatus = z.infer<typeof moderationStatusEnum>;
 export type ModerateMemoryInput = z.infer<typeof moderateMemorySchema>;
 export type ResolveReportInput = z.infer<typeof resolveReportSchema>;
 
+export const moderationActionTypeEnum = z.enum([
+  'MEMORY_APPROVED',
+  'MEMORY_REJECTED',
+  'MEMORY_REMOVED',
+  'MEMORY_RESTORED',
+  'REPORT_OPENED',
+  'REPORT_RESOLVED',
+  'REPORT_DISMISSED',
+]);
+
+/** Query params for fetching the moderation audit log (admin). */
+export const auditLogQuerySchema = z.object({
+  action: moderationActionTypeEnum.optional(),
+  adminId: z.string().uuid('Invalid admin ID').optional(),
+  dateFrom: z.coerce.date().optional(),
+  dateTo: z.coerce.date().optional(),
+  cursor: z.string().uuid('Invalid cursor').optional(),
+  limit: z.coerce.number().int().min(1).max(50).default(20),
+  sort: z.enum(['asc', 'desc']).default('desc'),
+});
+
+export type AuditLogQuery = z.infer<typeof auditLogQuerySchema>;
+
 // ============================================================================
 // AUTH TYPE EXPORTS
 // ============================================================================
