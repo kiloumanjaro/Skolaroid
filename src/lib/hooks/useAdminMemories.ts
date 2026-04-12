@@ -38,12 +38,20 @@ export function useAdminMemories(status: ModerationStatus) {
     queryKey: ['admin-memories', status],
     queryFn: async () => {
       const res = await fetch(
-        `/api/prisma/memory/admin/get-by-status?status=${encodeURIComponent(status)}`
+        `/api/prisma/memory/admin/get-by-status?status=${encodeURIComponent(status)}`,
+        {
+          cache: 'no-store',
+        }
       );
       if (!res.ok) throw new Error('Failed to fetch memories');
       return res.json() as Promise<AdminMemoriesResponse>;
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: 'always',
+    refetchOnReconnect: 'always',
+    refetchInterval: 15_000,
+    refetchIntervalInBackground: false,
     retry: 1,
   });
 }

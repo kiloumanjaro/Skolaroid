@@ -39,7 +39,11 @@ interface MarkReadResponse {
   data: { updatedCount: number };
 }
 
-export function useNotifications() {
+interface UseNotificationsOptions {
+  enabled?: boolean;
+}
+
+export function useNotifications(options?: UseNotificationsOptions) {
   return useInfiniteQuery({
     queryKey: ['notifications'],
     queryFn: async ({ pageParam }: { pageParam: string | undefined }) => {
@@ -48,13 +52,23 @@ export function useNotifications() {
       params.set('limit', '20');
 
       const res = await fetch(
-        `/api/prisma/notification/get?${params.toString()}`
+        `/api/prisma/notification/get?${params.toString()}`,
+        {
+          cache: 'no-store',
+        }
       );
       if (!res.ok) throw new Error('Failed to fetch notifications');
       return res.json() as Promise<NotificationsResponse>;
     },
+    enabled: options?.enabled ?? true,
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) => lastPage.data.nextCursor ?? undefined,
+    staleTime: 0,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: 'always',
+    refetchOnReconnect: 'always',
+    refetchInterval: options?.enabled ? 30_000 : false,
+    refetchIntervalInBackground: false,
   });
 }
 
@@ -62,12 +76,19 @@ export function useUnreadNotificationCount() {
   return useQuery({
     queryKey: ['notifications', 'unread-count'],
     queryFn: async () => {
-      const res = await fetch('/api/prisma/notification/unread-count');
+      const res = await fetch('/api/prisma/notification/unread-count', {
+        cache: 'no-store',
+      });
       if (!res.ok) throw new Error('Failed to fetch unread count');
       const json = (await res.json()) as UnreadCountResponse;
       return json.data.count;
     },
+    staleTime: 0,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: 'always',
+    refetchOnReconnect: 'always',
     refetchInterval: 30_000,
+    refetchIntervalInBackground: false,
   });
 }
 
@@ -86,6 +107,9 @@ export function useMarkNotificationsRead() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({
+        queryKey: ['notifications', 'unread-count'],
+      });
     },
   });
 }

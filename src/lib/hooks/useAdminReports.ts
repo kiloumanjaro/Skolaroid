@@ -35,11 +35,18 @@ export function useAdminReports(state?: 'OPEN' | 'RESOLVED' | 'DISMISSED') {
     queryKey: ['admin-reports', state],
     queryFn: async () => {
       const params = state ? `?state=${encodeURIComponent(state)}` : '';
-      const res = await fetch(`/api/prisma/report/admin/get-all${params}`);
+      const res = await fetch(`/api/prisma/report/admin/get-all${params}`, {
+        cache: 'no-store',
+      });
       if (!res.ok) throw new Error('Failed to fetch reports');
       return res.json() as Promise<AdminReportsResponse>;
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: 'always',
+    refetchOnReconnect: 'always',
+    refetchInterval: 15_000,
+    refetchIntervalInBackground: false,
     retry: 1,
   });
 }

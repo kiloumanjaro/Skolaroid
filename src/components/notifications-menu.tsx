@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import {
   Bell,
   CheckCircle,
@@ -55,12 +56,29 @@ function formatTime(dateStr: string): string {
 }
 
 export function NotificationsMenu() {
-  const { data: unreadCount = 0 } = useUnreadNotificationCount();
-  const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } =
-    useNotifications();
+  const [open, setOpen] = useState(false);
+  const { data: unreadCount = 0, refetch: refetchUnreadCount } =
+    useUnreadNotificationCount();
+  const {
+    data,
+    isLoading,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+    refetch: refetchNotifications,
+  } = useNotifications({ enabled: open });
   const markRead = useMarkNotificationsRead();
 
   const notifications = data?.pages.flatMap((page) => page.data.items) ?? [];
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    setOpen(nextOpen);
+
+    if (nextOpen) {
+      void refetchUnreadCount();
+      void refetchNotifications();
+    }
+  };
 
   const handleMarkAllRead = () => {
     const unreadIds = notifications.filter((n) => !n.read).map((n) => n.id);
@@ -70,7 +88,7 @@ export function NotificationsMenu() {
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={handleOpenChange}>
       <DropdownMenuTrigger asChild>
         <button
           className="relative rounded-full p-2 transition hover:bg-gray-100"
