@@ -5,7 +5,6 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { cn, getEraFromBatchTag } from '@/lib/utils';
 import { X, Search, SlidersHorizontal, Plus, MapPin } from 'lucide-react';
-import { MOCK_MEMORIES, MOCK_LOCATIONS } from '@/lib/mock-data';
 import {
   FilterMemoriesModal,
   DEFAULT_FILTERS,
@@ -24,7 +23,7 @@ interface BatchesModalProps {
   onOpenChange: (open: boolean) => void;
   /** The currently active map era (decade start year, e.g. 2020). */
   activeMapEra?: number;
-  /** All memories from the parent map component (same data shown as map pins). Falls back to MOCK_MEMORIES. */
+  /** All memories from the parent map component (same data shown as map pins). */
   memories?: MemoryWithCoordinates[];
   /** Called when the user clicks "Add an Entry". Receives the currently selected decade. */
   onAddMemory?: (era: number | null) => void;
@@ -57,18 +56,6 @@ const DECADES: DecadeOption[] = [
   { label: '1940s', value: 1940 },
 ];
 
-/** Lookup coordinates by building name from MOCK_LOCATIONS. */
-const COORDS_BY_BUILDING: Record<
-  string,
-  { latitude: number; longitude: number }
-> = {};
-for (const loc of MOCK_LOCATIONS) {
-  COORDS_BY_BUILDING[loc.buildingName] = {
-    latitude: loc.latitude,
-    longitude: loc.longitude,
-  };
-}
-
 // =============================================================================
 // COMPONENT
 // =============================================================================
@@ -89,27 +76,10 @@ export function BatchesModal({
   const [filters, setFilters] = useState<MemoryFilters>(DEFAULT_FILTERS);
   const { data: locationsData } = useLocations();
 
-  // Resolve memory source: prop data from the map (real API) or MOCK_MEMORIES fallback
-  const allMemories = useMemo<MemoryWithCoordinates[]>(() => {
-    if (memoriesProp) return memoriesProp;
-    return MOCK_MEMORIES.map((m) => {
-      const coords = COORDS_BY_BUILDING[m.location.buildingName] ?? {
-        latitude: 0,
-        longitude: 0,
-      };
-      return {
-        id: m.id,
-        title: m.title,
-        description: m.description,
-        mediaURL: m.mediaURL,
-        visibility: m.visibility,
-        createdAt: m.createdAt,
-        tags: m.tags,
-        location: { buildingName: m.location.buildingName, ...coords },
-        _count: m._count,
-      };
-    });
-  }, [memoriesProp]);
+  const allMemories = useMemo<MemoryWithCoordinates[]>(
+    () => memoriesProp ?? [],
+    [memoriesProp]
+  );
 
   // Extract unique tags and years from the resolved memory set for the filter panel
   const availableTags = useMemo(() => {

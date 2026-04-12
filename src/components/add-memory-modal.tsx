@@ -127,8 +127,6 @@ const VISIBILITY_OPTIONS: {
   },
 ];
 
-const MOCK_PROGRAM_BATCH_ID = '50000000-0000-4000-8000-000000000001';
-
 // =============================================================================
 // HELPERS
 // =============================================================================
@@ -534,7 +532,6 @@ export function AddMemoryModal({
         description: caption.trim() || undefined,
         visibility,
         locationId,
-        programBatchId: MOCK_PROGRAM_BATCH_ID,
         memoryDate: memoryDate ? new Date(memoryDate) : undefined,
         tags,
         mediaFile: firstCompleted?.file,
