@@ -129,14 +129,27 @@ export async function PATCH(
     // ── 2. Fetch group & verify ownership ────────────────────────────
     const group = await prisma.privateGroup.findUnique({
       where: { id: groupId, deletedAt: null },
-      select: { creatorId: true, name: true },
+      select: {
+        creatorId: true,
+        name: true,
+        groupMemberships: {
+          where: { userId: authUser.id },
+          select: { role: true },
+        },
+      },
     });
 
     if (!group) {
       return NextResponse.json({ error: 'Group not found' }, { status: 404 });
     }
 
-    if (group.creatorId !== authUser.id) {
+    const currentUserRole = resolveGroupMemberRole(
+      authUser.id,
+      group.creatorId,
+      group.groupMemberships[0]?.role
+    );
+
+    if (currentUserRole !== 'OWNER') {
       return NextResponse.json(
         { error: 'Only the group owner can update settings' },
         { status: 403 }
@@ -191,9 +204,21 @@ export async function PATCH(
     return NextResponse.json({
       success: true,
       message: 'Group updated successfully',
-      data: updated,
+      data: { ...updated, currentUserRole },
     });
   } catch (error) {
+    // Prisma unique constraint violation (concurrent rename race)
+    if (
+      error !== null &&
+      typeof error === 'object' &&
+      'code' in error &&
+      (error as { code: string }).code === 'P2002'
+    ) {
+      return NextResponse.json(
+        { error: 'A group with that name already exists' },
+        { status: 409 }
+      );
+    }
     const message = error instanceof Error ? error.message : 'Unknown error';
     console.error('[group/patch] Error:', message);
     return NextResponse.json({ error: message }, { status: 500 });

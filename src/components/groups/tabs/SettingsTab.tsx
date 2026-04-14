@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { type Group } from '@/lib/types/group';
 import { useUpdateGroup } from '@/lib/hooks/useUpdateGroup';
+import { updateGroupServerSchema } from '@/lib/schemas';
 import { WOBBLY_RADIUS } from '@/lib/hand-drawn';
 import { cn } from '@/lib/utils';
 
@@ -44,32 +45,29 @@ export function SettingsTab({ group, onUpdated }: SettingsTabProps) {
 
     const trimmed = draft.trim();
 
-    // Validate
-    if (editingField === 'name' && trimmed.length === 0) {
-      setFieldError('Group name cannot be empty');
-      return;
-    }
-    if (editingField === 'name' && trimmed.length > 50) {
-      setFieldError('Group name must be 50 characters or less');
-      return;
-    }
-    if (editingField === 'description' && trimmed.length > 500) {
-      setFieldError('Description must be 500 characters or less');
-      return;
-    }
-    if (editingField === 'message' && trimmed.length > 300) {
-      setFieldError('Message must be 300 characters or less');
+    // No-op guard: skip network request if the value hasn't changed
+    const currentValue =
+      editingField === 'name'
+        ? group.name
+        : editingField === 'description'
+          ? (group.description ?? '')
+          : (group.message ?? '');
+    if (trimmed === currentValue.trim()) {
+      cancelEditing();
       return;
     }
 
-    // Build payload — send empty string as empty, let backend handle nullable
-    const payload: Record<string, string> = {};
-    if (editingField === 'name') payload.name = trimmed;
-    else if (editingField === 'description') payload.description = trimmed;
-    else if (editingField === 'message') payload.message = trimmed;
+    // Validate using the shared schema so constraints stay in one place
+    const parsed = updateGroupServerSchema.safeParse({
+      [editingField]: trimmed,
+    });
+    if (!parsed.success) {
+      setFieldError(parsed.error.issues[0]?.message ?? 'Invalid value');
+      return;
+    }
 
     updateGroup.mutate(
-      { groupId: group.id, data: payload },
+      { groupId: group.id, data: parsed.data },
       {
         onSuccess: () => {
           setEditingField(null);
