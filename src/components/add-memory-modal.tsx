@@ -6,6 +6,7 @@ import { TagInput } from '@/components/tag-input';
 import { useCreateMemory } from '@/lib/hooks/useCreateMemory';
 import { useCreateCustomLocation } from '@/lib/hooks/useCreateCustomLocation';
 import { useLocations } from '@/lib/hooks/useLocations';
+import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
 import {
   MAX_TAGS,
   VISIBILITY_LABELS,
@@ -243,6 +244,21 @@ export function AddMemoryModal({
 
   const { mutateAsync: createCustomLocation } = useCreateCustomLocation();
 
+  const { data: currentUserData, isLoading: isCurrentUserLoading } =
+    useCurrentUser();
+
+  const programBatch = currentUserData?.data?.programBatch ?? null;
+
+  const batchLabel = useMemo(() => {
+    if (!programBatch) return null;
+    return `${programBatch.program.name} • Batch ${programBatch.batch.year}`;
+  }, [programBatch]);
+
+  const batchOnlyDescription = useMemo(() => {
+    if (!programBatch) return 'Visible to your batch';
+    return `Visible to ${programBatch.program.name} Batch ${programBatch.batch.year}`;
+  }, [programBatch]);
+
   // ---------------------------------------------------------------------------
   // Computed
   // ---------------------------------------------------------------------------
@@ -261,7 +277,6 @@ export function AddMemoryModal({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const hasCompletedUploads = completedFiles.length > 0;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const currentVisibilityOption = useMemo(
     () =>
       VISIBILITY_OPTIONS.find((o) => o.value === visibility) ??
@@ -1039,97 +1054,121 @@ export function AddMemoryModal({
   // Tab: Privacy
   // ---------------------------------------------------------------------------
 
-  const renderPrivacyTab = () => (
-    <div className="flex h-full flex-col gap-6">
-      {/* Live */}
-      <div className="flex items-start justify-between">
-        <div className="flex items-start gap-3">
-          <FileText className="mt-0.5 h-5 w-5 text-foreground" />
-          <div>
-            <p className="text-sm font-semibold text-foreground">Live</p>
-            <p className="text-xs text-muted-foreground">
-              2 Months Ago by user
-            </p>
+  const renderPrivacyTab = () => {
+    const VisibilityIcon = currentVisibilityOption.icon;
+    return (
+      <div className="flex h-full flex-col gap-6">
+        {/* Batch context badge */}
+        <div className="flex items-center gap-2 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2">
+          <Shield className="h-4 w-4 shrink-0 text-skolaroid-blue" />
+          <div className="flex min-w-0 flex-col">
+            <span className="text-xs font-medium text-muted-foreground">
+              Posting as
+            </span>
+            {isCurrentUserLoading ? (
+              <div className="mt-0.5 h-3.5 w-40 animate-pulse rounded bg-blue-200" />
+            ) : (
+              <span className="truncate text-sm font-semibold text-skolaroid-blue">
+                {batchLabel ?? 'Unknown batch'}
+              </span>
+            )}
           </div>
         </div>
-      </div>
 
-      {/* Moderation */}
-      <div className="flex items-start justify-between">
-        <div className="flex items-start gap-3">
-          <Info className="mt-0.5 h-5 w-5 text-foreground" />
-          <div>
-            <p className="text-sm font-semibold text-foreground">Moderation</p>
-            <p className="text-xs text-muted-foreground">
-              Approved 7 days ago by Kint Borbano
-            </p>
+        {/* Live */}
+        <div className="flex items-start justify-between">
+          <div className="flex items-start gap-3">
+            <FileText className="mt-0.5 h-5 w-5 text-foreground" />
+            <div>
+              <p className="text-sm font-semibold text-foreground">Live</p>
+              <p className="text-xs text-muted-foreground">
+                2 Months Ago by user
+              </p>
+            </div>
           </div>
         </div>
-        <button
-          type="button"
-          onClick={() => {
-            // TODO: Implement view details
-            console.log('[AddMemoryModal] view details clicked');
-          }}
-          className="text-sm font-medium text-skolaroid-blue hover:underline"
-        >
-          View Details
-        </button>
-      </div>
 
-      {/* English */}
-      <div className="flex items-start justify-between">
-        <div className="flex items-start gap-3">
-          <Globe className="mt-0.5 h-5 w-5 text-foreground" />
-          <div>
-            <p className="text-sm font-semibold text-foreground">English</p>
+        {/* Moderation */}
+        <div className="flex items-start justify-between">
+          <div className="flex items-start gap-3">
+            <Info className="mt-0.5 h-5 w-5 text-foreground" />
+            <div>
+              <p className="text-sm font-semibold text-foreground">
+                Moderation
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Approved 7 days ago by Kint Borbano
+              </p>
+            </div>
           </div>
+          <button
+            type="button"
+            onClick={() => {
+              // TODO: Implement view details
+              console.log('[AddMemoryModal] view details clicked');
+            }}
+            className="text-sm font-medium text-skolaroid-blue hover:underline"
+          >
+            View Details
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={() => {
-            // TODO: Implement switch locales
-            console.log('[AddMemoryModal] switch locales clicked');
-          }}
-          className="text-sm font-medium text-skolaroid-blue hover:underline"
-        >
-          Switch locales
-        </button>
-      </div>
 
-      {/* Visible to all */}
-      <div className="flex items-start justify-between">
-        <div className="flex items-start gap-3">
-          <Eye className="mt-0.5 h-5 w-5 text-foreground" />
-          <div>
-            <p className="text-sm font-semibold text-foreground">
-              Visible to all
-            </p>
-            <p className="text-xs text-muted-foreground">
-              Once live, anyone can see
-            </p>
+        {/* English */}
+        <div className="flex items-start justify-between">
+          <div className="flex items-start gap-3">
+            <Globe className="mt-0.5 h-5 w-5 text-foreground" />
+            <div>
+              <p className="text-sm font-semibold text-foreground">English</p>
+            </div>
           </div>
+          <button
+            type="button"
+            onClick={() => {
+              // TODO: Implement switch locales
+              console.log('[AddMemoryModal] switch locales clicked');
+            }}
+            className="text-sm font-medium text-skolaroid-blue hover:underline"
+          >
+            Switch locales
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={() => {
-            // TODO: Implement set privacy
-            console.log('[AddMemoryModal] set privacy clicked');
-          }}
-          className="text-sm font-medium text-skolaroid-blue hover:underline"
-        >
-          Set privacy
-        </button>
-      </div>
 
-      {/* Submit error */}
-      {submitError && (
-        <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2">
-          <p className="text-sm text-red-600">{submitError}</p>
+        {/* Current visibility */}
+        <div className="flex items-start justify-between">
+          <div className="flex items-start gap-3">
+            <VisibilityIcon className="mt-0.5 h-5 w-5 text-foreground" />
+            <div>
+              <p className="text-sm font-semibold text-foreground">
+                {currentVisibilityOption.label}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {currentVisibilityOption.value === 'BATCH_ONLY'
+                  ? batchOnlyDescription
+                  : currentVisibilityOption.description}
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              // TODO: Implement set privacy
+              console.log('[AddMemoryModal] set privacy clicked');
+            }}
+            className="text-sm font-medium text-skolaroid-blue hover:underline"
+          >
+            Set privacy
+          </button>
         </div>
-      )}
-    </div>
-  );
+
+        {/* Submit error */}
+        {submitError && (
+          <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2">
+            <p className="text-sm text-red-600">{submitError}</p>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   // ---------------------------------------------------------------------------
   // Tab renderer map
