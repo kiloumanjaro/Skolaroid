@@ -22,9 +22,9 @@ export function useUpdateGroup() {
         }
       );
 
-      const body = await res.json();
-      if (!res.ok) throw new Error(body.error ?? 'Failed to update group');
-      return body.data;
+      const body = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(body?.error ?? 'Failed to update group');
+      return body?.data;
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({

@@ -149,18 +149,21 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
 
   // Build the selected group from either the detail query or the list
   const selectedGroup: Group | null = useMemo(() => {
-    if (groupDetailRaw)
-      return toGroup(groupDetailRaw as unknown as GroupResponse);
+    if (groupDetailRaw) return toGroup(groupDetailRaw);
     return groups.find((g) => g.id === selectedGroupId) ?? null;
   }, [groupDetailRaw, groups, selectedGroupId]);
 
-  const isOwner = selectedGroup?.ownerId === currentUserId;
   const currentUserMember = selectedGroup?.members.find(
     (m) => m.id === currentUserId
   );
+  // Prefer the server-resolved role from the member list; fall back to ownerId
+  // comparison when the detail query hasn't loaded yet (e.g. list-only data).
   const currentUserRole =
     currentUserMember?.role ??
-    (isOwner ? ('OWNER' as const) : ('MEMBER' as const));
+    (selectedGroup?.ownerId === currentUserId
+      ? ('OWNER' as const)
+      : ('MEMBER' as const));
+  const isOwner = currentUserRole === 'OWNER';
   const rolePrivileges = selectedGroup?.rolePrivileges;
   const canManageMembers =
     !!selectedGroup &&
