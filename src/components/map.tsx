@@ -990,12 +990,12 @@ export function MapComponent({
         const era = ERA_OVERLAY[activeMapEra];
         if (!era) return null;
         return (
-          <div className="absolute bottom-8 left-4 z-10 flex items-center gap-3">
+          <div className="absolute bottom-20 left-3 right-3 z-10 flex flex-col-reverse items-start gap-2 sm:bottom-8 sm:left-4 sm:right-auto sm:flex-row sm:items-center sm:gap-3">
             <button
               onClick={() => {
                 window.location.href = `/gallery?era=${activeMapEra}`;
               }}
-              className="flex items-center gap-2 border-2 border-border bg-card px-4 py-2 text-sm font-semibold text-foreground shadow-[3px_3px_0px_0px_#2d2d2d] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#2d2d2d]"
+              className="flex w-full items-center justify-center gap-2 border-2 border-border bg-card px-4 py-2 text-sm font-semibold text-foreground shadow-[3px_3px_0px_0px_#2d2d2d] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#2d2d2d] sm:w-auto"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -1025,11 +1025,11 @@ export function MapComponent({
       })()}
 
       {/* Add Memory Button - Bottom Right */}
-      <div className="absolute bottom-6 right-6 z-10 flex flex-col items-end gap-3">
+      <div className="absolute bottom-4 right-4 z-10 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
         <div className="group flex items-center gap-0 rounded-full bg-white p-2 shadow-lg transition-all duration-300 hover:gap-3">
           <button
             onClick={() => setAddMemoryOpen(true)}
-            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-skolaroid-blue text-white shadow-lg transition-all hover:bg-skolaroid-blue/90 hover:shadow-xl active:scale-95"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-skolaroid-blue text-white shadow-lg transition-all hover:bg-skolaroid-blue/90 hover:shadow-xl active:scale-95 sm:h-12 sm:w-12"
             aria-label="Add memory"
           >
             <Plus size={20} />

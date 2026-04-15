@@ -11,8 +11,11 @@ export function SinglePhoto({ photo, onPhotoClick }: SinglePhotoProps) {
   return (
     <div
       style={{
-        width: 'calc(380px * var(--gallery-card-scale, 1))',
-        height: 'calc(560px * var(--gallery-card-scale, 1))',
+        ['--gallery-layout-scale' as string]:
+          'min(var(--gallery-card-scale, 1), calc((100vw - 3rem) / 380))',
+        width: 'calc(380px * var(--gallery-layout-scale))',
+        height: 'calc(560px * var(--gallery-layout-scale))',
+        maxWidth: '100%',
       }}
     >
       <div
@@ -20,7 +23,7 @@ export function SinglePhoto({ photo, onPhotoClick }: SinglePhotoProps) {
         style={{
           width: 380,
           height: 560,
-          transform: 'scale(var(--gallery-card-scale, 1))',
+          transform: 'scale(var(--gallery-layout-scale))',
           transformOrigin: 'left top',
         }}
       >

@@ -95,7 +95,7 @@ export default function MapPage() {
           setDrawerOpen={setDrawerOpen}
           className="top-16 z-30 h-[calc(100vh-4rem)]"
           contentClassName="overflow-hidden"
-          expandedWidthClassName="w-[298px]"
+          expandedWidthClassName="w-[min(calc(100vw-1rem),298px)] md:w-[298px]"
           stripAriaLabel={drawerOpen ? 'Close filters' : 'Open filters'}
           expandOnHover={false}
         >
@@ -113,7 +113,7 @@ export default function MapPage() {
 
         <div
           className={`flex-1 overflow-hidden transition-all duration-300 ease-in-out ${
-            drawerOpen ? 'ml-[298px]' : 'ml-2.5'
+            drawerOpen ? 'ml-2.5 md:ml-[298px]' : 'ml-2.5'
           }`}
         >
           <MapComponent

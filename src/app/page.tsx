@@ -664,9 +664,13 @@ export default function Home() {
       )}
 
       <div
-        className={`fixed inset-0 z-10 transition-all duration-300 ease-in-out ${
-          drawerOpen ? 'ml-[600px]' : 'ml-0'
-        }`}
+        className="fixed inset-0 z-10 transition-all duration-300 ease-in-out"
+        style={{
+          marginLeft:
+            drawerOpen && viewportSize.width > 0
+              ? `${Math.min(viewportSize.width, 600)}px`
+              : '0px',
+        }}
       >
         <div
           className={`absolute inset-0 touch-none select-none overflow-hidden ${

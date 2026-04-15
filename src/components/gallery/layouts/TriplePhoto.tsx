@@ -16,8 +16,11 @@ export function TriplePhoto({ photos, onPhotoClick }: TriplePhotoProps) {
   return (
     <div
       style={{
-        width: 'calc(560px * var(--gallery-card-scale, 1))',
-        height: 'calc(600px * var(--gallery-card-scale, 1))',
+        ['--gallery-layout-scale' as string]:
+          'min(var(--gallery-card-scale, 1), calc((100vw - 3rem) / 560))',
+        width: 'calc(560px * var(--gallery-layout-scale))',
+        height: 'calc(600px * var(--gallery-layout-scale))',
+        maxWidth: '100%',
       }}
     >
       <div
@@ -25,7 +28,7 @@ export function TriplePhoto({ photos, onPhotoClick }: TriplePhotoProps) {
         style={{
           width: 560,
           height: 600,
-          transform: 'scale(var(--gallery-card-scale, 1))',
+          transform: 'scale(var(--gallery-layout-scale))',
           transformOrigin: 'left top',
         }}
       >

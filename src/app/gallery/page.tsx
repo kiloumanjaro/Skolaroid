@@ -99,9 +99,9 @@ function GalleryPageContent() {
         </div>
 
         {/* Era badge */}
-        <div className="absolute left-6 top-20 z-20">
+        <div className="absolute left-4 right-4 top-20 z-20 sm:left-6 sm:right-auto">
           <div
-            className={`flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-sm font-semibold shadow-md backdrop-blur-sm ${currentEraStyle.badge}`}
+            className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-sm font-semibold shadow-md backdrop-blur-sm ${currentEraStyle.badge}`}
           >
             <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
             {currentEraStyle.label} Gallery
@@ -126,7 +126,7 @@ function GalleryPageContent() {
         {/* Horizontal scroll gallery */}
         {!isLoading && !error && (
           <div
-            className="scrollbar-hide flex min-w-0 flex-1 items-center gap-16 overflow-x-auto overflow-y-hidden px-16 py-8"
+            className="scrollbar-hide flex min-w-0 flex-1 items-start gap-6 overflow-x-auto overflow-y-hidden px-4 py-6 sm:items-center sm:gap-10 sm:px-10 sm:py-8 lg:gap-16 lg:px-16"
             style={{
               scrollBehavior: 'smooth',
               scrollSnapType: 'x mandatory',

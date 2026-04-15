@@ -16,8 +16,11 @@ export function DualPhoto({ photos, onPhotoClick }: DualPhotoProps) {
   return (
     <div
       style={{
-        width: 'calc(480px * var(--gallery-card-scale, 1))',
-        height: 'calc(580px * var(--gallery-card-scale, 1))',
+        ['--gallery-layout-scale' as string]:
+          'min(var(--gallery-card-scale, 1), calc((100vw - 3rem) / 480))',
+        width: 'calc(480px * var(--gallery-layout-scale))',
+        height: 'calc(580px * var(--gallery-layout-scale))',
+        maxWidth: '100%',
       }}
     >
       <div
@@ -25,7 +28,7 @@ export function DualPhoto({ photos, onPhotoClick }: DualPhotoProps) {
         style={{
           width: 480,
           height: 580,
-          transform: 'scale(var(--gallery-card-scale, 1))',
+          transform: 'scale(var(--gallery-layout-scale))',
           transformOrigin: 'left top',
         }}
       >
