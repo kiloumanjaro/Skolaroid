@@ -8,6 +8,8 @@ import { InviteMembersModal } from '@/components/groups/InviteMembersModal';
 import { ShareGroupModal } from '@/components/groups/ShareGroupModal';
 import { LeaveGroupModal } from '@/components/groups/LeaveGroupModal';
 import { DeleteGroupModal } from '@/components/groups/DeleteGroupModal';
+import { EditGroupModal } from '@/components/groups/EditGroupModal';
+import { EditGroupMessageModal } from '@/components/groups/EditGroupMessageModal';
 import { MembersTab } from '@/components/groups/tabs/MembersTab';
 import { MediaTab } from '@/components/groups/tabs/MediaTab';
 import { AboutTab } from '@/components/groups/tabs/AboutTab';
@@ -44,6 +46,8 @@ import {
   Lock,
   Loader2,
   Shield,
+  Pencil,
+  MessageSquare,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -118,6 +122,8 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [leaveModalOpen, setLeaveModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [editGroupModalOpen, setEditGroupModalOpen] = useState(false);
+  const [editMessageModalOpen, setEditMessageModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('members');
 
   const { showSuccess, showError } = useGroupToast();
@@ -171,6 +177,9 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
   const canSendInvitations =
     !!selectedGroup &&
     canRoleUsePermission(rolePrivileges, currentUserRole, 'sendInvitations');
+  const canEditMessage =
+    !!selectedGroup &&
+    (currentUserRole === 'OWNER' || currentUserRole === 'ADMIN');
 
   // ─── Handlers ────────────────────────────────────────────────────
   const handleSelectGroup = useCallback((group: Group) => {
@@ -262,6 +271,16 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
   const handlePrivilegesSaved = useCallback(() => {
     refetchGroupDetail();
     showSuccess('Role privileges updated successfully.');
+  }, [refetchGroupDetail, showSuccess]);
+
+  const handleGroupUpdated = useCallback(() => {
+    refetchGroupDetail();
+    showSuccess('Group updated successfully.');
+  }, [refetchGroupDetail, showSuccess]);
+
+  const handleMessageUpdated = useCallback(() => {
+    refetchGroupDetail();
+    showSuccess('Group message updated.');
   }, [refetchGroupDetail, showSuccess]);
 
   return (
@@ -416,6 +435,17 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-48">
+                        {isOwner && (
+                          <>
+                            <DropdownMenuItem
+                              onClick={() => setEditGroupModalOpen(true)}
+                            >
+                              <Pencil className="mr-2 h-4 w-4" />
+                              Edit Group
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                          </>
+                        )}
                         {canSendInvitations && (
                           <>
                             <DropdownMenuItem
@@ -434,6 +464,17 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                           Share Group
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
+                        {canEditMessage && (
+                          <>
+                            <DropdownMenuItem
+                              onClick={() => setEditMessageModalOpen(true)}
+                            >
+                              <MessageSquare className="mr-2 h-4 w-4" />
+                              Edit Message
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                          </>
+                        )}
                         <DropdownMenuItem
                           onClick={() => setLeaveModalOpen(true)}
                           className="text-red-600 focus:text-red-600"
@@ -558,6 +599,24 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
             groupName={selectedGroup.name}
             onConfirmDelete={handleGroupDeleted}
           />
+
+          {isOwner && (
+            <EditGroupModal
+              open={editGroupModalOpen}
+              onOpenChange={setEditGroupModalOpen}
+              group={selectedGroup}
+              onUpdated={handleGroupUpdated}
+            />
+          )}
+
+          {canEditMessage && (
+            <EditGroupMessageModal
+              open={editMessageModalOpen}
+              onOpenChange={setEditMessageModalOpen}
+              group={selectedGroup}
+              onUpdated={handleMessageUpdated}
+            />
+          )}
         </>
       )}
     </>
