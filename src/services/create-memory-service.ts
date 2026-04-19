@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { slugify } from '@/lib/slugify';
 import { MAX_TAGS, type MemoryVisibility } from '@/lib/schemas';
 import { generateAutoTags } from '@/lib/utils/memory-tags';
-import { assertCanPostInGroup } from '@/lib/group-permissions';
+import { assertCanPostInGroup } from '@/lib/server/group-permissions';
 import {
   isContentPrescreeningEnabled,
   moderationPolicyService,
