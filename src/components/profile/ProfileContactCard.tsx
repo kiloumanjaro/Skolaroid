@@ -25,7 +25,7 @@ export function ProfileContactCard({
     { label: 'Phone', value: phone },
     { label: 'LinkedIn', value: linkedinUrl, href: linkedinUrl ?? undefined },
     { label: 'Facebook', value: facebookUrl, href: facebookUrl ?? undefined },
-    { label: 'Other', value: contactOther },
+    { label: 'Other', value: contactOther, href: contactOther ?? undefined },
   ];
 
   return (
