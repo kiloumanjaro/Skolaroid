@@ -81,6 +81,36 @@ export const createMemoryServerSchema = createMemorySchema.extend({
   privateGroupId: z.string().uuid('Invalid group ID').optional(),
 });
 
+/** Client-side schema for editing a memory — all fields optional, at least one required. */
+export const editMemorySchema = z
+  .object({
+    title: z
+      .string()
+      .trim()
+      .min(1, 'Title is required')
+      .max(255, 'Title must be 255 characters or less')
+      .optional(),
+    description: z
+      .string()
+      .trim()
+      .max(5000, 'Description is too long')
+      .optional(),
+    visibility: memoryVisibilityEnum.optional(),
+    tags: z
+      .array(z.string().trim().min(1).max(50))
+      .max(MAX_TAGS, 'Maximum 10 tags')
+      .optional(),
+    privateGroupId: z.string().uuid('Invalid group ID').nullable().optional(),
+  })
+  .refine((v) => Object.values(v).some((x) => x !== undefined), {
+    message: 'At least one field must be provided',
+  });
+
+/** Server-side schema for editing a memory — no additional coercions needed. */
+export const editMemoryServerSchema = editMemorySchema;
+
+export type EditMemoryInput = z.infer<typeof editMemoryServerSchema>;
+
 /** Schema for updating tags on an existing memory. */
 export const updateMemoryTagsSchema = z.object({
   memoryId: z.string().uuid('Invalid memory ID'),

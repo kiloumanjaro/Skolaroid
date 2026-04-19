@@ -723,6 +723,35 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
+  /api/prisma/memory/{memoryId}/edit:
+    patch:
+      tags: [Memories]
+      summary: Edit memory
+      operationId: editMemory
+      security:
+        - SupabaseSession: []
+      parameters:
+        - $ref: '#/components/parameters/memoryId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditMemoryInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
   /api/prisma/memory/vote/toggle:
     post:
       tags: [Votes]
@@ -1289,6 +1318,31 @@ components:
         mediaURL:
           type: string
           format: uri
+
+    EditMemoryInput:
+      type: object
+      minProperties: 1
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          maxLength: 5000
+        visibility:
+          $ref: '#/components/schemas/MemoryVisibility'
+        tags:
+          type: array
+          maxItems: 10
+          items:
+            type: string
+            minLength: 1
+            maxLength: 50
+        privateGroupId:
+          type: string
+          format: uuid
+          nullable: true
 
     UpdateMemoryTagsInput:
       type: object
