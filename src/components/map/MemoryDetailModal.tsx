@@ -417,7 +417,7 @@ export function MemoryDetailModal({
                       <button
                         type="button"
                         onClick={() => onOpenChange(false)}
-                        className="absolute right-4 top-4 z-30 flex h-10 w-10 items-center justify-center rounded-full border-2 border-border bg-card text-foreground shadow-[3px_3px_0px_0px_#2d2d2d] transition-colors hover:shadow-[4px_4px_0px_0px_#2d2d2d]"
+                        className="absolute -top-14 right-0 z-30 flex h-10 w-10 items-center justify-center rounded-full border-2 border-border bg-card text-foreground shadow-[3px_3px_0px_0px_#2d2d2d] transition-colors hover:shadow-[4px_4px_0px_0px_#2d2d2d]"
                         aria-label="Close memory details"
                       >
                         <X className="h-5 w-5" />

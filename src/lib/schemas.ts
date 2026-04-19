@@ -283,6 +283,10 @@ export const updateProfileSchema = z.object({
     .string()
     .trim()
     .max(50, 'Phone must be 50 characters or less')
+    .refine(
+      (val) => /^(\+639\d{9}|09\d{9})$/.test(val.replace(/[\s\-]/g, '')),
+      'Must be a valid Philippine number (e.g. 09XX XXX XXXX or +63 9XX XXX XXXX)'
+    )
     .optional(),
   linkedinUrl: z
     .string()
@@ -298,7 +302,13 @@ export const updateProfileSchema = z.object({
     .url('Must be a valid URL')
     .optional()
     .or(z.literal('')),
-  contactOther: z.string().trim().max(255).optional(),
+  contactOther: z
+    .string()
+    .trim()
+    .max(255)
+    .url('Must be a valid URL')
+    .optional()
+    .or(z.literal('')),
   avatarUrl: z.string().url().nullable().optional(),
 });
 
