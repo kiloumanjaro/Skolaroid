@@ -123,8 +123,6 @@ export const searchQuerySchema = z.object({
 
 export type SearchQueryInput = z.infer<typeof searchQuerySchema>;
 
-export type EditMemoryInput = z.infer<typeof editMemoryServerSchema>;
-
 /** Schema for updating tags on an existing memory. */
 export const updateMemoryTagsSchema = z.object({
   memoryId: z.string().uuid('Invalid memory ID'),
