@@ -2,10 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { slugify } from '@/lib/slugify';
 import { MAX_TAGS, type MemoryVisibility } from '@/lib/schemas';
 import { generateAutoTags } from '@/lib/utils/memory-tags';
-import {
-  canRoleUsePermission,
-  resolveGroupMemberRole,
-} from '@/lib/group-permissions';
+import { assertCanPostInGroup } from '@/lib/group-permissions';
 import {
   isContentPrescreeningEnabled,
   moderationPolicyService,
@@ -52,43 +49,7 @@ export async function createMemoryService(
   }
 
   if (privateGroupId) {
-    const group = await prisma.privateGroup.findUnique({
-      where: { id: privateGroupId, deletedAt: null },
-      select: {
-        id: true,
-        creatorId: true,
-        rolePrivileges: true,
-        members: {
-          where: { id: creatorId },
-          select: { id: true },
-        },
-        groupMemberships: {
-          where: { userId: creatorId },
-          select: { role: true },
-        },
-      },
-    });
-
-    if (!group) {
-      throw new Error('Group not found');
-    }
-
-    const isMemberInGroup =
-      group.members.length > 0 || group.groupMemberships.length > 0;
-
-    if (!isMemberInGroup) {
-      throw new Error('You are not a member of this group');
-    }
-
-    const role = resolveGroupMemberRole(
-      creatorId,
-      group.creatorId,
-      group.groupMemberships[0]?.role
-    );
-
-    if (!canRoleUsePermission(group.rolePrivileges, role, 'editContent')) {
-      throw new Error('Your role cannot post in this group');
-    }
+    await assertCanPostInGroup(creatorId, privateGroupId);
   }
 
   // Generate auto-tags
