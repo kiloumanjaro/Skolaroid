@@ -270,6 +270,41 @@ export const onboardUserSchema = z.object({
 export type OnboardUserInput = z.infer<typeof onboardUserSchema>;
 
 // ============================================================================
+// PROFILE UPDATE SCHEMA
+// ============================================================================
+
+export const updateProfileSchema = z.object({
+  bio: z
+    .string()
+    .trim()
+    .max(500, 'Bio must be 500 characters or less')
+    .optional(),
+  phone: z
+    .string()
+    .trim()
+    .max(50, 'Phone must be 50 characters or less')
+    .optional(),
+  linkedinUrl: z
+    .string()
+    .trim()
+    .max(255)
+    .url('Must be a valid URL')
+    .optional()
+    .or(z.literal('')),
+  facebookUrl: z
+    .string()
+    .trim()
+    .max(255)
+    .url('Must be a valid URL')
+    .optional()
+    .or(z.literal('')),
+  contactOther: z.string().trim().max(255).optional(),
+  avatarUrl: z.string().url().nullable().optional(),
+});
+
+export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
+
+// ============================================================================
 // SHARED TYPES
 // ============================================================================
 

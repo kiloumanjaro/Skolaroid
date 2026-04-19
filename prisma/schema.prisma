@@ -18,6 +18,12 @@ model User {
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
   deletedAt       DateTime?
+  bio             String?         @db.VarChar(500)
+  phone           String?         @db.VarChar(50)
+  linkedinUrl     String?         @db.VarChar(255)
+  facebookUrl     String?         @db.VarChar(255)
+  contactOther    String?         @db.VarChar(255)
+  avatarUrl       String?         @db.VarChar(500)
   programBatchId  String          @db.Uuid
   sentInvitations Invitation[]    @relation("SentInvitations")
   memories        Memory[]
