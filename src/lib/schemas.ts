@@ -111,6 +111,20 @@ export const editMemoryServerSchema = editMemorySchema;
 
 export type EditMemoryInput = z.infer<typeof editMemoryServerSchema>;
 
+// ============================================================================
+// GLOBAL SEARCH SCHEMAS
+// ============================================================================
+
+export const searchQuerySchema = z.object({
+  q: z.string().trim().min(1, 'Search query cannot be empty'),
+  page: z.coerce.number().int().min(1).catch(1),
+  limit: z.coerce.number().int().min(1).max(50).catch(20),
+});
+
+export type SearchQueryInput = z.infer<typeof searchQuerySchema>;
+
+export type EditMemoryInput = z.infer<typeof editMemoryServerSchema>;
+
 /** Schema for updating tags on an existing memory. */
 export const updateMemoryTagsSchema = z.object({
   memoryId: z.string().uuid('Invalid memory ID'),
