@@ -30,6 +30,7 @@ export function useModerateMemory() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-memories'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-analytics'] });
     },
   });
 }

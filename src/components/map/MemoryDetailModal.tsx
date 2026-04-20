@@ -3,6 +3,9 @@
 import {
   MoreHorizontal,
   Globe,
+  GraduationCap,
+  Users,
+  Lock,
   ChevronLeft,
   ChevronRight,
   MessageSquare,
@@ -10,6 +13,7 @@ import {
   Trash2,
   Flag,
   User,
+  Pencil,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -24,6 +28,7 @@ import {
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 import { ActionBar } from '@/components/map/ActionBar';
 import { DeleteMemoryModal } from '@/components/map/DeleteMemoryModal';
+import { EditMemoryModal } from '@/components/map/EditMemoryModal';
 import { ReportMemoryModal } from '@/components/map/ReportMemoryModal';
 import { useDeleteMemory } from '@/lib/hooks/useDeleteMemory';
 import { CommentSection } from '@/components/map/CommentSection';
@@ -31,8 +36,17 @@ import { useCommentsByMemory } from '@/lib/hooks/useCommentsByMemory';
 import { useCreateComment } from '@/lib/hooks/useCreateComment';
 import { useDeleteComment } from '@/lib/hooks/useDeleteComment';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
+import { useUserGroups } from '@/lib/hooks/useUserGroups';
+import type { MemoryVisibility } from '@/lib/schemas';
 import Image from 'next/image';
-import { useState, useEffect, useMemo, useRef } from 'react';
+import {
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useCallback,
+  type TouchEvent,
+} from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   coverLeftVariants,
@@ -163,6 +177,178 @@ const isAutoTag = (tagName: string): boolean => {
   );
 };
 
+const VISIBILITY_META: Record<
+  MemoryVisibility,
+  { Icon: typeof Globe; label: string }
+> = {
+  PUBLIC: { Icon: Globe, label: 'Public' },
+  PROGRAM_ONLY: { Icon: GraduationCap, label: 'Program Only' },
+  BATCH_ONLY: { Icon: Users, label: 'Batch Only' },
+  GROUP_ONLY: { Icon: Lock, label: 'Private' },
+  PRIVATE: { Icon: Lock, label: 'Private' },
+};
+
+type MemoryMediaShape = Pick<
+  MemoryWithCoordinates,
+  'id' | 'title' | 'mediaURL' | 'mediaURLs'
+>;
+
+const SWIPE_THRESHOLD_PX = 48;
+
+function getMemoryMediaURLs(memory: MemoryMediaShape | null): string[] {
+  if (!memory) return [];
+
+  return Array.from(
+    new Set(
+      [
+        ...(memory.mediaURLs ?? []),
+        ...(memory.mediaURL ? [memory.mediaURL] : []),
+      ]
+        .map((url) => url.trim())
+        .filter(Boolean)
+    )
+  );
+}
+
+interface PolaroidMediaCarouselProps {
+  memory: MemoryMediaShape;
+  activeIndex: number;
+  onIndexChange?: (nextIndex: number) => void;
+  showControls?: boolean;
+}
+
+function PolaroidMediaCarousel({
+  memory,
+  activeIndex,
+  onIndexChange,
+  showControls = true,
+}: PolaroidMediaCarouselProps) {
+  const mediaURLs = getMemoryMediaURLs(memory);
+  const hasMedia = mediaURLs.length > 0;
+  const canNavigate = showControls && mediaURLs.length > 1 && !!onIndexChange;
+
+  const safeIndex =
+    mediaURLs.length > 0
+      ? ((activeIndex % mediaURLs.length) + mediaURLs.length) % mediaURLs.length
+      : 0;
+
+  const touchStartXRef = useRef<number | null>(null);
+  const touchDeltaXRef = useRef(0);
+
+  const goToIndex = useCallback(
+    (nextIndex: number) => {
+      if (!onIndexChange || mediaURLs.length === 0) return;
+
+      const wrappedIndex =
+        ((nextIndex % mediaURLs.length) + mediaURLs.length) % mediaURLs.length;
+      onIndexChange(wrappedIndex);
+    },
+    [onIndexChange, mediaURLs.length]
+  );
+
+  const handleTouchStart = useCallback(
+    (event: TouchEvent<HTMLDivElement>) => {
+      if (!canNavigate) return;
+
+      touchStartXRef.current = event.touches[0]?.clientX ?? null;
+      touchDeltaXRef.current = 0;
+    },
+    [canNavigate]
+  );
+
+  const handleTouchMove = useCallback(
+    (event: TouchEvent<HTMLDivElement>) => {
+      if (!canNavigate || touchStartXRef.current === null) return;
+
+      const currentX = event.touches[0]?.clientX ?? touchStartXRef.current;
+      touchDeltaXRef.current = currentX - touchStartXRef.current;
+    },
+    [canNavigate]
+  );
+
+  const handleTouchEnd = useCallback(() => {
+    if (!canNavigate) return;
+
+    if (Math.abs(touchDeltaXRef.current) >= SWIPE_THRESHOLD_PX) {
+      if (touchDeltaXRef.current < 0) {
+        goToIndex(safeIndex + 1);
+      } else {
+        goToIndex(safeIndex - 1);
+      }
+    }
+
+    touchStartXRef.current = null;
+    touchDeltaXRef.current = 0;
+  }, [canNavigate, goToIndex, safeIndex]);
+
+  return (
+    <div className="w-full">
+      {hasMedia ? (
+        <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
+          <div
+            className="relative h-80 w-full overflow-hidden bg-secondary"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            <Image
+              src={mediaURLs[safeIndex]}
+              alt={`${memory.title} image ${safeIndex + 1}`}
+              fill
+              className="object-cover"
+            />
+
+            {canNavigate && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => goToIndex(safeIndex - 1)}
+                  className="absolute left-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/55 text-white transition-colors hover:bg-black/70"
+                  aria-label="Previous image"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => goToIndex(safeIndex + 1)}
+                  className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/55 text-white transition-colors hover:bg-black/70"
+                  aria-label="Next image"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+
+                <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-black/45 px-2 py-1">
+                  {mediaURLs.map((_, index) => (
+                    <button
+                      key={`${memory.id}-media-dot-${index}`}
+                      type="button"
+                      onClick={() => goToIndex(index)}
+                      className={`h-1.5 w-1.5 rounded-full transition-colors ${
+                        index === safeIndex ? 'bg-white' : 'bg-white/45'
+                      }`}
+                      aria-label={`Go to image ${index + 1}`}
+                    />
+                  ))}
+                </div>
+
+                <div className="absolute right-2 top-2 rounded-full bg-black/55 px-2 py-0.5 text-[10px] font-medium text-white">
+                  {safeIndex + 1}/{mediaURLs.length}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
+          <div className="flex h-80 w-full items-center justify-center bg-secondary">
+            <span className="text-xs text-muted-foreground">No image</span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function MemoryDetailModal({
   memory,
   previousMemory = null,
@@ -177,8 +363,10 @@ export function MemoryDetailModal({
 }: MemoryDetailModalProps) {
   const { user: authUser } = useUserAuth();
   const deleteMemory = useDeleteMemory();
+  const { data: userGroups } = useUserGroups();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
 
   const [animationPhase, setAnimationPhase] =
     useState<AnimationPhase>('closed');
@@ -187,6 +375,9 @@ export function MemoryDetailModal({
   const [isFlipping, setIsFlipping] = useState(false);
   const [cachedMemory, setCachedMemory] =
     useState<MemoryWithCoordinates | null>(null);
+  const [activeImageIndexByMemoryId, setActiveImageIndexByMemoryId] = useState<
+    Record<string, number>
+  >({});
   const [flipDirection, setFlipDirection] = useState<FlipDirection>(null);
 
   const [isMobileViewport, setIsMobileViewport] = useState(false);
@@ -204,6 +395,28 @@ export function MemoryDetailModal({
   const [mobileTransitionMemory, setMobileTransitionMemory] =
     useState<MemoryWithCoordinates | null>(null);
 
+  const getActiveImageIndex = useCallback(
+    (mem: MemoryWithCoordinates | null) => {
+      if (!mem) return 0;
+
+      const mediaURLs = getMemoryMediaURLs(mem);
+      if (mediaURLs.length === 0) return 0;
+
+      const rawIndex = activeImageIndexByMemoryId[mem.id] ?? 0;
+      return Math.min(Math.max(rawIndex, 0), mediaURLs.length - 1);
+    },
+    [activeImageIndexByMemoryId]
+  );
+
+  const handleImageIndexChange = useCallback(
+    (memoryId: string, nextIndex: number) => {
+      setActiveImageIndexByMemoryId((prev) => {
+        if (prev[memoryId] === nextIndex) return prev;
+        return { ...prev, [memoryId]: nextIndex };
+      });
+    },
+    []
+  );
   useEffect(() => {
     if (open) {
       setAnimationPhase('opening');
@@ -232,6 +445,7 @@ export function MemoryDetailModal({
       setMobileTransitionDirection(null);
       setMobileTransitionMode(null);
       setMobileTransitionMemory(null);
+      setActiveImageIndexByMemoryId({});
     }
   }, [open]);
 
@@ -507,6 +721,22 @@ export function MemoryDetailModal({
     }, PAGE_TURN_DURATION_MS);
   };
 
+  // Resolve visibility display for a memory (icon + label, with group name for GROUP_ONLY)
+  const getVisibilityDisplay = (
+    vis: MemoryVisibility,
+    pgId?: string | null
+  ) => {
+    const meta = VISIBILITY_META[vis] ?? VISIBILITY_META.PUBLIC;
+    if (vis === 'GROUP_ONLY' && pgId) {
+      const group = userGroups?.find((g) => g.id === pgId);
+      return {
+        Icon: meta.Icon,
+        label: group ? `Private · ${group.name}` : 'Private',
+      };
+    }
+    return meta;
+  };
+
   function handleCommentSubmit(content: string) {
     createComment.mutate({ memoryId: memory!.id, content });
     setCommentText('');
@@ -576,6 +806,12 @@ export function MemoryDetailModal({
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          {isPageOwner && (
+            <DropdownMenuItem onClick={() => setEditModalOpen(true)}>
+              <Pencil className="mr-2 h-4 w-4" />
+              Edit Memory
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem
             className="text-amber-600 focus:text-amber-600"
             onClick={() => setReportModalOpen(true)}
@@ -618,8 +854,18 @@ export function MemoryDetailModal({
             {pageAuthorName}
           </p>
           <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <Globe className="h-3 w-3" />
-            <span>Public</span>
+            {(() => {
+              const visibilityDisplay = getVisibilityDisplay(
+                pageMemory.visibility,
+                pageMemory.privateGroupId
+              );
+              return (
+                <>
+                  <visibilityDisplay.Icon className="h-3 w-3 shrink-0" />
+                  <span>{visibilityDisplay.label}</span>
+                </>
+              );
+            })()}
           </div>
         </div>
         {renderMemoryMenu(pageMemory)}
@@ -661,26 +907,13 @@ export function MemoryDetailModal({
       </div>
 
       <div className="flex flex-1 items-center justify-center">
-        <div className="w-full">
-          {pageMemory.mediaURL ? (
-            <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
-              <div className="relative h-80 w-full overflow-hidden bg-secondary">
-                <Image
-                  src={pageMemory.mediaURL}
-                  alt={pageMemory.title}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            </div>
-          ) : (
-            <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
-              <div className="flex h-80 w-full items-center justify-center bg-secondary">
-                <span className="text-xs text-muted-foreground">No image</span>
-              </div>
-            </div>
-          )}
-        </div>
+        <PolaroidMediaCarousel
+          memory={pageMemory}
+          activeIndex={getActiveImageIndex(pageMemory)}
+          onIndexChange={(nextIndex) =>
+            handleImageIndexChange(pageMemory.id, nextIndex)
+          }
+        />
       </div>
 
       <div className="flex items-center justify-center gap-0.5">
@@ -1516,6 +1749,14 @@ export function MemoryDetailModal({
         memoryId={memory?.id ?? ''}
         memoryTitle={memory?.title ?? ''}
       />
+
+      {memory && (
+        <EditMemoryModal
+          open={editModalOpen}
+          onOpenChange={setEditModalOpen}
+          memory={memory}
+        />
+      )}
     </>
   );
 }
