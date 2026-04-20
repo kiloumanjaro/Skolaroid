@@ -70,6 +70,7 @@ interface FilterMemoriesModalProps {
   availableYears: number[];
   availableGroups?: GroupFilterOption[];
   availableLocations?: LocationFilterOption[];
+  showColorStrip?: boolean;
 }
 
 interface FilterMemoriesPanelProps {
@@ -435,6 +436,7 @@ export function FilterMemoriesModal({
   availableYears,
   availableGroups = [],
   availableLocations = [],
+  showColorStrip = true,
 }: FilterMemoriesModalProps) {
   return (
     <div
@@ -464,12 +466,14 @@ export function FilterMemoriesModal({
         />
       </div>
 
-      <ColorStrip
-        interactive
-        onClick={onClose}
-        ariaLabel={open ? 'Close filters' : 'Open filters'}
-        className={cn(!open && 'pointer-events-auto')}
-      />
+      {showColorStrip ? (
+        <ColorStrip
+          interactive
+          onClick={onClose}
+          ariaLabel={open ? 'Close filters' : 'Open filters'}
+          className={cn(!open && 'pointer-events-auto')}
+        />
+      ) : null}
     </div>
   );
 }

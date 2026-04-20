@@ -214,7 +214,8 @@ export function BatchesModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="flex h-[calc(100vh-1rem)] w-[calc(100vw-1rem)] max-w-none flex-col gap-0 overflow-hidden p-0 sm:max-w-none md:h-[85vh] md:w-[70vw] md:max-w-5xl md:flex-row"
+        className="flex h-[calc(100vh-1rem)] w-[calc(100vw-1rem)] max-w-none flex-col gap-0 overflow-hidden rounded-none p-0 shadow-none sm:max-w-none md:h-[85vh] md:w-[70vw] md:max-w-5xl md:flex-row"
+        style={{ borderRadius: 0 }}
         showCloseButton={false}
       >
         <DialogTitle className="sr-only">Batches</DialogTitle>
@@ -300,11 +301,11 @@ export function BatchesModal({
                     key={memory.id}
                     type="button"
                     onClick={() => handleMemoryCardClick(memory)}
-                    className="cursor-pointer overflow-hidden border-2 border-border bg-card p-2 pb-12 text-left shadow-[4px_4px_0px_0px_#2d2d2d] transition-shadow hover:shadow-[5px_5px_0px_0px_#2d2d2d]"
+                    className="cursor-pointer overflow-hidden border-2 border-border bg-card text-left transition-colors hover:bg-secondary/40"
                   >
                     {/* Image */}
                     {memory.mediaURL ? (
-                      <div className="relative h-44 w-full overflow-hidden bg-secondary">
+                      <div className="h-44 w-full overflow-hidden bg-secondary">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={
@@ -317,15 +318,15 @@ export function BatchesModal({
                         />
                       </div>
                     ) : (
-                      <div className="relative flex h-44 items-center justify-center bg-secondary">
+                      <div className="flex h-44 items-center justify-center bg-secondary">
                         <span className="text-sm text-muted-foreground">
                           No image
                         </span>
                       </div>
                     )}
 
-                    {/* Info - Caption area */}
-                    <div className="absolute bottom-0 left-0 right-0 px-3 pb-2 pt-1">
+                    {/* Info */}
+                    <div className="border-t border-border px-3 py-3">
                       <h3 className="text-sm font-semibold text-foreground">
                         {memory.title}
                       </h3>
@@ -346,7 +347,7 @@ export function BatchesModal({
                     onAddMemory?.(selectedDecade);
                     onOpenChange(false);
                   }}
-                  className="flex h-full min-h-[280px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-sky-200 bg-sky-50/50 transition-colors hover:border-sky-400 hover:bg-sky-50"
+                  className="flex h-full min-h-[280px] flex-col items-center justify-center border-2 border-dashed border-sky-200 bg-sky-50/50 transition-colors hover:border-sky-400 hover:bg-sky-50"
                 >
                   <Plus className="h-10 w-10 text-sky-400" />
                   <p className="mt-2 text-sm font-medium text-sky-600">
@@ -365,7 +366,7 @@ export function BatchesModal({
                     onAddMemory?.(selectedDecade);
                     onOpenChange(false);
                   }}
-                  className="flex items-center gap-2 rounded-lg border-2 border-dashed border-sky-200 bg-sky-50/50 px-6 py-3 text-sm font-medium text-sky-600 transition-colors hover:border-sky-400 hover:bg-sky-50"
+                  className="flex items-center gap-2 border-2 border-dashed border-sky-200 bg-sky-50/50 px-6 py-3 text-sm font-medium text-sky-600 transition-colors hover:border-sky-400 hover:bg-sky-50"
                 >
                   <Plus className="h-5 w-5" />
                   Add an Entry
@@ -383,6 +384,7 @@ export function BatchesModal({
             availableTags={availableTags}
             availableYears={availableYears}
             availableLocations={availableLocations}
+            showColorStrip={false}
           />
         </div>
       </DialogContent>

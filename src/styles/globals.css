@@ -10,14 +10,14 @@
 
 @media (max-width: 1024px) {
   :root {
-    --polaroid-base: 220px;
-  } /* was 280px */
+    --polaroid-base: 240px;
+  } /* was 220px */
 }
 
 @media (max-width: 640px) {
   :root {
-    --polaroid-base: 160px;
-  } /* was 200px */
+    --polaroid-base: 200px;
+  } /* was 160px */
 }
 
 @layer base {
@@ -65,5 +65,19 @@
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+
+  .gallery-scroll-container {
+    scroll-snap-type: x proximity;
+    padding-left: calc(50% - var(--polaroid-base) / 2);
+    padding-right: calc(50% - var(--polaroid-base) / 2);
+    scroll-padding-left: calc(50% - var(--polaroid-base) / 2);
+    scroll-padding-right: calc(50% - var(--polaroid-base) / 2);
+  }
+
+  @media (max-width: 640px) {
+    .gallery-scroll-container {
+      scroll-snap-type: x mandatory;
+    }
   }
 }

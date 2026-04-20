@@ -56,7 +56,7 @@ export function GalleryMemoryCard({
       <div
         className="flex flex-col items-center text-center"
         style={{
-          marginTop: 'var(--gallery-cluster-caption-gap)',
+          marginTop: '3rem',
           gap: '0.4rem',
         }}
       >

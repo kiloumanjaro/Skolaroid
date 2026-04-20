@@ -62,42 +62,6 @@ const ERA_MAP_STYLES: Record<number, string> = {
 };
 const DEFAULT_MAP_STYLE = 'mapbox://styles/mapbox/streets-v12';
 
-const ERA_OVERLAY: Record<number, { label: string; badge: string }> = {
-  2020: { label: '2020s', badge: 'bg-sky-100 text-sky-800 border-sky-200' },
-  2010: {
-    label: '2010s',
-    badge: 'bg-slate-100 text-slate-700 border-slate-200',
-  },
-  2000: {
-    label: '2000s',
-    badge: 'bg-green-100 text-green-800 border-green-200',
-  },
-  1990: {
-    label: '1990s',
-    badge: 'bg-amber-100 text-amber-800 border-amber-200',
-  },
-  1980: {
-    label: '1980s',
-    badge: 'bg-orange-100 text-orange-800 border-orange-200',
-  },
-  1970: {
-    label: '1970s',
-    badge: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-  },
-  1960: {
-    label: '1960s',
-    badge: 'bg-stone-100 text-stone-700 border-stone-200',
-  },
-  1950: {
-    label: '1950s',
-    badge: 'bg-stone-100 text-stone-700 border-stone-200',
-  },
-  1940: {
-    label: '1940s',
-    badge: 'bg-stone-100 text-stone-700 border-stone-200',
-  },
-};
-
 /** Distance threshold (degrees) — if map center is already within this of the target, skip flyTo. */
 const FLY_TO_THRESHOLD = 0.0001;
 
@@ -207,6 +171,20 @@ export function MapComponent({
       (m) => getEraFromBatchTag(m.tags ?? [], m.createdAt) === activeMapEra
     );
   }, [memories, activeMapEra]);
+
+  const selectedMemoryIndex = useMemo(
+    () =>
+      selectedMemory
+        ? memories.findIndex((m) => m.id === selectedMemory.id)
+        : -1,
+    [memories, selectedMemory]
+  );
+  const previousSelectedMemory =
+    selectedMemoryIndex > 0 ? memories[selectedMemoryIndex - 1] : null;
+  const nextSelectedMemory =
+    selectedMemoryIndex >= 0 && selectedMemoryIndex < memories.length - 1
+      ? memories[selectedMemoryIndex + 1]
+      : null;
 
   const tagFilteredMemories = useMemo(() => {
     return eraFilteredMemories.filter((memory) => {
@@ -885,7 +863,13 @@ export function MapComponent({
 
   // Render memory pin markers (with stacking for overlapping locations)
   useEffect(() => {
-    if (!mapRef.current || memories.length === 0 || !showMemoryPins) return;
+    if (
+      !mapReady ||
+      !mapRef.current ||
+      memories.length === 0 ||
+      !showMemoryPins
+    )
+      return;
 
     // Clean up existing memory markers
     memoryMarkersRef.current.forEach((m) => m.remove());
@@ -958,6 +942,7 @@ export function MapComponent({
       memoryMarkersRef.current.push(marker);
     }
   }, [
+    mapReady,
     displayedMemories,
     displayedMemories.length,
     memories.length,
@@ -987,45 +972,6 @@ export function MapComponent({
   return (
     <div className="relative h-full w-full">
       <div ref={mapContainerRef} className="h-full w-full" />
-
-      {/* Era indicator — bottom left, above Mapbox attribution */}
-      {(() => {
-        const era = ERA_OVERLAY[activeMapEra];
-        if (!era) return null;
-        return (
-          <div className="absolute bottom-20 left-3 right-3 z-10 flex flex-col-reverse items-start gap-2 sm:bottom-8 sm:left-4 sm:right-auto sm:flex-row sm:items-center sm:gap-3">
-            <button
-              onClick={() => {
-                window.location.href = `/gallery?era=${activeMapEra}`;
-              }}
-              className="flex w-full items-center justify-center gap-2 border-2 border-border bg-card px-4 py-2 text-sm font-semibold text-foreground shadow-[3px_3px_0px_0px_#2d2d2d] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#2d2d2d] sm:w-auto"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="h-4 w-4"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-                />
-              </svg>
-              View Gallery
-            </button>
-
-            <div
-              className={`flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold shadow-sm backdrop-blur-sm ${era.badge}`}
-            >
-              <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
-              {era.label} Map
-            </div>
-          </div>
-        );
-      })()}
 
       {/* Add Memory Button - Bottom Right */}
       <div className="absolute bottom-4 right-4 z-10 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
@@ -1110,6 +1056,7 @@ export function MapComponent({
       {/* Memory Detail Modal */}
       <MemoryDetailModal
         memory={selectedMemory}
+        nextMemory={nextSelectedMemory}
         open={memoryDetailOpen}
         onOpenChange={(isOpen) => {
           if (!isOpen) {
@@ -1119,41 +1066,22 @@ export function MapComponent({
           setMemoryDetailOpen(true);
         }}
         onMemoryDeleted={() => setSelectedMemory(null)}
-        hasPrevious={
-          selectedMemory
-            ? memories.findIndex((m) => m.id === selectedMemory.id) > 0
-            : false
-        }
+        hasPrevious={selectedMemoryIndex > 0}
         hasNext={
-          selectedMemory
-            ? memories.findIndex((m) => m.id === selectedMemory.id) <
-              memories.length - 1
-            : false
+          selectedMemoryIndex >= 0 && selectedMemoryIndex < memories.length - 1
         }
         onPrevious={() => {
-          if (selectedMemory) {
-            const currentIndex = memories.findIndex(
-              (m) => m.id === selectedMemory.id
-            );
-            const prevMemory = memories[currentIndex - 1];
-            if (prevMemory) {
-              // Set memory immediately so the flip back-face shows new content
-              setSelectedMemory(prevMemory);
-              flyToMemoryWithSequence(prevMemory);
-            }
+          if (previousSelectedMemory) {
+            // Set memory immediately so the flip back-face shows new content
+            setSelectedMemory(previousSelectedMemory);
+            flyToMemoryWithSequence(previousSelectedMemory);
           }
         }}
         onNext={() => {
-          if (selectedMemory) {
-            const currentIndex = memories.findIndex(
-              (m) => m.id === selectedMemory.id
-            );
-            const nextMemory = memories[currentIndex + 1];
-            if (nextMemory) {
-              // Set memory immediately so the flip back-face shows new content
-              setSelectedMemory(nextMemory);
-              flyToMemoryWithSequence(nextMemory);
-            }
+          if (nextSelectedMemory) {
+            // Set memory immediately so the flip back-face shows new content
+            setSelectedMemory(nextSelectedMemory);
+            flyToMemoryWithSequence(nextSelectedMemory);
           }
         }}
       />
