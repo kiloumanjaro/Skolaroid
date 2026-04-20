@@ -1,15 +1,36 @@
 'use client';
 
+import Image from 'next/image';
+import { User } from 'lucide-react';
 import { PolaroidCluster } from './PolaroidCluster';
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 
+function captionFontSize(text: string): string {
+  if (text.length <= 10) return '1.55rem';
+  if (text.length <= 40) return '1.3rem';
+  return '1.1rem';
+}
+
+function formatDate(dateStr?: string): string {
+  if (!dateStr) return '';
+  return new Date(dateStr).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
+
 interface GalleryMemoryCardProps {
   memory: MemoryWithCoordinates;
+  index?: number;
   onClick: () => void;
 }
 
-export function GalleryMemoryCard({ memory, onClick }: GalleryMemoryCardProps) {
-  // For now, single photo per memory (Memory.mediaURL is a single string)
+export function GalleryMemoryCard({
+  memory,
+  index = 0,
+  onClick,
+}: GalleryMemoryCardProps) {
   const photos = memory.mediaURL
     ? [{ src: memory.mediaURL, alt: memory.title }]
     : [];
@@ -18,16 +39,61 @@ export function GalleryMemoryCard({ memory, onClick }: GalleryMemoryCardProps) {
     return null;
   }
 
-  return (
-    <div className="flex shrink-0 items-center gap-3 md:gap-5">
-      {/* Photo cluster (left side) */}
-      <PolaroidCluster photos={photos} onPhotoClick={onClick} />
+  const captionText = memory.description || memory.title;
+  const uploaderName = memory.creator
+    ? `${memory.creator.firstName} ${memory.creator.lastName}`.trim()
+    : null;
+  const uploaderPhoto = memory.creator?.avatarUrl ?? null;
+  const dateUploaded = formatDate(memory.createdAt);
 
-      {/* Caption (right side) */}
-      <div className="w-[clamp(9rem,16vw,13rem)] shrink-0">
-        <p className="font-dancing text-[clamp(1.35rem,2.1vw,1.9rem)] italic leading-[1.15] text-gray-700">
-          {memory.description || memory.title}
+  return (
+    <div className="flex shrink-0 flex-col items-center">
+      <PolaroidCluster
+        photos={photos}
+        startIndex={index}
+        onPhotoClick={onClick}
+      />
+      <div
+        className="flex flex-col items-center text-center"
+        style={{
+          marginTop: '3rem',
+          gap: '0.4rem',
+        }}
+      >
+        {/* Avatar + uploader name */}
+        <div className="flex items-center gap-2">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-border bg-secondary">
+            {uploaderPhoto ? (
+              <Image
+                src={uploaderPhoto}
+                alt={uploaderName ?? 'User avatar'}
+                width={36}
+                height={36}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <User className="h-4 w-4 text-gray-500" />
+            )}
+          </div>
+          {uploaderName && (
+            <span className="font-hand text-sm font-semibold text-gray-700">
+              {uploaderName}
+            </span>
+          )}
+        </div>
+        {/* Caption */}
+        <p
+          className="hidden font-dancing italic leading-[1.15] text-gray-700"
+          style={{ fontSize: captionFontSize(captionText), maxWidth: '14rem' }}
+        >
+          {captionText}
         </p>
+        {/* Date */}
+        {dateUploaded && (
+          <span className="hidden font-hand text-xs text-gray-400">
+            {dateUploaded}
+          </span>
+        )}
       </div>
     </div>
   );

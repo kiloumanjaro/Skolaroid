@@ -17,6 +17,8 @@ interface SidebarProps {
   collapsedWidthClassName?: string;
   stripAriaLabel?: string;
   expandOnHover?: boolean;
+  stripTucked?: boolean;
+  stripDisabled?: boolean;
 }
 
 export function Sidebar({
@@ -32,12 +34,15 @@ export function Sidebar({
   collapsedWidthClassName = 'w-2.5',
   stripAriaLabel = 'Expand drawer',
   expandOnHover = true,
+  stripTucked = false,
+  stripDisabled = false,
 }: SidebarProps) {
   return (
     <div
       className={cn(
-        'fixed left-0 top-0 z-40 flex h-screen transition-all duration-300 ease-in-out',
+        'fixed left-0 top-0 z-40 flex h-screen transition-[width,transform] duration-300 ease-in-out',
         drawerOpen ? expandedWidthClassName : collapsedWidthClassName,
+        stripTucked ? '-translate-x-full' : 'translate-x-0',
         className
       )}
     >
@@ -62,8 +67,16 @@ export function Sidebar({
       <button
         type="button"
         onClick={() => setDrawerOpen(!drawerOpen)}
-        onMouseEnter={expandOnHover ? () => setDrawerOpen(true) : undefined}
-        className="h-full w-2.5 shrink-0 transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-skolaroid-blue/40"
+        onMouseEnter={
+          expandOnHover && !stripDisabled
+            ? () => setDrawerOpen(true)
+            : undefined
+        }
+        disabled={stripDisabled}
+        className={cn(
+          'h-full w-2.5 shrink-0 transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-skolaroid-blue/40 disabled:cursor-default disabled:hover:opacity-100',
+          stripDisabled && 'pointer-events-none'
+        )}
         aria-label={stripAriaLabel}
       >
         <ColorStrip className="h-full" />

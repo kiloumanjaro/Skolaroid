@@ -287,7 +287,8 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent
-          className="flex h-[85vh] w-[70vw] max-w-none gap-0 overflow-hidden p-0 sm:max-w-none"
+          className="flex h-[calc(100vh-1rem)] w-[calc(100vw-1rem)] max-w-none flex-col gap-0 overflow-hidden rounded-none p-0 shadow-none sm:max-w-none md:h-[85vh] md:w-[70vw] md:flex-row"
+          style={{ borderRadius: 0 }}
           showCloseButton={false}
         >
           <DialogTitle className="sr-only">
@@ -295,9 +296,9 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
           </DialogTitle>
 
           {/* LEFT COLUMN: Navigation */}
-          <div className="flex w-56 shrink-0 flex-col border-r border-border bg-card">
+          <div className="flex w-full shrink-0 flex-col border-b border-border bg-card md:w-56 md:border-b-0 md:border-r">
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
+            <div className="flex items-center justify-between border-b border-border px-4 py-3.5 md:px-5">
               <h2 className="text-base font-semibold text-foreground">
                 Groups
               </h2>
@@ -315,12 +316,12 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
 
             {/* Navigation Buttons */}
             {selectedGroup && (
-              <div className="scrollbar-hide flex-1 overflow-y-auto px-3 py-3">
-                <nav className="flex flex-col gap-1">
+              <div className="scrollbar-hide flex-1 overflow-x-auto overflow-y-hidden px-3 py-3 md:overflow-y-auto">
+                <nav className="flex gap-1 md:flex-col">
                   <button
                     onClick={() => setActiveTab('members')}
                     className={cn(
-                      'flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium transition-colors',
+                      'flex shrink-0 items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium transition-colors md:w-full',
                       activeTab === 'members'
                         ? 'bg-secondary text-foreground'
                         : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
@@ -333,7 +334,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                   <button
                     onClick={() => setActiveTab('media')}
                     className={cn(
-                      'flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium transition-colors',
+                      'flex shrink-0 items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium transition-colors md:w-full',
                       activeTab === 'media'
                         ? 'bg-secondary text-foreground'
                         : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
@@ -347,7 +348,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                     <button
                       onClick={() => setActiveTab('settings')}
                       className={cn(
-                        'flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium transition-colors',
+                        'flex shrink-0 items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium transition-colors md:w-full',
                         activeTab === 'settings'
                           ? 'bg-secondary text-foreground'
                           : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
@@ -361,7 +362,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                   <button
                     onClick={() => setActiveTab('about')}
                     className={cn(
-                      'flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium transition-colors',
+                      'flex shrink-0 items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium transition-colors md:w-full',
                       activeTab === 'about'
                         ? 'bg-secondary text-foreground'
                         : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
@@ -374,7 +375,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                   <button
                     onClick={() => setActiveTab('roles')}
                     className={cn(
-                      'flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium transition-colors',
+                      'flex shrink-0 items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium transition-colors md:w-full',
                       activeTab === 'roles'
                         ? 'bg-secondary text-foreground'
                         : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
@@ -393,7 +394,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
             {selectedGroup ? (
               <>
                 {/* Header with group info and actions */}
-                <div className="flex items-start justify-between border-b border-border px-5 py-3.5">
+                <div className="flex items-start justify-between border-b border-border px-4 py-3.5 md:px-5">
                   <div className="flex flex-1 items-start gap-3">
                     <div className="flex-1">
                       <div className="flex items-center gap-2">

@@ -214,15 +214,16 @@ export function BatchesModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="flex h-[85vh] w-[70vw] max-w-5xl gap-0 overflow-hidden p-0 sm:max-w-5xl"
+        className="flex h-[calc(100vh-1rem)] w-[calc(100vw-1rem)] max-w-none flex-col gap-0 overflow-hidden rounded-none p-0 shadow-none sm:max-w-none md:h-[85vh] md:w-[70vw] md:max-w-5xl md:flex-row"
+        style={{ borderRadius: 0 }}
         showCloseButton={false}
       >
         <DialogTitle className="sr-only">Batches</DialogTitle>
 
         {/* ====== Sidebar ====== */}
-        <div className="flex w-56 shrink-0 flex-col border-r bg-card">
+        <div className="flex w-full shrink-0 flex-col border-b bg-card md:w-56 md:border-b-0 md:border-r">
           {/* Header */}
-          <div className="flex items-center px-5 pb-3 pt-5">
+          <div className="flex items-center px-4 pb-3 pt-4 md:px-5 md:pt-5">
             <h2 className="text-2xl font-bold text-foreground">Batches</h2>
           </div>
 
@@ -241,8 +242,8 @@ export function BatchesModal({
           </div>
 
           {/* Decade List */}
-          <div className="scrollbar-hide flex-1 overflow-y-auto px-3 pb-4">
-            <div className="space-y-0.5">
+          <div className="scrollbar-hide flex-1 overflow-x-auto overflow-y-hidden px-3 pb-4 md:overflow-y-auto">
+            <div className="flex gap-2 md:block md:space-y-0.5">
               {DECADES.map((decade) => {
                 const isSelected = selectedDecade === decade.value;
                 const isActiveMap = decade.value === activeMapEra;
@@ -251,7 +252,7 @@ export function BatchesModal({
                     key={decade.label}
                     onClick={() => setSelectedDecade(decade.value)}
                     className={cn(
-                      'flex w-full items-center justify-between px-3 py-2.5 text-left text-sm font-medium transition-colors',
+                      'flex shrink-0 items-center justify-between gap-2 px-3 py-2.5 text-left text-sm font-medium transition-colors md:w-full',
                       isSelected
                         ? 'bg-secondary text-foreground'
                         : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
@@ -274,7 +275,7 @@ export function BatchesModal({
         {/* ====== Content Area ====== */}
         <div className="relative flex flex-1 flex-col overflow-hidden">
           {/* Content Header — Filters + Close buttons */}
-          <div className="flex items-center justify-end gap-2 border-b px-5 py-3">
+          <div className="flex items-center justify-end gap-2 border-b px-4 py-3 md:px-5">
             <button
               onClick={() => setFiltersOpen(true)}
               className="flex items-center gap-2 border-2 border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
@@ -292,7 +293,7 @@ export function BatchesModal({
           </div>
 
           {/* Memory Cards Grid */}
-          <div className="scrollbar-hide flex-1 overflow-y-auto p-5">
+          <div className="scrollbar-hide flex-1 overflow-y-auto p-4 md:p-5">
             {displayedMemories.length > 0 ? (
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {displayedMemories.map((memory) => (
@@ -300,11 +301,11 @@ export function BatchesModal({
                     key={memory.id}
                     type="button"
                     onClick={() => handleMemoryCardClick(memory)}
-                    className="cursor-pointer overflow-hidden border-2 border-border bg-card p-2 pb-12 text-left shadow-[4px_4px_0px_0px_#2d2d2d] transition-shadow hover:shadow-[5px_5px_0px_0px_#2d2d2d]"
+                    className="cursor-pointer overflow-hidden border-2 border-border bg-card text-left transition-colors hover:bg-secondary/40"
                   >
                     {/* Image */}
                     {memory.mediaURL ? (
-                      <div className="relative h-44 w-full overflow-hidden bg-secondary">
+                      <div className="h-44 w-full overflow-hidden bg-secondary">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={
@@ -317,15 +318,15 @@ export function BatchesModal({
                         />
                       </div>
                     ) : (
-                      <div className="relative flex h-44 items-center justify-center bg-secondary">
+                      <div className="flex h-44 items-center justify-center bg-secondary">
                         <span className="text-sm text-muted-foreground">
                           No image
                         </span>
                       </div>
                     )}
 
-                    {/* Info - Caption area */}
-                    <div className="absolute bottom-0 left-0 right-0 px-3 pb-2 pt-1">
+                    {/* Info */}
+                    <div className="border-t border-border px-3 py-3">
                       <h3 className="text-sm font-semibold text-foreground">
                         {memory.title}
                       </h3>
@@ -346,7 +347,7 @@ export function BatchesModal({
                     onAddMemory?.(selectedDecade);
                     onOpenChange(false);
                   }}
-                  className="flex h-full min-h-[280px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-sky-200 bg-sky-50/50 transition-colors hover:border-sky-400 hover:bg-sky-50"
+                  className="flex h-full min-h-[280px] flex-col items-center justify-center border-2 border-dashed border-sky-200 bg-sky-50/50 transition-colors hover:border-sky-400 hover:bg-sky-50"
                 >
                   <Plus className="h-10 w-10 text-sky-400" />
                   <p className="mt-2 text-sm font-medium text-sky-600">
@@ -365,7 +366,7 @@ export function BatchesModal({
                     onAddMemory?.(selectedDecade);
                     onOpenChange(false);
                   }}
-                  className="flex items-center gap-2 rounded-lg border-2 border-dashed border-sky-200 bg-sky-50/50 px-6 py-3 text-sm font-medium text-sky-600 transition-colors hover:border-sky-400 hover:bg-sky-50"
+                  className="flex items-center gap-2 border-2 border-dashed border-sky-200 bg-sky-50/50 px-6 py-3 text-sm font-medium text-sky-600 transition-colors hover:border-sky-400 hover:bg-sky-50"
                 >
                   <Plus className="h-5 w-5" />
                   Add an Entry
@@ -383,6 +384,7 @@ export function BatchesModal({
             availableTags={availableTags}
             availableYears={availableYears}
             availableLocations={availableLocations}
+            showColorStrip={false}
           />
         </div>
       </DialogContent>

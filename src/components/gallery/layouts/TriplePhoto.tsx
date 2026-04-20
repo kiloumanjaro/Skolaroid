@@ -4,10 +4,15 @@ import { GalleryPolaroid } from '../GalleryPolaroid';
 
 interface TriplePhotoProps {
   photos: { src: string; alt: string }[];
+  startIndex?: number;
   onPhotoClick?: (index: number) => void;
 }
 
-export function TriplePhoto({ photos, onPhotoClick }: TriplePhotoProps) {
+export function TriplePhoto({
+  photos,
+  startIndex = 0,
+  onPhotoClick,
+}: TriplePhotoProps) {
   if (photos.length !== 3) {
     console.warn('TriplePhoto expects exactly 3 photos');
     return null;
@@ -16,25 +21,26 @@ export function TriplePhoto({ photos, onPhotoClick }: TriplePhotoProps) {
   return (
     <div
       style={{
-        width: 'calc(560px * var(--gallery-card-scale, 1))',
-        height: 'calc(600px * var(--gallery-card-scale, 1))',
+        ['--gallery-layout-scale' as string]:
+          'min(var(--gallery-card-scale, 1), calc((100vw - 3rem) / 680))',
+        width: 'calc(680px * var(--gallery-layout-scale))',
+        height: 'calc(600px * var(--gallery-layout-scale))',
+        maxWidth: '100%',
       }}
     >
       <div
         className="relative"
         style={{
-          width: 560,
+          width: 680,
           height: 600,
-          transform: 'scale(var(--gallery-card-scale, 1))',
+          transform: 'scale(var(--gallery-layout-scale))',
           transformOrigin: 'left top',
         }}
       >
         <GalleryPolaroid
           src={photos[0].src}
           alt={photos[0].alt}
-          width={340}
-          height={500}
-          rotation="-8deg"
+          index={startIndex}
           offsetX="0px"
           offsetY="40px"
           zIndex={1}
@@ -43,10 +49,8 @@ export function TriplePhoto({ photos, onPhotoClick }: TriplePhotoProps) {
         <GalleryPolaroid
           src={photos[1].src}
           alt={photos[1].alt}
-          width={340}
-          height={500}
-          rotation="1deg"
-          offsetX="200px"
+          index={startIndex + 1}
+          offsetX="310px"
           offsetY="0px"
           zIndex={2}
           onClick={() => onPhotoClick?.(1)}
@@ -54,10 +58,8 @@ export function TriplePhoto({ photos, onPhotoClick }: TriplePhotoProps) {
         <GalleryPolaroid
           src={photos[2].src}
           alt={photos[2].alt}
-          width={340}
-          height={500}
-          rotation="7deg"
-          offsetX="220px"
+          index={startIndex + 2}
+          offsetX="345px"
           offsetY="30px"
           zIndex={3}
           onClick={() => onPhotoClick?.(2)}

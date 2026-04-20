@@ -89,7 +89,9 @@ export async function PATCH(
       include: {
         tags: true,
         location: { select: { id: true, buildingName: true } },
-        creator: { select: { firstName: true, lastName: true } },
+        creator: {
+          select: { firstName: true, lastName: true, avatarUrl: true },
+        },
         _count: { select: { votes: true, comments: true } },
       },
     });

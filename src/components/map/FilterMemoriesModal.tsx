@@ -70,6 +70,7 @@ interface FilterMemoriesModalProps {
   availableYears: number[];
   availableGroups?: GroupFilterOption[];
   availableLocations?: LocationFilterOption[];
+  showColorStrip?: boolean;
 }
 
 interface FilterMemoriesPanelProps {
@@ -435,11 +436,12 @@ export function FilterMemoriesModal({
   availableYears,
   availableGroups = [],
   availableLocations = [],
+  showColorStrip = true,
 }: FilterMemoriesModalProps) {
   return (
     <div
       className={cn(
-        'fixed left-0 top-0 z-30 flex h-full transition-all duration-300 ease-in-out',
+        'fixed left-2 top-2 z-30 flex h-[calc(100%-1rem)] transition-all duration-300 ease-in-out sm:left-0 sm:top-0 sm:h-full',
         open ? '' : 'pointer-events-none'
       )}
       aria-hidden={!open}
@@ -448,7 +450,7 @@ export function FilterMemoriesModal({
         className={cn(
           'overflow-hidden transition-all duration-300 ease-in-out',
           open
-            ? 'w-[288px] opacity-100 shadow-[6px_6px_0px_0px_#2d2d2d]'
+            ? 'w-[calc(100vw-2.5rem)] opacity-100 shadow-[6px_6px_0px_0px_#2d2d2d] sm:w-[288px]'
             : 'w-0 opacity-0'
         )}
       >
@@ -464,12 +466,14 @@ export function FilterMemoriesModal({
         />
       </div>
 
-      <ColorStrip
-        interactive
-        onClick={onClose}
-        ariaLabel={open ? 'Close filters' : 'Open filters'}
-        className={cn(!open && 'pointer-events-auto')}
-      />
+      {showColorStrip ? (
+        <ColorStrip
+          interactive
+          onClick={onClose}
+          ariaLabel={open ? 'Close filters' : 'Open filters'}
+          className={cn(!open && 'pointer-events-auto')}
+        />
+      ) : null}
     </div>
   );
 }

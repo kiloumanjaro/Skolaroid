@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { Trash2 } from 'lucide-react';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { User } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { formatRelativeDate } from '@/lib/utils/format-date';
 import type { Comment } from '@/services/get-comments-service';
 
@@ -50,8 +51,14 @@ export function CommentSection({
         {comments.map((comment) => (
           <div key={comment.id} className="flex items-start gap-2">
             <Avatar className="h-9 w-9 shrink-0">
+              {comment.author.avatarUrl && (
+                <AvatarImage
+                  src={comment.author.avatarUrl}
+                  alt={`${comment.author.firstName} ${comment.author.lastName}`}
+                />
+              )}
               <AvatarFallback className="bg-secondary text-sm text-foreground">
-                {comment.author.firstName.charAt(0)}
+                <User className="h-4 w-4" />
               </AvatarFallback>
             </Avatar>
             <div className="flex-1">

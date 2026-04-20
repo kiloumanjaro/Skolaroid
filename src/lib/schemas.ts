@@ -332,7 +332,11 @@ export interface MemoryWithRelations {
   createdAt?: string;
   tags?: { id: string; name: string }[];
   location?: { buildingName: string };
-  creator?: { firstName: string; lastName: string } | null;
+  creator?: {
+    firstName: string;
+    lastName: string;
+    avatarUrl?: string | null;
+  } | null;
   _count?: { votes: number; comments: number };
 }
 

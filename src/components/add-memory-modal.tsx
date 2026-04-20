@@ -632,7 +632,7 @@ export function AddMemoryModal({
       )}
 
       {/* Action cards */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <button
           type="button"
           onClick={() => handleSelectOnMap('landmark')}
@@ -930,7 +930,7 @@ export function AddMemoryModal({
           </div>
 
           {viewMode === 'grid' ? (
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {completedFiles.map((f) => (
                 <div
                   key={f.id}
@@ -1302,7 +1302,8 @@ export function AddMemoryModal({
         }}
       >
         <DialogContent
-          className="flex h-[85vh] w-[70vw] max-w-none gap-0 overflow-hidden p-0 sm:max-w-none"
+          className="flex h-[calc(100vh-1rem)] w-[calc(100vw-1rem)] max-w-none flex-col gap-0 overflow-hidden rounded-none p-0 shadow-none sm:max-w-none md:h-[85vh] md:w-[70vw] md:flex-row"
+          style={{ borderRadius: 0 }}
           showCloseButton={false}
         >
           {/* Success toast overlay */}
@@ -1326,10 +1327,10 @@ export function AddMemoryModal({
           </AnimatePresence>
 
           {/* Left Sidebar */}
-          <div className="flex w-48 flex-col border-r bg-secondary/50">
-            <div className="flex-1 p-6">
+          <div className="flex w-full shrink-0 flex-col border-b bg-secondary/50 md:w-48 md:border-b-0 md:border-r">
+            <div className="overflow-x-auto p-4 md:flex-1 md:p-6">
               <DialogTitle className="sr-only">Add Memory</DialogTitle>
-              <div className="space-y-3">
+              <div className="flex gap-2 md:block md:space-y-3">
                 {TABS.map((tab, index) => {
                   const meta = TAB_META[tab];
                   const Icon = meta.icon;
@@ -1342,7 +1343,7 @@ export function AddMemoryModal({
                       type="button"
                       onClick={() => handleTabClick(tab)}
                       disabled={!isAccessible}
-                      className={`relative flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors ${
+                      className={`relative flex shrink-0 items-center gap-2 whitespace-nowrap rounded-md px-3 py-2 text-left text-sm font-medium transition-colors md:w-full ${
                         isActive
                           ? 'bg-blue-50 text-skolaroid-blue'
                           : isAccessible
@@ -1362,7 +1363,7 @@ export function AddMemoryModal({
             </div>
 
             {/* Thumbnail info box */}
-            <div className="mx-3 mb-4 rounded-lg bg-amber-100 p-3">
+            <div className="mx-3 mb-4 hidden rounded-lg bg-amber-100 p-3 md:block">
               <ImageIcon className="mb-1 h-5 w-5 text-foreground" />
               <p className="text-xs text-foreground">
                 The first image uploaded will be used as thumbnail
@@ -1380,24 +1381,24 @@ export function AddMemoryModal({
             </button>
 
             {/* Body */}
-            <div className="flex-1 overflow-y-auto p-6 pt-10">
+            <div className="flex-1 overflow-y-auto p-4 pt-12 md:p-6 md:pt-10">
               {TAB_RENDERERS[activeTab]()}
             </div>
 
             {/* Footer */}
-            <div className="flex justify-end gap-3 border-t bg-card px-6 py-4">
+            <div className="flex flex-col-reverse gap-3 border-t bg-card px-4 py-3 sm:flex-row sm:justify-end md:px-6 md:py-4">
               {activeTab === 'upload' && (
                 <>
                   <Button
                     variant="outline"
-                    className="text-foreground"
+                    className="w-full text-foreground sm:w-auto"
                     onClick={handleAttemptClose}
                   >
                     Cancel
                   </Button>
                   <Button
                     onClick={handleNext}
-                    className="bg-skolaroid-blue text-white hover:bg-skolaroid-blue/90"
+                    className="w-full bg-skolaroid-blue text-white hover:bg-skolaroid-blue/90 sm:w-auto"
                   >
                     Next
                   </Button>
@@ -1408,7 +1409,7 @@ export function AddMemoryModal({
                 <>
                   <Button
                     variant="outline"
-                    className="text-foreground"
+                    className="w-full text-foreground sm:w-auto"
                     onClick={handleBack}
                   >
                     Back
@@ -1416,7 +1417,7 @@ export function AddMemoryModal({
                   <Button
                     onClick={handleNext}
                     disabled={!selectedLocationId || isCreatingLocation}
-                    className="bg-skolaroid-blue text-white hover:bg-skolaroid-blue/90 disabled:opacity-50"
+                    className="w-full bg-skolaroid-blue text-white hover:bg-skolaroid-blue/90 disabled:opacity-50 sm:w-auto"
                   >
                     {isCreatingLocation ? (
                       <>
@@ -1434,14 +1435,14 @@ export function AddMemoryModal({
                 <>
                   <Button
                     variant="outline"
-                    className="text-foreground"
+                    className="w-full text-foreground sm:w-auto"
                     onClick={handleBack}
                   >
                     Back
                   </Button>
                   <Button
                     onClick={handleNext}
-                    className="bg-skolaroid-blue text-white hover:bg-skolaroid-blue/90"
+                    className="w-full bg-skolaroid-blue text-white hover:bg-skolaroid-blue/90 sm:w-auto"
                   >
                     Next
                   </Button>
@@ -1452,7 +1453,7 @@ export function AddMemoryModal({
                 <>
                   <Button
                     variant="outline"
-                    className="text-foreground"
+                    className="w-full text-foreground sm:w-auto"
                     onClick={handleBack}
                   >
                     Back
@@ -1460,7 +1461,7 @@ export function AddMemoryModal({
                   <Button
                     onClick={handleSave}
                     disabled={isPending}
-                    className="bg-skolaroid-blue text-white hover:bg-skolaroid-blue/90"
+                    className="w-full bg-skolaroid-blue text-white hover:bg-skolaroid-blue/90 sm:w-auto"
                   >
                     {isPending ? (
                       <>

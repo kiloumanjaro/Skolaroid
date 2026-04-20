@@ -36,6 +36,7 @@ export function BatchSidebar({
       isDragging={isDragging}
       onMouseDown={onMouseDown}
       drawerContentRef={drawerContentRef}
+      expandedWidthClassName="w-screen max-w-[600px]"
     >
       <BatchSidebarContent
         eras={eras}

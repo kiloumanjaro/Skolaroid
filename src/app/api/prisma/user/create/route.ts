@@ -127,6 +127,11 @@ export async function POST(request: NextRequest) {
     }
 
     // ── 5. Create User ────────────────────────────────────────────────
+    const googleAvatarUrl =
+      (authUser.user_metadata?.avatar_url as string | undefined) ||
+      (authUser.user_metadata?.picture as string | undefined) ||
+      null;
+
     const user = await prisma.user.create({
       data: {
         id: authUser.id,
@@ -135,6 +140,7 @@ export async function POST(request: NextRequest) {
         lastName,
         studentId,
         status,
+        avatarUrl: googleAvatarUrl,
         programBatch: { connect: { id: programBatch.id } },
       },
     });

@@ -108,8 +108,8 @@ export function MapLocationSelector({
   return (
     <>
       {/* Instruction bar */}
-      <div className="absolute left-1/2 top-4 z-20 -translate-x-1/2">
-        <div className="flex items-center gap-3 border-2 border-border bg-card px-5 py-3 shadow-[3px_3px_0px_0px_#2d2d2d]">
+      <div className="absolute left-3 right-3 top-3 z-20 sm:left-1/2 sm:right-auto sm:top-4 sm:-translate-x-1/2">
+        <div className="flex flex-wrap items-center justify-center gap-2 border-2 border-border bg-card px-4 py-3 text-center shadow-[3px_3px_0px_0px_#2d2d2d] sm:flex-nowrap sm:justify-start sm:gap-3 sm:px-5">
           <div className="h-2.5 w-2.5 animate-pulse rounded-full bg-skolaroid-blue" />
           <span className="text-sm font-medium text-foreground">
             {mode === 'landmark'
@@ -130,7 +130,7 @@ export function MapLocationSelector({
 
       {/* Out-of-bounds error toast */}
       {outOfBoundsError && (
-        <div className="absolute left-1/2 top-20 z-20 -translate-x-1/2 duration-200 animate-in fade-in slide-in-from-top-2">
+        <div className="absolute left-3 right-3 top-24 z-20 duration-200 animate-in fade-in slide-in-from-top-2 sm:left-1/2 sm:right-auto sm:top-20 sm:-translate-x-1/2">
           <div className="border-2 border-red-200 bg-red-50 px-4 py-2 shadow-[3px_3px_0px_0px_#2d2d2d]">
             <p className="text-sm font-medium text-red-700">
               Please select a location within campus
