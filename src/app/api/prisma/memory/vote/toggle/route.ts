@@ -31,17 +31,15 @@ function isRateLimited(userId: string, memoryId: string): boolean {
 
 /**
  * Resolves the userId for the request.
- * - Production:  real Supabase session → check Prisma User row exists.
- * - Development: same flow, but if there is no session the seed user is used
- *                as a convenience fallback (never runs in production).
+ * Requires a real Supabase session and an existing Prisma User row.
  *
  * Returns:
  *   { userId: string }  — proceed with this user
  *   { error: NextResponse } — return this response immediately
  */
-async function resolveUser(
-  isDev: boolean
-): Promise<{ userId: string } | { error: NextResponse }> {
+async function resolveUser(): Promise<
+  { userId: string } | { error: NextResponse }
+> {
   const supabase = await createClient();
   const {
     data: { user: authUser },
@@ -69,16 +67,6 @@ async function resolveUser(
     return { userId: dbUser.id };
   }
 
-  // No session — dev seed-user fallback only.
-  if (isDev) {
-    const seedUser = await prisma.user.findUnique({
-      where: { email: 'seed@skolaroid.dev' },
-      select: { id: true },
-    });
-
-    if (seedUser) return { userId: seedUser.id };
-  }
-
   return {
     error: NextResponse.json(
       { success: false, message: 'Not authenticated' },
@@ -90,11 +78,9 @@ async function resolveUser(
 // ---------------------------------------------------------------------------
 
 export async function POST(request: NextRequest) {
-  const isDev = process.env.NODE_ENV === 'development';
-
   try {
     // ── 1. Auth ────────────────────────────────────────────────────────────
-    const resolved = await resolveUser(isDev);
+    const resolved = await resolveUser();
     if ('error' in resolved) return resolved.error;
     const { userId } = resolved;
 

@@ -1,11 +1,8 @@
 import { prisma } from '@/lib/prisma';
 import { slugify } from '@/lib/slugify';
-import { findNearestLandmark } from '@/lib/utils/map-utils';
 import { MAX_TAGS, type MemoryVisibility } from '@/lib/schemas';
-import {
-  canRoleUsePermission,
-  resolveGroupMemberRole,
-} from '@/lib/group-permissions';
+import { generateAutoTags } from '@/lib/utils/memory-tags';
+import { assertCanPostInGroup } from '@/lib/server/group-permissions';
 import {
   isContentPrescreeningEnabled,
   moderationPolicyService,
@@ -23,62 +20,6 @@ interface CreateMemoryInput {
   creatorId: string;
   privateGroupId?: string;
 }
-/**
- * Generate auto-tags for a memory based on location and date
- */
-async function generateAutoTags(
-  locationId: string,
-  memoryDate?: Date
-): Promise<string[]> {
-  const autoTags: string[] = [];
-
-  // 1. Fetch location to get coordinates and buildingName
-  const location = await prisma.location.findUnique({
-    where: { id: locationId },
-    select: {
-      buildingName: true,
-      latitude: true,
-      longitude: true,
-    },
-  });
-
-  if (!location) {
-    throw new Error(`Location with ID ${locationId} not found`);
-  }
-
-  // 2. Generate landmark tag
-  const { buildingName, latitude, longitude } = location;
-
-  if (buildingName) {
-    // Use buildingName directly if it's a known landmark
-    autoTags.push(buildingName);
-  } else {
-    // For custom locations, find nearest landmark and create "Near X" tag
-    const nearest = findNearestLandmark({ latitude, longitude });
-    if (nearest && nearest.distance < 100) {
-      // Within 100 meters
-      autoTags.push(`Near ${nearest.landmark.name}`);
-    } else if (nearest) {
-      // Fallback to nearest landmark name even if far
-      autoTags.push(`Near ${nearest.landmark.name}`);
-    }
-  }
-
-  // 3. Generate era tag (decade)
-  const referenceYear = memoryDate
-    ? memoryDate.getFullYear()
-    : new Date().getFullYear();
-  const decade = Math.floor(referenceYear / 10) * 10;
-  autoTags.push(`${decade}s`);
-
-  // 4. Generate year tag (only if memoryDate is provided)
-  if (memoryDate) {
-    autoTags.push(`${referenceYear}`);
-  }
-
-  return autoTags;
-}
-
 /**
  * Create a memory with auto-generated tags
  */
@@ -108,43 +49,7 @@ export async function createMemoryService(
   }
 
   if (privateGroupId) {
-    const group = await prisma.privateGroup.findUnique({
-      where: { id: privateGroupId, deletedAt: null },
-      select: {
-        id: true,
-        creatorId: true,
-        rolePrivileges: true,
-        members: {
-          where: { id: creatorId },
-          select: { id: true },
-        },
-        groupMemberships: {
-          where: { userId: creatorId },
-          select: { role: true },
-        },
-      },
-    });
-
-    if (!group) {
-      throw new Error('Group not found');
-    }
-
-    const isMemberInGroup =
-      group.members.length > 0 || group.groupMemberships.length > 0;
-
-    if (!isMemberInGroup) {
-      throw new Error('You are not a member of this group');
-    }
-
-    const role = resolveGroupMemberRole(
-      creatorId,
-      group.creatorId,
-      group.groupMemberships[0]?.role
-    );
-
-    if (!canRoleUsePermission(group.rolePrivileges, role, 'editContent')) {
-      throw new Error('Your role cannot post in this group');
-    }
+    await assertCanPostInGroup(creatorId, privateGroupId);
   }
 
   // Generate auto-tags

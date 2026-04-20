@@ -10,6 +10,12 @@ export interface CurrentUserProfile {
   lastName: string;
   status: 'STUDENT' | 'ALUMNI';
   role: 'USER' | 'ADMIN';
+  bio?: string | null;
+  phone?: string | null;
+  linkedinUrl?: string | null;
+  facebookUrl?: string | null;
+  contactOther?: string | null;
+  avatarUrl?: string | null;
   programBatch: {
     id: string;
     program: { id: string; name: string };

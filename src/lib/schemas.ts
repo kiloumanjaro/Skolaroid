@@ -81,6 +81,48 @@ export const createMemoryServerSchema = createMemorySchema.extend({
   privateGroupId: z.string().uuid('Invalid group ID').optional(),
 });
 
+/** Client-side schema for editing a memory — all fields optional, at least one required. */
+export const editMemorySchema = z
+  .object({
+    title: z
+      .string()
+      .trim()
+      .min(1, 'Title is required')
+      .max(255, 'Title must be 255 characters or less')
+      .optional(),
+    description: z
+      .string()
+      .trim()
+      .max(5000, 'Description is too long')
+      .optional(),
+    visibility: memoryVisibilityEnum.optional(),
+    tags: z
+      .array(z.string().trim().min(1).max(50))
+      .max(MAX_TAGS, 'Maximum 10 tags')
+      .optional(),
+    privateGroupId: z.string().uuid('Invalid group ID').nullable().optional(),
+  })
+  .refine((v) => Object.values(v).some((x) => x !== undefined), {
+    message: 'At least one field must be provided',
+  });
+
+/** Server-side schema for editing a memory — no additional coercions needed. */
+export const editMemoryServerSchema = editMemorySchema;
+
+export type EditMemoryInput = z.infer<typeof editMemoryServerSchema>;
+
+// ============================================================================
+// GLOBAL SEARCH SCHEMAS
+// ============================================================================
+
+export const searchQuerySchema = z.object({
+  q: z.string().trim().min(1, 'Search query cannot be empty'),
+  page: z.coerce.number().int().min(1).catch(1),
+  limit: z.coerce.number().int().min(1).max(50).catch(20),
+});
+
+export type SearchQueryInput = z.infer<typeof searchQuerySchema>;
+
 /** Schema for updating tags on an existing memory. */
 export const updateMemoryTagsSchema = z.object({
   memoryId: z.string().uuid('Invalid memory ID'),
@@ -226,6 +268,51 @@ export const onboardUserSchema = z.object({
 });
 
 export type OnboardUserInput = z.infer<typeof onboardUserSchema>;
+
+// ============================================================================
+// PROFILE UPDATE SCHEMA
+// ============================================================================
+
+export const updateProfileSchema = z.object({
+  bio: z
+    .string()
+    .trim()
+    .max(500, 'Bio must be 500 characters or less')
+    .optional(),
+  phone: z
+    .string()
+    .trim()
+    .max(50, 'Phone must be 50 characters or less')
+    .refine(
+      (val) => /^(\+639\d{9}|09\d{9})$/.test(val.replace(/[\s\-]/g, '')),
+      'Must be a valid Philippine number (e.g. 09XX XXX XXXX or +63 9XX XXX XXXX)'
+    )
+    .optional(),
+  linkedinUrl: z
+    .string()
+    .trim()
+    .max(255)
+    .url('Must be a valid URL')
+    .optional()
+    .or(z.literal('')),
+  facebookUrl: z
+    .string()
+    .trim()
+    .max(255)
+    .url('Must be a valid URL')
+    .optional()
+    .or(z.literal('')),
+  contactOther: z
+    .string()
+    .trim()
+    .max(255)
+    .url('Must be a valid URL')
+    .optional()
+    .or(z.literal('')),
+  avatarUrl: z.string().url().nullable().optional(),
+});
+
+export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
 
 // ============================================================================
 // SHARED TYPES
