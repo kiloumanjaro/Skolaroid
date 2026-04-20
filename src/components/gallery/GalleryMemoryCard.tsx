@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+import { User } from 'lucide-react';
 import { PolaroidCluster } from './PolaroidCluster';
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 
@@ -41,14 +43,7 @@ export function GalleryMemoryCard({
   const uploaderName = memory.creator
     ? `${memory.creator.firstName} ${memory.creator.lastName}`.trim()
     : null;
-  const initials = uploaderName
-    ? uploaderName
-        .split(' ')
-        .map((n) => n[0])
-        .join('')
-        .slice(0, 2)
-        .toUpperCase()
-    : '?';
+  const uploaderPhoto = memory.creator?.avatarUrl ?? null;
   const dateUploaded = formatDate(memory.createdAt);
 
   return (
@@ -67,8 +62,18 @@ export function GalleryMemoryCard({
       >
         {/* Avatar + uploader name */}
         <div className="flex items-center gap-2">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-border bg-secondary text-xs font-bold text-gray-600">
-            {initials}
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-border bg-secondary">
+            {uploaderPhoto ? (
+              <Image
+                src={uploaderPhoto}
+                alt={uploaderName ?? 'User avatar'}
+                width={36}
+                height={36}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <User className="h-4 w-4 text-gray-500" />
+            )}
           </div>
           {uploaderName && (
             <span className="font-hand text-sm font-semibold text-gray-700">

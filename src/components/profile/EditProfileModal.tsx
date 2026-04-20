@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { User as UserIcon, Camera } from 'lucide-react';
+import { User as UserIcon } from 'lucide-react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,11 +32,14 @@ export function EditProfileModal({
   const [linkedinUrl, setLinkedinUrl] = useState('');
   const [facebookUrl, setFacebookUrl] = useState('');
   const [contactOther, setContactOther] = useState('');
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const { mutate: updateProfile, isPending } = useUpdateProfile();
+
+  const avatarUrl =
+    authUser?.user_metadata?.avatar_url ??
+    authUser?.user_metadata?.picture ??
+    null;
 
   // Populate form when modal opens
   useEffect(() => {
@@ -46,23 +49,10 @@ export function EditProfileModal({
       setLinkedinUrl(dbUser.linkedinUrl ?? '');
       setFacebookUrl(dbUser.facebookUrl ?? '');
       setContactOther(dbUser.contactOther ?? '');
-      setAvatarPreview(
-        dbUser.avatarUrl ??
-          authUser?.user_metadata?.avatar_url ??
-          authUser?.user_metadata?.picture ??
-          null
-      );
       setErrors({});
       setSubmitError(null);
     }
-  }, [open, dbUser, authUser]);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    // TODO: wire Supabase storage upload
-    setAvatarPreview(URL.createObjectURL(file));
-  };
+  }, [open, dbUser]);
 
   const handleSubmit = () => {
     setErrors({});
@@ -74,7 +64,6 @@ export function EditProfileModal({
       linkedinUrl: linkedinUrl || undefined,
       facebookUrl: facebookUrl || undefined,
       contactOther: contactOther || undefined,
-      avatarUrl: null, // TODO: replace with uploaded URL when storage is wired
     });
 
     if (!parsed.success) {
@@ -111,9 +100,9 @@ export function EditProfileModal({
           {/* Avatar section */}
           <div className="flex flex-col items-center gap-3">
             <div className="shrink-0">
-              {avatarPreview ? (
+              {avatarUrl ? (
                 <Image
-                  src={avatarPreview}
+                  src={avatarUrl}
                   alt="Profile photo"
                   width={96}
                   height={96}
@@ -125,25 +114,6 @@ export function EditProfileModal({
                 </div>
               )}
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <Camera className="h-3.5 w-3.5" />
-              Change Photo
-            </Button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleFileChange}
-            />
-            <p className="font-hand text-xs text-muted-foreground">
-              Photo upload coming soon
-            </p>
           </div>
 
           {/* About Me section */}

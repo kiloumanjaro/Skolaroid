@@ -8,8 +8,9 @@ import {
   X,
   Trash2,
   Flag,
+  User,
 } from 'lucide-react';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogTitle } from '@/components/ui/dialog';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
@@ -336,7 +337,7 @@ export function MemoryDetailModal({
   const authorName = memory.creator
     ? `${memory.creator.firstName} ${memory.creator.lastName}`
     : 'Unknown Author';
-  const authorInitial = authorName.charAt(0);
+  const authorPhoto = memory.creator?.avatarUrl ?? null;
 
   function handleCommentSubmit(content: string) {
     createComment.mutate({ memoryId: memory!.id, content });
@@ -553,8 +554,14 @@ export function MemoryDetailModal({
                             {/* Author header */}
                             <div className="flex items-start gap-3">
                               <Avatar className="h-9 w-9">
+                                {authorPhoto && (
+                                  <AvatarImage
+                                    src={authorPhoto}
+                                    alt={authorName}
+                                  />
+                                )}
                                 <AvatarFallback className="bg-secondary text-sm text-foreground">
-                                  {authorInitial}
+                                  <User className="h-4 w-4" />
                                 </AvatarFallback>
                               </Avatar>
                               <div className="flex-1">
@@ -820,8 +827,14 @@ export function MemoryDetailModal({
                                   {/* Author header */}
                                   <div className="flex items-start gap-3">
                                     <Avatar className="h-9 w-9">
+                                      {authorPhoto && (
+                                        <AvatarImage
+                                          src={authorPhoto}
+                                          alt={authorName}
+                                        />
+                                      )}
                                       <AvatarFallback className="bg-secondary text-sm text-foreground">
-                                        {authorInitial}
+                                        <User className="h-4 w-4" />
                                       </AvatarFallback>
                                     </Avatar>
                                     <div className="flex-1">
@@ -898,8 +911,14 @@ export function MemoryDetailModal({
                                 {/* Author header */}
                                 <div className="flex items-start gap-3">
                                   <Avatar className="h-9 w-9">
+                                    {authorPhoto && (
+                                      <AvatarImage
+                                        src={authorPhoto}
+                                        alt={authorName}
+                                      />
+                                    )}
                                     <AvatarFallback className="bg-secondary text-sm text-foreground">
-                                      {authorInitial}
+                                      <User className="h-4 w-4" />
                                     </AvatarFallback>
                                   </Avatar>
                                   <div className="flex-1">

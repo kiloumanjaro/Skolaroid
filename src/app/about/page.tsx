@@ -5,7 +5,6 @@ import {
   Heart,
   Images,
   MapPin,
-  Sparkles,
   Tag,
   Users,
 } from 'lucide-react';
@@ -88,22 +87,17 @@ export default function AboutPage() {
           <div
             className="pointer-events-none absolute inset-0 opacity-70"
             style={{
-              backgroundImage:
-                'radial-gradient(hsl(var(--muted)) 1px, transparent 1px)',
+              backgroundColor: '#f8f9f4',
+              backgroundImage: 'radial-gradient(#cccdc9 1px, transparent 1px)',
               backgroundSize: '24px 24px',
             }}
           />
 
           <div className="relative z-10 mx-auto grid w-full max-w-7xl gap-12 px-6 py-14 md:px-10 lg:grid-cols-[1.15fr_0.85fr] lg:px-16 lg:py-20">
             <div className="max-w-2xl">
-              <div className="mb-5 inline-flex items-center gap-2 border-2 border-border bg-card px-4 py-2 text-sm font-semibold shadow-[4px_4px_0px_0px_#2d2d2d]">
-                <Sparkles className="h-4 w-4 text-skolaroid-blue" />A living
-                campus scrapbook
-              </div>
-
               <h1 className="max-w-3xl text-5xl leading-[0.95] tracking-tight text-foreground sm:text-6xl lg:text-7xl">
                 About{' '}
-                <span className="font-dancing text-skolaroid-blue">
+                <span className="font-dancing font-bold text-skolaroid-blue">
                   Skolaroid
                 </span>
               </h1>
@@ -137,41 +131,9 @@ export default function AboutPage() {
                   Browse the gallery
                 </Link>
               </div>
-
-              <div className="mt-10 grid gap-4 sm:grid-cols-3">
-                <div className="border-2 border-border bg-card px-5 py-4 shadow-[4px_4px_0px_0px_#2d2d2d]">
-                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-skolaroid-blue">
-                    Place
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    Stories stay grounded in real campus landmarks.
-                  </p>
-                </div>
-
-                <div className="border-2 border-border bg-card px-5 py-4 shadow-[4px_4px_0px_0px_#2d2d2d]">
-                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-skolaroid-blue">
-                    Era
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    Batches and decades become easier to revisit together.
-                  </p>
-                </div>
-
-                <div className="border-2 border-border bg-card px-5 py-4 shadow-[4px_4px_0px_0px_#2d2d2d]">
-                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-skolaroid-blue">
-                    Belonging
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    A shared archive grows richer every time someone
-                    contributes.
-                  </p>
-                </div>
-              </div>
             </div>
 
             <div className="relative mx-auto flex w-full max-w-xl items-center justify-center">
-              <div className="absolute left-2 top-10 hidden h-40 w-40 rounded-full bg-postit/60 blur-2xl sm:block" />
-
               <div className="relative w-full max-w-md">
                 <div className="absolute -left-4 top-6 h-full w-full rotate-[-5deg] border-2 border-border bg-card/80 shadow-[4px_4px_0px_0px_#2d2d2d]" />
                 <div className="absolute right-[-1rem] top-16 h-full w-full rotate-[6deg] border-2 border-border bg-[#fff5dd] shadow-[4px_4px_0px_0px_#2d2d2d]" />
@@ -237,7 +199,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        <section className="relative border-b-2 border-border">
+        <section className="relative">
           <div className="mx-auto w-full max-w-7xl px-6 py-6 md:px-10 lg:px-16 lg:py-10">
             <div className="mb-8 max-w-2xl">
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-skolaroid-blue">
@@ -307,51 +269,6 @@ export default function AboutPage() {
                     </div>
                   </div>
                 ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="relative overflow-hidden border-b-2 border-border">
-          <div
-            className="pointer-events-none absolute inset-0 opacity-70"
-            style={{
-              backgroundImage:
-                'radial-gradient(hsl(var(--muted)) 1px, transparent 1px)',
-              backgroundSize: '24px 24px',
-            }}
-          />
-
-          <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pb-16 md:px-10 lg:px-16 lg:pb-20">
-            <div className="border-2 border-border bg-card px-6 py-8 shadow-[8px_8px_0px_0px_#2d2d2d] sm:px-8 sm:py-10">
-              <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-                <div className="max-w-2xl">
-                  <p className="font-dancing text-4xl leading-none text-skolaroid-blue sm:text-5xl">
-                    keep the campus alive
-                  </p>
-                  <p className="mt-4 text-lg leading-8 text-foreground/80">
-                    From first-day jitters to graduation photos, Skolaroid
-                    exists to keep a school&apos;s emotional history visible,
-                    searchable, and shareable across generations.
-                  </p>
-                </div>
-
-                <div className="flex flex-col gap-3 sm:flex-row">
-                  <Link
-                    href="/"
-                    className="inline-flex items-center justify-center border-2 border-border bg-card px-6 py-3 text-base font-semibold text-foreground shadow-[4px_4px_0px_0px_#2d2d2d] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:bg-secondary hover:shadow-[2px_2px_0px_0px_#2d2d2d]"
-                  >
-                    Start exploring
-                  </Link>
-                  <a
-                    href="https://github.com/kiloumanjaro/Skolaroid"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center border-2 border-border bg-[#eff6ff] px-6 py-3 text-base font-semibold text-foreground shadow-[4px_4px_0px_0px_#2d2d2d] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:bg-[#dbeafe] hover:shadow-[2px_2px_0px_0px_#2d2d2d]"
-                  >
-                    View on GitHub
-                  </a>
-                </div>
               </div>
             </div>
           </div>

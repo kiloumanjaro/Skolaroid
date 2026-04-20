@@ -20,7 +20,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
-    const dbUser = await prisma.user.findUnique({
+    let dbUser = await prisma.user.findUnique({
       where: { id: authUser.id },
       include: {
         programBatch: {
@@ -31,6 +31,28 @@ export async function GET() {
         },
       },
     });
+
+    // Sync Google photo to DB for users who registered before avatarUrl was persisted
+    if (dbUser && !dbUser.avatarUrl) {
+      const googleAvatar =
+        (authUser.user_metadata?.avatar_url as string | undefined) ||
+        (authUser.user_metadata?.picture as string | undefined) ||
+        null;
+      if (googleAvatar) {
+        dbUser = await prisma.user.update({
+          where: { id: authUser.id },
+          data: { avatarUrl: googleAvatar },
+          include: {
+            programBatch: {
+              include: {
+                program: true,
+                batch: true,
+              },
+            },
+          },
+        });
+      }
+    }
 
     return NextResponse.json({ success: true, data: dbUser });
   } catch (error) {

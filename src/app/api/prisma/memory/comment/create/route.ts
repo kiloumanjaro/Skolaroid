@@ -86,7 +86,14 @@ export async function POST(request: NextRequest) {
         content: true,
         memoryId: true,
         authorId: true,
-        author: { select: { id: true, firstName: true, lastName: true } },
+        author: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            avatarUrl: true,
+          },
+        },
         createdAt: true,
         updatedAt: true,
       },

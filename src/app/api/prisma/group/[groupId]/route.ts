@@ -37,7 +37,13 @@ export async function GET(
           select: { id: true, firstName: true, lastName: true, email: true },
         },
         members: {
-          select: { id: true, firstName: true, lastName: true, email: true },
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            avatarUrl: true,
+          },
         },
         groupMemberships: {
           select: { userId: true, role: true, joinedAt: true },
