@@ -499,6 +499,11 @@ export const adminReportsQuerySchema = z.object({
   state: reportStateEnum.optional(),
 });
 
+/** Query params for fetching platform analytics (admin). */
+export const adminAnalyticsQuerySchema = z.object({
+  days: z.coerce.number().int().min(7).max(365).default(30),
+});
+
 /** Payload for resolving or dismissing a report (admin). */
 export const resolveReportSchema = z.object({
   reportId: z.string().uuid('Invalid report ID'),
@@ -509,6 +514,7 @@ export const resolveReportSchema = z.object({
 export type ModerationStatus = z.infer<typeof moderationStatusEnum>;
 export type ModerateMemoryInput = z.infer<typeof moderateMemorySchema>;
 export type ResolveReportInput = z.infer<typeof resolveReportSchema>;
+export type AdminAnalyticsQuery = z.infer<typeof adminAnalyticsQuerySchema>;
 
 export const moderationActionTypeEnum = z.enum([
   'MEMORY_APPROVED',
