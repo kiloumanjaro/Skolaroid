@@ -8,10 +8,18 @@ import { GalleryMemoryCard } from '@/components/gallery/GalleryMemoryCard';
 import { useAllMemoriesWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 import { getEraFromBatchTag } from '@/lib/utils';
 
-function GalleryPageContent() {
+// TODO: implement copy link functionality
+const handleCopyLink = () => {};
+
+interface GalleryPageContentProps {
+  era?: string;
+}
+
+function GalleryPageContent({ era }: GalleryPageContentProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeEra = parseInt(searchParams.get('era') || '2020', 10);
+  const displayEra = era ?? `${activeEra}s`;
   const [isDragging, setIsDragging] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -98,6 +106,22 @@ function GalleryPageContent() {
 
   return (
     <div className="flex h-screen flex-col bg-gray-50">
+      <header className="flex shrink-0 items-center justify-between bg-background px-10 py-3 lg:px-16">
+        <div className="flex items-baseline gap-2">
+          <span className="font-dancing text-2xl font-bold italic text-primary">
+            Skolaroid
+          </span>
+          <span className="font-kalam text-xl text-gray-600">
+            ({displayEra})
+          </span>
+        </div>
+        <button
+          onClick={handleCopyLink}
+          className="border-2 border-border bg-card px-4 py-1.5 font-hand text-sm shadow-[2px_2px_0px_0px_#2d2d2d] transition-shadow hover:shadow-none active:shadow-none"
+        >
+          Copy Link
+        </button>
+      </header>
       <div className="relative flex min-w-0 flex-1">
         {/* Loading/Error States */}
         {isLoading && (
@@ -119,9 +143,10 @@ function GalleryPageContent() {
           <div
             ref={containerRef}
             tabIndex={0}
-            className={`scrollbar-hide flex min-w-0 flex-1 select-none flex-row items-center gap-10 overflow-x-auto overflow-y-hidden px-10 py-8 lg:gap-16 lg:px-16 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+            className={`scrollbar-hide flex min-w-0 flex-1 select-none flex-row items-center overflow-x-auto overflow-y-hidden px-10 py-8 lg:px-16 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
             style={
               {
+                gap: 'var(--gallery-card-gap)',
                 '--gallery-card-scale':
                   'min(1, calc((100dvh - 2rem) / 640), calc((100vw - 4rem) / 380))',
                 scrollBehavior: 'smooth',
@@ -143,7 +168,7 @@ function GalleryPageContent() {
                 </p>
               </div>
             ) : (
-              eraFilteredMemories.map((memory) => (
+              eraFilteredMemories.map((memory, i) => (
                 <div
                   key={memory.id}
                   className="shrink-0"
@@ -153,6 +178,7 @@ function GalleryPageContent() {
                 >
                   <GalleryMemoryCard
                     memory={memory}
+                    index={i}
                     onClick={() => handleMemoryClick(memory.id)}
                   />
                 </div>
@@ -165,7 +191,11 @@ function GalleryPageContent() {
   );
 }
 
-export default function GalleryPage() {
+interface GalleryPageProps {
+  era?: string;
+}
+
+export default function GalleryPage({ era }: GalleryPageProps) {
   return (
     <Suspense
       fallback={
@@ -174,7 +204,7 @@ export default function GalleryPage() {
         </div>
       }
     >
-      <GalleryPageContent />
+      <GalleryPageContent era={era} />
     </Suspense>
   );
 }

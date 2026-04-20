@@ -2,6 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --polaroid-base: 280px; /* was 360px */
+  --gallery-card-gap: 16rem;
+  --gallery-cluster-caption-gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --polaroid-base: 220px;
+  } /* was 280px */
+}
+
+@media (max-width: 640px) {
+  :root {
+    --polaroid-base: 160px;
+  } /* was 200px */
+}
+
 @layer base {
   :root {
     /* Hand-Drawn warm paper palette */
@@ -47,35 +65,5 @@
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
-  }
-
-  .about-creators-marquee {
-    display: flex;
-    width: max-content;
-    white-space: nowrap;
-    will-change: transform;
-    animation: creators-scroll-right 22s linear infinite;
-  }
-
-  .about-creators-marquee-group {
-    display: flex;
-    flex-shrink: 0;
-    width: max-content;
-    align-items: center;
-  }
-
-  @keyframes creators-scroll-right {
-    from {
-      transform: translateX(-50%);
-    }
-    to {
-      transform: translateX(0);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .about-creators-marquee {
-      animation: none;
-    }
   }
 }
