@@ -533,6 +533,10 @@ export function AddMemoryModal({
     setSubmitError(null);
 
     const firstCompleted = completedFiles[0];
+    const uploadedMediaURLs = completedFiles
+      .map((file) => file.uploadedUrl?.trim())
+      .filter((url): url is string => Boolean(url));
+    const primaryMediaURL = uploadedMediaURLs[0];
 
     const locationId = selectedLocationId ?? locations[0]?.id ?? '';
 
@@ -549,7 +553,11 @@ export function AddMemoryModal({
         locationId,
         memoryDate: memoryDate ? new Date(memoryDate) : undefined,
         tags,
-        mediaFile: firstCompleted?.file,
+        ...(primaryMediaURL
+          ? { mediaURL: primaryMediaURL, mediaURLs: uploadedMediaURLs }
+          : firstCompleted?.file
+            ? { mediaFile: firstCompleted.file }
+            : {}),
         ...(visibility === 'GROUP_ONLY' && defaultGroupId
           ? { privateGroupId: defaultGroupId }
           : {}),
