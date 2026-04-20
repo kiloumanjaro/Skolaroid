@@ -30,7 +30,14 @@ import { useCreateComment } from '@/lib/hooks/useCreateComment';
 import { useDeleteComment } from '@/lib/hooks/useDeleteComment';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
 import Image from 'next/image';
-import { useState, useEffect, useMemo, useRef } from 'react';
+import {
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useCallback,
+  type TouchEvent,
+} from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   coverLeftVariants,
@@ -142,6 +149,167 @@ const isAutoTag = (tagName: string): boolean => {
   );
 };
 
+type MemoryMediaShape = Pick<
+  MemoryWithCoordinates,
+  'id' | 'title' | 'mediaURL' | 'mediaURLs'
+>;
+
+const SWIPE_THRESHOLD_PX = 48;
+
+function getMemoryMediaURLs(memory: MemoryMediaShape | null): string[] {
+  if (!memory) return [];
+
+  return Array.from(
+    new Set(
+      [
+        ...(memory.mediaURLs ?? []),
+        ...(memory.mediaURL ? [memory.mediaURL] : []),
+      ]
+        .map((url) => url.trim())
+        .filter(Boolean)
+    )
+  );
+}
+
+interface PolaroidMediaCarouselProps {
+  memory: MemoryMediaShape;
+  activeIndex: number;
+  onIndexChange?: (nextIndex: number) => void;
+  showControls?: boolean;
+}
+
+function PolaroidMediaCarousel({
+  memory,
+  activeIndex,
+  onIndexChange,
+  showControls = true,
+}: PolaroidMediaCarouselProps) {
+  const mediaURLs = getMemoryMediaURLs(memory);
+  const hasMedia = mediaURLs.length > 0;
+  const canNavigate = showControls && mediaURLs.length > 1 && !!onIndexChange;
+
+  const safeIndex =
+    mediaURLs.length > 0
+      ? ((activeIndex % mediaURLs.length) + mediaURLs.length) % mediaURLs.length
+      : 0;
+
+  const touchStartXRef = useRef<number | null>(null);
+  const touchDeltaXRef = useRef(0);
+
+  const goToIndex = useCallback(
+    (nextIndex: number) => {
+      if (!onIndexChange || mediaURLs.length === 0) return;
+
+      const wrappedIndex =
+        ((nextIndex % mediaURLs.length) + mediaURLs.length) % mediaURLs.length;
+      onIndexChange(wrappedIndex);
+    },
+    [onIndexChange, mediaURLs.length]
+  );
+
+  const handleTouchStart = useCallback(
+    (event: TouchEvent<HTMLDivElement>) => {
+      if (!canNavigate) return;
+
+      touchStartXRef.current = event.touches[0]?.clientX ?? null;
+      touchDeltaXRef.current = 0;
+    },
+    [canNavigate]
+  );
+
+  const handleTouchMove = useCallback(
+    (event: TouchEvent<HTMLDivElement>) => {
+      if (!canNavigate || touchStartXRef.current === null) return;
+
+      const currentX = event.touches[0]?.clientX ?? touchStartXRef.current;
+      touchDeltaXRef.current = currentX - touchStartXRef.current;
+    },
+    [canNavigate]
+  );
+
+  const handleTouchEnd = useCallback(() => {
+    if (!canNavigate) return;
+
+    if (Math.abs(touchDeltaXRef.current) >= SWIPE_THRESHOLD_PX) {
+      if (touchDeltaXRef.current < 0) {
+        goToIndex(safeIndex + 1);
+      } else {
+        goToIndex(safeIndex - 1);
+      }
+    }
+
+    touchStartXRef.current = null;
+    touchDeltaXRef.current = 0;
+  }, [canNavigate, goToIndex, safeIndex]);
+
+  return (
+    <div className="w-full">
+      {hasMedia ? (
+        <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
+          <div
+            className="relative h-80 w-full overflow-hidden bg-secondary"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            <Image
+              src={mediaURLs[safeIndex]}
+              alt={`${memory.title} image ${safeIndex + 1}`}
+              fill
+              className="object-cover"
+            />
+
+            {canNavigate && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => goToIndex(safeIndex - 1)}
+                  className="absolute left-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/55 text-white transition-colors hover:bg-black/70"
+                  aria-label="Previous image"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => goToIndex(safeIndex + 1)}
+                  className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/55 text-white transition-colors hover:bg-black/70"
+                  aria-label="Next image"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+
+                <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-black/45 px-2 py-1">
+                  {mediaURLs.map((_, index) => (
+                    <button
+                      key={`${memory.id}-media-dot-${index}`}
+                      type="button"
+                      onClick={() => goToIndex(index)}
+                      className={`h-1.5 w-1.5 rounded-full transition-colors ${
+                        index === safeIndex ? 'bg-white' : 'bg-white/45'
+                      }`}
+                      aria-label={`Go to image ${index + 1}`}
+                    />
+                  ))}
+                </div>
+
+                <div className="absolute right-2 top-2 rounded-full bg-black/55 px-2 py-0.5 text-[10px] font-medium text-white">
+                  {safeIndex + 1}/{mediaURLs.length}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
+          <div className="flex h-80 w-full items-center justify-center bg-secondary">
+            <span className="text-xs text-muted-foreground">No image</span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function MemoryDetailModal({
   memory,
   open,
@@ -170,9 +338,35 @@ export function MemoryDetailModal({
   // Cache the old memory during flip animation so flipping page shows old content
   const [cachedMemory, setCachedMemory] =
     useState<MemoryWithCoordinates | null>(null);
+  const [activeImageIndexByMemoryId, setActiveImageIndexByMemoryId] = useState<
+    Record<string, number>
+  >({});
   // Track which direction we're flipping for animation state
   type FlipDirection = 'next' | 'prev' | null;
   const [flipDirection, setFlipDirection] = useState<FlipDirection>(null);
+
+  const getActiveImageIndex = useCallback(
+    (mem: MemoryWithCoordinates | null) => {
+      if (!mem) return 0;
+
+      const mediaURLs = getMemoryMediaURLs(mem);
+      if (mediaURLs.length === 0) return 0;
+
+      const rawIndex = activeImageIndexByMemoryId[mem.id] ?? 0;
+      return Math.min(Math.max(rawIndex, 0), mediaURLs.length - 1);
+    },
+    [activeImageIndexByMemoryId]
+  );
+
+  const handleImageIndexChange = useCallback(
+    (memoryId: string, nextIndex: number) => {
+      setActiveImageIndexByMemoryId((prev) => {
+        if (prev[memoryId] === nextIndex) return prev;
+        return { ...prev, [memoryId]: nextIndex };
+      });
+    },
+    []
+  );
 
   // Handle open/close state changes
   useEffect(() => {
@@ -201,6 +395,7 @@ export function MemoryDetailModal({
       setIsFlipping(false);
       setCachedMemory(null);
       setFlipDirection(null);
+      setActiveImageIndexByMemoryId({});
     }
   }, [open]);
 
@@ -483,28 +678,18 @@ export function MemoryDetailModal({
 
                             {/* Polaroid photo */}
                             <div className="flex flex-1 items-center justify-center">
-                              <div className="w-full">
-                                {baseLeftMemory.mediaURL ? (
-                                  <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
-                                    <div className="relative h-80 w-full overflow-hidden bg-secondary">
-                                      <Image
-                                        src={baseLeftMemory.mediaURL}
-                                        alt={baseLeftMemory.title}
-                                        fill
-                                        className="object-cover"
-                                      />
-                                    </div>
-                                  </div>
-                                ) : (
-                                  <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
-                                    <div className="flex h-80 w-full items-center justify-center bg-secondary">
-                                      <span className="text-xs text-muted-foreground">
-                                        No image
-                                      </span>
-                                    </div>
-                                  </div>
+                              <PolaroidMediaCarousel
+                                memory={baseLeftMemory}
+                                activeIndex={getActiveImageIndex(
+                                  baseLeftMemory
                                 )}
-                              </div>
+                                onIndexChange={(nextIndex) =>
+                                  handleImageIndexChange(
+                                    baseLeftMemory.id,
+                                    nextIndex
+                                  )
+                                }
+                              />
                             </div>
 
                             {/* Calendar week strip */}
@@ -755,28 +940,13 @@ export function MemoryDetailModal({
 
                                   {/* Polaroid photo - cached content */}
                                   <div className="flex flex-1 items-center justify-center">
-                                    <div className="w-full">
-                                      {cachedMemory.mediaURL ? (
-                                        <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
-                                          <div className="relative h-80 w-full overflow-hidden bg-secondary">
-                                            <Image
-                                              src={cachedMemory.mediaURL}
-                                              alt={cachedMemory.title}
-                                              fill
-                                              className="object-cover"
-                                            />
-                                          </div>
-                                        </div>
-                                      ) : (
-                                        <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
-                                          <div className="flex h-80 w-full items-center justify-center bg-secondary">
-                                            <span className="text-xs text-muted-foreground">
-                                              No image
-                                            </span>
-                                          </div>
-                                        </div>
+                                    <PolaroidMediaCarousel
+                                      memory={cachedMemory}
+                                      activeIndex={getActiveImageIndex(
+                                        cachedMemory
                                       )}
-                                    </div>
+                                      showControls={false}
+                                    />
                                   </div>
 
                                   {/* Calendar week strip - cached content */}
@@ -982,28 +1152,11 @@ export function MemoryDetailModal({
 
                                 {/* Polaroid photo */}
                                 <div className="flex flex-1 items-center justify-center">
-                                  <div className="w-full">
-                                    {memory.mediaURL ? (
-                                      <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
-                                        <div className="relative h-80 w-full overflow-hidden bg-secondary">
-                                          <Image
-                                            src={memory.mediaURL}
-                                            alt={memory.title}
-                                            fill
-                                            className="object-cover"
-                                          />
-                                        </div>
-                                      </div>
-                                    ) : (
-                                      <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
-                                        <div className="flex h-80 w-full items-center justify-center bg-secondary">
-                                          <span className="text-xs text-muted-foreground">
-                                            No image
-                                          </span>
-                                        </div>
-                                      </div>
-                                    )}
-                                  </div>
+                                  <PolaroidMediaCarousel
+                                    memory={memory}
+                                    activeIndex={getActiveImageIndex(memory)}
+                                    showControls={false}
+                                  />
                                 </div>
 
                                 {/* Calendar week strip */}
