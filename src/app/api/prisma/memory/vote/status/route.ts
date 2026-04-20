@@ -34,29 +34,19 @@ export async function GET(request: NextRequest) {
       data: { user: authUser },
     } = await supabase.auth.getUser();
 
-    let resolvedUserId: string | null = null;
-
     if (authUser) {
       const dbUser = await prisma.user.findUnique({
         where: { id: authUser.id },
         select: { id: true },
       });
-      resolvedUserId = dbUser?.id ?? null;
-    } else if (process.env.NODE_ENV === 'development') {
-      // Dev seed-user fallback
-      const seedUser = await prisma.user.findUnique({
-        where: { email: 'seed@skolaroid.dev' },
-        select: { id: true },
-      });
-      resolvedUserId = seedUser?.id ?? null;
-    }
 
-    if (resolvedUserId) {
-      const vote = await prisma.memoryVote.findUnique({
-        where: { memoryId_userId: { memoryId, userId: resolvedUserId } },
-        select: { id: true },
-      });
-      hasVoted = !!vote;
+      if (dbUser) {
+        const vote = await prisma.memoryVote.findUnique({
+          where: { memoryId_userId: { memoryId, userId: dbUser.id } },
+          select: { id: true },
+        });
+        hasVoted = !!vote;
+      }
     }
 
     return NextResponse.json({
