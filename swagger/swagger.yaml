@@ -16,6 +16,7 @@ servers:
 tags:
   - name: Users
   - name: Groups
+  - name: Batches
   - name: Invitations
   - name: Memories
   - name: Votes
@@ -1133,6 +1134,64 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
+  /api/prisma/group/{groupId}/message:
+    post:
+      tags: [Groups]
+      summary: Broadcast a GROUP_ONLY announcement message
+      operationId: createGroupMessage
+      security:
+        - SupabaseSession: []
+      parameters:
+        - $ref: '#/components/parameters/groupId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMessageInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/batch/{batchId}/message:
+    post:
+      tags: [Batches]
+      summary: Broadcast a BATCH_ONLY announcement message
+      operationId: createBatchMessage
+      security:
+        - SupabaseSession: []
+      parameters:
+        - $ref: '#/components/parameters/batchId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMessageInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
 components:
   securitySchemes:
     SupabaseSession:
@@ -1202,6 +1261,14 @@ components:
         type: string
         format: uuid
       description: User id
+    batchId:
+      name: batchId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Program batch id
     groupIdQuery:
       name: groupId
       in: query
@@ -1772,3 +1839,19 @@ components:
             state:
               type: string
               enum: [OPEN, RESOLVED, DISMISSED]
+
+    CreateMessageInput:
+      type: object
+      required:
+        - content
+        - locationId
+      properties:
+        content:
+          type: string
+          minLength: 1
+          maxLength: 1000
+          description: Text-only announcement body
+        locationId:
+          type: string
+          format: uuid
+          description: Location to associate with the Memory post
