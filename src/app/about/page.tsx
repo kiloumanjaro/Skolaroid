@@ -63,6 +63,14 @@ const journey = [
   },
 ];
 
+const creators = [
+  'Kint Louise Borbano',
+  'Larissa Soronio',
+  'Norman Jazul',
+  'Christian James Bayadog',
+  'Jhon Carlo Sandro',
+];
+
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-background">
@@ -322,6 +330,44 @@ export default function AboutPage() {
             </div>
           </div>
         </section>
+
+        <footer className="w-full pb-0">
+          <div className="overflow-hidden border-y-2 border-black bg-[#e1d94e]">
+            <div
+              className="about-creators-marquee"
+              aria-label="Creators of this website"
+            >
+              {[0, 1].map((group) => (
+                <div
+                  key={group}
+                  className="about-creators-marquee-group"
+                  aria-hidden={group === 1}
+                >
+                  {creators.map((creator) => (
+                    <div
+                      key={`${group}-${creator}`}
+                      className="flex shrink-0 items-center gap-6 px-6 text-base font-semibold tracking-[0.16em] text-black sm:text-lg"
+                    >
+                      <span>{creator}</span>
+                      <span className="text-black/70">/</span>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex min-h-[200px] items-center justify-center bg-white px-6 py-10 text-center">
+            <p className="max-w-5xl text-base leading-relaxed text-black sm:text-lg">
+              Studio Folly would like to acknowledge the Traditional Aboriginal
+              Owners and Custodians of the stolen land on which the team live
+              and work, and pay our respects to their elders past, present and
+              emerging. As Studio Folly is founded in Naarm, we want to
+              specifically acknowledge the Wurundjeri People of the Kulin
+              Nation. Sovereignty was never ceded. Always was, always will be.
+            </p>
+          </div>
+        </footer>
       </div>
     </main>
   );

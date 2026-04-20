@@ -19,13 +19,13 @@ export function GalleryMemoryCard({ memory, onClick }: GalleryMemoryCardProps) {
   }
 
   return (
-    <div className="flex w-[calc(100vw-3rem)] max-w-[40rem] shrink-0 flex-col items-center gap-4 sm:w-auto sm:max-w-none sm:flex-row sm:items-center md:gap-5">
+    <div className="flex shrink-0 flex-row items-center gap-6 md:gap-8">
       {/* Photo cluster (left side) */}
       <PolaroidCluster photos={photos} onPhotoClick={onClick} />
 
       {/* Caption (right side) */}
-      <div className="w-full sm:w-[clamp(9rem,16vw,13rem)] sm:shrink-0">
-        <p className="text-center font-dancing text-[clamp(1.35rem,2.1vw,1.9rem)] italic leading-[1.15] text-gray-700 sm:text-left">
+      <div className="w-[clamp(8rem,12vw,12rem)] shrink-0">
+        <p className="font-dancing text-[clamp(1.1rem,1.8vw,1.6rem)] italic leading-[1.15] text-gray-700">
           {memory.description || memory.title}
         </p>
       </div>

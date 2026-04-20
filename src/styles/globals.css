@@ -48,4 +48,34 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
+  .about-creators-marquee {
+    display: flex;
+    width: max-content;
+    white-space: nowrap;
+    will-change: transform;
+    animation: creators-scroll-right 22s linear infinite;
+  }
+
+  .about-creators-marquee-group {
+    display: flex;
+    flex-shrink: 0;
+    width: max-content;
+    align-items: center;
+  }
+
+  @keyframes creators-scroll-right {
+    from {
+      transform: translateX(-50%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .about-creators-marquee {
+      animation: none;
+    }
+  }
 }
