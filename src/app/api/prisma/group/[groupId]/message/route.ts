@@ -25,7 +25,10 @@ export async function POST(
     } = await supabase.auth.getUser();
 
     if (!authUser) {
-      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+      return NextResponse.json(
+        { success: false, message: 'Not authenticated' },
+        { status: 401 }
+      );
     }
 
     // ── 2. Validate body ─────────────────────────────────────────────
@@ -34,7 +37,7 @@ export async function POST(
 
     if (!parsed.success) {
       return NextResponse.json(
-        { error: parsed.error.issues[0].message },
+        { success: false, message: parsed.error.issues[0].message },
         { status: 400 }
       );
     }
@@ -47,7 +50,10 @@ export async function POST(
 
     if (!dbUser) {
       return NextResponse.json(
-        { error: 'User not found. Complete onboarding first.' },
+        {
+          success: false,
+          message: 'User not found. Complete onboarding first.',
+        },
         { status: 404 }
       );
     }
@@ -61,7 +67,7 @@ export async function POST(
       groupId,
     });
 
-    revalidateTag('group-messages');
+    revalidateTag('group-messages', 'max');
 
     return NextResponse.json({
       success: true,
