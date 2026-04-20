@@ -2,7 +2,7 @@
 
 import { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Header } from '@/components/header';
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 import { GalleryMemoryCard } from '@/components/gallery/GalleryMemoryCard';
@@ -13,8 +13,19 @@ function GalleryPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeEra = parseInt(searchParams.get('era') || '2020', 10);
+  const [isMobile, setIsMobile] = useState(false);
 
   const { data: response, isLoading, error } = useAllMemoriesWithCoordinates();
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 639px)');
+    const updateIsMobile = () => setIsMobile(mediaQuery.matches);
+
+    updateIsMobile();
+    mediaQuery.addEventListener('change', updateIsMobile);
+
+    return () => mediaQuery.removeEventListener('change', updateIsMobile);
+  }, []);
 
   // Filter memories by active era; move defaulting logic inside memo to satisfy eslint
   const eraFilteredMemories = useMemo(() => {
@@ -77,6 +88,7 @@ function GalleryPageContent() {
   const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     const container = e.currentTarget;
     if (!container) return;
+    if (isMobile) return;
 
     // Translate wheel movement to horizontal scroll for easier gallery navigation.
     const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
@@ -123,14 +135,15 @@ function GalleryPageContent() {
           </div>
         )}
 
-        {/* Horizontal scroll gallery */}
+        {/* Responsive gallery: vertical on phones, horizontal from sm upward */}
         {!isLoading && !error && (
           <div
-            className="scrollbar-hide flex min-w-0 flex-1 items-start gap-6 overflow-x-auto overflow-y-hidden px-4 py-6 sm:items-center sm:gap-10 sm:px-10 sm:py-8 lg:gap-16 lg:px-16"
+            className="scrollbar-hide flex min-w-0 flex-1 flex-col items-center gap-8 overflow-y-auto overflow-x-hidden px-4 py-6 sm:flex-row sm:items-center sm:gap-10 sm:overflow-x-auto sm:overflow-y-hidden sm:px-10 sm:py-8 lg:gap-16 lg:px-16"
             style={{
               scrollBehavior: 'smooth',
-              scrollSnapType: 'x mandatory',
-              overscrollBehaviorX: 'contain',
+              scrollSnapType: isMobile ? 'y proximity' : 'x mandatory',
+              overscrollBehaviorX: isMobile ? 'auto' : 'contain',
+              overscrollBehaviorY: isMobile ? 'contain' : 'auto',
             }}
             onWheel={handleWheel}
           >
@@ -144,8 +157,10 @@ function GalleryPageContent() {
               eraFilteredMemories.map((memory) => (
                 <div
                   key={memory.id}
-                  className="shrink-0"
-                  style={{ scrollSnapAlign: 'center' }}
+                  className="w-full max-w-[40rem] shrink-0"
+                  style={{
+                    scrollSnapAlign: isMobile ? 'start' : 'center',
+                  }}
                 >
                   <GalleryMemoryCard
                     memory={memory}

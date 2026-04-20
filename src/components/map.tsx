@@ -28,6 +28,7 @@ import { MemoryPin } from './map/MemoryPin';
 import { MemoryPinStack } from './map/MemoryPinStack';
 import { MemoryDetailModal } from './map/MemoryDetailModal';
 import { useMemoryCountsByLandmark } from '@/lib/hooks/useMemoryCountsByLandmark';
+import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
 import {
   useAllMemoriesWithCoordinates,
   type MemoryWithCoordinates,
@@ -186,9 +187,11 @@ export function MapComponent({
   const { data: memoriesData, isLoading: memoriesLoading } =
     useAllMemoriesWithCoordinates();
   const memories = useMemo(() => memoriesData?.data ?? [], [memoriesData]);
+  const { data: currentUserData } = useCurrentUser();
   const { data: locationsData } = useLocations();
   const { data: userGroupsData } = useUserGroups();
   const userGroups = userGroupsData ?? EMPTY_USER_GROUPS;
+  const isAdmin = currentUserData?.data?.role === 'ADMIN';
 
   const availableGroups = useMemo<GroupFilterOption[]>(
     () =>
@@ -1044,7 +1047,7 @@ export function MapComponent({
       <ExpandableToolbar
         onPrimaryClick={() => setGroupModalOpen(true)}
         onBatchesClick={() => setBatchesModalOpen(true)}
-        onConfigureClick={() => router.push('/admin')}
+        onConfigureClick={isAdmin ? () => router.push('/admin') : undefined}
       />
 
       {/* Group Panel */}

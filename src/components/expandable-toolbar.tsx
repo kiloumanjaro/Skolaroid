@@ -45,13 +45,15 @@ export function ExpandableToolbar({
             >
               <Layers size={20} />
             </button>
-            <button
-              onClick={onConfigureClick}
-              className="flex h-11 w-11 items-center justify-center rounded-full bg-skolaroid-blue text-white shadow-[3px_3px_0px_0px_#2d2d2d] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:bg-skolaroid-blue/90 hover:shadow-[1px_1px_0px_0px_#2d2d2d] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none sm:h-12 sm:w-12"
-              aria-label="Configure"
-            >
-              <SlidersHorizontal size={20} />
-            </button>
+            {onConfigureClick && (
+              <button
+                onClick={onConfigureClick}
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-skolaroid-blue text-white shadow-[3px_3px_0px_0px_#2d2d2d] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:bg-skolaroid-blue/90 hover:shadow-[1px_1px_0px_0px_#2d2d2d] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none sm:h-12 sm:w-12"
+                aria-label="Configure"
+              >
+                <SlidersHorizontal size={20} />
+              </button>
+            )}
           </>
         )}
 
