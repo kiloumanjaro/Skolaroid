@@ -2,6 +2,8 @@ export * from './GroupPanel';
 export * from './GroupSwitcher';
 export * from './GroupDetailView';
 export * from './CreateGroupModal';
+export * from './EditGroupModal';
+export * from './EditGroupMessageModal';
 export * from './DeleteGroupModal';
 export * from './InviteMembersModal';
 export * from './ShareGroupModal';
