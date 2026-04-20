@@ -88,11 +88,15 @@ interface MapComponentProps {
     availableGroups: GroupFilterOption[];
     availableLocations: LocationFilterOption[];
   }) => void;
+  onMemoryDetailOpenRequest?: () => Promise<void> | void;
+  onMemoryDetailOpenStateChange?: (open: boolean) => void;
 }
 
 export function MapComponent({
   filters,
   onFilterOptionsChange,
+  onMemoryDetailOpenRequest,
+  onMemoryDetailOpenStateChange,
 }: MapComponentProps) {
   const router = useRouter();
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
@@ -128,6 +132,7 @@ export function MapComponent({
   const markerRootsRef = useRef<{ root: Root; landmark: Landmark }[]>([]);
   const memoryMarkersRef = useRef<mapboxgl.Marker[]>([]);
   const memoryRootsRef = useRef<Root[]>([]);
+  const memoryOpenSequenceRef = useRef(0);
 
   // Pending memory for the flyTo → open detail flow
   const pendingMemoryRef = useRef<MemoryWithCoordinates | null>(null);
@@ -343,15 +348,29 @@ export function MapComponent({
     handleClickRef.current(landmark);
   }, []);
 
+  const openMemoryDetail = useCallback(
+    async (memory: MemoryWithCoordinates) => {
+      const sequenceId = ++memoryOpenSequenceRef.current;
+
+      setSelectedMemory(memory);
+      await Promise.resolve(onMemoryDetailOpenRequest?.());
+
+      if (memoryOpenSequenceRef.current !== sequenceId) return;
+
+      setMemoryDetailOpen(true);
+      onMemoryDetailOpenStateChange?.(true);
+    },
+    [onMemoryDetailOpenRequest, onMemoryDetailOpenStateChange]
+  );
+
   const handleMemoryClickRef = useRef<(memory: MemoryWithCoordinates) => void>(
     () => {}
   );
   useLayoutEffect(() => {
     handleMemoryClickRef.current = (memory: MemoryWithCoordinates) => {
-      setSelectedMemory(memory);
-      setMemoryDetailOpen(true);
+      void openMemoryDetail(memory);
     };
-  });
+  }, [openMemoryDetail]);
 
   const handleMemoryClick = useCallback((memory: MemoryWithCoordinates) => {
     handleMemoryClickRef.current(memory);
@@ -361,6 +380,7 @@ export function MapComponent({
     const map = mapRef.current;
 
     setMemoryDetailOpen(false);
+    onMemoryDetailOpenStateChange?.(false);
     setSelectedMemory(null);
     setSelectedLandmark(null);
 
@@ -384,7 +404,7 @@ export function MapComponent({
     if (currentUrl !== nextUrl) {
       router.replace(nextUrl, { scroll: false });
     }
-  }, [activeMapEra, router]);
+  }, [activeMapEra, onMemoryDetailOpenStateChange, router]);
 
   // Force Escape behavior for notebook mode: close and return to era map URL.
   useEffect(() => {
@@ -445,8 +465,7 @@ export function MapComponent({
 
       // Fallback: if map isn't ready, just open the detail modal directly
       if (!map) {
-        setSelectedMemory(memory);
-        setMemoryDetailOpen(true);
+        void openMemoryDetail(memory);
         pendingMemoryRef.current = null;
         return;
       }
@@ -471,8 +490,7 @@ export function MapComponent({
 
         if (isAlreadyCentered) {
           // Already there — open immediately
-          setSelectedMemory(memory);
-          setMemoryDetailOpen(true);
+          void openMemoryDetail(memory);
           pendingMemoryRef.current = null;
           return;
         }
@@ -481,8 +499,7 @@ export function MapComponent({
         flyToMemoryWithSequence(memory, () => {
           // Guard against stale events
           if (pendingMemoryRef.current?.id !== memory.id) return;
-          setSelectedMemory(memory);
-          setMemoryDetailOpen(true);
+          void openMemoryDetail(memory);
           pendingMemoryRef.current = null;
         });
       };
@@ -512,7 +529,7 @@ export function MapComponent({
         }
       }, MODAL_CLOSE_DELAY);
     },
-    [activeMapEra, flyToMemoryWithSequence]
+    [activeMapEra, flyToMemoryWithSequence, openMemoryDetail]
   );
 
   // Clear pending memory when user opens another modal or performs an action
@@ -705,9 +722,8 @@ export function MapComponent({
     }
 
     processedMemoryParamRef.current = memoryIdParam;
-    setSelectedMemory(targetMemory);
-    setMemoryDetailOpen(true);
-  }, [memories, memoriesLoading]);
+    void openMemoryDetail(targetMemory);
+  }, [memories, memoriesLoading, openMemoryDetail]);
 
   // Phase 2: once map is ready, align era and camera for the selected memory
   useEffect(() => {
@@ -1065,6 +1081,7 @@ export function MapComponent({
             return;
           }
           setMemoryDetailOpen(true);
+          onMemoryDetailOpenStateChange?.(true);
         }}
         onMemoryDeleted={() => setSelectedMemory(null)}
         hasPrevious={selectedMemoryIndex > 0}
