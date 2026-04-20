@@ -499,6 +499,11 @@ export const adminReportsQuerySchema = z.object({
   state: reportStateEnum.optional(),
 });
 
+/** Query params for fetching platform analytics (admin). */
+export const adminAnalyticsQuerySchema = z.object({
+  days: z.coerce.number().int().min(7).max(365).default(30),
+});
+
 /** Payload for resolving or dismissing a report (admin). */
 export const resolveReportSchema = z.object({
   reportId: z.string().uuid('Invalid report ID'),
@@ -509,6 +514,7 @@ export const resolveReportSchema = z.object({
 export type ModerationStatus = z.infer<typeof moderationStatusEnum>;
 export type ModerateMemoryInput = z.infer<typeof moderateMemorySchema>;
 export type ResolveReportInput = z.infer<typeof resolveReportSchema>;
+export type AdminAnalyticsQuery = z.infer<typeof adminAnalyticsQuerySchema>;
 
 export const moderationActionTypeEnum = z.enum([
   'MEMORY_APPROVED',
@@ -567,6 +573,33 @@ export type NotificationType = z.infer<typeof notificationTypeEnum>;
 export type GetNotificationsQuery = z.infer<typeof getNotificationsQuerySchema>;
 export type MarkNotificationsReadInput = z.infer<
   typeof markNotificationsReadSchema
+>;
+
+// ============================================================================
+// MESSAGE SCHEMAS
+// ============================================================================
+
+export const MAX_MESSAGE_LENGTH = 1000;
+
+/** Payload for broadcasting a text-only announcement as a Memory post. */
+export const createMessageSchema = z.object({
+  content: z
+    .string()
+    .trim()
+    .min(1, 'Message cannot be empty')
+    .max(
+      MAX_MESSAGE_LENGTH,
+      `Message must be ${MAX_MESSAGE_LENGTH} characters or less`
+    ),
+  locationId: z.string().uuid('Invalid location ID'),
+});
+
+/** Server-side variant — same shape, no additional coercions needed. */
+export const createMessageServerSchema = createMessageSchema;
+
+export type CreateMessageInput = z.infer<typeof createMessageSchema>;
+export type CreateMessageServerInput = z.infer<
+  typeof createMessageServerSchema
 >;
 
 // ============================================================================

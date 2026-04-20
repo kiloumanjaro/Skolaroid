@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { updateProfileSchema } from '@/lib/schemas';
 import { createClient } from '@/lib/supabase/server';
+import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 
 /**
@@ -39,6 +40,9 @@ export async function PATCH(request: NextRequest) {
       where: { id: authUser.id },
       data,
     });
+
+    revalidatePath('/profile');
+    revalidatePath('/', 'layout');
 
     return NextResponse.json({ success: true, data: updated });
   } catch (error) {

@@ -17,12 +17,18 @@ import {
   RefreshCw,
   ChevronDown,
   ArrowUpDown,
+  Camera,
+  Users,
+  MapPin,
+  BarChart3,
+  CalendarRange,
 } from 'lucide-react';
 import Image from 'next/image';
 import {
   useAdminMemories,
   type AdminMemoryItem,
 } from '@/lib/hooks/useAdminMemories';
+import { useAdminAnalytics } from '@/lib/hooks/useAdminAnalytics';
 import { useModerateMemory } from '@/lib/hooks/useModerateMemory';
 import {
   useAdminReports,
@@ -35,14 +41,33 @@ import {
   type AuditLogEntry,
 } from '@/lib/hooks/useAuditLog';
 
-type AdminTab = 'published' | 'pending' | 'reports' | 'audit';
+type AdminTab = 'analytics' | 'published' | 'pending' | 'reports' | 'audit';
+type AnalyticsMemoryStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'REMOVED';
 
 const tabLabels: Record<AdminTab, string> = {
+  analytics: 'Analytics',
   published: 'Published Posts',
   pending: 'Pending Review',
   reports: 'Reports',
   audit: 'Audit Log',
 };
+
+const statusBadgeStyles: Record<AnalyticsMemoryStatus, string> = {
+  APPROVED: 'bg-green-50 text-green-700',
+  PENDING: 'bg-yellow-50 text-yellow-700',
+  REJECTED: 'bg-orange-50 text-orange-700',
+  REMOVED: 'bg-red-50 text-red-700',
+};
+
+const numberFormatter = new Intl.NumberFormat('en-US');
+
+function formatCount(value: number): string {
+  return numberFormatter.format(value);
+}
+
+function formatPercent(value: number): string {
+  return `${value.toFixed(1)}%`;
+}
 
 function formatDate(dateString: string): string {
   return new Date(dateString).toLocaleDateString('en-US', {
@@ -53,6 +78,19 @@ function formatDate(dateString: string): string {
     minute: '2-digit',
     hour12: true,
   });
+}
+
+const MIN_ANALYTICS_WINDOW_DAYS = 7;
+const MAX_ANALYTICS_WINDOW_DAYS = 365;
+const DEFAULT_ANALYTICS_WINDOW_DAYS = 30;
+const ANALYTICS_WINDOW_PRESETS = [7, 14, 30, 60, 90, 180, 365] as const;
+const ANALYTICS_HIGHLIGHT_LIMIT = 5;
+
+function clampAnalyticsWindowDays(days: number): number {
+  return Math.min(
+    MAX_ANALYTICS_WINDOW_DAYS,
+    Math.max(MIN_ANALYTICS_WINDOW_DAYS, Math.round(days))
+  );
 }
 
 function LoadingState() {
@@ -195,6 +233,332 @@ function PostCard({
           </span>
         )}
       </div>
+    </div>
+  );
+}
+
+function AnalyticsContent({ searchQuery }: { searchQuery: string }) {
+  const [selectedWindowDays, setSelectedWindowDays] = useState(
+    DEFAULT_ANALYTICS_WINDOW_DAYS
+  );
+  const [customWindowDays, setCustomWindowDays] = useState(
+    String(DEFAULT_ANALYTICS_WINDOW_DAYS)
+  );
+
+  const { data, isLoading, isError, refetch } =
+    useAdminAnalytics(selectedWindowDays);
+
+  const handlePresetClick = (days: number) => {
+    setSelectedWindowDays(days);
+    setCustomWindowDays(String(days));
+  };
+
+  const applyCustomWindowDays = () => {
+    const parsedValue = Number(customWindowDays);
+
+    if (!Number.isFinite(parsedValue)) {
+      setCustomWindowDays(String(selectedWindowDays));
+      return;
+    }
+
+    const clampedValue = clampAnalyticsWindowDays(parsedValue);
+    setSelectedWindowDays(clampedValue);
+    setCustomWindowDays(String(clampedValue));
+  };
+
+  if (isLoading) return <LoadingState />;
+  if (isError) return <ErrorState onRetry={() => refetch()} />;
+
+  const analytics = data?.data;
+
+  if (!analytics) {
+    return (
+      <div className="py-16 text-center text-sm text-muted-foreground">
+        No analytics data available.
+      </div>
+    );
+  }
+
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+
+  const filteredLocations =
+    normalizedQuery.length === 0
+      ? analytics.topLocations
+      : analytics.topLocations.filter((location) =>
+          location.buildingName.toLowerCase().includes(normalizedQuery)
+        );
+
+  const filteredBatches =
+    normalizedQuery.length === 0
+      ? analytics.batchEngagementRates
+      : analytics.batchEngagementRates.filter((batch) =>
+          `${batch.programName} ${batch.batchYear}`
+            .toLowerCase()
+            .includes(normalizedQuery)
+        );
+
+  const topLocation = analytics.topLocations[0];
+  const topBatch = analytics.batchEngagementRates[0];
+
+  const highlightedLocations = filteredLocations.slice(
+    0,
+    ANALYTICS_HIGHLIGHT_LIMIT
+  );
+  const highlightedBatches = filteredBatches.slice(
+    0,
+    ANALYTICS_HIGHLIGHT_LIMIT
+  );
+
+  const topLocationShare =
+    topLocation && analytics.totals.memories > 0
+      ? Number(
+          ((topLocation.memoryCount / analytics.totals.memories) * 100).toFixed(
+            1
+          )
+        )
+      : 0;
+
+  return (
+    <div className="space-y-6">
+      <section className="border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]">
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+          <div>
+            <div className="mb-1 flex items-center gap-2">
+              <CalendarRange size={15} className="text-skolaroid-blue" />
+              <h2 className="text-sm font-semibold text-foreground">
+                Analytics Window
+              </h2>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Switch the reporting range to compare activity trends.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            {ANALYTICS_WINDOW_PRESETS.map((days) => {
+              const isActive = selectedWindowDays === days;
+
+              return (
+                <button
+                  key={days}
+                  onClick={() => handlePresetClick(days)}
+                  className={`border-2 px-2.5 py-1 text-xs font-medium transition-colors ${
+                    isActive
+                      ? 'border-skolaroid-blue bg-skolaroid-blue text-white'
+                      : 'border-border bg-background text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  {days}d
+                </button>
+              );
+            })}
+
+            <div className="ml-0 flex items-center gap-2 sm:ml-2">
+              <input
+                type="number"
+                min={MIN_ANALYTICS_WINDOW_DAYS}
+                max={MAX_ANALYTICS_WINDOW_DAYS}
+                value={customWindowDays}
+                onChange={(event) => setCustomWindowDays(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    event.preventDefault();
+                    applyCustomWindowDays();
+                  }
+                }}
+                className="w-20 border-2 border-border bg-background px-2 py-1 text-xs focus:border-skolaroid-blue focus:outline-none"
+                aria-label="Custom analytics range in days"
+              />
+              <button
+                onClick={applyCustomWindowDays}
+                className="border-2 border-border bg-background px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              >
+                Apply
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <p className="mt-3 text-xs text-muted-foreground">
+          Showing the last {analytics.windowDays} days. Updated{' '}
+          {formatDate(analytics.generatedAt)}.
+        </p>
+      </section>
+
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]">
+          <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-full bg-skolaroid-blue/10 text-skolaroid-blue">
+            <Camera size={16} />
+          </div>
+          <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
+            Total Memories
+          </p>
+          <p className="mt-1 text-2xl font-semibold text-foreground">
+            {formatCount(analytics.totals.memories)}
+          </p>
+        </div>
+
+        <div className="border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]">
+          <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-full bg-green-100 text-green-700">
+            <Users size={16} />
+          </div>
+          <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
+            Active Users ({analytics.windowDays}d)
+          </p>
+          <p className="mt-1 text-2xl font-semibold text-foreground">
+            {formatCount(analytics.totals.activeUsers)}
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {formatPercent(analytics.totals.activeUserRate)} of{' '}
+            {formatCount(analytics.totals.users)} users
+          </p>
+        </div>
+
+        <div className="border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]">
+          <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-full bg-sky-100 text-sky-700">
+            <MapPin size={16} />
+          </div>
+          <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
+            Most Photographed Location
+          </p>
+          <p className="mt-1 text-lg font-semibold text-foreground">
+            {topLocation?.buildingName ?? 'No data yet'}
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {topLocation
+              ? `${formatCount(topLocation.memoryCount)} memories (${formatPercent(topLocationShare)} of all memories)`
+              : 'No uploaded memories yet'}
+          </p>
+        </div>
+
+        <div className="border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]">
+          <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-full bg-amber-100 text-amber-700">
+            <BarChart3 size={16} />
+          </div>
+          <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
+            Top Batch Engagement
+          </p>
+          <p className="mt-1 text-2xl font-semibold text-foreground">
+            {topBatch ? formatPercent(topBatch.engagementRate) : '0.0%'}
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {topBatch
+              ? `${topBatch.programName} Batch ${topBatch.batchYear}`
+              : 'No batch activity yet'}
+          </p>
+        </div>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <section className="flex h-full flex-col border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]">
+          <div className="mb-3 flex items-center gap-2">
+            <MapPin size={16} className="text-skolaroid-blue" />
+            <h2 className="text-sm font-semibold text-foreground">
+              Location Highlights
+            </h2>
+          </div>
+
+          {highlightedLocations.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No locations match your search.
+            </p>
+          ) : (
+            <div className="space-y-2">
+              {highlightedLocations.map((location) => (
+                <div
+                  key={location.locationId}
+                  className="flex items-center justify-between gap-3 rounded-md border border-border/70 bg-background px-3 py-2"
+                >
+                  <div className="flex min-w-0 items-center gap-2">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-secondary text-[10px] font-semibold text-muted-foreground">
+                      {location.rank}
+                    </span>
+                    <span className="truncate text-sm font-medium text-foreground">
+                      {location.buildingName}
+                    </span>
+                  </div>
+                  <span className="shrink-0 text-xs text-muted-foreground">
+                    {formatCount(location.memoryCount)} memories
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {filteredLocations.length > ANALYTICS_HIGHLIGHT_LIMIT && (
+            <p className="mt-3 text-xs text-muted-foreground">
+              Showing top {ANALYTICS_HIGHLIGHT_LIMIT} of{' '}
+              {formatCount(filteredLocations.length)} matching locations.
+            </p>
+          )}
+        </section>
+
+        <section className="flex h-full flex-col border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]">
+          <div className="mb-3 flex items-center gap-2">
+            <Users size={16} className="text-skolaroid-blue" />
+            <h2 className="text-sm font-semibold text-foreground">
+              Batch Highlights ({analytics.windowDays}d)
+            </h2>
+          </div>
+
+          {highlightedBatches.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No batches match your search.
+            </p>
+          ) : (
+            <div className="space-y-2">
+              {highlightedBatches.map((batch) => (
+                <div
+                  key={batch.programBatchId}
+                  className="rounded-md border border-border/70 bg-background px-3 py-2"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="truncate text-sm font-medium text-foreground">
+                      {batch.programName} Batch {batch.batchYear}
+                    </p>
+                    <span className="shrink-0 text-xs font-semibold text-skolaroid-blue">
+                      {formatPercent(batch.engagementRate)}
+                    </span>
+                  </div>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {formatCount(batch.activeUsers)} active of{' '}
+                    {formatCount(batch.totalUsers)} users
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {filteredBatches.length > ANALYTICS_HIGHLIGHT_LIMIT && (
+            <p className="mt-3 text-xs text-muted-foreground">
+              Showing top {ANALYTICS_HIGHLIGHT_LIMIT} of{' '}
+              {formatCount(filteredBatches.length)} matching batches.
+            </p>
+          )}
+        </section>
+      </div>
+
+      <section className="border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]">
+        <h2 className="mb-3 text-sm font-semibold text-foreground">
+          Memory Moderation Breakdown
+        </h2>
+        <div className="flex flex-wrap gap-2">
+          {analytics.memoriesByStatus.map((status) => (
+            <span
+              key={status.status}
+              className={`rounded-full px-3 py-1 text-xs font-medium ${statusBadgeStyles[status.status as AnalyticsMemoryStatus]}`}
+            >
+              {status.status.toLowerCase()}:{' '}
+              <span className="font-semibold">{formatCount(status.count)}</span>
+            </span>
+          ))}
+        </div>
+      </section>
+
+      <p className="text-xs text-muted-foreground">
+        Active users are calculated from the last {analytics.windowDays} days of
+        memory uploads, comments, votes, and reports.
+      </p>
     </div>
   );
 }
@@ -607,10 +971,27 @@ function AuditLogContent({ searchQuery }: { searchQuery: string }) {
 
 export default function AdminPage() {
   const router = useRouter();
-  const [currentTab, setCurrentTab] = useState<AdminTab>('published');
+  const [currentTab, setCurrentTab] = useState<AdminTab>('analytics');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const tabs: AdminTab[] = ['published', 'pending', 'reports', 'audit'];
+  const tabs: AdminTab[] = [
+    'analytics',
+    'published',
+    'pending',
+    'reports',
+    'audit',
+  ];
+
+  const searchPlaceholder =
+    currentTab === 'analytics'
+      ? 'Search locations or batches'
+      : currentTab === 'reports'
+        ? 'Search reports'
+        : currentTab === 'audit'
+          ? 'Search admins or targets'
+          : 'Search posts';
+
+  const showPostFilter = currentTab === 'published' || currentTab === 'pending';
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -654,20 +1035,25 @@ export default function AdminPage() {
               />
               <input
                 type="text"
-                placeholder="Search"
+                placeholder={searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-56 border-2 border-border bg-card py-2 pl-9 pr-4 text-sm placeholder-muted-foreground focus:border-skolaroid-blue focus:outline-none"
               />
             </div>
-            <button className="flex items-center gap-2 border-2 border-border bg-card px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary">
-              <Filter size={14} />
-              Filter Posts
-            </button>
+            {showPostFilter && (
+              <button className="flex items-center gap-2 border-2 border-border bg-card px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary">
+                <Filter size={14} />
+                Filter Posts
+              </button>
+            )}
           </div>
         </div>
 
         {/* Tab Content */}
+        {currentTab === 'analytics' && (
+          <AnalyticsContent searchQuery={searchQuery} />
+        )}
         {currentTab === 'published' && (
           <PublishedPostsContent searchQuery={searchQuery} />
         )}
