@@ -7,6 +7,7 @@ import { useCreateMemory } from '@/lib/hooks/useCreateMemory';
 import { useCreateCustomLocation } from '@/lib/hooks/useCreateCustomLocation';
 import { useLocations } from '@/lib/hooks/useLocations';
 import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
+import { useUserGroups } from '@/lib/hooks/useUserGroups';
 import {
   MAX_TAGS,
   VISIBILITY_LABELS,
@@ -95,6 +96,7 @@ const VISIBILITY_OPTIONS: {
   label: string;
   description: string;
   icon: typeof Globe;
+  requiresGroup?: boolean;
 }[] = [
   {
     value: 'PUBLIC',
@@ -115,16 +117,11 @@ const VISIBILITY_OPTIONS: {
     icon: Shield,
   },
   {
-    value: 'PRIVATE',
-    label: VISIBILITY_LABELS.PRIVATE,
-    description: 'Only you can see this',
-    icon: Lock,
-  },
-  {
     value: 'GROUP_ONLY',
-    label: 'Group Only',
-    description: 'Visible to group members only',
-    icon: Users,
+    label: 'Private',
+    description: 'Visible to selected group only',
+    icon: Lock,
+    requiresGroup: true,
   },
 ];
 
@@ -249,6 +246,13 @@ export function AddMemoryModal({
 
   const programBatch = currentUserData?.data?.programBatch ?? null;
 
+  const { data: userGroups, isLoading: isLoadingGroups } = useUserGroups();
+  const hasGroups = (userGroups?.length ?? 0) > 0;
+  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(
+    defaultGroupId ?? null
+  );
+  const [showGroupDropdown, setShowGroupDropdown] = useState(false);
+
   const batchLabel = useMemo(() => {
     if (!programBatch) return null;
     return `${programBatch.program.name} • Batch ${programBatch.batch.year}`;
@@ -333,6 +337,8 @@ export function AddMemoryModal({
     setSelectedLocationId(null);
     setSearchQuery('');
     setIsCreatingLocation(false);
+    setSelectedGroupId(defaultGroupId ?? null);
+    setShowGroupDropdown(false);
   }, [defaultGroupId]);
 
   // ---------------------------------------------------------------------------
@@ -540,8 +546,8 @@ export function AddMemoryModal({
 
     const locationId = selectedLocationId ?? locations[0]?.id ?? '';
 
-    if (visibility === 'GROUP_ONLY' && !defaultGroupId) {
-      setSubmitError('GROUP_ONLY visibility requires opening from a group');
+    if (visibility === 'GROUP_ONLY' && !selectedGroupId) {
+      setSubmitError('Please select a group for private visibility');
       return;
     }
 
@@ -553,14 +559,14 @@ export function AddMemoryModal({
         locationId,
         memoryDate: memoryDate ? new Date(memoryDate) : undefined,
         tags,
+        ...(visibility === 'GROUP_ONLY' && selectedGroupId
+          ? { privateGroupId: selectedGroupId }
+          : {}),
         ...(primaryMediaURL
           ? { mediaURL: primaryMediaURL, mediaURLs: uploadedMediaURLs }
           : firstCompleted?.file
             ? { mediaFile: firstCompleted.file }
             : {}),
-        ...(visibility === 'GROUP_ONLY' && defaultGroupId
-          ? { privateGroupId: defaultGroupId }
-          : {}),
       },
       {
         onSuccess: () => {
@@ -588,7 +594,7 @@ export function AddMemoryModal({
     createMemory,
     resetState,
     onOpenChange,
-    defaultGroupId,
+    selectedGroupId,
   ]);
 
   // ---------------------------------------------------------------------------
@@ -1159,14 +1165,83 @@ export function AddMemoryModal({
           <button
             type="button"
             onClick={() => {
-              // TODO: Implement set privacy
-              console.log('[AddMemoryModal] set privacy clicked');
+              // Cycle through visibility options
+              const currentIndex = VISIBILITY_OPTIONS.findIndex(
+                (o) => o.value === visibility
+              );
+              const nextIndex = (currentIndex + 1) % VISIBILITY_OPTIONS.length;
+              const nextOption = VISIBILITY_OPTIONS[nextIndex];
+              // Skip GROUP_ONLY if user has no groups
+              if (nextOption.requiresGroup && !hasGroups) {
+                setVisibility(VISIBILITY_OPTIONS[0].value);
+              } else {
+                setVisibility(nextOption.value);
+              }
+              if (nextOption.value !== 'GROUP_ONLY') {
+                setSelectedGroupId(null);
+              }
             }}
             className="text-sm font-medium text-skolaroid-blue hover:underline"
           >
             Set privacy
           </button>
         </div>
+
+        {/* Group selector (shown when Private/GROUP_ONLY is selected) */}
+        {visibility === 'GROUP_ONLY' && (
+          <div className="flex items-start gap-3 pl-8">
+            <div className="relative w-full">
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">
+                Select Group
+              </label>
+              <button
+                type="button"
+                onClick={() => setShowGroupDropdown(!showGroupDropdown)}
+                disabled={isLoadingGroups}
+                className="flex w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm"
+              >
+                <span>
+                  {isLoadingGroups
+                    ? 'Loading groups...'
+                    : (userGroups?.find((g) => g.id === selectedGroupId)
+                        ?.name ?? 'Choose a group...')}
+                </span>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </button>
+              {showGroupDropdown && userGroups && (
+                <div className="absolute left-0 right-0 top-full z-50 mt-1 max-h-40 overflow-y-auto rounded-md border border-border bg-card shadow-md">
+                  {userGroups.length === 0 ? (
+                    <p className="px-3 py-3 text-center text-sm text-muted-foreground">
+                      No groups available. Create a group first.
+                    </p>
+                  ) : (
+                    userGroups.map((group) => (
+                      <button
+                        key={group.id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedGroupId(group.id);
+                          setShowGroupDropdown(false);
+                        }}
+                        className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors ${
+                          selectedGroupId === group.id
+                            ? 'bg-blue-50 text-skolaroid-blue'
+                            : 'hover:bg-secondary'
+                        }`}
+                      >
+                        <span className="flex-1 truncate">{group.name}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {group._count.members} member
+                          {group._count.members !== 1 ? 's' : ''}
+                        </span>
+                      </button>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Submit error */}
         {submitError && (

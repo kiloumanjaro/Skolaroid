@@ -3,11 +3,15 @@
 import {
   MoreHorizontal,
   Globe,
+  GraduationCap,
+  Users,
+  Lock,
   ChevronLeft,
   ChevronRight,
   X,
   Trash2,
   Flag,
+  Pencil,
 } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -22,6 +26,7 @@ import {
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 import { ActionBar } from '@/components/map/ActionBar';
 import { DeleteMemoryModal } from '@/components/map/DeleteMemoryModal';
+import { EditMemoryModal } from '@/components/map/EditMemoryModal';
 import { ReportMemoryModal } from '@/components/map/ReportMemoryModal';
 import { useDeleteMemory } from '@/lib/hooks/useDeleteMemory';
 import { CommentSection } from '@/components/map/CommentSection';
@@ -29,6 +34,8 @@ import { useCommentsByMemory } from '@/lib/hooks/useCommentsByMemory';
 import { useCreateComment } from '@/lib/hooks/useCreateComment';
 import { useDeleteComment } from '@/lib/hooks/useDeleteComment';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
+import { useUserGroups } from '@/lib/hooks/useUserGroups';
+import type { MemoryVisibility } from '@/lib/schemas';
 import Image from 'next/image';
 import {
   useState,
@@ -147,6 +154,17 @@ const isAutoTag = (tagName: string): boolean => {
     /^\d{4}$/.test(tagName) ||
     tagName.startsWith('Near ')
   );
+};
+
+const VISIBILITY_META: Record<
+  MemoryVisibility,
+  { Icon: typeof Globe; label: string }
+> = {
+  PUBLIC: { Icon: Globe, label: 'Public' },
+  PROGRAM_ONLY: { Icon: GraduationCap, label: 'Program Only' },
+  BATCH_ONLY: { Icon: Users, label: 'Batch Only' },
+  GROUP_ONLY: { Icon: Lock, label: 'Private' },
+  PRIVATE: { Icon: Lock, label: 'Private' },
 };
 
 type MemoryMediaShape = Pick<
@@ -322,8 +340,10 @@ export function MemoryDetailModal({
 }: MemoryDetailModalProps) {
   const { user: authUser } = useUserAuth();
   const deleteMemory = useDeleteMemory();
+  const { data: userGroups } = useUserGroups();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const isOwner = !!(
     authUser &&
     memory?.creatorId &&
@@ -533,6 +553,22 @@ export function MemoryDetailModal({
     : 'Unknown Author';
   const authorInitial = authorName.charAt(0);
 
+  // Resolve visibility display for a memory (icon + label, with group name for GROUP_ONLY)
+  const getVisibilityDisplay = (
+    vis: MemoryVisibility,
+    pgId?: string | null
+  ) => {
+    const meta = VISIBILITY_META[vis] ?? VISIBILITY_META.PUBLIC;
+    if (vis === 'GROUP_ONLY' && pgId) {
+      const group = userGroups?.find((g) => g.id === pgId);
+      return {
+        Icon: meta.Icon,
+        label: group ? `Private · ${group.name}` : 'Private',
+      };
+    }
+    return meta;
+  };
+
   function handleCommentSubmit(content: string) {
     createComment.mutate({ memoryId: memory!.id, content });
     setCommentText('');
@@ -580,6 +616,16 @@ export function MemoryDetailModal({
                 <div className="fixed inset-0 z-50 flex items-center justify-center">
                   <DialogTitle className="sr-only">{memory.title}</DialogTitle>
 
+                  {/* Close button — fixed to top-right of overlay so it's always visible */}
+                  <button
+                    type="button"
+                    onClick={() => onOpenChange(false)}
+                    className="absolute right-4 top-4 z-30 flex h-10 w-10 items-center justify-center rounded-full border-2 border-border bg-card text-foreground shadow-[3px_3px_0px_0px_#2d2d2d] transition-colors hover:shadow-[4px_4px_0px_0px_#2d2d2d]"
+                    aria-label="Close memory details"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+
                   {/* Wrapper with perspective for 3D */}
                   <div
                     className="flex items-center gap-6"
@@ -609,15 +655,6 @@ export function MemoryDetailModal({
                         transformStyle: 'preserve-3d',
                       }}
                     >
-                      <button
-                        type="button"
-                        onClick={() => onOpenChange(false)}
-                        className="absolute -top-14 right-0 z-30 flex h-10 w-10 items-center justify-center rounded-full border-2 border-border bg-card text-foreground shadow-[3px_3px_0px_0px_#2d2d2d] transition-colors hover:shadow-[4px_4px_0px_0px_#2d2d2d]"
-                        aria-label="Close memory details"
-                      >
-                        <X className="h-5 w-5" />
-                      </button>
-
                       {/* Pages Layer (always visible) */}
                       <div
                         className="absolute inset-0 rounded-2xl bg-sky-200 p-2 shadow-[0px_2px_4px_0px_rgba(0,0,0,0.25)]"
@@ -747,8 +784,18 @@ export function MemoryDetailModal({
                                   {authorName}
                                 </p>
                                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                  <Globe className="h-3 w-3" />
-                                  <span>Public</span>
+                                  {(() => {
+                                    const vd = getVisibilityDisplay(
+                                      baseRightMemory.visibility,
+                                      baseRightMemory.privateGroupId
+                                    );
+                                    return (
+                                      <>
+                                        <vd.Icon className="h-3 w-3 shrink-0" />
+                                        <span>{vd.label}</span>
+                                      </>
+                                    );
+                                  })()}
                                 </div>
                               </div>
                               {isOwner ? (
@@ -762,6 +809,12 @@ export function MemoryDetailModal({
                                     </button>
                                   </DropdownMenuTrigger>
                                   <DropdownMenuContent align="end">
+                                    <DropdownMenuItem
+                                      onClick={() => setEditModalOpen(true)}
+                                    >
+                                      <Pencil className="mr-2 h-4 w-4" />
+                                      Edit Memory
+                                    </DropdownMenuItem>
                                     <DropdownMenuItem
                                       className="text-amber-600 focus:text-amber-600"
                                       onClick={() => setReportModalOpen(true)}
@@ -999,8 +1052,18 @@ export function MemoryDetailModal({
                                         {authorName}
                                       </p>
                                       <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                        <Globe className="h-3 w-3" />
-                                        <span>Public</span>
+                                        {(() => {
+                                          const vd = getVisibilityDisplay(
+                                            memory.visibility,
+                                            memory.privateGroupId
+                                          );
+                                          return (
+                                            <>
+                                              <vd.Icon className="h-3 w-3 shrink-0" />
+                                              <span>{vd.label}</span>
+                                            </>
+                                          );
+                                        })()}
                                       </div>
                                     </div>
                                     <button
@@ -1077,8 +1140,18 @@ export function MemoryDetailModal({
                                       {authorName}
                                     </p>
                                     <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                      <Globe className="h-3 w-3" />
-                                      <span>Public</span>
+                                      {(() => {
+                                        const vd = getVisibilityDisplay(
+                                          cachedMemory.visibility,
+                                          cachedMemory.privateGroupId
+                                        );
+                                        return (
+                                          <>
+                                            <vd.Icon className="h-3 w-3 shrink-0" />
+                                            <span>{vd.label}</span>
+                                          </>
+                                        );
+                                      })()}
                                     </div>
                                   </div>
                                   <button
@@ -1326,6 +1399,14 @@ export function MemoryDetailModal({
         memoryId={memory?.id ?? ''}
         memoryTitle={memory?.title ?? ''}
       />
+
+      {memory && (
+        <EditMemoryModal
+          open={editModalOpen}
+          onOpenChange={setEditModalOpen}
+          memory={memory}
+        />
+      )}
     </>
   );
 }
