@@ -9,9 +9,10 @@ import type { CurrentUserProfile } from '@/lib/hooks/useCurrentUser';
 interface ProfileHeroProps {
   user: User | null;
   dbUser?: CurrentUserProfile | null;
+  onEditClick: () => void;
 }
 
-export function ProfileHero({ user, dbUser }: ProfileHeroProps) {
+export function ProfileHero({ user, dbUser, onEditClick }: ProfileHeroProps) {
   const avatarUrl =
     user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
   const displayName = dbUser
@@ -50,12 +51,7 @@ export function ProfileHero({ user, dbUser }: ProfileHeroProps) {
         )}
       </div>
       <div className="shrink-0">
-        <Button
-          variant="outline"
-          size="sm"
-          disabled
-          className="cursor-not-allowed opacity-50"
-        >
+        <Button variant="outline" size="sm" onClick={onEditClick}>
           Edit Profile
         </Button>
       </div>
