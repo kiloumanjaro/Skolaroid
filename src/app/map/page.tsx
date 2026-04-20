@@ -2,8 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { MapComponent } from '@/components/map';
-import { Sidebar } from '@/components/Sidebar';
 import { Header } from '@/components/header';
+import { ColorStrip } from '@/components/ui/color-strip';
+import { cn } from '@/lib/utils';
 import {
   DEFAULT_FILTERS,
   FilterMemoriesPanel,
@@ -44,6 +45,8 @@ function areLocationOptionsEqual(
 }
 
 const SIDEBAR_TRANSITION_MS = 300;
+const MAP_FILTER_PANEL_WIDTH_CLASSNAME =
+  'w-[min(calc(100vw-1rem),298px)] md:w-[298px]';
 
 function waitForTransition(duration: number) {
   return new Promise<void>((resolve) => {
@@ -54,6 +57,7 @@ function waitForTransition(duration: number) {
 export default function MapPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [stripTucked, setStripTucked] = useState(false);
+  const [headerTucked, setHeaderTucked] = useState(false);
   const [memoryDetailOpen, setMemoryDetailOpen] = useState(false);
   const [filterInteractionLocked, setFilterInteractionLocked] = useState(false);
   const [filters, setFilters] = useState<MemoryFilters>(DEFAULT_FILTERS);
@@ -100,6 +104,7 @@ export default function MapPage() {
     }
 
     setStripTucked(true);
+    setHeaderTucked(true);
     await waitForTransition(SIDEBAR_TRANSITION_MS);
   }, [clearUnlockTimer, drawerOpen]);
 
@@ -112,10 +117,12 @@ export default function MapPage() {
       if (open) {
         setFilterInteractionLocked(true);
         setStripTucked(true);
+        setHeaderTucked(true);
         return;
       }
 
       setStripTucked(false);
+      setHeaderTucked(false);
       unlockTimerRef.current = window.setTimeout(() => {
         unlockTimerRef.current = null;
         setFilterInteractionLocked(false);
@@ -156,41 +163,74 @@ export default function MapPage() {
   );
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden">
-      <Header />
-      <div className="relative flex flex-1 overflow-hidden pt-16">
-        <Sidebar
-          drawerOpen={drawerOpen}
-          setDrawerOpen={handleDrawerOpenChange}
-          className="top-16 z-30 h-[calc(100vh-4rem)]"
-          contentClassName="overflow-hidden"
-          expandedWidthClassName="w-[min(calc(100vw-1rem),298px)] md:w-[298px]"
-          stripAriaLabel={drawerOpen ? 'Close filters' : 'Open filters'}
-          expandOnHover={false}
-          stripTucked={stripTucked}
-          stripDisabled={filterInteractionLocked}
-        >
-          <FilterMemoriesPanel
-            active={drawerOpen}
-            onClose={() => handleDrawerOpenChange(false)}
-            filters={filters}
-            onApply={setFilters}
-            availableTags={availableTags}
-            availableYears={availableYears}
-            availableGroups={availableGroups}
-            availableLocations={availableLocations}
-          />
-        </Sidebar>
+    <div className="relative h-dvh overflow-hidden bg-background">
+      <Header hidden={headerTucked} variant="floating" />
+      <div className="relative flex h-full w-full overflow-hidden">
+        {!drawerOpen ? (
+          <button
+            type="button"
+            onClick={() => handleDrawerOpenChange(true)}
+            disabled={filterInteractionLocked}
+            className={cn(
+              'absolute left-0 top-0 z-30 h-full w-2.5 shrink-0 transition-transform duration-300 ease-in-out hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-skolaroid-blue/40 disabled:cursor-default disabled:hover:opacity-100',
+              stripTucked ? '-translate-x-full' : 'translate-x-0',
+              filterInteractionLocked && 'pointer-events-none'
+            )}
+            aria-label="Open filters"
+          >
+            <ColorStrip className="h-full" />
+          </button>
+        ) : null}
 
         <div
-          className={`flex-1 overflow-hidden transition-all duration-300 ease-in-out ${
-            drawerOpen
-              ? 'ml-2.5 md:ml-[298px]'
-              : stripTucked
-                ? 'ml-0'
-                : 'ml-2.5'
-          }`}
+          className={cn(
+            'relative z-30 flex h-full shrink-0 overflow-hidden transition-[width] duration-300 ease-in-out',
+            drawerOpen && !stripTucked
+              ? MAP_FILTER_PANEL_WIDTH_CLASSNAME
+              : 'w-0'
+          )}
         >
+          <div
+            className={cn(
+              'scrollbar-hide h-full bg-card transition-[width,opacity] duration-300 ease-in-out',
+              drawerOpen && !stripTucked
+                ? 'w-[calc(100%-10px)] opacity-100'
+                : 'w-0 opacity-0'
+            )}
+            style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+            }}
+          >
+            {drawerOpen ? (
+              <FilterMemoriesPanel
+                active={drawerOpen}
+                onClose={() => handleDrawerOpenChange(false)}
+                filters={filters}
+                onApply={setFilters}
+                availableTags={availableTags}
+                availableYears={availableYears}
+                availableGroups={availableGroups}
+                availableLocations={availableLocations}
+              />
+            ) : null}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => handleDrawerOpenChange(false)}
+            disabled={filterInteractionLocked}
+            className={cn(
+              'h-full w-2.5 shrink-0 transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-skolaroid-blue/40 disabled:cursor-default disabled:hover:opacity-100',
+              filterInteractionLocked && 'pointer-events-none'
+            )}
+            aria-label="Close filters"
+          >
+            <ColorStrip className="h-full" />
+          </button>
+        </div>
+
+        <div className="h-full min-w-0 flex-1 overflow-hidden">
           <MapComponent
             filters={filters}
             onFilterOptionsChange={handleFilterOptionsChange}

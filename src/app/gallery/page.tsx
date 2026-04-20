@@ -39,10 +39,8 @@ function GalleryPageContent({ era }: GalleryPageContentProps) {
   const HORIZON_TILE = 200; // blocks per tile
   const HORIZON_TILE_PX = HORIZON_TILE * HORIZON_BLOCK; // 2400
 
-  // One tile's worth of SVG as a data URL. The browser tiles it via
-  // `background-repeat: repeat-x`, so React never renders the 800-rect SVG.
-  const horizonTileUrl = useMemo(() => {
-    // Mulberry32 PRNG
+  // Jagged pattern generated once — seeded PRNG, never changes.
+  const horizonPattern = useMemo<number[]>(() => {
     let s = 0xc0ffee;
     const rand = () => {
       s = (s + 0x6d2b79f5) >>> 0;
@@ -84,21 +82,45 @@ function GalleryPageContent({ era }: GalleryPageContentProps) {
           ? pattern[pattern.length - 1] - 1
           : pattern[pattern.length - 1] + 1;
     }
+    return pattern;
+  }, []);
 
-    const rects = pattern
+  // Horizon Y in SVG viewBox units (0–1000). Mirrors the gallery card scale
+  // formula so the line rises as the polaroids shrink on smaller viewports.
+  const computeHorizonY = () => {
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const scale = Math.min(
+      1,
+      (window.innerHeight - 2 * rem) / 640,
+      (window.innerWidth - 4 * rem) / 380
+    );
+    return Math.round(460 + 220 * scale);
+  };
+  const [horizonY, setHorizonY] = useState(680);
+  useEffect(() => {
+    setHorizonY(computeHorizonY());
+    const onResize = () => setHorizonY(computeHorizonY());
+    window.addEventListener('resize', onResize, { passive: true });
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  // Rebuild the data URL only when horizonY changes (pattern is stable).
+  const horizonTileUrl = useMemo(() => {
+    if (horizonPattern.length === 0) return 'none';
+    const rects = horizonPattern
       .map(
         (v, i) =>
-          `<rect x="${i * HORIZON_BLOCK}" y="720" width="${HORIZON_BLOCK}" height="${v * HORIZON_BLOCK}" fill="#ffffff"/>`
+          `<rect x="${i * HORIZON_BLOCK}" y="${horizonY}" width="${HORIZON_BLOCK}" height="${v * HORIZON_BLOCK}" fill="#ffffff"/>`
       )
       .join('');
     const svg =
       `<svg xmlns="http://www.w3.org/2000/svg" width="${HORIZON_TILE_PX}" height="1000" viewBox="0 0 ${HORIZON_TILE_PX} 1000" preserveAspectRatio="none">` +
-      `<rect width="${HORIZON_TILE_PX}" height="720" fill="#ffffff"/>` +
-      `<rect y="720" width="${HORIZON_TILE_PX}" height="280" fill="#abd5f4"/>` +
+      `<rect width="${HORIZON_TILE_PX}" height="${horizonY}" fill="#ffffff"/>` +
+      `<rect y="${horizonY}" width="${HORIZON_TILE_PX}" height="${1000 - horizonY}" fill="#abd5f4"/>` +
       rects +
       `</svg>`;
     return `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}")`;
-  }, [HORIZON_BLOCK, HORIZON_TILE, HORIZON_TILE_PX]);
+  }, [horizonPattern, horizonY, HORIZON_BLOCK, HORIZON_TILE_PX]);
 
   const bgRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);

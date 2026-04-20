@@ -5,6 +5,7 @@ import {
   Globe,
   ChevronLeft,
   ChevronRight,
+  MessageSquare,
   X,
   Trash2,
   Flag,
@@ -529,6 +530,7 @@ export function MemoryDetailModal({
 
   const mobileBookStageHeight =
     BOOK_HEIGHT * mobileBookScale + MOBILE_BOOK_TOP_OFFSET * mobileBookScale;
+  const mobileVisibleBookWidth = MOBILE_VISIBLE_BOOK_WIDTH * mobileBookScale;
   const mobileBookOffsetX =
     mobileBookStageWidth / 2 -
     (BOOK_INNER_PADDING + PAGE_WIDTH / 2) * mobileBookScale;
@@ -542,6 +544,7 @@ export function MemoryDetailModal({
     mobileNotebookPage === 'comments' ? 'Show photo page' : 'Previous memory';
   const mobileRightChevronLabel =
     mobileNotebookPage === 'photo' ? 'Show comments page' : 'Next memory';
+  const mobileRightShowsComments = mobileNotebookPage === 'photo';
   const mobileVisibleMemory = mobileTransitionMemory ?? memory;
   const isMobileNextMemoryTransition =
     mobileTransitionMode === 'memory' && mobileTransitionDirection === 'next';
@@ -1222,26 +1225,6 @@ export function MemoryDetailModal({
           perspective: '2000px',
         }}
       >
-        <button
-          type="button"
-          onClick={handleMobileLeftChevron}
-          disabled={mobileLeftChevronDisabled}
-          className="absolute left-0 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border-2 border-border bg-card text-foreground shadow-[3px_3px_0px_0px_#2d2d2d] transition-colors hover:shadow-[4px_4px_0px_0px_#2d2d2d] disabled:cursor-not-allowed disabled:opacity-30"
-          aria-label={mobileLeftChevronLabel}
-        >
-          <ChevronLeft className="h-5 w-5" />
-        </button>
-
-        <button
-          type="button"
-          onClick={handleMobileRightChevron}
-          disabled={mobileRightChevronDisabled}
-          className="absolute right-0 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border-2 border-border bg-card text-foreground shadow-[3px_3px_0px_0px_#2d2d2d] transition-colors hover:shadow-[4px_4px_0px_0px_#2d2d2d] disabled:cursor-not-allowed disabled:opacity-30"
-          aria-label={mobileRightChevronLabel}
-        >
-          <ChevronRight className="h-5 w-5" />
-        </button>
-
         <div
           className="absolute left-0 top-0"
           style={{
@@ -1445,6 +1428,35 @@ export function MemoryDetailModal({
 
           {renderCoverLayers()}
         </div>
+      </div>
+
+      <div
+        className="flex items-center justify-between"
+        style={{ width: mobileVisibleBookWidth }}
+      >
+        <button
+          type="button"
+          onClick={handleMobileLeftChevron}
+          disabled={mobileLeftChevronDisabled}
+          className="z-30 flex h-10 w-10 items-center justify-center rounded-full border-2 border-border bg-card text-foreground shadow-[3px_3px_0px_0px_#2d2d2d] transition-colors hover:shadow-[4px_4px_0px_0px_#2d2d2d] disabled:cursor-not-allowed disabled:opacity-30"
+          aria-label={mobileLeftChevronLabel}
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+
+        <button
+          type="button"
+          onClick={handleMobileRightChevron}
+          disabled={mobileRightChevronDisabled}
+          className="z-30 flex h-10 w-10 items-center justify-center rounded-full border-2 border-border bg-card text-foreground shadow-[3px_3px_0px_0px_#2d2d2d] transition-colors hover:shadow-[4px_4px_0px_0px_#2d2d2d] disabled:cursor-not-allowed disabled:opacity-30"
+          aria-label={mobileRightChevronLabel}
+        >
+          {mobileRightShowsComments ? (
+            <MessageSquare className="h-5 w-5" />
+          ) : (
+            <ChevronRight className="h-5 w-5" />
+          )}
+        </button>
       </div>
     </div>
   );

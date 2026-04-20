@@ -7,13 +7,40 @@ import { useUserAuth } from '@/lib/hooks/useUserAuth';
 import { AccountMenu } from './account-menu';
 import { NotificationsMenu } from './notifications-menu';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
-export function Header() {
+interface HeaderProps {
+  hidden?: boolean;
+  variant?: 'default' | 'floating';
+}
+
+export function Header({ hidden = false, variant = 'default' }: HeaderProps) {
   const { isAuthenticated, loading } = useUserAuth();
+  const isFloating = variant === 'floating';
 
   return (
-    <nav className="fixed left-0 right-0 top-0 z-50 flex h-16 w-full justify-center border-b border-border bg-card">
-      <div className="relative flex w-full items-center p-3 px-5 text-sm">
+    <nav
+      className={cn(
+        isFloating
+          ? 'pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-3 transition-transform duration-300 ease-in-out'
+          : 'fixed left-0 right-0 top-0 z-50 flex h-16 w-full justify-center border-b border-border bg-card transition-transform duration-300 ease-in-out',
+        isFloating
+          ? hidden
+            ? '-translate-y-full'
+            : 'translate-y-0'
+          : hidden
+            ? '-translate-y-full'
+            : 'translate-y-0'
+      )}
+    >
+      <div
+        className={cn(
+          'relative flex items-center p-3 px-5 text-sm',
+          isFloating
+            ? 'pointer-events-auto w-full max-w-5xl rounded-2xl border border-border/80 bg-card/90 shadow-[0px_12px_30px_rgba(0,0,0,0.12)] backdrop-blur supports-[backdrop-filter]:bg-card/85'
+            : 'w-full'
+        )}
+      >
         {/* Logo - Left */}
         <div className="font-semibold">
           <Link
