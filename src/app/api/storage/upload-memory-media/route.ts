@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { createClient as createServiceRoleClient } from '@supabase/supabase-js';
+import { createClient as createServerClient } from '@/lib/supabase/server';
 
 const BUCKET = 'memory-media';
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
@@ -7,6 +8,18 @@ const ALLOWED_MIME_PREFIXES = ['image/', 'video/'];
 
 export async function POST(request: NextRequest) {
   try {
+    const supabaseAuthClient = await createServerClient();
+    const {
+      data: { user: authUser },
+    } = await supabaseAuthClient.auth.getUser();
+
+    if (!authUser) {
+      return NextResponse.json(
+        { success: false, message: 'Not authenticated' },
+        { status: 401 }
+      );
+    }
+
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
 
@@ -48,7 +61,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = createClient(supabaseUrl, serviceRoleKey, {
+    const supabase = createServiceRoleClient(supabaseUrl, serviceRoleKey, {
       auth: { autoRefreshToken: false, persistSession: false },
     });
 
