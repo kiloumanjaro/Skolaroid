@@ -77,6 +77,7 @@ export const createMemorySchema = z.object({
 /** Server-side schema — same fields sent over the wire (no File objects). */
 export const createMemoryServerSchema = createMemorySchema.extend({
   mediaURL: z.string().url('Invalid media URL').optional(),
+  mediaURLs: z.array(z.string().url('Invalid media URL')).optional(),
   memoryDate: z.coerce.date().optional(),
   privateGroupId: z.string().uuid('Invalid group ID').optional(),
 });
@@ -324,6 +325,7 @@ export interface MemoryWithRelations {
   title: string;
   description?: string | null;
   mediaURL?: string | null;
+  mediaURLs?: string[];
   visibility: MemoryVisibility;
   creatorId?: string | null;
   privateGroupId?: string | null;

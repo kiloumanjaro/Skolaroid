@@ -14,6 +14,7 @@ interface CreateMemoryResponse {
 
 export interface CreateMemoryPayload extends CreateMemoryServerInput {
   mediaFile?: File | null;
+  mediaFiles?: File[];
 }
 
 /** Upload a file to Supabase Storage and return its public URL. */
@@ -39,17 +40,32 @@ export function useCreateMemory() {
 
   return useMutation({
     retry: 1,
-    mutationFn: async ({ mediaFile, ...data }: CreateMemoryPayload) => {
-      // 1. Upload media file first (if provided) to get the public URL.
-      let mediaURL: string | undefined;
-      if (mediaFile) {
-        mediaURL = await uploadMediaFile(mediaFile);
+    mutationFn: async ({
+      mediaFile,
+      mediaFiles,
+      ...data
+    }: CreateMemoryPayload) => {
+      const providedMediaURLs = data.mediaURLs ?? [];
+      let resolvedMediaURLs = providedMediaURLs;
+
+      // If URLs were not pre-uploaded by the caller, upload pending files here.
+      if (resolvedMediaURLs.length === 0 && mediaFiles?.length) {
+        resolvedMediaURLs = await Promise.all(
+          mediaFiles.map((file) => uploadMediaFile(file))
+        );
+      } else if (resolvedMediaURLs.length === 0 && mediaFile) {
+        resolvedMediaURLs = [await uploadMediaFile(mediaFile)];
       }
 
-      // 2. Create the memory record with the resolved URL.
+      // Create the memory record with resolved media URLs.
       const payload: CreateMemoryServerInput = {
         ...data,
-        ...(mediaURL ? { mediaURL } : {}),
+        ...(resolvedMediaURLs.length > 0
+          ? {
+              mediaURL: resolvedMediaURLs[0],
+              mediaURLs: resolvedMediaURLs,
+            }
+          : {}),
       };
 
       const res = await fetch('/api/prisma/memory/create', {
