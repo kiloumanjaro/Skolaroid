@@ -1,23 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 /**
- * POST /api/prisma/invitation/cleanup
+ * /api/prisma/invitation/cleanup
  *
  * Cron job endpoint to delete all expired invitations.
  * Secured via a CRON_SECRET header to prevent unauthorized access.
  *
  * Set up a nightly cron job (e.g. via Vercel Cron or external scheduler)
- * that POSTs to this route with the Authorization header:
+ * that calls this route with the Authorization header:
  *   Authorization: Bearer <CRON_SECRET>
  */
-export async function POST(request: NextRequest) {
+async function cleanupExpiredInvitations(request: NextRequest) {
   try {
     // ── 1. Verify cron secret ────────────────────────────────────────
     const authHeader = request.headers.get('authorization');
     const cronSecret = process.env.CRON_SECRET;
 
-    if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+    if (!cronSecret) {
+      return NextResponse.json(
+        { error: 'CRON_SECRET is not configured' },
+        { status: 500 }
+      );
+    }
+
+    if (authHeader !== `Bearer ${cronSecret}`) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -36,4 +46,12 @@ export async function POST(request: NextRequest) {
     console.error('[invitation/cleanup] Error:', message);
     return NextResponse.json({ error: message }, { status: 500 });
   }
+}
+
+export async function GET(request: NextRequest) {
+  return cleanupExpiredInvitations(request);
+}
+
+export async function POST(request: NextRequest) {
+  return cleanupExpiredInvitations(request);
 }

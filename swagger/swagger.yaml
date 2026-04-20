@@ -557,9 +557,22 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 
   /api/prisma/invitation/cleanup:
-    post:
+    get:
       tags: [Invitations]
       summary: Delete expired invitations (cron endpoint)
+      operationId: cleanupInvitationsCron
+      security:
+        - CronBearer: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags: [Invitations]
+      summary: Delete expired invitations (manual trigger)
       operationId: cleanupInvitations
       security:
         - CronBearer: []
