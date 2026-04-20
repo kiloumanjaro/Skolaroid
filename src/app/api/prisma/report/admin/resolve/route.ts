@@ -48,7 +48,7 @@ export async function PATCH(request: NextRequest) {
           success: false,
           message: 'Report has already been resolved or dismissed',
         },
-        { status: 409 }
+        { status: 400 }
       );
     }
 
