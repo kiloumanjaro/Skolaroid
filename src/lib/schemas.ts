@@ -570,6 +570,33 @@ export type MarkNotificationsReadInput = z.infer<
 >;
 
 // ============================================================================
+// MESSAGE SCHEMAS
+// ============================================================================
+
+export const MAX_MESSAGE_LENGTH = 1000;
+
+/** Payload for broadcasting a text-only announcement as a Memory post. */
+export const createMessageSchema = z.object({
+  content: z
+    .string()
+    .trim()
+    .min(1, 'Message cannot be empty')
+    .max(
+      MAX_MESSAGE_LENGTH,
+      `Message must be ${MAX_MESSAGE_LENGTH} characters or less`
+    ),
+  locationId: z.string().uuid('Invalid location ID'),
+});
+
+/** Server-side variant — same shape, no additional coercions needed. */
+export const createMessageServerSchema = createMessageSchema;
+
+export type CreateMessageInput = z.infer<typeof createMessageSchema>;
+export type CreateMessageServerInput = z.infer<
+  typeof createMessageServerSchema
+>;
+
+// ============================================================================
 // AUTH TYPE EXPORTS
 // ============================================================================
 
