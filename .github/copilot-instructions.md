@@ -4,10 +4,10 @@ These notes are for AI coding assistants working on the Skolaroid codebase. Read
 
 ## 🏗️ Big Picture
 
-- **Framework**: Next.js 13+ App Router (see `src/app`). Uses server components by default; add a `"use client"` directive at top of files that run in the browser.
+- **Framework**: Next.js 16.1+ App Router (see `src/app`). Uses server components by default; add a `"use client"` directive at top of files that run in the browser.
 - **Backend**: Prisma v7 with a PostgreSQL database (hosted on Supabase). The client is created in `src/lib/prisma.ts` using `@prisma/adapter-pg` and a `pg` `Pool`. Global caching of the client only happens in development.
-- **Data flow**: UI components → custom hooks (`src/lib/hooks/*`) → fetch `/api/prisma/...` endpoints → API routes implement logic (currently many return mocks) → eventually call Prisma models (`src/generated/prisma`).
-- **State & caching**: React Query (`@tanstack/react-query`) is wrapped in `<QueryProvider>` (`src/providers/query-provider.tsx`) with sane defaults.
+- **Data flow**: UI components → custom hooks (`src/lib/hooks/*`) → fetch `/api/prisma/...` endpoints. **Never** call API route handlers (`fetch('/api/...')`) from inside Server Components. Instead, extract shared logic into `src/services/` or `src/lib/` and call it directly on the server.
+- **State & caching**: React Query (`@tanstack/react-query`) is wrapped in `<QueryProvider>` (`src/providers/query-provider.tsx`) with sane defaults. Use Server Actions or API routes combined with Next.js cache APIs (`revalidatePath` / `revalidateTag`) to invalidate stale data after mutations.
 - **Validation**: Zod schemas live in `src/lib/schemas.ts`; the same schemas are used on the client for forms and on the server for request validation. Schema names end with `Schema` and exports types for convenience.
 - **UI**: Tailwind CSS, Radix UI components, and a small `components/ui` library of primitives. Helper `cn()` (in `src/lib/utils.ts`) merges/cleans class names via `clsx` + `tailwind-merge`.
 
@@ -27,12 +27,13 @@ src/
 
 `prisma/` contains the schema and migration history; `generated/` holds Prisma's TS output (do not edit manually).
 
-## 🚦 API route conventions
+## 🚦 API route & Component conventions
 
 - All routes under `src/app/api/prisma/*/route.ts`. They export `GET`, `POST`, etc. functions that return `NextResponse.json(...)`.
-- Error structure: successful responses `{ success: true, ... }`; errors either `{ error: message }` or `{ success: false, message }` with appropriate HTTP status codes.
-- Validation: use the corresponding Zod schema's `safeParse`. If validation fails return 400 with the first issue message.
-- Many routes are currently stubs (see `TODO` comments) that return hard‑coded objects; future work should move logic into a service layer (e.g. `createMemoryService`) and call Prisma.
+- **Async request APIs in Next.js 16**: APIs that access request-bound data (like `cookies()`, `headers()`) and configuration props like `params` or `searchParams` **are asynchronous**. They must be `await`ed before accessing their sub-keys inside of Server Components and Route Handlers.
+- Error structure: successful responses `{ success: true, ... }`; errors either `{ error: message }` or `{ success: false, message }` with appropriate status codes (`200` for ok, `400` for validation, `401` missing auth, `500` for exceptions).
+- Validation: use the corresponding Zod schema's `safeParse`. If validation fails return `400` with the first issue message (`parsed.error.issues[0].message`).
+- Avoid extracting server rendering logic into endpoints. API routes should largely remain client-interaction endpoints.
 
 ## 🔄 Client patterns
 
@@ -93,7 +94,3 @@ src/
 6. Run `pnpm lint`, `pnpm type-check`, `pnpm format`; commit with a Conventional Commit message.
 
 > **Note:** this file is updated automatically by AI or manually; if something seems wrong or outdated, modify it and let the agent know.
-
----
-
-Please review and tell me if any area is unclear or needs expansion. I can iterate based on your feedback.
