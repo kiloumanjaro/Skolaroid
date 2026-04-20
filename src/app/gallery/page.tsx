@@ -38,10 +38,10 @@ function GalleryPageContent({ era }: GalleryPageContentProps) {
   const HORIZON_BLOCK = 12;
   const HORIZON_TILE = 200; // blocks per tile
   const HORIZON_TILE_PX = HORIZON_TILE * HORIZON_BLOCK; // 2400
-  const HORIZON_TILES_RENDERED = 4;
-  const HORIZON_SVG_WIDTH = HORIZON_TILE_PX * HORIZON_TILES_RENDERED;
 
-  const horizonBlocks = useMemo(() => {
+  // One tile's worth of SVG as a data URL. The browser tiles it via
+  // `background-repeat: repeat-x`, so React never renders the 800-rect SVG.
+  const horizonTileUrl = useMemo(() => {
     // Mulberry32 PRNG
     let s = 0xc0ffee;
     const rand = () => {
@@ -85,18 +85,22 @@ function GalleryPageContent({ era }: GalleryPageContentProps) {
           : pattern[pattern.length - 1] + 1;
     }
 
-    return Array.from(
-      { length: HORIZON_TILE * HORIZON_TILES_RENDERED },
-      (_, i) => ({
-        x: i * HORIZON_BLOCK,
-        h: pattern[i % HORIZON_TILE] * HORIZON_BLOCK,
-      })
-    );
-  }, [HORIZON_TILE, HORIZON_TILES_RENDERED]);
+    const rects = pattern
+      .map(
+        (v, i) =>
+          `<rect x="${i * HORIZON_BLOCK}" y="720" width="${HORIZON_BLOCK}" height="${v * HORIZON_BLOCK}" fill="#ffffff"/>`
+      )
+      .join('');
+    const svg =
+      `<svg xmlns="http://www.w3.org/2000/svg" width="${HORIZON_TILE_PX}" height="1000" viewBox="0 0 ${HORIZON_TILE_PX} 1000" preserveAspectRatio="none">` +
+      `<rect width="${HORIZON_TILE_PX}" height="720" fill="#ffffff"/>` +
+      `<rect y="720" width="${HORIZON_TILE_PX}" height="280" fill="#abd5f4"/>` +
+      rects +
+      `</svg>`;
+    return `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}")`;
+  }, [HORIZON_BLOCK, HORIZON_TILE, HORIZON_TILE_PX]);
 
-  // Track gallery scroll position so the background can parallax 1:1
-  const [bgScrollX, setBgScrollX] = useState(0);
-
+  const bgRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const startX = useRef(0);
   const scrollLeftRef = useRef(0);
@@ -138,7 +142,10 @@ function GalleryPageContent({ era }: GalleryPageContentProps) {
     container.style.scrollBehavior = 'auto';
     container.scrollLeft = snapScrollLeft(container, firstReal);
     container.style.scrollBehavior = prev;
-  }, [totalReal, cloneCount]);
+    if (bgRef.current) {
+      bgRef.current.style.backgroundPositionX = `${-(container.scrollLeft % HORIZON_TILE_PX)}px`;
+    }
+  }, [totalReal, cloneCount, HORIZON_TILE_PX]);
 
   // Mid-scroll teleport: if the viewport's closest item is a clone, shift scrollLeft
   // by one full cycle so the user now sits on the visually-identical real item.
@@ -194,7 +201,10 @@ function GalleryPageContent({ era }: GalleryPageContentProps) {
     let rafId: number | null = null;
     const syncBg = () => {
       rafId = null;
-      setBgScrollX(container.scrollLeft);
+      const bg = bgRef.current;
+      if (bg) {
+        bg.style.backgroundPositionX = `${-(container.scrollLeft % HORIZON_TILE_PX)}px`;
+      }
     };
     const onScroll = () => {
       if (rafId === null) rafId = requestAnimationFrame(syncBg);
@@ -214,7 +224,7 @@ function GalleryPageContent({ era }: GalleryPageContentProps) {
       container.removeEventListener('scroll', onScroll);
       container.removeEventListener('scrollend', onScrollEnd);
     };
-  }, [teleportIfOnClone]);
+  }, [teleportIfOnClone, HORIZON_TILE_PX]);
 
   const handleMemoryClick = (memoryId: string) => {
     router.push(
@@ -281,8 +291,10 @@ function GalleryPageContent({ era }: GalleryPageContentProps) {
 
   return (
     <>
-      {/* 8-bit pixel horizon background — touches only z-index: -1 layer */}
+      {/* 8-bit pixel horizon background — CSS-tiled SVG, repeat-x */}
       <div
+        ref={bgRef}
+        aria-hidden
         style={{
           position: 'fixed',
           top: 0,
@@ -291,38 +303,12 @@ function GalleryPageContent({ era }: GalleryPageContentProps) {
           height: '100%',
           zIndex: -1,
           pointerEvents: 'none',
-          overflow: 'hidden',
+          backgroundImage: horizonTileUrl,
+          backgroundRepeat: 'repeat-x',
+          backgroundSize: `${HORIZON_TILE_PX}px 100%`,
+          willChange: 'background-position',
         }}
-      >
-        <svg
-          width={HORIZON_SVG_WIDTH}
-          height="100%"
-          viewBox={`0 0 ${HORIZON_SVG_WIDTH} 1000`}
-          preserveAspectRatio="none"
-          xmlns="http://www.w3.org/2000/svg"
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            height: '100%',
-            transform: `translate3d(${-(bgScrollX % HORIZON_TILE_PX)}px, 0, 0)`,
-            willChange: 'transform',
-          }}
-        >
-          <rect width={HORIZON_SVG_WIDTH} height="720" fill="#ffffff" />
-          <rect y="720" width={HORIZON_SVG_WIDTH} height="280" fill="#abd5f4" />
-          {horizonBlocks.map(({ x, h }) => (
-            <rect
-              key={x}
-              x={x}
-              y={720}
-              width={HORIZON_BLOCK}
-              height={h}
-              fill="#ffffff"
-            />
-          ))}
-        </svg>
-      </div>
+      />
       <div className="flex h-screen flex-col">
         <header className="flex shrink-0 items-center px-10 pb-3 pt-8 lg:px-16">
           <button

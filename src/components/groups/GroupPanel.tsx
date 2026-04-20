@@ -287,7 +287,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent
-          className="flex h-[calc(100vh-1rem)] w-[calc(100vw-1rem)] max-w-none flex-col gap-0 overflow-hidden rounded-none p-0 sm:max-w-none md:h-[85vh] md:w-[70vw] md:flex-row"
+          className="flex h-[calc(100vh-1rem)] w-[calc(100vw-1rem)] max-w-none flex-col gap-0 overflow-hidden rounded-none p-0 shadow-none sm:max-w-none md:h-[85vh] md:w-[70vw] md:flex-row"
           style={{ borderRadius: 0 }}
           showCloseButton={false}
         >

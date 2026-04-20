@@ -46,6 +46,7 @@ import {
 
 interface MemoryDetailModalProps {
   memory: MemoryWithCoordinates | null;
+  previousMemory?: MemoryWithCoordinates | null;
   nextMemory?: MemoryWithCoordinates | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -163,6 +164,7 @@ const isAutoTag = (tagName: string): boolean => {
 
 export function MemoryDetailModal({
   memory,
+  previousMemory = null,
   nextMemory = null,
   open,
   onOpenChange,
@@ -310,6 +312,10 @@ export function MemoryDetailModal({
     () => getDateInfo(cachedMemory),
     [cachedMemory]
   );
+  const previousDateInfo = useMemo(
+    () => getDateInfo(previousMemory),
+    [previousMemory]
+  );
   const nextDateInfo = useMemo(() => getDateInfo(nextMemory), [nextMemory]);
 
   const { user } = useUserAuth();
@@ -438,7 +444,36 @@ export function MemoryDetailModal({
       return;
     }
 
-    onPrevious?.();
+    if (
+      !hasPrevious ||
+      isMobilePageTurning ||
+      !onPrevious ||
+      !previousMemory ||
+      !previousDateInfo
+    ) {
+      return;
+    }
+
+    carriedCommentText.current = commentText;
+    cachedCommentsRef.current = liveComments;
+    cachedCommentCountRef.current = liveCommentCount;
+    mobileCarriedCommentText.current = commentText;
+    mobileCachedCommentsRef.current = liveComments;
+    mobileCachedCommentCountRef.current = liveCommentCount;
+    setMobileTransitionMemory(memory);
+    setMobileTransitionDirection('prev');
+    setMobileTransitionMode('memory');
+    setIsMobilePageTurning(true);
+
+    setTimeout(() => {
+      setCommentText('');
+      onPrevious();
+      setMobileNotebookPage('photo');
+      setIsMobilePageTurning(false);
+      setMobileTransitionDirection(null);
+      setMobileTransitionMode(null);
+      setMobileTransitionMemory(null);
+    }, PAGE_TURN_DURATION_MS);
   };
 
   const handleMobileRightChevron = () => {
@@ -508,6 +543,17 @@ export function MemoryDetailModal({
   const mobileRightChevronLabel =
     mobileNotebookPage === 'photo' ? 'Show comments page' : 'Next memory';
   const mobileVisibleMemory = mobileTransitionMemory ?? memory;
+  const isMobileNextMemoryTransition =
+    mobileTransitionMode === 'memory' && mobileTransitionDirection === 'next';
+  const isMobilePrevMemoryTransition =
+    mobileTransitionMode === 'memory' && mobileTransitionDirection === 'prev';
+  const shouldShowMobileCommentsPage =
+    mobileNotebookPage === 'comments' &&
+    !(
+      isMobilePageTurning &&
+      mobileTransitionDirection === 'prev' &&
+      mobileTransitionMode === 'page'
+    );
 
   const renderMemoryMenu = (pageMemory: MemoryWithCoordinates) => {
     const isPageOwner = !!(
@@ -582,10 +628,12 @@ export function MemoryDetailModal({
     pageMemory,
     pageDateInfo,
     showSpineScale = false,
+    pageSide = 'left',
   }: {
     pageMemory: MemoryWithCoordinates;
     pageDateInfo: MemoryDateInfo;
     showSpineScale?: boolean;
+    pageSide?: 'left' | 'right';
   }) => (
     <>
       <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4">
@@ -658,7 +706,11 @@ export function MemoryDetailModal({
         ))}
       </div>
 
-      <LeftPageSpineRings shouldScale={showSpineScale} />
+      {pageSide === 'left' ? (
+        <LeftPageSpineRings shouldScale={showSpineScale} />
+      ) : (
+        <RightPageSpineRings shouldScale={showSpineScale} />
+      )}
     </>
   );
 
@@ -829,6 +881,34 @@ export function MemoryDetailModal({
         <RightPageSpineRings />
       </>
     );
+  };
+
+  const renderMobilePreviousMemoryDetailsPage = () => {
+    if (!previousMemory) {
+      return renderMobilePeekPageContent();
+    }
+
+    return renderDetailsPageContent({
+      pageMemory: previousMemory,
+      comments: [],
+      totalComments: 0,
+      hasMore: false,
+      isLoadingMore: false,
+      isSubmitting: false,
+      onSubmit: () => {},
+      onDelete: () => {},
+      onLoadMore: () => {},
+      commentValue: '',
+      onCommentValueChange: () => {},
+    });
+  };
+
+  const renderMobileStaticRightPageContent = () => {
+    if (isMobilePrevMemoryTransition) {
+      return renderMobilePreviousMemoryDetailsPage();
+    }
+
+    return renderMobilePeekPageContent();
   };
 
   const renderCoverLayers = () => {
@@ -1193,55 +1273,50 @@ export function MemoryDetailModal({
                 className={`${PAGE_BASE_STYLES} relative`}
                 style={{ width: `${PAGE_WIDTH}px`, zIndex: 1 }}
               >
-                {mobileNotebookPage === 'comments' ||
-                mobileTransitionMode === 'memory'
+                {shouldShowMobileCommentsPage || isMobileNextMemoryTransition
                   ? renderDetailsPageContent({
                       pageMemory: mobileVisibleMemory,
-                      comments:
-                        mobileTransitionMode === 'memory'
-                          ? mobileCachedCommentsRef.current
-                          : liveComments,
-                      totalComments:
-                        mobileTransitionMode === 'memory'
-                          ? mobileCachedCommentCountRef.current
-                          : liveCommentCount,
-                      hasMore:
-                        mobileTransitionMode === 'memory'
-                          ? false
-                          : (hasNextPage ?? false),
-                      isLoadingMore:
-                        mobileTransitionMode === 'memory'
-                          ? false
-                          : isFetchingNextPage,
-                      isSubmitting:
-                        mobileTransitionMode === 'memory'
-                          ? false
-                          : createComment.isPending,
-                      onSubmit:
-                        mobileTransitionMode === 'memory'
-                          ? () => {}
-                          : handleCommentSubmit,
-                      onDelete:
-                        mobileTransitionMode === 'memory'
-                          ? () => {}
-                          : handleCommentDelete,
-                      onLoadMore:
-                        mobileTransitionMode === 'memory'
-                          ? () => {}
-                          : fetchNextPage,
-                      commentValue:
-                        mobileTransitionMode === 'memory'
-                          ? mobileCarriedCommentText.current
-                          : commentText,
-                      onCommentValueChange:
-                        mobileTransitionMode === 'memory'
-                          ? () => {}
-                          : setCommentText,
+                      comments: isMobileNextMemoryTransition
+                        ? mobileCachedCommentsRef.current
+                        : liveComments,
+                      totalComments: isMobileNextMemoryTransition
+                        ? mobileCachedCommentCountRef.current
+                        : liveCommentCount,
+                      hasMore: isMobileNextMemoryTransition
+                        ? false
+                        : (hasNextPage ?? false),
+                      isLoadingMore: isMobileNextMemoryTransition
+                        ? false
+                        : isFetchingNextPage,
+                      isSubmitting: isMobileNextMemoryTransition
+                        ? false
+                        : createComment.isPending,
+                      onSubmit: isMobileNextMemoryTransition
+                        ? () => {}
+                        : handleCommentSubmit,
+                      onDelete: isMobileNextMemoryTransition
+                        ? () => {}
+                        : handleCommentDelete,
+                      onLoadMore: isMobileNextMemoryTransition
+                        ? () => {}
+                        : fetchNextPage,
+                      commentValue: isMobileNextMemoryTransition
+                        ? mobileCarriedCommentText.current
+                        : commentText,
+                      onCommentValueChange: isMobileNextMemoryTransition
+                        ? () => {}
+                        : setCommentText,
                       pageSide: 'left',
                     })
                   : renderPhotoPageContent({
-                      pageMemory: memory,
-                      pageDateInfo: dateInfo,
+                      pageMemory:
+                        isMobilePrevMemoryTransition && previousMemory
+                          ? previousMemory
+                          : memory,
+                      pageDateInfo:
+                        isMobilePrevMemoryTransition && previousDateInfo
+                          ? previousDateInfo
+                          : dateInfo,
                     })}
               </div>
 
@@ -1249,7 +1324,7 @@ export function MemoryDetailModal({
                 className={`${PAGE_BASE_STYLES} relative`}
                 style={{ width: `${PAGE_WIDTH}px`, zIndex: 1 }}
               >
-                {renderMobilePeekPageContent()}
+                {renderMobileStaticRightPageContent()}
               </div>
 
               {isMobilePageTurning && mobileTransitionDirection === 'prev' && (
@@ -1272,20 +1347,25 @@ export function MemoryDetailModal({
                     className={PAGE_FACE_STYLES}
                     style={{ backfaceVisibility: 'hidden' }}
                   >
-                    {renderDetailsPageContent({
-                      pageMemory: memory,
-                      comments: mobileCachedCommentsRef.current,
-                      totalComments: mobileCachedCommentCountRef.current,
-                      hasMore: false,
-                      isLoadingMore: false,
-                      isSubmitting: false,
-                      onSubmit: () => {},
-                      onDelete: () => {},
-                      onLoadMore: () => {},
-                      commentValue: mobileCarriedCommentText.current,
-                      onCommentValueChange: () => {},
-                      pageSide: 'left',
-                    })}
+                    {isMobilePrevMemoryTransition
+                      ? renderPhotoPageContent({
+                          pageMemory: mobileTransitionMemory ?? memory,
+                          pageDateInfo: dateInfo,
+                        })
+                      : renderDetailsPageContent({
+                          pageMemory: memory,
+                          comments: mobileCachedCommentsRef.current,
+                          totalComments: mobileCachedCommentCountRef.current,
+                          hasMore: false,
+                          isLoadingMore: false,
+                          isSubmitting: false,
+                          onSubmit: () => {},
+                          onDelete: () => {},
+                          onLoadMore: () => {},
+                          commentValue: mobileCarriedCommentText.current,
+                          onCommentValueChange: () => {},
+                          pageSide: 'left',
+                        })}
                   </div>
 
                   <div
@@ -1295,10 +1375,13 @@ export function MemoryDetailModal({
                       backfaceVisibility: 'hidden',
                     }}
                   >
-                    {renderPhotoPageContent({
-                      pageMemory: memory,
-                      pageDateInfo: dateInfo,
-                    })}
+                    {isMobilePrevMemoryTransition
+                      ? renderMobilePreviousMemoryDetailsPage()
+                      : renderPhotoPageContent({
+                          pageMemory: memory,
+                          pageDateInfo: dateInfo,
+                          pageSide: 'right',
+                        })}
                   </div>
                 </motion.div>
               )}

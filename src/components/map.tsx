@@ -1056,6 +1056,7 @@ export function MapComponent({
       {/* Memory Detail Modal */}
       <MemoryDetailModal
         memory={selectedMemory}
+        previousMemory={previousSelectedMemory}
         nextMemory={nextSelectedMemory}
         open={memoryDetailOpen}
         onOpenChange={(isOpen) => {
