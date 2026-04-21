@@ -14,6 +14,7 @@ interface SendInvitationsResult {
 interface CreateInvitationLinkResult {
   id: string;
   inviteLink: string;
+  maxUses: number;
   expiresAt: string;
 }
 
@@ -21,6 +22,7 @@ export interface ValidateInvitationData {
   invitation: {
     id: string;
     email: string;
+    isForAll: boolean;
     expiresAt: string;
     token: string;
   };
@@ -79,19 +81,18 @@ export function useSendInvitations() {
 }
 
 /**
- * TEMPORARY PATCH:
- * Generates a tokenized invitation link for quick verification flows.
- * Existing invitation-by-email hooks remain unchanged.
+ * Generates a public, multi-use invitation link for a group.
  */
 export function useCreateInvitationLink() {
   return useMutation({
-    mutationFn: async (
-      groupId: string
-    ): Promise<CreateInvitationLinkResult> => {
+    mutationFn: async (data: {
+      groupId: string;
+      maxUses: number;
+    }): Promise<CreateInvitationLinkResult> => {
       const res = await fetch('/api/prisma/invitation/link', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ groupId }),
+        body: JSON.stringify(data),
       });
 
       const body = await res.json();

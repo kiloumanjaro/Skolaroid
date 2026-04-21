@@ -273,8 +273,10 @@ model Invitation {
   id        String       @id @default(uuid()) @db.Uuid
   groupId   String       @db.Uuid
   invitedBy String       @db.Uuid
-  email     String       @db.VarChar(255)
+  email     String?      @db.VarChar(255)
   token     String       @unique @db.VarChar(64)
+  isForAll  Boolean      @default(false)
+  maxUses   Int          @default(1)
   expiresAt DateTime
   createdAt DateTime     @default(now())
   group     PrivateGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)

@@ -101,6 +101,8 @@ export async function POST(request: NextRequest) {
             invitedBy: authUser.id,
             email: email.toLowerCase(),
             token,
+            isForAll: false,
+            maxUses: 1,
             expiresAt,
           },
           select: { id: true, email: true, token: true, expiresAt: true },
@@ -112,7 +114,7 @@ export async function POST(request: NextRequest) {
     const origin = request.headers.get('origin') ?? request.nextUrl.origin;
     const results = invitations.map((inv) => ({
       id: inv.id,
-      email: inv.email,
+      email: inv.email!,
       inviteLink: `${origin}/invite?token=${inv.token}`,
       expiresAt: inv.expiresAt.toISOString(),
     }));
