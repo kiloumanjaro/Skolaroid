@@ -2,7 +2,6 @@
 
 import { cn } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
-import { FormError } from '@/components/ui/form-error';
 import { Button } from '@/components/ui/button';
 import { WOBBLY_RADIUS_MD } from '@/lib/hand-drawn';
 import { useState } from 'react';
@@ -12,35 +11,27 @@ export function LoginForm({
   redirectAfterLogin,
   ...props
 }: React.ComponentPropsWithoutRef<'div'> & { redirectAfterLogin?: string }) {
-  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
     const supabase = createClient();
     setIsLoading(true);
-    setError(null);
 
-    try {
-      const siteUrl =
-        process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-
-      // Store the redirect destination in a cookie so the auth callback
-      // can read it server-side after the OAuth round-trip
-      if (redirectAfterLogin) {
-        document.cookie = `post_login_redirect=${encodeURIComponent(redirectAfterLogin)};path=/;max-age=600;SameSite=Lax`;
-      }
-
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${siteUrl}/auth/callback`,
-        },
-      });
-      if (error) throw error;
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : 'An error occurred');
-      setIsLoading(false);
+    // Store the redirect destination in a cookie so the auth callback
+    // can read it server-side after the OAuth round-trip
+    if (redirectAfterLogin) {
+      document.cookie = `post_login_redirect=${encodeURIComponent(redirectAfterLogin)};path=/;max-age=600;SameSite=Lax`;
     }
+
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${origin}/auth/callback`,
+        queryParams: {
+          hd: 'up.edu.ph',
+        },
+      },
+    });
   };
 
   return (
@@ -55,7 +46,6 @@ export function LoginForm({
       <p className="text-sm text-muted-foreground">
         Sign in with your Google account to continue.
       </p>
-      <FormError message={error} />
       <Button
         type="button"
         variant="outline"
