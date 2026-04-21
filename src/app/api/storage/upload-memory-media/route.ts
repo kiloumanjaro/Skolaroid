@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient as createServiceRoleClient } from '@supabase/supabase-js';
 import { createClient as createServerClient } from '@/lib/supabase/server';
 import { validateUploadBuffer } from '@/lib/server/validate-upload';
+import { requireUploadRateLimit } from '@/lib/server/require-upload-rate-limit';
 
 const BUCKET = 'memory-media';
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
@@ -19,6 +20,9 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       );
     }
+
+    const limited = await requireUploadRateLimit(authUser.id);
+    if ('error' in limited) return limited.error;
 
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
