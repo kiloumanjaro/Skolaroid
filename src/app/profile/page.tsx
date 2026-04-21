@@ -11,11 +11,18 @@ import { ProfileActivityCard } from '@/components/profile/ProfileActivityCard';
 import { ProfileSettingsCard } from '@/components/profile/ProfileSettingsCard';
 import { ProfileMemoriesCard } from '@/components/profile/ProfileMemoriesCard';
 import { EditProfileModal } from '@/components/profile/EditProfileModal';
+import { ActivityTimelineDialog } from '@/components/profile/ActivityTimelineDialog';
+import { MemoryDetailModal } from '@/components/map/MemoryDetailModal';
+import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 
 export default function ProfilePage() {
   const { user, loading } = useUserAuth();
   const { data: currentUserData, isLoading: dbUserLoading } = useCurrentUser();
   const [editOpen, setEditOpen] = useState(false);
+  const [activityOpen, setActivityOpen] = useState(false);
+  const [selectedActivityMemory, setSelectedActivityMemory] =
+    useState<MemoryWithCoordinates | null>(null);
+  const [memoryDetailOpen, setMemoryDetailOpen] = useState(false);
 
   if (loading || dbUserLoading) {
     return (
@@ -54,7 +61,10 @@ export default function ProfilePage() {
             batch={dbUser?.programBatch.batch.year}
             status={dbUser?.status}
           />
-          <ProfileActivityCard />
+          <ProfileActivityCard
+            userId={dbUser?.id}
+            onShowMore={() => setActivityOpen(true)}
+          />
           <ProfileMemoriesCard userId={dbUser?.id} />
           <ProfileSettingsCard />
         </div>
@@ -64,6 +74,23 @@ export default function ProfilePage() {
         onOpenChange={setEditOpen}
         dbUser={dbUser}
         authUser={user}
+      />
+      <ActivityTimelineDialog
+        open={activityOpen}
+        onOpenChange={setActivityOpen}
+        userId={dbUser?.id}
+        onMemorySelect={(memory) => {
+          setSelectedActivityMemory(memory);
+          setMemoryDetailOpen(true);
+        }}
+      />
+      <MemoryDetailModal
+        memory={selectedActivityMemory}
+        open={memoryDetailOpen}
+        onOpenChange={(v) => {
+          setMemoryDetailOpen(v);
+          if (!v) setSelectedActivityMemory(null);
+        }}
       />
     </>
   );
