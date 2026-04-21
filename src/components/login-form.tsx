@@ -29,6 +29,7 @@ export function LoginForm({
         redirectTo: `${origin}/auth/callback`,
         queryParams: {
           hd: 'up.edu.ph',
+          prompt: 'select_account',
         },
       },
     });
