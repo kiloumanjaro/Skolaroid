@@ -27,6 +27,7 @@ export interface ActivityItem {
   type: ActivityItemType;
   createdAt: string;
   commentContent?: string;
+  memoryAvailable: boolean;
   memory: ActivityMemory;
 }
 

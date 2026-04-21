@@ -51,6 +51,9 @@ export async function GET(request: NextRequest) {
       mediaURL: true,
       mediaURLs: true,
       createdAt: true,
+      deletedAt: true,
+      isArchived: true,
+      moderationStatus: true,
       visibility: true,
       creatorId: true,
       privateGroupId: true,
@@ -73,8 +76,7 @@ export async function GET(request: NextRequest) {
         ? prisma.memory.findMany({
             where: {
               creatorId: userId,
-              deletedAt: null,
-              isArchived: false,
+              // Include soft-deleted/archived so they appear in the log (marked unavailable)
               ...(cursorDate && { createdAt: { lt: cursorDate } }),
             },
             select: memorySelect,
@@ -130,6 +132,7 @@ export async function GET(request: NextRequest) {
       type: 'upload' | 'vote' | 'comment';
       createdAt: string;
       commentContent?: string;
+      memoryAvailable: boolean;
       memory: {
         id: string;
         title: string;
@@ -154,6 +157,9 @@ export async function GET(request: NextRequest) {
       title: string;
       mediaURL?: string | null;
       mediaURLs: string[];
+      deletedAt?: Date | null;
+      isArchived?: boolean;
+      moderationStatus?: string;
       visibility: string;
       creatorId?: string | null;
       privateGroupId?: string | null;
@@ -181,6 +187,21 @@ export async function GET(request: NextRequest) {
       };
     }
 
+    function isMemoryAvailable(m: {
+      deletedAt?: Date | null;
+      isArchived?: boolean;
+      moderationStatus?: string;
+      visibility?: string;
+      creatorId?: string | null;
+    }): boolean {
+      if (m.deletedAt) return false;
+      if (m.isArchived) return false;
+      if (m.moderationStatus === 'REMOVED') return false;
+      // Treat PRIVATE memories the user didn't create as inaccessible
+      if (m.visibility === 'PRIVATE' && m.creatorId !== userId) return false;
+      return true;
+    }
+
     const items: ActivityItem[] = [];
 
     for (const m of uploads) {
@@ -188,6 +209,7 @@ export async function GET(request: NextRequest) {
         id: m.id,
         type: 'upload',
         createdAt: m.createdAt.toISOString(),
+        memoryAvailable: isMemoryAvailable(m),
         memory: shapeMemory(m),
       });
     }
@@ -198,6 +220,7 @@ export async function GET(request: NextRequest) {
         id: v.id,
         type: 'vote',
         createdAt: v.createdAt.toISOString(),
+        memoryAvailable: isMemoryAvailable(v.memory),
         memory: shapeMemory(v.memory),
       });
     }
@@ -209,6 +232,7 @@ export async function GET(request: NextRequest) {
         type: 'comment',
         createdAt: c.createdAt.toISOString(),
         commentContent: c.content,
+        memoryAvailable: isMemoryAvailable(c.memory),
         memory: shapeMemory(c.memory),
       });
     }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Heart, ImageIcon, MessageSquare } from 'lucide-react';
+import { Heart, ImageIcon, MessageSquare, Frown } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -70,7 +70,8 @@ function ActivityRow({
       style={{ borderRadius: WOBBLY_RADIUS }}
       className={cn(
         'group flex w-full items-start gap-3 border border-border/40 px-3 py-2',
-        'bg-background text-left transition-colors hover:bg-muted'
+        'bg-background text-left transition-colors hover:bg-muted',
+        !item.memoryAvailable && 'opacity-60'
       )}
     >
       <Icon
@@ -80,7 +81,12 @@ function ActivityRow({
       />
       <div className="min-w-0 flex-1">
         <span className="block font-hand text-sm text-foreground">{label}</span>
-        <span className="block truncate text-xs italic text-muted-foreground">
+        <span
+          className={cn(
+            'block truncate text-xs italic text-muted-foreground',
+            !item.memoryAvailable && 'line-through'
+          )}
+        >
           {item.memory.title}
         </span>
       </div>
@@ -89,7 +95,7 @@ function ActivityRow({
           {formatDateTime(item.createdAt)}
         </span>
         <span className="font-hand text-xs text-primary opacity-0 transition-opacity group-hover:opacity-100">
-          View →
+          {item.memoryAvailable ? 'View →' : 'See why →'}
         </span>
       </div>
     </button>
@@ -103,6 +109,7 @@ export function ActivityTimelineDialog({
   onMemorySelect,
 }: ActivityTimelineDialogProps) {
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
+  const [unavailableOpen, setUnavailableOpen] = useState(false);
 
   const { data, isPending, isError, error } = useUserActivity({
     userId,
@@ -112,69 +119,98 @@ export function ActivityTimelineDialog({
 
   const items = data?.data ?? [];
 
+  function handleRowClick(item: ActivityItem) {
+    if (!item.memoryAvailable) {
+      setUnavailableOpen(true);
+      return;
+    }
+    onMemorySelect(item.memory as MemoryWithCoordinates);
+  }
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[90vh] max-w-lg flex-col gap-4">
-        <DialogHeader>
-          <DialogTitle className="font-kalam text-xl">
-            Activity Timeline
-          </DialogTitle>
-        </DialogHeader>
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="flex max-h-[90vh] max-w-lg flex-col gap-4">
+          <DialogHeader>
+            <DialogTitle className="font-kalam text-xl">
+              Activity Timeline
+            </DialogTitle>
+          </DialogHeader>
 
-        {/* Filter buttons */}
-        <div className="flex flex-wrap gap-2">
-          {FILTERS.map(({ value, label }) => (
-            <button
-              key={value}
-              onClick={() => setActiveFilter(value)}
-              style={{ borderRadius: WOBBLY_RADIUS }}
-              className={cn(
-                'border-2 border-foreground px-3 py-1 font-hand text-xs capitalize',
-                'transition-all',
-                activeFilter === value
-                  ? 'bg-primary text-primary-foreground shadow-[2px_2px_0px_0px_#2d2d2d]'
-                  : 'bg-background text-foreground shadow-[3px_3px_0px_0px_#2d2d2d] hover:bg-muted'
-              )}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-
-        {/* Activity list */}
-        <div className="flex flex-col gap-2 overflow-y-auto pr-1">
-          {isPending &&
-            Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="h-12 animate-pulse rounded-md bg-muted" />
+          {/* Filter buttons */}
+          <div className="flex flex-wrap gap-2">
+            {FILTERS.map(({ value, label }) => (
+              <button
+                key={value}
+                onClick={() => setActiveFilter(value)}
+                style={{ borderRadius: WOBBLY_RADIUS }}
+                className={cn(
+                  'border-2 border-foreground px-3 py-1 font-hand text-xs capitalize',
+                  'transition-all',
+                  activeFilter === value
+                    ? 'bg-primary text-primary-foreground shadow-[2px_2px_0px_0px_#2d2d2d]'
+                    : 'bg-background text-foreground shadow-[3px_3px_0px_0px_#2d2d2d] hover:bg-muted'
+                )}
+              >
+                {label}
+              </button>
             ))}
+          </div>
 
-          {isError && (
-            <p className="font-hand text-sm text-red-500">
-              {error instanceof Error
-                ? error.message
-                : 'Failed to load activity. Please try again.'}
+          {/* Activity list */}
+          <div className="flex flex-col gap-2 overflow-y-auto pr-1">
+            {isPending &&
+              Array.from({ length: 5 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-12 animate-pulse rounded-md bg-muted"
+                />
+              ))}
+
+            {isError && (
+              <p className="font-hand text-sm text-red-500">
+                {error instanceof Error
+                  ? error.message
+                  : 'Failed to load activity. Please try again.'}
+              </p>
+            )}
+
+            {!isPending && !isError && items.length === 0 && (
+              <p className="py-6 text-center font-hand text-sm italic text-muted-foreground">
+                No activity yet.
+              </p>
+            )}
+
+            {!isPending &&
+              !isError &&
+              items.map((item) => (
+                <ActivityRow
+                  key={`${item.type}-${item.id}`}
+                  item={item}
+                  onClick={() => handleRowClick(item)}
+                />
+              ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Memory unavailable dialog */}
+      <Dialog open={unavailableOpen} onOpenChange={setUnavailableOpen}>
+        <DialogContent className="max-w-sm text-center">
+          <div className="flex flex-col items-center gap-3 py-4">
+            <Frown
+              size={48}
+              className="text-muted-foreground"
+              strokeWidth={1.5}
+            />
+            <DialogTitle className="font-kalam text-lg">Uh oh!</DialogTitle>
+            <p className="font-hand text-sm text-muted-foreground">
+              It looks like this memory is no longer available — it may have
+              been removed or its visibility was restricted.
             </p>
-          )}
-
-          {!isPending && !isError && items.length === 0 && (
-            <p className="py-6 text-center font-hand text-sm italic text-muted-foreground">
-              No activity yet.
-            </p>
-          )}
-
-          {!isPending &&
-            !isError &&
-            items.map((item) => (
-              <ActivityRow
-                key={`${item.type}-${item.id}`}
-                item={item}
-                onClick={() =>
-                  onMemorySelect(item.memory as MemoryWithCoordinates)
-                }
-              />
-            ))}
-        </div>
-      </DialogContent>
-    </Dialog>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
