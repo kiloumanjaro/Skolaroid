@@ -29,6 +29,8 @@ import { MemoryPinStack } from './map/MemoryPinStack';
 import { MemoryDetailModal } from './map/MemoryDetailModal';
 import { useMemoryCountsByLandmark } from '@/lib/hooks/useMemoryCountsByLandmark';
 import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
+import { useMemoriesByCreator } from '@/lib/hooks/useMemoriesByCreator';
+import { MapFirstMemoryPrompt } from './map/MapFirstMemoryPrompt';
 import {
   useAllMemoriesWithCoordinates,
   type MemoryWithCoordinates,
@@ -157,10 +159,19 @@ export function MapComponent({
     useAllMemoriesWithCoordinates();
   const memories = useMemo(() => memoriesData?.data ?? [], [memoriesData]);
   const { data: currentUserData } = useCurrentUser();
+  const currentUserId = currentUserData?.data?.id;
+  const { data: creatorMemoriesData, isLoading: creatorMemoriesLoading } =
+    useMemoriesByCreator(currentUserId);
   const { data: locationsData } = useLocations();
   const { data: userGroupsData } = useUserGroups();
   const userGroups = userGroupsData ?? EMPTY_USER_GROUPS;
   const isAdmin = currentUserData?.data?.role === 'ADMIN';
+
+  const showFirstMemoryPrompt =
+    !!currentUserData?.data &&
+    !creatorMemoriesLoading &&
+    creatorMemoriesData?.data?.length === 0 &&
+    !addMemoryOpen;
 
   const availableGroups = useMemo<GroupFilterOption[]>(
     () =>
@@ -1068,6 +1079,11 @@ export function MapComponent({
         }
         onClose={() => setSelectedLandmark(null)}
       />
+
+      {/* First Memory Prompt — shown to authenticated users with zero memories */}
+      {showFirstMemoryPrompt && (
+        <MapFirstMemoryPrompt onAddMemory={() => setAddMemoryOpen(true)} />
+      )}
 
       {/* Memory Detail Modal */}
       <MemoryDetailModal
