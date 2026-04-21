@@ -162,6 +162,10 @@ export default function MapPage() {
     []
   );
 
+  const handleSearchChange = useCallback((query: string) => {
+    setFilters((prev) => ({ ...prev, searchQuery: query }));
+  }, []);
+
   return (
     <div className="relative h-dvh overflow-hidden bg-background">
       <Header hidden={headerTucked} variant="floating" />
@@ -212,6 +216,7 @@ export default function MapPage() {
                 availableYears={availableYears}
                 availableGroups={availableGroups}
                 availableLocations={availableLocations}
+                onSearchChange={handleSearchChange}
               />
             ) : null}
           </div>
