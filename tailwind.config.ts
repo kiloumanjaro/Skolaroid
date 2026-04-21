@@ -58,6 +58,15 @@ export default {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      keyframes: {
+        slideDown: {
+          '0%': { opacity: '0', transform: 'translate(-50%, -1rem)' },
+          '100%': { opacity: '1', transform: 'translate(-50%, 0)' },
+        },
+      },
+      animation: {
+        'slide-down': 'slideDown 0.35s ease-out',
+      },
     },
   },
   plugins: [animate],
