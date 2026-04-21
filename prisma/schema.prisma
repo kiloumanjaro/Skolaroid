@@ -375,3 +375,11 @@ model Notification {
   @@index([targetMemoryId])
   @@index([targetReportId])
 }
+
+model UploadRateLimit {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+}
