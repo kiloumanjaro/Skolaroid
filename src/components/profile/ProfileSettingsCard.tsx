@@ -3,10 +3,11 @@
 import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { DeleteAccountDialog } from '@/components/profile/DeleteAccountDialog';
+// Replaced DeleteAccountDialog with DeactivateAccountDialog
+import { DeactivateAccountDialog } from '@/components/profile/DeactivateAccountDialog';
 
 export function ProfileSettingsCard() {
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showDeactivateDialog, setShowDeactivateDialog] = useState(false);
 
   return (
     <>
@@ -30,24 +31,25 @@ export function ProfileSettingsCard() {
           </div>
           <div className="flex flex-col gap-1">
             <Button
-              id="delete-account-trigger"
+              id="deactivate-account-trigger"
               variant="outline"
               size="sm"
-              onClick={() => setShowDeleteDialog(true)}
+              onClick={() => setShowDeactivateDialog(true)}
               className="w-fit border-destructive/50 text-destructive hover:border-destructive hover:bg-destructive/10 hover:text-destructive"
             >
-              Delete Account
+              Deactivate Account
             </Button>
             <p className="text-xs text-muted-foreground">
-              Permanently delete your account and all associated data.
+              Deactivate your account. You have 30 days to reactivate before
+              permanent deletion.
             </p>
           </div>
         </CardContent>
       </Card>
 
-      <DeleteAccountDialog
-        open={showDeleteDialog}
-        onOpenChange={setShowDeleteDialog}
+      <DeactivateAccountDialog
+        open={showDeactivateDialog}
+        onOpenChange={setShowDeactivateDialog}
       />
     </>
   );
