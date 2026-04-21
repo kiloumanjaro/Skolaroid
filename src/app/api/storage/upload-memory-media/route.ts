@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient as createServiceRoleClient } from '@supabase/supabase-js';
 import { createClient as createServerClient } from '@/lib/supabase/server';
+import { validateUploadBuffer } from '@/lib/server/validate-upload';
 
 const BUCKET = 'memory-media';
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
-const ALLOWED_MIME_PREFIXES = ['image/', 'video/'];
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,16 +33,6 @@ export async function POST(request: NextRequest) {
     if (file.size > MAX_FILE_SIZE_BYTES) {
       return NextResponse.json(
         { success: false, message: 'File exceeds the 10 MB size limit' },
-        { status: 400 }
-      );
-    }
-
-    const isAllowedType = ALLOWED_MIME_PREFIXES.some((prefix) =>
-      file.type.startsWith(prefix)
-    );
-    if (!isAllowedType) {
-      return NextResponse.json(
-        { success: false, message: 'Only image and video files are allowed' },
         { status: 400 }
       );
     }
@@ -102,17 +92,24 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Build a unique storage path: {uuid}.{ext}
-    const ext = file.name.split('.').pop() ?? 'bin';
-    const filename = `${crypto.randomUUID()}.${ext}`;
-
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
+
+    const validation = await validateUploadBuffer(buffer);
+    if (!validation.ok) {
+      return NextResponse.json(
+        { success: false, message: validation.reason },
+        { status: 400 }
+      );
+    }
+
+    // Build a unique storage path using the detected (not client-supplied) ext.
+    const filename = `${crypto.randomUUID()}.${validation.ext}`;
 
     const { error: uploadError } = await supabase.storage
       .from(BUCKET)
       .upload(filename, buffer, {
-        contentType: file.type,
+        contentType: validation.mime,
         upsert: false,
       });
 
