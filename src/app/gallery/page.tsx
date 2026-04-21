@@ -14,10 +14,9 @@ import { Link2, ArrowLeft } from 'lucide-react';
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 import { GalleryMemoryCard } from '@/components/gallery/GalleryMemoryCard';
 import { useAllMemoriesWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
-import { getEraFromBatchTag } from '@/lib/utils';
+import { cn, getEraFromBatchTag } from '@/lib/utils';
 
-// TODO: implement copy link functionality
-const handleCopyLink = () => {};
+// handleCopyLink is defined inside GalleryPageContent to access activeEra
 
 const CLONE_COUNT = 3;
 
@@ -31,6 +30,21 @@ function GalleryPageContent({ era }: GalleryPageContentProps) {
   const activeEra = parseInt(searchParams.get('era') || '2020', 10);
   const displayEra = era ?? `${activeEra}s`;
   const [isDragging, setIsDragging] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
+
+  const handleCopyLink = async () => {
+    const base =
+      process.env.NEXT_PUBLIC_APP_URL ??
+      (typeof window !== 'undefined' ? window.location.origin : '');
+    const url = `${base}/share/gallery?era=${activeEra}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
+    } catch {
+      // clipboard unavailable — silently ignore
+    }
+  };
 
   // 8-bit pixel horizon — random walk that never repeats a height, so every
   // block is a micro step up or down. Range stays tight (1–5 blocks) so dips
@@ -348,14 +362,33 @@ function GalleryPageContent({ era }: GalleryPageContentProps) {
               ({displayEra})
             </span>
           </div>
-          <button
-            onClick={handleCopyLink}
-            aria-label="Copy Link"
-            className="ml-auto flex aspect-square items-center justify-center gap-2 border-2 border-black bg-white p-1.5 font-hand text-sm sm:aspect-auto sm:px-4 sm:py-1.5"
-          >
-            <span className="hidden sm:inline">Copy Link</span>
-            <Link2 className="h-4 w-4" />
-          </button>
+          <div className="relative ml-auto">
+            <button
+              onClick={handleCopyLink}
+              aria-label="Copy shareable link"
+              className={cn(
+                'flex aspect-square items-center justify-center gap-2 border-2 border-black bg-white p-1.5 font-hand text-sm transition-[box-shadow,transform] duration-75 sm:aspect-auto sm:px-4 sm:py-1.5',
+                'shadow-[4px_4px_0px_0px_#2d2d2d]',
+                'hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#2d2d2d]',
+                'active:translate-x-[4px] active:translate-y-[4px] active:shadow-none'
+              )}
+            >
+              <span className="hidden sm:inline">
+                {copiedLink ? 'Copied!' : 'Copy Link'}
+              </span>
+              <Link2 className="h-4 w-4" />
+            </button>
+
+            {/* Inline toast */}
+            {copiedLink && (
+              <span
+                aria-live="polite"
+                className="absolute -bottom-8 right-0 whitespace-nowrap border-2 border-black bg-white px-2 py-0.5 font-hand text-xs shadow-[2px_2px_0px_0px_#2d2d2d]"
+              >
+                Link copied!
+              </span>
+            )}
+          </div>
         </header>
         <div className="relative flex min-w-0 flex-1">
           {isLoading && (
