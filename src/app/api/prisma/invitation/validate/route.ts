@@ -88,19 +88,34 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // ── 5. Verify token belongs to the authenticated user ────────────
-    if (
-      invitation.email &&
-      authUser.email?.toLowerCase() !== invitation.email.toLowerCase()
-    ) {
-      return NextResponse.json(
-        {
-          error: 'Invalid invitation link',
-          code: 'WRONG_USER',
-          groupName: invitation.group.name,
-        },
-        { status: 403 }
-      );
+    // ── 5. Validate based on invitation type ────────────────────────
+    if (invitation.isForAll) {
+      // Public link: check if uses remain
+      if (invitation.maxUses <= 0) {
+        return NextResponse.json(
+          {
+            error: 'This invitation link has been fully used',
+            code: 'EXHAUSTED',
+            groupName: invitation.group.name,
+          },
+          { status: 410 }
+        );
+      }
+    } else {
+      // Targeted link: verify token belongs to the authenticated user
+      if (
+        invitation.email &&
+        authUser.email?.toLowerCase() !== invitation.email.toLowerCase()
+      ) {
+        return NextResponse.json(
+          {
+            error: 'Invalid invitation link',
+            code: 'WRONG_USER',
+            groupName: invitation.group.name,
+          },
+          { status: 403 }
+        );
+      }
     }
 
     // ── 6. Check if already a member ─────────────────────────────────
@@ -112,6 +127,7 @@ export async function GET(request: NextRequest) {
         invitation: {
           id: invitation.id,
           email: invitation.email,
+          isForAll: invitation.isForAll,
           expiresAt: invitation.expiresAt.toISOString(),
           token: invitation.token,
         },

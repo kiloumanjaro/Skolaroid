@@ -471,8 +471,21 @@ export const invitationActionSchema = z.object({
   token: z.string().min(1, 'Token is required'),
 });
 
+/** Schema for generating a public invitation link. */
+export const createInvitationLinkSchema = z.object({
+  groupId: z.string().uuid('Invalid group ID'),
+  maxUses: z
+    .number({ error: 'Max uses must be a number' })
+    .int('Max uses must be a whole number')
+    .min(1, 'Max uses must be at least 1')
+    .max(1000, 'Max uses cannot exceed 1000'),
+});
+
 export type SendInvitationsInput = z.infer<typeof sendInvitationsSchema>;
 export type InvitationTokenInput = z.infer<typeof invitationTokenSchema>;
+export type CreateInvitationLinkInput = z.infer<
+  typeof createInvitationLinkSchema
+>;
 export type InvitationActionInput = z.infer<typeof invitationActionSchema>;
 
 // ============================================================================

@@ -126,7 +126,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
   const [editMessageModalOpen, setEditMessageModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('members');
 
-  const { showSuccess, showError } = useGroupToast();
+  const { showSuccess, showError, ToastPortal } = useGroupToast();
   const { user } = useUserAuth();
   const currentUserId = user?.id ?? '';
 
@@ -620,6 +620,8 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
           )}
         </>
       )}
+
+      <ToastPortal />
     </>
   );
 }

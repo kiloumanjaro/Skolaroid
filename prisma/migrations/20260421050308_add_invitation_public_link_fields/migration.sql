@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Invitation" ADD COLUMN     "isForAll" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN     "maxUses" INTEGER NOT NULL DEFAULT 1,
+ALTER COLUMN "email" DROP NOT NULL;
