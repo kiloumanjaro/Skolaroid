@@ -37,22 +37,28 @@ export function LoginForm({
 
   return (
     <div
-      className={cn('flex flex-col gap-6 p-6', className)}
+      className={cn('flex flex-col gap-7 p-6', className)}
       style={{ borderRadius: WOBBLY_RADIUS_MD }}
       {...props}
     >
-      <h1 className="font-kalam text-2xl font-bold tracking-tight text-foreground">
-        Welcome to Skolaroid
-      </h1>
-      <p className="text-sm text-muted-foreground">
-        Sign in with your Google account to continue.
-      </p>
+      <div className="space-y-1">
+        <h1 className="text-4xl font-normal tracking-tight text-foreground">
+          <span>Welcome to </span>
+          <span className="font-dancing text-5xl font-medium text-skolaroid-blue">
+            Skolaroid
+          </span>
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Sign in with your Google account to continue.
+        </p>
+      </div>
       <Button
         type="button"
         variant="outline"
         onClick={handleLogin}
         disabled={isLoading}
-        className="w-full gap-3 py-3"
+        className="w-full gap-3 rounded-md border-[2px] py-3 shadow-[4px_4px_0px_0px_#2d2d2d] hover:bg-secondary hover:text-foreground active:bg-secondary"
+        style={{ borderRadius: '0.375rem' }}
       >
         <svg className="h-5 w-5" viewBox="0 0 24 24">
           <path

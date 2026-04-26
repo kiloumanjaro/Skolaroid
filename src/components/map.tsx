@@ -12,7 +12,6 @@ import {
 import { getEraFromBatchTag } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { createRoot, type Root } from 'react-dom/client';
-import { Plus } from 'lucide-react';
 import { AddMemoryModal } from './add-memory-modal';
 import type {
   GroupFilterOption,
@@ -42,6 +41,7 @@ import type {
   LocationSelectionMode,
   MapLocationSelection,
 } from '@/lib/types/map';
+import { AddMemoryButton } from './map/AddMemoryButton';
 import { MapLocationSelector } from './map/MapLocationSelector';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
@@ -49,20 +49,20 @@ const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
 // ---------------------------------------------------------------------------
 // Era → Mapbox style mapping
-// Each decade gets a visually distinct style to convey the period feel.
+// Use the outdoors style consistently across all eras.
 // ---------------------------------------------------------------------------
 const ERA_MAP_STYLES: Record<number, string> = {
-  2020: 'mapbox://styles/mapbox/streets-v12', // Vibrant & modern
-  2010: 'mapbox://styles/mapbox/light-v11', // Clean minimalist
-  2000: 'mapbox://styles/mapbox/outdoors-v12', // Detailed outdoors
-  1990: 'mapbox://styles/mapbox/satellite-streets-v12', // Classic photo map
-  1980: 'mapbox://styles/mapbox/satellite-streets-v12',
-  1970: 'mapbox://styles/mapbox/satellite-v9', // Vintage satellite
-  1960: 'mapbox://styles/mapbox/satellite-v9',
-  1950: 'mapbox://styles/mapbox/satellite-v9',
-  1940: 'mapbox://styles/mapbox/satellite-v9',
+  2020: 'mapbox://styles/mapbox/outdoors-v12',
+  2010: 'mapbox://styles/mapbox/outdoors-v12',
+  2000: 'mapbox://styles/mapbox/outdoors-v12',
+  1990: 'mapbox://styles/mapbox/outdoors-v12',
+  1980: 'mapbox://styles/mapbox/outdoors-v12',
+  1970: 'mapbox://styles/mapbox/outdoors-v12',
+  1960: 'mapbox://styles/mapbox/outdoors-v12',
+  1950: 'mapbox://styles/mapbox/outdoors-v12',
+  1940: 'mapbox://styles/mapbox/outdoors-v12',
 };
-const DEFAULT_MAP_STYLE = 'mapbox://styles/mapbox/streets-v12';
+const DEFAULT_MAP_STYLE = 'mapbox://styles/mapbox/outdoors-v12';
 
 /** Distance threshold (degrees) — if map center is already within this of the target, skip flyTo. */
 const FLY_TO_THRESHOLD = 0.0001;
@@ -650,7 +650,7 @@ export function MapComponent({
 
         const map = new mapboxgl.Map({
           container: mapContainerRef.current,
-          style: 'mapbox://styles/mapbox/streets-v12',
+          style: DEFAULT_MAP_STYLE,
           center: DEFAULT_MAP_CENTER,
           zoom: DEFAULT_MAP_ZOOM,
           minZoom: 16,
@@ -666,9 +666,6 @@ export function MapComponent({
         map.once('load', () => {
           setMapReady(true);
         });
-
-        map.addControl(new mapboxgl.NavigationControl(), 'top-left');
-        map.addControl(new mapboxgl.FullscreenControl(), 'top-left');
 
         // Create landmark markers (but don't add to map yet — visibility effect handles this)
         LANDMARKS.forEach((landmark) => {
@@ -1017,23 +1014,9 @@ export function MapComponent({
     <div className="relative h-full w-full">
       <div ref={mapContainerRef} className="h-full w-full" />
 
-      {/* Add Memory Button - Bottom Right */}
-      <div className="absolute bottom-4 right-4 z-10 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
-        <div className="group flex items-center gap-0 rounded-full bg-white p-2 shadow-lg transition-all duration-300 hover:gap-3">
-          <button
-            onClick={() => setAddMemoryOpen(true)}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-skolaroid-blue text-white shadow-lg transition-all hover:bg-skolaroid-blue/90 hover:shadow-xl active:scale-95 sm:h-12 sm:w-12"
-            aria-label="Add memory"
-          >
-            <Plus size={20} />
-          </button>
-          <span className="max-w-0 overflow-hidden whitespace-nowrap text-sm font-medium text-gray-700 opacity-0 transition-all duration-300 group-hover:max-w-40 group-hover:pr-3 group-hover:opacity-100">
-            Add Memory
-          </span>
-        </div>
-      </div>
+      <AddMemoryButton onClick={() => setAddMemoryOpen(true)} />
 
-      {/* Expandable Toolbar - Top Right */}
+      {/* Floating Action Buttons - Top Right */}
       <ExpandableToolbar
         onPrimaryClick={() => setGroupModalOpen(true)}
         onBatchesClick={() => setBatchesModalOpen(true)}
