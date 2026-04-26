@@ -204,7 +204,24 @@ export function MapComponent({
 
   const tagFilteredMemories = useMemo(() => {
     return eraFilteredMemories.filter((memory) => {
-      // Tag filter
+      // ── SEARCH FILTER (live, applied first) ────────────────────────────────
+      if (filters.searchQuery && filters.searchQuery.trim()) {
+        const q = filters.searchQuery.toLowerCase().trim();
+        const inTitle = (memory.title ?? '').toLowerCase().includes(q);
+        const inDesc = (memory.description ?? '').toLowerCase().includes(q);
+        const inLocation = (
+          (memory.location as { buildingName?: string } | undefined)
+            ?.buildingName ?? ''
+        )
+          .toLowerCase()
+          .includes(q);
+        const inTags = (memory.tags ?? []).some((t) =>
+          t.name.toLowerCase().includes(q)
+        );
+        if (!inTitle && !inDesc && !inLocation && !inTags) return false;
+      }
+
+      // ── TAG FILTER (unchanged) ─────────────────────────────────────────────
       if (filters.selectedTags.length > 0) {
         const memoryTagNames = memory.tags?.map((t) => t.name) ?? [];
         const hasAllTags = filters.selectedTags.every((tag) =>
@@ -213,7 +230,7 @@ export function MapComponent({
         if (!hasAllTags) return false;
       }
 
-      // Year filter
+      // ── YEAR FILTER (unchanged) ────────────────────────────────────────────
       if (filters.selectedYear) {
         const memoryDateValue = (memory as { memoryDate?: string }).memoryDate;
         const memoryYear = memoryDateValue
@@ -222,17 +239,17 @@ export function MapComponent({
         if (memoryYear !== filters.selectedYear) return false;
       }
 
-      // Visibility filter
+      // ── VISIBILITY FILTER (unchanged) ─────────────────────────────────────
       if (filters.visibility !== 'ALL') {
         if (memory.visibility !== filters.visibility) return false;
       }
 
-      // Group filter
+      // ── GROUP FILTER (unchanged) ───────────────────────────────────────────
       if (filters.selectedGroupId) {
         if (memory.privateGroupId !== filters.selectedGroupId) return false;
       }
 
-      // Location filter
+      // ── LOCATION FILTER (unchanged) ───────────────────────────────────────
       if (filters.selectedLocationId) {
         const locationId = (memory.location as { id?: string } | undefined)?.id;
         if (locationId !== filters.selectedLocationId) return false;

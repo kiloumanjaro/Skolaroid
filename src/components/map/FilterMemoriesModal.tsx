@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { X, ChevronDown } from 'lucide-react';
+import { X, ChevronDown, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -40,6 +40,7 @@ export interface MemoryFilters {
   selectedYear: number | null;
   selectedGroupId: string | null;
   selectedLocationId: string | null;
+  searchQuery: string;
 }
 
 export const DEFAULT_FILTERS: MemoryFilters = {
@@ -49,6 +50,7 @@ export const DEFAULT_FILTERS: MemoryFilters = {
   selectedYear: null,
   selectedGroupId: null,
   selectedLocationId: null,
+  searchQuery: '',
 };
 
 export interface GroupFilterOption {
@@ -83,6 +85,7 @@ interface FilterMemoriesPanelProps {
   availableGroups?: GroupFilterOption[];
   availableLocations?: LocationFilterOption[];
   className?: string;
+  onSearchChange?: (query: string) => void;
 }
 
 // =============================================================================
@@ -136,6 +139,7 @@ export function FilterMemoriesPanel({
   availableGroups = [],
   availableLocations = [],
   className,
+  onSearchChange,
 }: FilterMemoriesPanelProps) {
   const [draft, setDraft] = useState<MemoryFilters>(filters);
 
@@ -147,7 +151,8 @@ export function FilterMemoriesPanel({
 
   const handleClearAll = useCallback(() => {
     setDraft(DEFAULT_FILTERS);
-  }, []);
+    onSearchChange?.('');
+  }, [onSearchChange]);
 
   const handleApply = useCallback(() => {
     onApply(draft);
@@ -186,6 +191,40 @@ export function FilterMemoriesPanel({
             <X className="h-4 w-4" />
           </button>
         ) : null}
+      </div>
+
+      {/* Search bar — live filter, no Apply needed */}
+      <div className="border-b px-5 py-3">
+        <div
+          className="flex items-center gap-2 border-2 border-border bg-card px-3 py-2 shadow-[4px_4px_0px_0px_#2d2d2d] transition-all"
+          style={{ borderRadius: WOBBLY_RADIUS }}
+        >
+          <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
+          <input
+            type="text"
+            value={draft.searchQuery}
+            onChange={(e) => {
+              const q = e.target.value;
+              setDraft((prev) => ({ ...prev, searchQuery: q }));
+              onSearchChange?.(q);
+            }}
+            placeholder="Search memories..."
+            className="flex-1 bg-transparent font-hand text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
+          />
+          {draft.searchQuery ? (
+            <button
+              type="button"
+              onClick={() => {
+                setDraft((prev) => ({ ...prev, searchQuery: '' }));
+                onSearchChange?.('');
+              }}
+              className="shrink-0 rounded p-0.5 text-muted-foreground transition-colors hover:text-foreground"
+              aria-label="Clear search"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          ) : null}
+        </div>
       </div>
 
       <div className="scrollbar-hide flex-1 overflow-y-auto px-6 py-4">
