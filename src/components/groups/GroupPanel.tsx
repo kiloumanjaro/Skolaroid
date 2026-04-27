@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { GroupSwitcher, useGroupToast } from '@/components/groups';
 import { CreateGroupModal } from '@/components/groups/CreateGroupModal';
 import { InviteMembersModal } from '@/components/groups/InviteMembersModal';
@@ -285,281 +284,340 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
 
   return (
     <>
-      <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent
-          className="flex h-[calc(100vh-1rem)] w-[calc(100vw-1rem)] max-w-none flex-col gap-0 overflow-hidden rounded-none p-0 shadow-none sm:max-w-none md:h-[85vh] md:w-[70vw] md:flex-row"
-          style={{ borderRadius: 0 }}
-          showCloseButton={false}
+      <div
+        className={cn(
+          'pointer-events-none absolute left-1/2 z-20 flex w-[calc(100%-1.5rem)] -translate-x-1/2 justify-center transition-[top,bottom,transform] duration-300 ease-out sm:w-[calc(100%-2.5rem)]',
+          open ? 'top-[47%] -translate-y-1/2' : 'bottom-0',
+          open && 'pointer-events-auto'
+        )}
+      >
+        <section
+          aria-label={selectedGroup?.name ?? 'Groups'}
+          className={cn(
+            'pointer-events-auto flex w-full max-w-[64rem] flex-col overflow-hidden border-[3px] border-[#1f1f1f] bg-[#ece9d8] shadow-none transition-transform duration-300 ease-out sm:w-[min(64rem,calc(100vw-3rem))]',
+            'h-[min(84vh,52rem)]',
+            open ? 'translate-y-0' : 'translate-y-[calc(100%-2.75rem)]'
+          )}
         >
-          <DialogTitle className="sr-only">
-            {selectedGroup?.name ?? 'Groups'}
-          </DialogTitle>
-
-          {/* LEFT COLUMN: Navigation */}
-          <div className="flex w-full shrink-0 flex-col border-b border-border bg-card md:w-56 md:border-b-0 md:border-r">
-            {/* Header */}
-            <div className="flex items-center justify-between border-b border-border px-4 py-3.5 md:px-5">
-              <h2 className="text-base font-semibold text-foreground">
-                Groups
-              </h2>
+          <div
+            className="flex cursor-pointer items-center justify-between gap-3 border-b-[3px] border-b-[#1f1f1f] bg-[#4384dc] px-3 py-2 text-white"
+            onClick={() => {
+              if (!open) onOpenChange(true);
+            }}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                if (!open) onOpenChange(true);
+              }
+            }}
+          >
+            <div className="min-w-0">
+              <p className="truncate text-base font-medium tracking-[0.01em] sm:text-lg">
+                Campus Group Window
+              </p>
             </div>
 
-            {/* GroupSwitcher */}
-            <div className="border-b border-border px-3 py-3">
-              <GroupSwitcher
-                groups={groups}
-                selectedGroup={selectedGroup}
-                onSelectGroup={handleSelectGroup}
-                onCreateGroup={() => setCreateModalOpen(true)}
-              />
+            <div className="flex shrink-0 items-center gap-1">
+              <button
+                type="button"
+                aria-label="Share group"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  if (!selectedGroup) return;
+                  if (!open) onOpenChange(true);
+                  setShareModalOpen(true);
+                }}
+                className="grid h-6 w-6 place-items-center border border-[#062a63] bg-[#f2f6fd] text-[#0b2e67] shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#7f9db9]"
+              >
+                <Share2 className="h-3.5 w-3.5" />
+              </button>
+              <button
+                type="button"
+                aria-label="Leave group"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  if (!selectedGroup) return;
+                  if (!open) onOpenChange(true);
+                  setLeaveModalOpen(true);
+                }}
+                className="grid h-6 w-6 place-items-center border border-[#062a63] bg-[#f2f6fd] text-[#0b2e67] shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#7f9db9]"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+              </button>
+              <button
+                type="button"
+                aria-label="Close groups panel"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onOpenChange(false);
+                }}
+                className="grid h-6 w-6 place-items-center border border-[#5d0d0d] bg-[#f7d6d5] text-[#7a1111] shadow-[inset_1px_1px_0_#fff8f7,inset_-1px_-1px_0_#c68787]"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
             </div>
-
-            {/* Navigation Buttons */}
-            {selectedGroup && (
-              <div className="scrollbar-hide flex-1 overflow-x-auto overflow-y-hidden px-3 py-3 md:overflow-y-auto">
-                <nav className="flex gap-1 md:flex-col">
-                  <button
-                    onClick={() => setActiveTab('members')}
-                    className={cn(
-                      'flex shrink-0 items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium transition-colors md:w-full',
-                      activeTab === 'members'
-                        ? 'bg-secondary text-foreground'
-                        : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
-                    )}
-                  >
-                    <Users className="h-4 w-4" />
-                    <span>Members</span>
-                  </button>
-
-                  <button
-                    onClick={() => setActiveTab('media')}
-                    className={cn(
-                      'flex shrink-0 items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium transition-colors md:w-full',
-                      activeTab === 'media'
-                        ? 'bg-secondary text-foreground'
-                        : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
-                    )}
-                  >
-                    <ImageIcon className="h-4 w-4" />
-                    <span>Media</span>
-                  </button>
-
-                  {isOwner && (
-                    <button
-                      onClick={() => setActiveTab('settings')}
-                      className={cn(
-                        'flex shrink-0 items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium transition-colors md:w-full',
-                        activeTab === 'settings'
-                          ? 'bg-secondary text-foreground'
-                          : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
-                      )}
-                    >
-                      <Settings className="h-4 w-4" />
-                      <span>Settings</span>
-                    </button>
-                  )}
-
-                  <button
-                    onClick={() => setActiveTab('about')}
-                    className={cn(
-                      'flex shrink-0 items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium transition-colors md:w-full',
-                      activeTab === 'about'
-                        ? 'bg-secondary text-foreground'
-                        : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
-                    )}
-                  >
-                    <Info className="h-4 w-4" />
-                    <span>About</span>
-                  </button>
-
-                  <button
-                    onClick={() => setActiveTab('roles')}
-                    className={cn(
-                      'flex shrink-0 items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium transition-colors md:w-full',
-                      activeTab === 'roles'
-                        ? 'bg-secondary text-foreground'
-                        : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
-                    )}
-                  >
-                    <Shield className="h-4 w-4" />
-                    <span>Roles</span>
-                  </button>
-                </nav>
-              </div>
-            )}
           </div>
 
-          {/* RIGHT COLUMN: Content */}
-          <div className="relative flex flex-1 flex-col overflow-hidden">
-            {selectedGroup ? (
-              <>
-                {/* Header with group info and actions */}
-                <div className="flex items-start justify-between border-b border-border px-4 py-3.5 md:px-5">
-                  <div className="flex flex-1 items-start gap-3">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-base font-semibold text-foreground">
-                          {selectedGroup.name}
-                        </h3>
-                        <Badge
-                          variant="outline"
-                          className="flex items-center gap-1 text-xs"
-                        >
-                          {selectedGroup.privacy === 'PUBLIC' ? (
-                            <>
-                              <Globe className="h-3 w-3" />
-                              Public
-                            </>
-                          ) : (
-                            <>
-                              <Lock className="h-3 w-3" />
-                              Private
-                            </>
-                          )}
-                        </Badge>
-                      </div>
-                      <p className="mt-0.5 text-sm text-muted-foreground">
-                        {selectedGroup.memberCount} members ·{' '}
-                        {selectedGroup.postCount} posts
-                      </p>
-                    </div>
-
-                    {/* Actions Dropdown */}
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 shrink-0"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-48">
-                        {isOwner && (
-                          <>
-                            <DropdownMenuItem
-                              onClick={() => setEditGroupModalOpen(true)}
-                            >
-                              <Pencil className="mr-2 h-4 w-4" />
-                              Edit Group
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                          </>
-                        )}
-                        {canSendInvitations && (
-                          <>
-                            <DropdownMenuItem
-                              onClick={() => setInviteModalOpen(true)}
-                            >
-                              <UserPlus className="mr-2 h-4 w-4" />
-                              Invite Members
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                          </>
-                        )}
-                        <DropdownMenuItem
-                          onClick={() => setShareModalOpen(true)}
-                        >
-                          <Share2 className="mr-2 h-4 w-4" />
-                          Share Group
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        {canEditMessage && (
-                          <>
-                            <DropdownMenuItem
-                              onClick={() => setEditMessageModalOpen(true)}
-                            >
-                              <MessageSquare className="mr-2 h-4 w-4" />
-                              Edit Message
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                          </>
-                        )}
-                        <DropdownMenuItem
-                          onClick={() => setLeaveModalOpen(true)}
-                          className="text-red-600 focus:text-red-600"
-                        >
-                          <LogOut className="mr-2 h-4 w-4" />
-                          Leave Group
-                        </DropdownMenuItem>
-                        {isOwner && (
-                          <>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              onClick={() => setDeleteModalOpen(true)}
-                              className="text-red-600 focus:text-red-600"
-                            >
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              Delete Group
-                            </DropdownMenuItem>
-                          </>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+          <div className="flex min-h-0 flex-1 flex-col bg-[#f7f4ea]">
+            <div className="flex min-h-0 flex-1 flex-col md:flex-row">
+              <div className="flex w-full shrink-0 flex-col border-b border-[#c6c0b2] bg-[#ece9d8] md:w-60 md:border-b-0 md:border-r">
+                <div className="border-b border-[#c6c0b2] px-4 py-3">
+                  <div className="rounded-sm border border-[#b4ad9b] bg-white px-3 py-2 shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#d0c7b6]">
+                    <GroupSwitcher
+                      groups={groups}
+                      selectedGroup={selectedGroup}
+                      onSelectGroup={(group) => {
+                        handleSelectGroup(group);
+                        if (!open) onOpenChange(true);
+                      }}
+                      onCreateGroup={() => {
+                        onOpenChange(true);
+                        setCreateModalOpen(true);
+                      }}
+                    />
                   </div>
-
-                  {/* Close Button */}
-                  <Button
-                    onClick={() => onOpenChange(false)}
-                    variant="ghost"
-                    size="icon"
-                    className="ml-2 h-8 w-8 shrink-0"
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
                 </div>
 
-                {/* Tab Content */}
-                <div className="scrollbar-hide flex-1 overflow-y-auto">
-                  {activeTab === 'members' && (
-                    <MembersTab
-                      members={selectedGroup.members}
-                      canManageMembers={canManageMembers}
-                      canChangeRoles={isOwner}
-                      currentUserId={currentUserId}
-                      groupId={selectedGroup.id}
-                      onMembersChanged={handleMembersChanged}
-                    />
-                  )}
-                  {activeTab === 'media' && <MediaTab group={selectedGroup} />}
-                  {activeTab === 'settings' && isOwner && (
-                    <SettingsTab
-                      group={selectedGroup}
-                      onUpdated={() => refetchGroupDetail()}
-                    />
-                  )}
-                  {activeTab === 'about' && <AboutTab group={selectedGroup} />}
-                  {activeTab === 'roles' && selectedGroup.rolePrivileges && (
-                    <RolesTab
-                      groupId={selectedGroup.id}
-                      rolePrivileges={selectedGroup.rolePrivileges}
-                      currentUserRole={currentUserRole}
-                      onPrivilegesSaved={handlePrivilegesSaved}
-                    />
-                  )}
-                </div>
-              </>
-            ) : (
-              <div className="flex h-full flex-col items-center justify-center px-5 py-8">
-                {isLoadingGroups ? (
-                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-                ) : (
-                  <>
-                    <Users className="mb-3 h-12 w-12 text-muted-foreground" />
-                    <h3 className="text-base font-semibold text-foreground">
-                      No Group Selected
-                    </h3>
-                    <p className="mt-1 text-center text-sm text-muted-foreground">
-                      Select a group from the sidebar or create a new one
-                    </p>
-                  </>
+                {selectedGroup && (
+                  <div className="scrollbar-hide flex-1 overflow-x-auto overflow-y-hidden px-2 py-2 md:overflow-y-auto">
+                    <nav className="flex gap-1 md:flex-col">
+                      <button
+                        onClick={() => setActiveTab('members')}
+                        className={cn(
+                          'flex shrink-0 items-center gap-2 rounded-sm border px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
+                          activeTab === 'members'
+                            ? 'border-[#7f9db9] bg-[#fff7d6] text-[#1f1f1f]'
+                            : 'border-[#b8b1a3] bg-[#ece9d8] text-[#5a5a5a] hover:bg-[#f5f1e3]'
+                        )}
+                      >
+                        <Users className="h-4 w-4" />
+                        <span>Members</span>
+                      </button>
+
+                      <button
+                        onClick={() => setActiveTab('media')}
+                        className={cn(
+                          'flex shrink-0 items-center gap-2 rounded-sm border px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
+                          activeTab === 'media'
+                            ? 'border-[#7f9db9] bg-[#fff7d6] text-[#1f1f1f]'
+                            : 'border-[#b8b1a3] bg-[#ece9d8] text-[#5a5a5a] hover:bg-[#f5f1e3]'
+                        )}
+                      >
+                        <ImageIcon className="h-4 w-4" />
+                        <span>Media</span>
+                      </button>
+
+                      {isOwner && (
+                        <button
+                          onClick={() => setActiveTab('settings')}
+                          className={cn(
+                            'flex shrink-0 items-center gap-2 rounded-sm border px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
+                            activeTab === 'settings'
+                              ? 'border-[#7f9db9] bg-[#fff7d6] text-[#1f1f1f]'
+                              : 'border-[#b8b1a3] bg-[#ece9d8] text-[#5a5a5a] hover:bg-[#f5f1e3]'
+                          )}
+                        >
+                          <Settings className="h-4 w-4" />
+                          <span>Settings</span>
+                        </button>
+                      )}
+
+                      <button
+                        onClick={() => setActiveTab('about')}
+                        className={cn(
+                          'flex shrink-0 items-center gap-2 rounded-sm border px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
+                          activeTab === 'about'
+                            ? 'border-[#7f9db9] bg-[#fff7d6] text-[#1f1f1f]'
+                            : 'border-[#b8b1a3] bg-[#ece9d8] text-[#5a5a5a] hover:bg-[#f5f1e3]'
+                        )}
+                      >
+                        <Info className="h-4 w-4" />
+                        <span>About</span>
+                      </button>
+
+                      <button
+                        onClick={() => setActiveTab('roles')}
+                        className={cn(
+                          'flex shrink-0 items-center gap-2 rounded-sm border px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
+                          activeTab === 'roles'
+                            ? 'border-[#7f9db9] bg-[#fff7d6] text-[#1f1f1f]'
+                            : 'border-[#b8b1a3] bg-[#ece9d8] text-[#5a5a5a] hover:bg-[#f5f1e3]'
+                        )}
+                      >
+                        <Shield className="h-4 w-4" />
+                        <span>Roles</span>
+                      </button>
+                    </nav>
+                  </div>
                 )}
               </div>
-            )}
+
+              <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-white">
+                {selectedGroup ? (
+                  <>
+                    <div className="flex items-start justify-between gap-3 border-b border-[#c6c0b2] bg-white px-4 py-3 md:px-5">
+                      <div className="flex min-w-0 flex-1 items-start gap-3">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h3 className="truncate text-base font-semibold text-[#1f1f1f]">
+                              {selectedGroup.name}
+                            </h3>
+                            <Badge
+                              variant="outline"
+                              className="flex items-center gap-1 border-[#7f9db9] bg-[#f4f8ff] text-[11px] text-[#24426c]"
+                            >
+                              {selectedGroup.privacy === 'PUBLIC' ? (
+                                <>
+                                  <Globe className="h-3 w-3" />
+                                  Public
+                                </>
+                              ) : (
+                                <>
+                                  <Lock className="h-3 w-3" />
+                                  Private
+                                </>
+                              )}
+                            </Badge>
+                          </div>
+                          <p className="mt-1 text-sm text-[#5a5a5a]">
+                            {selectedGroup.memberCount} members ·{' '}
+                            {selectedGroup.postCount} posts
+                          </p>
+                        </div>
+
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 shrink-0 rounded-sm border border-[#b8b1a3] bg-[#ece9d8] text-[#2f2f2f] shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] hover:bg-[#f5f1e3]"
+                            >
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-48">
+                            {isOwner && (
+                              <>
+                                <DropdownMenuItem
+                                  onClick={() => setEditGroupModalOpen(true)}
+                                >
+                                  <Pencil className="mr-2 h-4 w-4" />
+                                  Edit Group
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                              </>
+                            )}
+                            {canSendInvitations && (
+                              <>
+                                <DropdownMenuItem
+                                  onClick={() => setInviteModalOpen(true)}
+                                >
+                                  <UserPlus className="mr-2 h-4 w-4" />
+                                  Invite Members
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                              </>
+                            )}
+                            <DropdownMenuItem
+                              onClick={() => setShareModalOpen(true)}
+                            >
+                              <Share2 className="mr-2 h-4 w-4" />
+                              Share Group
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            {canEditMessage && (
+                              <>
+                                <DropdownMenuItem
+                                  onClick={() => setEditMessageModalOpen(true)}
+                                >
+                                  <MessageSquare className="mr-2 h-4 w-4" />
+                                  Edit Message
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                              </>
+                            )}
+                            <DropdownMenuItem
+                              onClick={() => setLeaveModalOpen(true)}
+                              className="text-red-600 focus:text-red-600"
+                            >
+                              <LogOut className="mr-2 h-4 w-4" />
+                              Leave Group
+                            </DropdownMenuItem>
+                            {isOwner && (
+                              <>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem
+                                  onClick={() => setDeleteModalOpen(true)}
+                                  className="text-red-600 focus:text-red-600"
+                                >
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  Delete Group
+                                </DropdownMenuItem>
+                              </>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    </div>
+
+                    <div className="scrollbar-hide flex-1 overflow-y-auto bg-white">
+                      {activeTab === 'members' && (
+                        <MembersTab
+                          members={selectedGroup.members}
+                          canManageMembers={canManageMembers}
+                          canChangeRoles={isOwner}
+                          currentUserId={currentUserId}
+                          groupId={selectedGroup.id}
+                          onMembersChanged={handleMembersChanged}
+                        />
+                      )}
+                      {activeTab === 'media' && (
+                        <MediaTab group={selectedGroup} />
+                      )}
+                      {activeTab === 'settings' && isOwner && (
+                        <SettingsTab
+                          group={selectedGroup}
+                          onUpdated={() => refetchGroupDetail()}
+                        />
+                      )}
+                      {activeTab === 'about' && (
+                        <AboutTab group={selectedGroup} />
+                      )}
+                      {activeTab === 'roles' &&
+                        selectedGroup.rolePrivileges && (
+                          <RolesTab
+                            groupId={selectedGroup.id}
+                            rolePrivileges={selectedGroup.rolePrivileges}
+                            currentUserRole={currentUserRole}
+                            onPrivilegesSaved={handlePrivilegesSaved}
+                          />
+                        )}
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex h-full flex-col items-center justify-center px-5 py-8">
+                    {isLoadingGroups ? (
+                      <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                    ) : (
+                      <>
+                        <Users className="mb-3 h-12 w-12 text-muted-foreground" />
+                        <h3 className="text-base font-semibold text-foreground">
+                          No Group Selected
+                        </h3>
+                        <p className="mt-1 text-center text-sm text-muted-foreground">
+                          Select a group from the switcher or create a new one
+                        </p>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
-        </DialogContent>
-      </Dialog>
+        </section>
+      </div>
 
       {/* Nested Modals */}
       <CreateGroupModal

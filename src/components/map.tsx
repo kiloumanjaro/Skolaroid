@@ -1055,7 +1055,6 @@ export function MapComponent({
           <AddMemoryButton onClick={() => setAddMemoryOpen(true)} />
 
           <ExpandableToolbar
-            onPrimaryClick={() => setGroupModalOpen(true)}
             onBatchesClick={() => setBatchesModalOpen(true)}
             onConfigureClick={isAdmin ? () => router.push('/admin') : undefined}
           />

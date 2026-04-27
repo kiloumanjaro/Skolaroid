@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { LoginForm } from '@/components/login-form';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
@@ -84,10 +84,12 @@ function ShellSidebar({
   isOpen,
   isAuthenticated,
   onPrimaryAction,
+  onNavigate,
 }: {
   isOpen: boolean;
   isAuthenticated: boolean;
   onPrimaryAction: () => void;
+  onNavigate: (href: string) => void;
 }) {
   const pathname = usePathname();
 
@@ -118,6 +120,10 @@ function ShellSidebar({
             <Link
               key={item.href}
               href={item.href}
+              onClick={(event) => {
+                event.preventDefault();
+                onNavigate(item.href);
+              }}
               className={`group relative flex h-12 items-center gap-3 overflow-hidden rounded-2xl px-3 transition-all duration-300 ease-in-out ${
                 isActive
                   ? 'border-2 border-border shadow-[4px_4px_0px_0px_#2d2d2d] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#2d2d2d] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none'
@@ -195,6 +201,22 @@ export function MainShell({ children }: { children: ReactNode }) {
   const { isAuthenticated, logout } = useUserAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState<string | null>(
+    null
+  );
+
+  useEffect(() => {
+    if (!pendingNavigation || sidebarOpen) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      router.push(pendingNavigation);
+      setPendingNavigation(null);
+    }, 300);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [pendingNavigation, router, sidebarOpen]);
 
   if (!isShellRoute(pathname)) {
     return <>{children}</>;
@@ -205,6 +227,21 @@ export function MainShell({ children }: { children: ReactNode }) {
     router.push('/');
   };
 
+  const handleSidebarNavigation = (href: string) => {
+    if (href === pathname) {
+      setSidebarOpen(false);
+      return;
+    }
+
+    if (!sidebarOpen) {
+      router.push(href);
+      return;
+    }
+
+    setPendingNavigation(href);
+    setSidebarOpen(false);
+  };
+
   return (
     <>
       <div className="h-dvh overflow-hidden bg-[#fcfaf8]">
@@ -212,6 +249,7 @@ export function MainShell({ children }: { children: ReactNode }) {
           <ShellSidebar
             isOpen={sidebarOpen}
             isAuthenticated={isAuthenticated}
+            onNavigate={handleSidebarNavigation}
             onPrimaryAction={() => {
               if (isAuthenticated) {
                 void handleLogout();
