@@ -1264,6 +1264,12 @@ export function AddMemoryModal({
     privacy: renderPrivacyTab,
   };
 
+  const footerButtonBaseClassName =
+    'h-11 w-full rounded-2xl px-5 text-sm font-medium shadow-[4px_4px_0px_0px_#2d2d2d] sm:min-w-28 sm:w-auto';
+  const footerSecondaryButtonClassName = `${footerButtonBaseClassName} bg-card text-foreground hover:bg-red-600 hover:text-white`;
+  const footerPrimaryButtonClassName = `${footerButtonBaseClassName} bg-skolaroid-blue text-white hover:bg-skolaroid-blue/90`;
+  const footerButtonStyle = { borderRadius: '1rem' };
+
   // ---------------------------------------------------------------------------
   // Main render
   // ---------------------------------------------------------------------------
@@ -1391,14 +1397,16 @@ export function AddMemoryModal({
                 <>
                   <Button
                     variant="outline"
-                    className="w-full text-foreground sm:w-auto"
+                    className={footerSecondaryButtonClassName}
+                    style={footerButtonStyle}
                     onClick={handleAttemptClose}
                   >
                     Cancel
                   </Button>
                   <Button
                     onClick={handleNext}
-                    className="w-full bg-skolaroid-blue text-white hover:bg-skolaroid-blue/90 sm:w-auto"
+                    className={footerPrimaryButtonClassName}
+                    style={footerButtonStyle}
                   >
                     Next
                   </Button>
@@ -1409,7 +1417,8 @@ export function AddMemoryModal({
                 <>
                   <Button
                     variant="outline"
-                    className="w-full text-foreground sm:w-auto"
+                    className={footerSecondaryButtonClassName}
+                    style={footerButtonStyle}
                     onClick={handleBack}
                   >
                     Back
@@ -1417,7 +1426,8 @@ export function AddMemoryModal({
                   <Button
                     onClick={handleNext}
                     disabled={!selectedLocationId || isCreatingLocation}
-                    className="w-full bg-skolaroid-blue text-white hover:bg-skolaroid-blue/90 disabled:opacity-50 sm:w-auto"
+                    className={footerPrimaryButtonClassName}
+                    style={footerButtonStyle}
                   >
                     {isCreatingLocation ? (
                       <>
@@ -1435,14 +1445,16 @@ export function AddMemoryModal({
                 <>
                   <Button
                     variant="outline"
-                    className="w-full text-foreground sm:w-auto"
+                    className={footerSecondaryButtonClassName}
+                    style={footerButtonStyle}
                     onClick={handleBack}
                   >
                     Back
                   </Button>
                   <Button
                     onClick={handleNext}
-                    className="w-full bg-skolaroid-blue text-white hover:bg-skolaroid-blue/90 sm:w-auto"
+                    className={footerPrimaryButtonClassName}
+                    style={footerButtonStyle}
                   >
                     Next
                   </Button>
@@ -1453,7 +1465,8 @@ export function AddMemoryModal({
                 <>
                   <Button
                     variant="outline"
-                    className="w-full text-foreground sm:w-auto"
+                    className={footerSecondaryButtonClassName}
+                    style={footerButtonStyle}
                     onClick={handleBack}
                   >
                     Back
@@ -1461,7 +1474,8 @@ export function AddMemoryModal({
                   <Button
                     onClick={handleSave}
                     disabled={isPending}
-                    className="w-full bg-skolaroid-blue text-white hover:bg-skolaroid-blue/90 sm:w-auto"
+                    className={footerPrimaryButtonClassName}
+                    style={footerButtonStyle}
                   >
                     {isPending ? (
                       <>

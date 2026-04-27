@@ -1,6 +1,7 @@
 'use client';
 
 import mapboxgl from 'mapbox-gl';
+import Link from 'next/link';
 import {
   useRef,
   useEffect,
@@ -10,14 +11,9 @@ import {
   useMemo,
 } from 'react';
 import { getEraFromBatchTag } from '@/lib/utils';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { createRoot, type Root } from 'react-dom/client';
 import { AddMemoryModal } from './add-memory-modal';
-import type {
-  GroupFilterOption,
-  LocationFilterOption,
-  MemoryFilters,
-} from './map/FilterMemoriesModal';
 import { GroupPanel } from './groups/GroupPanel';
 import { BatchesModal } from './batches-modal';
 import { ExpandableToolbar } from './expandable-toolbar';
@@ -36,6 +32,7 @@ import {
 } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 import { useLocations } from '@/lib/hooks/useLocations';
 import { useUserGroups } from '@/lib/hooks/useUserGroups';
+import { useUserAuth } from '@/lib/hooks/useUserAuth';
 import { LANDMARKS, type Landmark } from '@/lib/constants/landmarks';
 import type {
   LocationSelectionMode,
@@ -81,6 +78,127 @@ const CAMERA_ANIMATION = {
 const DEFAULT_MAP_CENTER: [number, number] = [123.8986, 10.3224];
 const DEFAULT_MAP_ZOOM = 17;
 const EMPTY_USER_GROUPS: { id: string; name: string }[] = [];
+const FRAME_BG_CLASS = 'bg-stone-900';
+
+type SortOption =
+  | 'date-newest'
+  | 'date-oldest'
+  | 'upvotes-high'
+  | 'upvotes-low';
+
+type VisibilityFilter =
+  | 'ALL'
+  | 'PUBLIC'
+  | 'BATCH_ONLY'
+  | 'PROGRAM_ONLY'
+  | 'GROUP_ONLY';
+
+interface MemoryFilters {
+  sortBy: SortOption;
+  visibility: VisibilityFilter;
+  selectedTags: string[];
+  selectedYear: number | null;
+  selectedGroupId: string | null;
+  selectedLocationId: string | null;
+  searchQuery: string;
+}
+
+interface GroupFilterOption {
+  id: string;
+  name: string;
+}
+
+interface LocationFilterOption {
+  id: string;
+  name: string;
+}
+
+const navItems = [
+  {
+    href: '/',
+    label: 'Home',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+        <path
+          d="M3 10.5L12 3l9 7.5"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M5.25 9.75V21h13.5V9.75"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+  },
+  {
+    href: '/gallery',
+    label: 'Gallery',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+        <rect
+          x="3.5"
+          y="4.5"
+          width="17"
+          height="15"
+          rx="2.5"
+          stroke="currentColor"
+          strokeWidth="1.8"
+        />
+        <path
+          d="M7 15l3.25-3.25a1 1 0 0 1 1.414 0L15 15.086l1.25-1.25a1 1 0 0 1 1.414 0L20 16"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <circle cx="9" cy="9" r="1.25" fill="currentColor" />
+      </svg>
+    ),
+  },
+  {
+    href: '/map',
+    label: 'Map',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+        <path
+          d="M9 4.5l6-2v17l-6 2-6-2v-17l6 2Zm0 0v17m6-19 6 2v17l-6-2"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+  },
+  {
+    href: '/about',
+    label: 'About',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+        <circle
+          cx="12"
+          cy="12"
+          r="8.5"
+          stroke="currentColor"
+          strokeWidth="1.8"
+        />
+        <path
+          d="M12 10.25v5"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+        <circle cx="12" cy="7.75" r="1" fill="currentColor" />
+      </svg>
+    ),
+  },
+];
 
 interface MapComponentProps {
   filters: MemoryFilters;
@@ -101,6 +219,8 @@ export function MapComponent({
   onMemoryDetailOpenStateChange,
 }: MapComponentProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const { logout } = useUserAuth();
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const processedMemoryParamRef = useRef<string | null>(null);
@@ -121,6 +241,7 @@ export function MapComponent({
   const [memoryDetailOpen, setMemoryDetailOpen] = useState(false);
   const [showLandmarks, setShowLandmarks] = useState(false);
   const [showMemoryPins, setShowMemoryPins] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   // Location selection mode for Add Memory flow
   const [locationSelectionMode, setLocationSelectionMode] =
@@ -565,6 +686,11 @@ export function MapComponent({
   const cancelPendingFlyTo = useCallback(() => {
     pendingMemoryRef.current = null;
   }, []);
+
+  const handleLogout = useCallback(async () => {
+    await logout();
+    router.push('/');
+  }, [logout, router]);
 
   // ---------------------------------------------------------------------------
   // Location Selection Mode handlers
@@ -1011,114 +1137,235 @@ export function MapComponent({
   }
 
   return (
-    <div className="relative h-full w-full">
-      <div ref={mapContainerRef} className="h-full w-full" />
+    <div className="h-screen w-screen overflow-hidden bg-stone-900">
+      <div className="relative flex h-full w-full overflow-hidden">
+        <button
+          type="button"
+          onClick={() => setIsOpen((prev) => !prev)}
+          className={`${FRAME_BG_CLASS} absolute left-0 top-0 z-30 flex h-14 w-14 items-center justify-center text-stone-100 transition-colors hover:bg-white/10`}
+          aria-label={isOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+        >
+          <span className="flex h-6 w-6 flex-col justify-center gap-1.5">
+            <span className="block h-0.5 w-6 rounded-full bg-current" />
+            <span className="block h-0.5 w-6 rounded-full bg-current" />
+            <span className="block h-0.5 w-6 rounded-full bg-current" />
+          </span>
+        </button>
 
-      <AddMemoryButton onClick={() => setAddMemoryOpen(true)} />
+        <aside
+          className={`${FRAME_BG_CLASS} flex h-full flex-col overflow-hidden border-r border-white/10 text-stone-100 transition-all duration-300 ease-in-out ${
+            isOpen ? 'w-64' : 'w-0 border-r-0'
+          }`}
+        >
+          <div className="flex items-center gap-3 px-4 pb-6 pt-14">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/15 bg-white/10 text-sm font-semibold uppercase tracking-[0.24em] text-stone-100">
+              S
+            </div>
+            <div
+              className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                isOpen ? 'max-w-[160px] opacity-100' : 'max-w-0 opacity-0'
+              }`}
+            >
+              <p className="whitespace-nowrap text-sm uppercase tracking-[0.32em] text-stone-400">
+                Skolaroid
+              </p>
+              <p className="whitespace-nowrap text-xs text-stone-500">
+                Campus Atlas
+              </p>
+            </div>
+          </div>
 
-      {/* Floating Action Buttons - Top Right */}
-      <ExpandableToolbar
-        onPrimaryClick={() => setGroupModalOpen(true)}
-        onBatchesClick={() => setBatchesModalOpen(true)}
-        onConfigureClick={isAdmin ? () => router.push('/admin') : undefined}
-      />
+          <nav className="flex flex-col gap-2 px-2">
+            {navItems.map((item) => {
+              const isActive =
+                item.href === '/'
+                  ? pathname === item.href
+                  : pathname === item.href ||
+                    pathname.startsWith(`${item.href}/`);
 
-      {/* Group Panel */}
-      <GroupPanel
-        open={groupModalOpen}
-        onOpenChange={(isOpen) => {
-          setGroupModalOpen(isOpen);
-          if (isOpen) cancelPendingFlyTo();
-        }}
-      />
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`flex h-12 items-center gap-3 rounded-2xl px-3 transition-all duration-300 ease-in-out ${
+                    isActive
+                      ? 'bg-white text-stone-900 shadow-sm'
+                      : 'text-stone-300 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center">
+                    {item.icon}
+                  </span>
+                  <span
+                    className={`overflow-hidden whitespace-nowrap text-sm font-medium transition-all duration-300 ease-in-out ${
+                      isOpen ? 'max-w-[120px] opacity-100' : 'max-w-0 opacity-0'
+                    }`}
+                  >
+                    {item.label}
+                  </span>
+                </Link>
+              );
+            })}
+          </nav>
 
-      {/* Batches Modal */}
-      <BatchesModal
-        open={batchesModalOpen}
-        onOpenChange={setBatchesModalOpen}
-        activeMapEra={activeMapEra}
-        memories={memories}
-        onAddMemory={(era) => {
-          setBatchesModalOpen(false);
-          setAddMemoryEra(era ?? activeMapEra);
-          setAddMemoryOpen(true);
-        }}
-        onMemorySelected={handleBatchesMemorySelected}
-      />
+          <div className="mt-auto px-2 pb-3 pt-6">
+            <button
+              type="button"
+              onClick={() => void handleLogout()}
+              className="flex h-12 w-full items-center gap-3 rounded-2xl px-3 text-stone-300 transition-all duration-300 ease-in-out hover:bg-white/10 hover:text-white"
+            >
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center">
+                <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+                  <path
+                    d="M9 5.75H6.75A1.75 1.75 0 0 0 5 7.5v9A1.75 1.75 0 0 0 6.75 18.25H9"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M13 8.5 18 12l-5 3.5"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M18 12H9"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </span>
+              <span
+                className={`overflow-hidden whitespace-nowrap text-sm font-medium transition-all duration-300 ease-in-out ${
+                  isOpen ? 'max-w-[120px] opacity-100' : 'max-w-0 opacity-0'
+                }`}
+              >
+                Logout
+              </span>
+            </button>
+          </div>
+        </aside>
 
-      {/* Add Memory Modal */}
-      <AddMemoryModal
-        open={addMemoryOpen && locationSelectionMode === 'inactive'}
-        onOpenChange={(isOpen) => {
-          setAddMemoryOpen(isOpen);
-          if (!isOpen) {
-            setAddMemoryEra(null);
-            handleCancelMapSelection();
-          }
-        }}
-        defaultEra={addMemoryEra}
-        onRequestMapSelection={handleRequestMapSelection}
-      />
+        <div className="flex min-w-0 flex-1 flex-col">
+          <div className={`${FRAME_BG_CLASS} h-10 w-full shrink-0`} />
 
-      {/* Map Location Selector Overlay */}
-      {locationSelectionMode !== 'inactive' && (
-        <MapLocationSelector
-          mode={locationSelectionMode}
-          onCancel={handleCancelMapSelection}
-          onLocationSelected={handleLocationSelected}
-          pendingSelection={pendingLocationSelection}
-          mapRef={mapRef}
-        />
-      )}
+          <div className="flex min-h-0 flex-1">
+            <div className="relative min-w-0 flex-1 bg-white">
+              <div ref={mapContainerRef} className="h-full w-full" />
 
-      {/* Landmark Memories Panel */}
-      <LandmarkMemoriesPanel
-        landmark={selectedLandmark}
-        memoryCount={
-          selectedLandmark ? (memoryCounts[selectedLandmark.id] ?? 0) : 0
-        }
-        onClose={() => setSelectedLandmark(null)}
-      />
+              <AddMemoryButton onClick={() => setAddMemoryOpen(true)} />
 
-      {/* First Memory Prompt — shown to authenticated users with zero memories */}
-      {showFirstMemoryPrompt && (
-        <MapFirstMemoryPrompt onAddMemory={() => setAddMemoryOpen(true)} />
-      )}
+              <ExpandableToolbar
+                onPrimaryClick={() => setGroupModalOpen(true)}
+                onBatchesClick={() => setBatchesModalOpen(true)}
+                onConfigureClick={
+                  isAdmin ? () => router.push('/admin') : undefined
+                }
+              />
 
-      {/* Memory Detail Modal */}
-      <MemoryDetailModal
-        memory={selectedMemory}
-        previousMemory={previousSelectedMemory}
-        nextMemory={nextSelectedMemory}
-        open={memoryDetailOpen}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) {
-            closeNotebookView();
-            return;
-          }
-          setMemoryDetailOpen(true);
-          onMemoryDetailOpenStateChange?.(true);
-        }}
-        onMemoryDeleted={() => setSelectedMemory(null)}
-        hasPrevious={selectedMemoryIndex > 0}
-        hasNext={
-          selectedMemoryIndex >= 0 && selectedMemoryIndex < memories.length - 1
-        }
-        onPrevious={() => {
-          if (previousSelectedMemory) {
-            // Set memory immediately so the flip back-face shows new content
-            setSelectedMemory(previousSelectedMemory);
-            flyToMemoryWithSequence(previousSelectedMemory);
-          }
-        }}
-        onNext={() => {
-          if (nextSelectedMemory) {
-            // Set memory immediately so the flip back-face shows new content
-            setSelectedMemory(nextSelectedMemory);
-            flyToMemoryWithSequence(nextSelectedMemory);
-          }
-        }}
-      />
+              <GroupPanel
+                open={groupModalOpen}
+                onOpenChange={(isOpen) => {
+                  setGroupModalOpen(isOpen);
+                  if (isOpen) cancelPendingFlyTo();
+                }}
+              />
+
+              <BatchesModal
+                open={batchesModalOpen}
+                onOpenChange={setBatchesModalOpen}
+                activeMapEra={activeMapEra}
+                memories={memories}
+                onAddMemory={(era) => {
+                  setBatchesModalOpen(false);
+                  setAddMemoryEra(era ?? activeMapEra);
+                  setAddMemoryOpen(true);
+                }}
+                onMemorySelected={handleBatchesMemorySelected}
+              />
+
+              <AddMemoryModal
+                open={addMemoryOpen && locationSelectionMode === 'inactive'}
+                onOpenChange={(isOpen) => {
+                  setAddMemoryOpen(isOpen);
+                  if (!isOpen) {
+                    setAddMemoryEra(null);
+                    handleCancelMapSelection();
+                  }
+                }}
+                defaultEra={addMemoryEra}
+                onRequestMapSelection={handleRequestMapSelection}
+              />
+
+              {locationSelectionMode !== 'inactive' && (
+                <MapLocationSelector
+                  mode={locationSelectionMode}
+                  onCancel={handleCancelMapSelection}
+                  onLocationSelected={handleLocationSelected}
+                  pendingSelection={pendingLocationSelection}
+                  mapRef={mapRef}
+                />
+              )}
+
+              <LandmarkMemoriesPanel
+                landmark={selectedLandmark}
+                memoryCount={
+                  selectedLandmark
+                    ? (memoryCounts[selectedLandmark.id] ?? 0)
+                    : 0
+                }
+                onClose={() => setSelectedLandmark(null)}
+              />
+
+              {showFirstMemoryPrompt && (
+                <MapFirstMemoryPrompt
+                  onAddMemory={() => setAddMemoryOpen(true)}
+                />
+              )}
+
+              <MemoryDetailModal
+                memory={selectedMemory}
+                previousMemory={previousSelectedMemory}
+                nextMemory={nextSelectedMemory}
+                open={memoryDetailOpen}
+                onOpenChange={(isOpen) => {
+                  if (!isOpen) {
+                    closeNotebookView();
+                    return;
+                  }
+                  setMemoryDetailOpen(true);
+                  onMemoryDetailOpenStateChange?.(true);
+                }}
+                onMemoryDeleted={() => setSelectedMemory(null)}
+                hasPrevious={selectedMemoryIndex > 0}
+                hasNext={
+                  selectedMemoryIndex >= 0 &&
+                  selectedMemoryIndex < memories.length - 1
+                }
+                onPrevious={() => {
+                  if (previousSelectedMemory) {
+                    setSelectedMemory(previousSelectedMemory);
+                    flyToMemoryWithSequence(previousSelectedMemory);
+                  }
+                }}
+                onNext={() => {
+                  if (nextSelectedMemory) {
+                    setSelectedMemory(nextSelectedMemory);
+                    flyToMemoryWithSequence(nextSelectedMemory);
+                  }
+                }}
+              />
+            </div>
+
+            <div className={`${FRAME_BG_CLASS} w-3 shrink-0`} />
+          </div>
+
+          <div className={`${FRAME_BG_CLASS} h-3 w-full shrink-0`} />
+        </div>
+      </div>
     </div>
   );
 }
