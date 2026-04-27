@@ -329,7 +329,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                   if (!open) onOpenChange(true);
                   setShareModalOpen(true);
                 }}
-                className="grid h-6 w-6 place-items-center border border-[#062a63] bg-[#f2f6fd] text-[#0b2e67] shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#7f9db9]"
+                className="grid h-6 w-6 place-items-center border-2 border-[#062a63] bg-[#f2f6fd] text-[#0b2e67] shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#7f9db9]"
               >
                 <Share2 className="h-3.5 w-3.5" />
               </button>
@@ -342,7 +342,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                   if (!open) onOpenChange(true);
                   setLeaveModalOpen(true);
                 }}
-                className="grid h-6 w-6 place-items-center border border-[#062a63] bg-[#f2f6fd] text-[#0b2e67] shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#7f9db9]"
+                className="grid h-6 w-6 place-items-center border-2 border-[#062a63] bg-[#f2f6fd] text-[#0b2e67] shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#7f9db9]"
               >
                 <LogOut className="h-3.5 w-3.5" />
               </button>
@@ -353,7 +353,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                   event.stopPropagation();
                   onOpenChange(false);
                 }}
-                className="grid h-6 w-6 place-items-center border border-[#5d0d0d] bg-[#f7d6d5] text-[#7a1111] shadow-[inset_1px_1px_0_#fff8f7,inset_-1px_-1px_0_#c68787]"
+                className="grid h-6 w-6 place-items-center border-2 border-[#5d0d0d] bg-[#f7d6d5] text-[#7a1111] shadow-[inset_1px_1px_0_#fff8f7,inset_-1px_-1px_0_#c68787]"
               >
                 <X className="h-3.5 w-3.5" />
               </button>
@@ -363,21 +363,19 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
           <div className="flex min-h-0 flex-1 flex-col bg-[#f7f4ea]">
             <div className="flex min-h-0 flex-1 flex-col md:flex-row">
               <div className="flex w-full shrink-0 flex-col border-b border-[#c6c0b2] bg-[#ece9d8] md:w-60 md:border-b-0 md:border-r">
-                <div className="border-b border-[#c6c0b2] px-4 py-3">
-                  <div className="rounded-sm border border-[#b4ad9b] bg-white px-3 py-2 shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#d0c7b6]">
-                    <GroupSwitcher
-                      groups={groups}
-                      selectedGroup={selectedGroup}
-                      onSelectGroup={(group) => {
-                        handleSelectGroup(group);
-                        if (!open) onOpenChange(true);
-                      }}
-                      onCreateGroup={() => {
-                        onOpenChange(true);
-                        setCreateModalOpen(true);
-                      }}
-                    />
-                  </div>
+                <div className="border-b border-[#c6c0b2] px-2 py-3">
+                  <GroupSwitcher
+                    groups={groups}
+                    selectedGroup={selectedGroup}
+                    onSelectGroup={(group) => {
+                      handleSelectGroup(group);
+                      if (!open) onOpenChange(true);
+                    }}
+                    onCreateGroup={() => {
+                      onOpenChange(true);
+                      setCreateModalOpen(true);
+                    }}
+                  />
                 </div>
 
                 {selectedGroup && (
@@ -386,7 +384,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                       <button
                         onClick={() => setActiveTab('members')}
                         className={cn(
-                          'flex shrink-0 items-center gap-2 rounded-sm border px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
+                          'flex shrink-0 items-center gap-2 rounded-sm border-2 px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
                           activeTab === 'members'
                             ? 'border-[#7f9db9] bg-[#fff7d6] text-[#1f1f1f]'
                             : 'border-[#b8b1a3] bg-[#ece9d8] text-[#5a5a5a] hover:bg-[#f5f1e3]'
@@ -399,7 +397,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                       <button
                         onClick={() => setActiveTab('media')}
                         className={cn(
-                          'flex shrink-0 items-center gap-2 rounded-sm border px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
+                          'flex shrink-0 items-center gap-2 rounded-sm border-2 px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
                           activeTab === 'media'
                             ? 'border-[#7f9db9] bg-[#fff7d6] text-[#1f1f1f]'
                             : 'border-[#b8b1a3] bg-[#ece9d8] text-[#5a5a5a] hover:bg-[#f5f1e3]'
@@ -413,7 +411,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                         <button
                           onClick={() => setActiveTab('settings')}
                           className={cn(
-                            'flex shrink-0 items-center gap-2 rounded-sm border px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
+                            'flex shrink-0 items-center gap-2 rounded-sm border-2 px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
                             activeTab === 'settings'
                               ? 'border-[#7f9db9] bg-[#fff7d6] text-[#1f1f1f]'
                               : 'border-[#b8b1a3] bg-[#ece9d8] text-[#5a5a5a] hover:bg-[#f5f1e3]'
@@ -427,7 +425,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                       <button
                         onClick={() => setActiveTab('about')}
                         className={cn(
-                          'flex shrink-0 items-center gap-2 rounded-sm border px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
+                          'flex shrink-0 items-center gap-2 rounded-sm border-2 px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
                           activeTab === 'about'
                             ? 'border-[#7f9db9] bg-[#fff7d6] text-[#1f1f1f]'
                             : 'border-[#b8b1a3] bg-[#ece9d8] text-[#5a5a5a] hover:bg-[#f5f1e3]'
@@ -440,7 +438,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                       <button
                         onClick={() => setActiveTab('roles')}
                         className={cn(
-                          'flex shrink-0 items-center gap-2 rounded-sm border px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
+                          'flex shrink-0 items-center gap-2 rounded-sm border-2 px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
                           activeTab === 'roles'
                             ? 'border-[#7f9db9] bg-[#fff7d6] text-[#1f1f1f]'
                             : 'border-[#b8b1a3] bg-[#ece9d8] text-[#5a5a5a] hover:bg-[#f5f1e3]'
@@ -492,7 +490,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8 shrink-0 rounded-sm border border-[#b8b1a3] bg-[#ece9d8] text-[#2f2f2f] shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] hover:bg-[#f5f1e3]"
+                              className="h-8 w-8 shrink-0 rounded-sm border-2 border-[#b8b1a3] bg-[#ece9d8] text-[#2f2f2f] shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] hover:bg-[#f5f1e3]"
                             >
                               <MoreHorizontal className="h-4 w-4" />
                             </Button>

@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Plus, Globe, Lock, Check } from 'lucide-react';
 import { type Group } from '@/lib/types/group';
-import { WOBBLY_RADIUS_MD } from '@/lib/hand-drawn';
 
 interface GroupSwitcherProps {
   groups: Group[];
@@ -35,10 +34,10 @@ export function GroupSwitcher({
   }, []);
 
   return (
-    <div ref={dropdownRef} className="relative">
+    <div ref={dropdownRef} className="relative w-full">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 transition-colors hover:bg-secondary"
+        className="flex w-full items-center gap-2 border-2 border-[#1f1f1f] bg-white px-3 py-2 text-left shadow-none transition-colors hover:bg-[#f5f1e3]"
       >
         {selectedGroup ? (
           <>
@@ -61,10 +60,7 @@ export function GroupSwitcher({
       </button>
 
       {isOpen && (
-        <div
-          className="absolute left-0 top-full z-30 mt-1 w-64 overflow-hidden border-2 border-border bg-card shadow-[3px_3px_0px_0px_#2d2d2d]"
-          style={{ borderRadius: WOBBLY_RADIUS_MD }}
-        >
+        <div className="absolute left-0 right-0 top-full z-30 mt-1 overflow-hidden border-2 border-[#1f1f1f] bg-white shadow-none">
           <div className="px-3 pb-1 pt-3">
             <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
               Your Groups
@@ -115,7 +111,7 @@ export function GroupSwitcher({
                 onCreateGroup();
                 setIsOpen(false);
               }}
-              className="flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium text-skolaroid-blue transition-colors hover:bg-skolaroid-blue/5"
+              className="flex w-full items-center gap-2.5 border-2 border-[#1f1f1f] px-3 py-2.5 text-left text-sm font-medium text-skolaroid-blue transition-colors hover:bg-skolaroid-blue/5"
             >
               <Plus size={16} />
               Create New Group
