@@ -9,7 +9,6 @@ import {
   Users,
 } from 'lucide-react';
 import { AboutCreatorsMarquee } from '@/components/about-creators-marquee';
-import { Header } from '@/components/header';
 
 const pillars = [
   {
@@ -73,10 +72,8 @@ const creators = [
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-background">
-      <Header />
-
-      <div className="relative overflow-hidden pt-16">
+    <div className="h-full overflow-y-auto bg-background">
+      <div className="relative overflow-hidden pt-20">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute left-[-8rem] top-10 h-64 w-64 rounded-full bg-sky-200/35 blur-3xl" />
           <div className="absolute right-[-6rem] top-40 h-72 w-72 rounded-full bg-amber-200/35 blur-3xl" />
@@ -289,6 +286,6 @@ export default function AboutPage() {
           </div>
         </footer>
       </div>
-    </main>
+    </div>
   );
 }

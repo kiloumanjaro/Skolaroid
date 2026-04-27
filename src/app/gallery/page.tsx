@@ -10,7 +10,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Link2, ArrowLeft } from 'lucide-react';
+import { Link2 } from 'lucide-react';
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 import { GalleryMemoryCard } from '@/components/gallery/GalleryMemoryCard';
 import { useAllMemoriesWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
@@ -345,16 +345,9 @@ function GalleryPageContent({ era }: GalleryPageContentProps) {
           willChange: 'background-position',
         }}
       />
-      <div className="flex h-screen flex-col">
-        <header className="flex shrink-0 items-center px-10 pb-3 pt-8 lg:px-16">
-          <button
-            onClick={() => router.back()}
-            aria-label="Go back"
-            className="flex items-center justify-center rounded p-1 hover:bg-gray-100"
-          >
-            <ArrowLeft className="h-5 w-5 text-black" />
-          </button>
-          <div className="ml-3 flex items-center gap-2">
+      <div className="flex h-full flex-col">
+        <header className="flex shrink-0 items-center px-10 pb-3 pt-24 lg:px-16">
+          <div className="flex items-center gap-2">
             <span className="font-dancing text-2xl font-bold italic text-primary">
               Skolaroid
             </span>
@@ -476,7 +469,7 @@ export default function GalleryPage({ era }: GalleryPageProps) {
   return (
     <Suspense
       fallback={
-        <div className="flex h-screen flex-col items-center justify-center bg-gray-50">
+        <div className="flex h-full flex-col items-center justify-center bg-gray-50">
           <p className="text-lg text-gray-600">Loading gallery...</p>
         </div>
       }

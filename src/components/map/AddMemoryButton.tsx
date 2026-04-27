@@ -6,7 +6,7 @@ interface AddMemoryButtonProps {
 
 export function AddMemoryButton({ onClick }: AddMemoryButtonProps) {
   return (
-    <div className="absolute bottom-4 right-4 z-10 sm:bottom-6 sm:right-6">
+    <div className="absolute bottom-10 right-6 z-30 sm:bottom-14 sm:right-8">
       <button
         type="button"
         onClick={onClick}

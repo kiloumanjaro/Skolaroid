@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Kalam, Patrick_Hand, Grape_Nuts } from 'next/font/google';
+import { MainShell } from '@/components/main-shell';
 import { QueryProvider } from '@/providers/query-provider';
 import '@/styles/globals.css';
 
@@ -45,7 +46,9 @@ export default function RootLayout({
       <body
         className={`${patrickHand.className} ${kalam.variable} ${patrickHand.variable} ${grapeNuts.variable} antialiased`}
       >
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <MainShell>{children}</MainShell>
+        </QueryProvider>
       </body>
     </html>
   );
