@@ -4,14 +4,7 @@ import { useMemo, useState } from 'react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { cn, getEraFromBatchTag } from '@/lib/utils';
-import { X, Search, SlidersHorizontal, Plus, MapPin } from 'lucide-react';
-import {
-  FilterMemoriesModal,
-  DEFAULT_FILTERS,
-  type MemoryFilters,
-  type LocationFilterOption,
-} from './map/FilterMemoriesModal';
-import { useLocations } from '@/lib/hooks/useLocations';
+import { X, Search, Plus, MapPin } from 'lucide-react';
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 
 // =============================================================================
@@ -72,51 +65,13 @@ export function BatchesModal({
   const [selectedDecade, setSelectedDecade] = useState<number | null>(
     activeMapEra
   );
-  const [filtersOpen, setFiltersOpen] = useState(false);
-  const [filters, setFilters] = useState<MemoryFilters>(DEFAULT_FILTERS);
-  const { data: locationsData } = useLocations();
 
   const allMemories = useMemo<MemoryWithCoordinates[]>(
     () => memoriesProp ?? [],
     [memoriesProp]
   );
 
-  // Extract unique tags and years from the resolved memory set for the filter panel
-  const availableTags = useMemo(() => {
-    const tagSet = new Set<string>();
-    allMemories.forEach((m) =>
-      (m.tags ?? []).forEach((t) => tagSet.add(t.name))
-    );
-    return Array.from(tagSet).sort();
-  }, [allMemories]);
-
-  const availableYears = useMemo(() => {
-    const yearSet = new Set<number>();
-    allMemories.forEach((m) => {
-      if (m.createdAt) yearSet.add(new Date(m.createdAt).getFullYear());
-    });
-    return Array.from(yearSet).sort((a, b) => b - a);
-  }, [allMemories]);
-
-  const availableLocations = useMemo<LocationFilterOption[]>(() => {
-    // Prefer real API data sorted A–Z
-    if (locationsData?.data?.length) {
-      return [...locationsData.data]
-        .sort((a, b) => a.buildingName.localeCompare(b.buildingName))
-        .map((l) => ({ id: l.id, name: l.buildingName }));
-    }
-    // Fallback: derive unique building names from loaded memories
-    const seen = new Map<string, string>();
-    allMemories.forEach((m) => {
-      const name = m.location?.buildingName;
-      if (name && !seen.has(name)) seen.set(name, name);
-    });
-    return Array.from(seen.values())
-      .sort((a, b) => a.localeCompare(b))
-      .map((name) => ({ id: name, name }));
-  }, [locationsData, allMemories]);
-
-  // Filter memories by era (batch tag), search, and applied filters (AND logic)
+  // Filter memories by era (batch tag) and keyword search.
   const displayedMemories = useMemo<MemoryWithCoordinates[]>(() => {
     let result = [...allMemories];
 
@@ -138,66 +93,14 @@ export function BatchesModal({
       );
     }
 
-    // Visibility filter
-    if (filters.visibility !== 'ALL') {
-      result = result.filter((m) => m.visibility === filters.visibility);
-    }
-
-    // Tags filter (AND — memory must have ALL selected tags)
-    if (filters.selectedTags.length > 0) {
-      result = result.filter((m) => {
-        const tagNames = (m.tags ?? []).map((t) => t.name);
-        return filters.selectedTags.every((st) => tagNames.includes(st));
-      });
-    }
-
-    // Year filter — based on createdAt
-    if (filters.selectedYear !== null) {
-      result = result.filter(
-        (m) =>
-          m.createdAt &&
-          new Date(m.createdAt).getFullYear() === filters.selectedYear
-      );
-    }
-
-    // Location filter — match memory's building name against selected location
-    if (filters.selectedLocationId !== null) {
-      const selectedLocation = availableLocations.find(
-        (l) => l.id === filters.selectedLocationId
-      );
-      if (selectedLocation) {
-        result = result.filter(
-          (m) => m.location?.buildingName === selectedLocation.name
-        );
-      }
-    }
-
-    // Sort
-    switch (filters.sortBy) {
-      case 'date-newest':
-        result.sort(
-          (a, b) =>
-            new Date(b.createdAt ?? '').getTime() -
-            new Date(a.createdAt ?? '').getTime()
-        );
-        break;
-      case 'date-oldest':
-        result.sort(
-          (a, b) =>
-            new Date(a.createdAt ?? '').getTime() -
-            new Date(b.createdAt ?? '').getTime()
-        );
-        break;
-      case 'upvotes-high':
-        result.sort((a, b) => (b._count?.votes ?? 0) - (a._count?.votes ?? 0));
-        break;
-      case 'upvotes-low':
-        result.sort((a, b) => (a._count?.votes ?? 0) - (b._count?.votes ?? 0));
-        break;
-    }
+    result.sort(
+      (a, b) =>
+        new Date(b.createdAt ?? '').getTime() -
+        new Date(a.createdAt ?? '').getTime()
+    );
 
     return result;
-  }, [allMemories, selectedDecade, searchQuery, filters, availableLocations]);
+  }, [allMemories, selectedDecade, searchQuery]);
 
   // Handle clicking a memory card — always delegates to the parent
   const handleMemoryCardClick = (memory: MemoryWithCoordinates) => {
@@ -208,7 +111,6 @@ export function BatchesModal({
   const handleClose = () => {
     onOpenChange(false);
     setSearchQuery('');
-    setFiltersOpen(false);
   };
 
   return (
@@ -274,15 +176,8 @@ export function BatchesModal({
 
         {/* ====== Content Area ====== */}
         <div className="relative flex flex-1 flex-col overflow-hidden">
-          {/* Content Header — Filters + Close buttons */}
-          <div className="flex items-center justify-end gap-2 border-b px-4 py-3 md:px-5">
-            <button
-              onClick={() => setFiltersOpen(true)}
-              className="flex items-center gap-2 border-2 border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
-            >
-              <SlidersHorizontal className="h-4 w-4" />
-              Filters
-            </button>
+          {/* Content Header */}
+          <div className="flex items-center justify-end border-b px-4 py-3 md:px-5">
             <button
               onClick={handleClose}
               className="p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
@@ -374,18 +269,6 @@ export function BatchesModal({
               </div>
             )}
           </div>
-
-          {/* ====== Filter Panel (overlay within content area) ====== */}
-          <FilterMemoriesModal
-            open={filtersOpen}
-            onClose={() => setFiltersOpen(false)}
-            filters={filters}
-            onApply={setFilters}
-            availableTags={availableTags}
-            availableYears={availableYears}
-            availableLocations={availableLocations}
-            showColorStrip={false}
-          />
         </div>
       </DialogContent>
     </Dialog>
