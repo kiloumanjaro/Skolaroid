@@ -346,7 +346,7 @@ function GalleryPageContent({ era }: GalleryPageContentProps) {
         }}
       />
       <div className="flex h-full flex-col">
-        <header className="flex shrink-0 items-center px-10 pb-3 pt-24 lg:px-16">
+        <header className="flex shrink-0 items-center gap-4 px-6 pb-3 pt-4 sm:px-10 sm:pl-24 sm:pt-6 lg:px-16 lg:pl-28">
           <div className="flex items-center gap-2">
             <span className="font-dancing text-2xl font-bold italic text-primary">
               Skolaroid

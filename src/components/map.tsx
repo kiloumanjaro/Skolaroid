@@ -37,6 +37,7 @@ import type {
   MapLocationSelection,
 } from '@/lib/types/map';
 import { AddMemoryButton } from './map/AddMemoryButton';
+import { MapAnnouncementStrip } from './map/MapAnnouncementStrip';
 import { MapLocationSelector } from './map/MapLocationSelector';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
@@ -76,6 +77,11 @@ const CAMERA_ANIMATION = {
 const DEFAULT_MAP_CENTER: [number, number] = [123.8986, 10.3224];
 const DEFAULT_MAP_ZOOM = 17;
 const EMPTY_USER_GROUPS: { id: string; name: string }[] = [];
+const MAP_ANNOUNCEMENTS = [
+  'Campus stories pinned where they happened',
+  'Switch eras to explore memories across batches',
+  'Drop a memory and add to the living archive',
+];
 
 type SortOption =
   | 'date-newest'
@@ -1040,105 +1046,109 @@ export function MapComponent({
 
   return (
     <div className="h-full w-full overflow-hidden bg-white">
-      <div className="relative h-full w-full overflow-hidden">
-        <div ref={mapContainerRef} className="h-full w-full" />
+      <div className="flex h-full w-full flex-col overflow-hidden">
+        <MapAnnouncementStrip announcements={MAP_ANNOUNCEMENTS} />
 
-        <AddMemoryButton onClick={() => setAddMemoryOpen(true)} />
+        <div className="relative min-h-0 flex-1 overflow-hidden">
+          <div ref={mapContainerRef} className="h-full w-full" />
 
-        <ExpandableToolbar
-          onPrimaryClick={() => setGroupModalOpen(true)}
-          onBatchesClick={() => setBatchesModalOpen(true)}
-          onConfigureClick={isAdmin ? () => router.push('/admin') : undefined}
-        />
+          <AddMemoryButton onClick={() => setAddMemoryOpen(true)} />
 
-        <GroupPanel
-          open={groupModalOpen}
-          onOpenChange={(isOpen) => {
-            setGroupModalOpen(isOpen);
-            if (isOpen) cancelPendingFlyTo();
-          }}
-        />
-
-        <BatchesModal
-          open={batchesModalOpen}
-          onOpenChange={setBatchesModalOpen}
-          activeMapEra={activeMapEra}
-          memories={memories}
-          onAddMemory={(era) => {
-            setBatchesModalOpen(false);
-            setAddMemoryEra(era ?? activeMapEra);
-            setAddMemoryOpen(true);
-          }}
-          onMemorySelected={handleBatchesMemorySelected}
-        />
-
-        <AddMemoryModal
-          open={addMemoryOpen && locationSelectionMode === 'inactive'}
-          onOpenChange={(isOpen) => {
-            setAddMemoryOpen(isOpen);
-            if (!isOpen) {
-              setAddMemoryEra(null);
-              handleCancelMapSelection();
-            }
-          }}
-          defaultEra={addMemoryEra}
-          onRequestMapSelection={handleRequestMapSelection}
-        />
-
-        {locationSelectionMode !== 'inactive' && (
-          <MapLocationSelector
-            mode={locationSelectionMode}
-            onCancel={handleCancelMapSelection}
-            onLocationSelected={handleLocationSelected}
-            pendingSelection={pendingLocationSelection}
-            mapRef={mapRef}
+          <ExpandableToolbar
+            onPrimaryClick={() => setGroupModalOpen(true)}
+            onBatchesClick={() => setBatchesModalOpen(true)}
+            onConfigureClick={isAdmin ? () => router.push('/admin') : undefined}
           />
-        )}
 
-        <LandmarkMemoriesPanel
-          landmark={selectedLandmark}
-          memoryCount={
-            selectedLandmark ? (memoryCounts[selectedLandmark.id] ?? 0) : 0
-          }
-          onClose={() => setSelectedLandmark(null)}
-        />
+          <GroupPanel
+            open={groupModalOpen}
+            onOpenChange={(isOpen) => {
+              setGroupModalOpen(isOpen);
+              if (isOpen) cancelPendingFlyTo();
+            }}
+          />
 
-        {showFirstMemoryPrompt && (
-          <MapFirstMemoryPrompt onAddMemory={() => setAddMemoryOpen(true)} />
-        )}
+          <BatchesModal
+            open={batchesModalOpen}
+            onOpenChange={setBatchesModalOpen}
+            activeMapEra={activeMapEra}
+            memories={memories}
+            onAddMemory={(era) => {
+              setBatchesModalOpen(false);
+              setAddMemoryEra(era ?? activeMapEra);
+              setAddMemoryOpen(true);
+            }}
+            onMemorySelected={handleBatchesMemorySelected}
+          />
 
-        <MemoryDetailModal
-          memory={selectedMemory}
-          previousMemory={previousSelectedMemory}
-          nextMemory={nextSelectedMemory}
-          open={memoryDetailOpen}
-          onOpenChange={(isOpen) => {
-            if (!isOpen) {
-              closeNotebookView();
-              return;
+          <AddMemoryModal
+            open={addMemoryOpen && locationSelectionMode === 'inactive'}
+            onOpenChange={(isOpen) => {
+              setAddMemoryOpen(isOpen);
+              if (!isOpen) {
+                setAddMemoryEra(null);
+                handleCancelMapSelection();
+              }
+            }}
+            defaultEra={addMemoryEra}
+            onRequestMapSelection={handleRequestMapSelection}
+          />
+
+          {locationSelectionMode !== 'inactive' && (
+            <MapLocationSelector
+              mode={locationSelectionMode}
+              onCancel={handleCancelMapSelection}
+              onLocationSelected={handleLocationSelected}
+              pendingSelection={pendingLocationSelection}
+              mapRef={mapRef}
+            />
+          )}
+
+          <LandmarkMemoriesPanel
+            landmark={selectedLandmark}
+            memoryCount={
+              selectedLandmark ? (memoryCounts[selectedLandmark.id] ?? 0) : 0
             }
-            setMemoryDetailOpen(true);
-            onMemoryDetailOpenStateChange?.(true);
-          }}
-          onMemoryDeleted={() => setSelectedMemory(null)}
-          hasPrevious={selectedMemoryIndex > 0}
-          hasNext={
-            selectedMemoryIndex >= 0 &&
-            selectedMemoryIndex < memories.length - 1
-          }
-          onPrevious={() => {
-            if (previousSelectedMemory) {
-              setSelectedMemory(previousSelectedMemory);
-              flyToMemoryWithSequence(previousSelectedMemory);
+            onClose={() => setSelectedLandmark(null)}
+          />
+
+          {showFirstMemoryPrompt && (
+            <MapFirstMemoryPrompt onAddMemory={() => setAddMemoryOpen(true)} />
+          )}
+
+          <MemoryDetailModal
+            memory={selectedMemory}
+            previousMemory={previousSelectedMemory}
+            nextMemory={nextSelectedMemory}
+            open={memoryDetailOpen}
+            onOpenChange={(isOpen) => {
+              if (!isOpen) {
+                closeNotebookView();
+                return;
+              }
+              setMemoryDetailOpen(true);
+              onMemoryDetailOpenStateChange?.(true);
+            }}
+            onMemoryDeleted={() => setSelectedMemory(null)}
+            hasPrevious={selectedMemoryIndex > 0}
+            hasNext={
+              selectedMemoryIndex >= 0 &&
+              selectedMemoryIndex < memories.length - 1
             }
-          }}
-          onNext={() => {
-            if (nextSelectedMemory) {
-              setSelectedMemory(nextSelectedMemory);
-              flyToMemoryWithSequence(nextSelectedMemory);
-            }
-          }}
-        />
+            onPrevious={() => {
+              if (previousSelectedMemory) {
+                setSelectedMemory(previousSelectedMemory);
+                flyToMemoryWithSequence(previousSelectedMemory);
+              }
+            }}
+            onNext={() => {
+              if (nextSelectedMemory) {
+                setSelectedMemory(nextSelectedMemory);
+                flyToMemoryWithSequence(nextSelectedMemory);
+              }
+            }}
+          />
+        </div>
       </div>
     </div>
   );

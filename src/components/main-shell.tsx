@@ -228,12 +228,12 @@ export function MainShell({ children }: { children: ReactNode }) {
                 <button
                   type="button"
                   onClick={() => setSidebarOpen((prev) => !prev)}
-                  className="group absolute left-4 top-4 z-30 h-14 w-14 overflow-hidden rounded-2xl border-2 border-border shadow-[4px_4px_0px_0px_#2d2d2d] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#2d2d2d] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none sm:left-6 sm:top-6"
+                  className="group absolute left-4 top-12 z-30 h-14 w-14 overflow-hidden border-[3px] border-border transition-all hover:translate-x-[2px] hover:translate-y-[2px] active:translate-x-[4px] active:translate-y-[4px] sm:left-6 sm:top-14"
                   aria-label={
                     sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'
                   }
                 >
-                  <div className="absolute inset-0 rounded-2xl bg-card transition-all group-hover:bg-[#f6cb48] group-active:bg-[#f6cb48]" />
+                  <div className="absolute inset-0 bg-card transition-all group-hover:bg-[#f6cb48] group-active:bg-[#f6cb48]" />
                   <span className="relative flex h-full w-full flex-col items-center justify-center gap-1.5 text-foreground">
                     <span className="block h-0.5 w-6 rounded-full bg-current" />
                     <span className="block h-0.5 w-6 rounded-full bg-current" />
