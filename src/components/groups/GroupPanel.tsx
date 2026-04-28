@@ -178,6 +178,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
   const canEditMessage =
     !!selectedGroup &&
     (currentUserRole === 'OWNER' || currentUserRole === 'ADMIN');
+  const hasMoreActions = isOwner || canSendInvitations || canEditMessage;
 
   // ─── Handlers ────────────────────────────────────────────────────
   const handleSelectGroup = useCallback((group: Group) => {
@@ -281,6 +282,43 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
     showSuccess('Group message updated.');
   }, [refetchGroupDetail, showSuccess]);
 
+  const visibleTabs = [
+    {
+      id: 'members' as const,
+      label: 'Members',
+      icon: Users,
+      onClick: () => setActiveTab('members'),
+    },
+    {
+      id: 'media' as const,
+      label: 'Media',
+      icon: ImageIcon,
+      onClick: () => setActiveTab('media'),
+    },
+    ...(isOwner
+      ? [
+          {
+            id: 'settings' as const,
+            label: 'Settings',
+            icon: Settings,
+            onClick: () => setActiveTab('settings'),
+          },
+        ]
+      : []),
+    {
+      id: 'about' as const,
+      label: 'About',
+      icon: Info,
+      onClick: () => setActiveTab('about'),
+    },
+    {
+      id: 'roles' as const,
+      label: 'Roles',
+      icon: Shield,
+      onClick: () => setActiveTab('roles'),
+    },
+  ];
+
   return (
     <>
       <div
@@ -293,13 +331,12 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
         <section
           aria-label={selectedGroup?.name ?? 'Groups'}
           className={cn(
-            'pointer-events-auto flex w-full max-w-[64rem] flex-col overflow-hidden border-[3px] border-[#1f1f1f] bg-[#f0eeec] shadow-none transition-transform duration-300 ease-out sm:w-[min(64rem,calc(100vw-3rem))]',
-            'h-[min(84vh,52rem)]',
+            'pointer-events-auto flex h-[calc(100vh-1rem)] w-[calc(100vw-1rem)] max-w-none flex-col overflow-hidden rounded-none border-2 border-[#1f1f1f] bg-background p-0 shadow-none transition-transform duration-300 ease-out md:h-[85vh] md:w-[70vw]',
             open ? 'translate-y-0' : 'translate-y-[calc(100%-2.75rem)]'
           )}
         >
           <div
-            className="flex cursor-pointer items-center justify-between gap-3 border-b-[3px] border-b-[#1f1f1f] bg-[#4384dc] px-3 py-2 text-white"
+            className="flex cursor-pointer items-center justify-between gap-3 border-b-2 border-b-black bg-[#4384dc] px-3 py-2 text-white"
             onClick={() => {
               if (!open) onOpenChange(true);
             }}
@@ -321,283 +358,239 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
             <div className="flex shrink-0 items-center gap-1">
               <button
                 type="button"
-                aria-label="Share group"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  if (!selectedGroup) return;
-                  if (!open) onOpenChange(true);
-                  setShareModalOpen(true);
-                }}
-                className="grid h-6 w-6 place-items-center border-2 border-[#062a63] bg-[#f2f6fd] text-[#0b2e67] shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#7f9db9]"
-              >
-                <Share2 className="h-3.5 w-3.5" />
-              </button>
-              <button
-                type="button"
-                aria-label="Leave group"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  if (!selectedGroup) return;
-                  if (!open) onOpenChange(true);
-                  setLeaveModalOpen(true);
-                }}
-                className="grid h-6 w-6 place-items-center border-2 border-[#062a63] bg-[#f2f6fd] text-[#0b2e67] shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#7f9db9]"
-              >
-                <LogOut className="h-3.5 w-3.5" />
-              </button>
-              <button
-                type="button"
                 aria-label="Close groups panel"
                 onClick={(event) => {
                   event.stopPropagation();
                   onOpenChange(false);
                 }}
-                className="grid h-6 w-6 place-items-center border-2 border-[#5d0d0d] bg-[#f7d6d5] text-[#7a1111] shadow-[inset_1px_1px_0_#fff8f7,inset_-1px_-1px_0_#c68787]"
+                className="grid h-7 w-7 shrink-0 place-items-center border-2 border-black bg-[#f7d6d5] text-[#7a1111] shadow-[inset_1px_1px_0_#fff8f7,inset_-1px_-1px_0_#c68787]"
               >
-                <X className="h-3.5 w-3.5" />
+                <X className="h-4 w-4 stroke-[2]" />
               </button>
             </div>
           </div>
 
-          <div className="flex min-h-0 flex-1 flex-col bg-[#f7f4ea]">
-            <div className="flex min-h-0 flex-1 flex-col md:flex-row">
-              <div className="flex w-full shrink-0 flex-col border-b border-[#c6c0b2] bg-[#f0eeec] md:w-60 md:border-b-0 md:border-r">
-                <div className="border-b border-[#c6c0b2] px-2 py-3">
-                  <GroupSwitcher
-                    groups={groups}
-                    selectedGroup={selectedGroup}
-                    onSelectGroup={(group) => {
-                      handleSelectGroup(group);
-                      if (!open) onOpenChange(true);
-                    }}
-                    onCreateGroup={() => {
-                      onOpenChange(true);
-                      setCreateModalOpen(true);
-                    }}
-                  />
+          <div className="flex min-h-0 flex-1 flex-col">
+            <div className="border-b-2 border-black px-3 py-3">
+              <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                <div className="flex min-w-0 flex-1 flex-col gap-3 md:flex-row md:items-start">
+                  <div className="w-full shrink-0 md:w-64">
+                    <GroupSwitcher
+                      groups={groups}
+                      selectedGroup={selectedGroup}
+                      onSelectGroup={(group) => {
+                        handleSelectGroup(group);
+                        if (!open) onOpenChange(true);
+                      }}
+                      onCreateGroup={() => {
+                        onOpenChange(true);
+                        setCreateModalOpen(true);
+                      }}
+                    />
+                  </div>
+
+                  {selectedGroup && (
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Badge
+                          variant="outline"
+                          className="flex items-center gap-1 border-[#7f9db9] bg-[#f4f8ff] text-[11px] text-[#24426c]"
+                        >
+                          {selectedGroup.privacy === 'PUBLIC' ? (
+                            <>
+                              <Globe className="h-3 w-3" />
+                              Public
+                            </>
+                          ) : (
+                            <>
+                              <Lock className="h-3 w-3" />
+                              Private
+                            </>
+                          )}
+                        </Badge>
+                      </div>
+                      <p className="mt-1 text-xs text-[#5a5a5a]">
+                        {selectedGroup.memberCount} members ·{' '}
+                        {selectedGroup.postCount} posts
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {selectedGroup && (
-                  <div className="scrollbar-hide flex-1 overflow-x-auto overflow-y-hidden px-2 py-2 md:overflow-y-auto">
-                    <nav className="flex gap-1 md:flex-col">
-                      <button
-                        onClick={() => setActiveTab('members')}
-                        className={cn(
-                          'flex shrink-0 items-center gap-2 rounded-sm border-2 px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
-                          activeTab === 'members'
-                            ? 'border-[#7f9db9] bg-[#fff7d6] text-[#1f1f1f]'
-                            : 'border-[#b8b1a3] bg-[#f0eeec] text-[#5a5a5a] hover:bg-[#f5f1e3]'
-                        )}
-                      >
-                        <Users className="h-4 w-4" />
-                        <span>Members</span>
-                      </button>
-
-                      <button
-                        onClick={() => setActiveTab('media')}
-                        className={cn(
-                          'flex shrink-0 items-center gap-2 rounded-sm border-2 px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
-                          activeTab === 'media'
-                            ? 'border-[#7f9db9] bg-[#fff7d6] text-[#1f1f1f]'
-                            : 'border-[#b8b1a3] bg-[#f0eeec] text-[#5a5a5a] hover:bg-[#f5f1e3]'
-                        )}
-                      >
-                        <ImageIcon className="h-4 w-4" />
-                        <span>Media</span>
-                      </button>
-
-                      {isOwner && (
-                        <button
-                          onClick={() => setActiveTab('settings')}
-                          className={cn(
-                            'flex shrink-0 items-center gap-2 rounded-sm border-2 px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
-                            activeTab === 'settings'
-                              ? 'border-[#7f9db9] bg-[#fff7d6] text-[#1f1f1f]'
-                              : 'border-[#b8b1a3] bg-[#f0eeec] text-[#5a5a5a] hover:bg-[#f5f1e3]'
+                  <div className="flex shrink-0 items-center gap-1 self-end md:self-start">
+                    <button
+                      type="button"
+                      aria-label="Share group"
+                      onClick={() => {
+                        if (!selectedGroup) return;
+                        setShareModalOpen(true);
+                      }}
+                      className="grid h-7 w-7 shrink-0 place-items-center border-2 border-black bg-white text-black"
+                    >
+                      <Share2 className="h-4 w-4 stroke-[2]" />
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Leave group"
+                      onClick={() => {
+                        if (!selectedGroup) return;
+                        setLeaveModalOpen(true);
+                      }}
+                      className="grid h-7 w-7 shrink-0 place-items-center border-2 border-black bg-white text-black"
+                    >
+                      <LogOut className="h-4 w-4 stroke-[2]" />
+                    </button>
+                    {hasMoreActions && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button
+                            type="button"
+                            className="group relative h-7 w-7 shrink-0 overflow-hidden border-2 border-black transition-colors"
+                            aria-label="Open group actions"
+                          >
+                            <div className="absolute inset-0 bg-background transition-colors group-hover:bg-[#f6cb48] group-active:bg-[#f6cb48]" />
+                            <span className="relative flex h-full w-full items-center justify-center text-foreground">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </span>
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                          {isOwner && (
+                            <>
+                              <DropdownMenuItem
+                                onClick={() => setEditGroupModalOpen(true)}
+                              >
+                                <Pencil className="mr-2 h-4 w-4" />
+                                Edit Group
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                            </>
                           )}
-                        >
-                          <Settings className="h-4 w-4" />
-                          <span>Settings</span>
-                        </button>
-                      )}
+                          {canSendInvitations && (
+                            <>
+                              <DropdownMenuItem
+                                onClick={() => setInviteModalOpen(true)}
+                              >
+                                <UserPlus className="mr-2 h-4 w-4" />
+                                Invite Members
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                            </>
+                          )}
+                          {canEditMessage && (
+                            <>
+                              <DropdownMenuItem
+                                onClick={() => setEditMessageModalOpen(true)}
+                              >
+                                <MessageSquare className="mr-2 h-4 w-4" />
+                                Edit Message
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                            </>
+                          )}
+                          {isOwner && (
+                            <DropdownMenuItem
+                              onClick={() => setDeleteModalOpen(true)}
+                              className="text-red-600 focus:text-red-600"
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Delete Group
+                            </DropdownMenuItem>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
 
-                      <button
-                        onClick={() => setActiveTab('about')}
-                        className={cn(
-                          'flex shrink-0 items-center gap-2 rounded-sm border-2 px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
-                          activeTab === 'about'
-                            ? 'border-[#7f9db9] bg-[#fff7d6] text-[#1f1f1f]'
-                            : 'border-[#b8b1a3] bg-[#f0eeec] text-[#5a5a5a] hover:bg-[#f5f1e3]'
-                        )}
-                      >
-                        <Info className="h-4 w-4" />
-                        <span>About</span>
-                      </button>
+            <div className="flex min-h-0 flex-1 flex-col md:flex-row">
+              <div className="flex w-full shrink-0 flex-col border-b-2 border-black bg-secondary/50 md:w-48 md:border-b-0 md:border-r-2">
+                {selectedGroup && (
+                  <div className="scrollbar-hide flex-1 overflow-x-auto overflow-y-hidden px-0 py-0 md:flex-1">
+                    <nav className="flex gap-0 md:block md:space-y-0">
+                      {visibleTabs.map((tab, index) => {
+                        const Icon = tab.icon;
+                        const isActive = activeTab === tab.id;
+                        const isFirstTab = index === 0;
+                        const isLastTab = index === visibleTabs.length - 1;
+                        const activeTabBorderClassName = isFirstTab
+                          ? 'border-r-2 border-r-black md:border-r-0'
+                          : isLastTab
+                            ? 'border-l-2 border-l-black md:border-l-0'
+                            : 'border-l-2 border-r-2 border-l-black border-r-black md:border-l-0 md:border-r-0';
 
-                      <button
-                        onClick={() => setActiveTab('roles')}
-                        className={cn(
-                          'flex shrink-0 items-center gap-2 rounded-sm border-2 px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
-                          activeTab === 'roles'
-                            ? 'border-[#7f9db9] bg-[#fff7d6] text-[#1f1f1f]'
-                            : 'border-[#b8b1a3] bg-[#f0eeec] text-[#5a5a5a] hover:bg-[#f5f1e3]'
-                        )}
-                      >
-                        <Shield className="h-4 w-4" />
-                        <span>Roles</span>
-                      </button>
+                        return (
+                          <button
+                            key={tab.id}
+                            onClick={tab.onClick}
+                            className={cn(
+                              'flex shrink-0 appearance-none items-center gap-2 whitespace-nowrap border-0 px-4 py-3 text-left text-sm font-medium transition-colors md:w-full',
+                              isActive
+                                ? `${activeTabBorderClassName} bg-[#f6cb48] text-black md:border-b-2 md:border-t-2 md:border-black`
+                                : 'bg-transparent text-muted-foreground hover:bg-secondary hover:text-foreground'
+                            )}
+                            style={
+                              isFirstTab
+                                ? { borderTopColor: 'transparent' }
+                                : undefined
+                            }
+                          >
+                            <Icon className="h-4 w-4" />
+                            <span>{tab.label}</span>
+                          </button>
+                        );
+                      })}
                     </nav>
                   </div>
                 )}
               </div>
 
-              <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-white">
+              <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
                 {selectedGroup ? (
-                  <>
-                    <div className="flex items-start justify-between gap-3 border-b border-[#c6c0b2] bg-white px-4 py-3 md:px-5">
-                      <div className="flex min-w-0 flex-1 items-start gap-3">
-                        <div className="min-w-0 flex-1">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <h3 className="truncate text-base font-semibold text-[#1f1f1f]">
-                              {selectedGroup.name}
-                            </h3>
-                            <Badge
-                              variant="outline"
-                              className="flex items-center gap-1 border-[#7f9db9] bg-[#f4f8ff] text-[11px] text-[#24426c]"
-                            >
-                              {selectedGroup.privacy === 'PUBLIC' ? (
-                                <>
-                                  <Globe className="h-3 w-3" />
-                                  Public
-                                </>
-                              ) : (
-                                <>
-                                  <Lock className="h-3 w-3" />
-                                  Private
-                                </>
-                              )}
-                            </Badge>
-                          </div>
-                          <p className="mt-1 text-xs text-[#5a5a5a]">
-                            {selectedGroup.memberCount} members ·{' '}
-                            {selectedGroup.postCount} posts
-                          </p>
-                        </div>
-
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <button
-                              type="button"
-                              className="group relative h-8 w-8 shrink-0 overflow-hidden border-2 border-border transition-all hover:translate-x-px hover:translate-y-px active:translate-x-[2px] active:translate-y-[2px]"
-                              aria-label="Open group actions"
-                            >
-                              <div className="absolute inset-0 bg-card transition-all group-hover:bg-[#f6cb48] group-active:bg-[#f6cb48]" />
-                              <span className="relative flex h-full w-full items-center justify-center text-foreground">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </span>
-                            </button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-48">
-                            {isOwner && (
-                              <>
-                                <DropdownMenuItem
-                                  onClick={() => setEditGroupModalOpen(true)}
-                                >
-                                  <Pencil className="mr-2 h-4 w-4" />
-                                  Edit Group
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                              </>
-                            )}
-                            {canSendInvitations && (
-                              <>
-                                <DropdownMenuItem
-                                  onClick={() => setInviteModalOpen(true)}
-                                >
-                                  <UserPlus className="mr-2 h-4 w-4" />
-                                  Invite Members
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                              </>
-                            )}
-                            <DropdownMenuItem
-                              onClick={() => setShareModalOpen(true)}
-                            >
-                              <Share2 className="mr-2 h-4 w-4" />
-                              Share Group
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            {canEditMessage && (
-                              <>
-                                <DropdownMenuItem
-                                  onClick={() => setEditMessageModalOpen(true)}
-                                >
-                                  <MessageSquare className="mr-2 h-4 w-4" />
-                                  Edit Message
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                              </>
-                            )}
-                            <DropdownMenuItem
-                              onClick={() => setLeaveModalOpen(true)}
-                              className="text-red-600 focus:text-red-600"
-                            >
-                              <LogOut className="mr-2 h-4 w-4" />
-                              Leave Group
-                            </DropdownMenuItem>
-                            {isOwner && (
-                              <>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                  onClick={() => setDeleteModalOpen(true)}
-                                  className="text-red-600 focus:text-red-600"
-                                >
-                                  <Trash2 className="mr-2 h-4 w-4" />
-                                  Delete Group
-                                </DropdownMenuItem>
-                              </>
-                            )}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                    </div>
-
-                    <div className="scrollbar-hide flex-1 overflow-y-auto bg-white">
-                      {activeTab === 'members' && (
-                        <MembersTab
-                          members={selectedGroup.members}
-                          canManageMembers={canManageMembers}
-                          canChangeRoles={isOwner}
-                          currentUserId={currentUserId}
-                          groupId={selectedGroup.id}
-                          onMembersChanged={handleMembersChanged}
-                        />
-                      )}
-                      {activeTab === 'media' && (
-                        <MediaTab group={selectedGroup} />
-                      )}
-                      {activeTab === 'settings' && isOwner && (
-                        <SettingsTab
-                          group={selectedGroup}
-                          onUpdated={() => refetchGroupDetail()}
-                        />
-                      )}
-                      {activeTab === 'about' && (
-                        <AboutTab group={selectedGroup} />
-                      )}
-                      {activeTab === 'roles' &&
-                        selectedGroup.rolePrivileges && (
-                          <RolesTab
-                            groupId={selectedGroup.id}
-                            rolePrivileges={selectedGroup.rolePrivileges}
-                            currentUserRole={currentUserRole}
-                            onPrivilegesSaved={handlePrivilegesSaved}
-                          />
-                        )}
-                    </div>
-                  </>
+                  <div
+                    className={cn(
+                      'scrollbar-hide flex-1 overflow-y-auto',
+                      activeTab === 'members' || activeTab === 'roles'
+                        ? 'p-0'
+                        : 'p-4 md:p-6'
+                    )}
+                  >
+                    {activeTab === 'members' && (
+                      <MembersTab
+                        members={selectedGroup.members}
+                        canManageMembers={canManageMembers}
+                        canChangeRoles={isOwner}
+                        currentUserId={currentUserId}
+                        groupId={selectedGroup.id}
+                        onMembersChanged={handleMembersChanged}
+                      />
+                    )}
+                    {activeTab === 'media' && (
+                      <MediaTab group={selectedGroup} />
+                    )}
+                    {activeTab === 'settings' && isOwner && (
+                      <SettingsTab
+                        group={selectedGroup}
+                        onUpdated={() => refetchGroupDetail()}
+                      />
+                    )}
+                    {activeTab === 'about' && (
+                      <AboutTab group={selectedGroup} />
+                    )}
+                    {activeTab === 'roles' && selectedGroup.rolePrivileges && (
+                      <RolesTab
+                        groupId={selectedGroup.id}
+                        rolePrivileges={selectedGroup.rolePrivileges}
+                        currentUserRole={currentUserRole}
+                        onPrivilegesSaved={handlePrivilegesSaved}
+                      />
+                    )}
+                  </div>
                 ) : (
-                  <div className="flex h-full flex-col items-center justify-center px-5 py-8">
+                  <div className="flex h-full flex-col items-center justify-center px-4 py-8 md:px-6">
                     {isLoadingGroups ? (
                       <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                     ) : (

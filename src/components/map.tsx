@@ -1,6 +1,7 @@
 'use client';
 
 import mapboxgl from 'mapbox-gl';
+import { Layers } from 'lucide-react';
 import {
   useRef,
   useEffect,
@@ -16,6 +17,7 @@ import { AddMemoryModal } from './add-memory-modal';
 import { GroupPanel } from './groups/GroupPanel';
 import { BatchesModal } from './batches-modal';
 import { ExpandableToolbar } from './expandable-toolbar';
+import { useMainShellSidebarAction } from './main-shell-sidebar-action';
 import { LandmarkMarker } from './map/LandmarkMarker';
 import { LandmarkMemoriesPanel } from './map/LandmarkMemoriesPanel';
 import { MemoryPin } from './map/MemoryPin';
@@ -600,6 +602,23 @@ export function MapComponent({
     pendingMemoryRef.current = null;
   }, []);
 
+  const openBatchesModal = useCallback(() => {
+    cancelPendingFlyTo();
+    setBatchesModalOpen(true);
+  }, [cancelPendingFlyTo]);
+
+  const batchesSidebarAction = useMemo(
+    () => ({
+      id: 'map-batches',
+      label: 'Batches',
+      icon: <Layers className="h-5 w-5" />,
+      onClick: openBatchesModal,
+    }),
+    [openBatchesModal]
+  );
+
+  useMainShellSidebarAction(batchesSidebarAction);
+
   // ---------------------------------------------------------------------------
   // Location Selection Mode handlers
   // ---------------------------------------------------------------------------
@@ -1055,7 +1074,6 @@ export function MapComponent({
           <AddMemoryButton onClick={() => setAddMemoryOpen(true)} />
 
           <ExpandableToolbar
-            onBatchesClick={() => setBatchesModalOpen(true)}
             onConfigureClick={isAdmin ? () => router.push('/admin') : undefined}
           />
 

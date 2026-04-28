@@ -2,8 +2,12 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { LoginForm } from '@/components/login-form';
+import {
+  MainShellSidebarActionProvider,
+  type MainShellSidebarAction,
+} from '@/components/main-shell-sidebar-action';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
 
@@ -83,12 +87,16 @@ function isShellRoute(pathname: string) {
 function ShellSidebar({
   isOpen,
   isAuthenticated,
+  leadingAction,
   onPrimaryAction,
+  onLeadingAction,
   onNavigate,
 }: {
   isOpen: boolean;
   isAuthenticated: boolean;
+  leadingAction: MainShellSidebarAction | null;
   onPrimaryAction: () => void;
+  onLeadingAction: (action: MainShellSidebarAction) => void;
   onNavigate: (href: string) => void;
 }) {
   const pathname = usePathname();
@@ -112,6 +120,25 @@ function ShellSidebar({
       </div>
 
       <nav className="flex flex-col gap-2 px-2">
+        {leadingAction && (
+          <button
+            type="button"
+            onClick={() => onLeadingAction(leadingAction)}
+            className="group relative flex h-12 items-center gap-3 overflow-hidden rounded-2xl px-3 text-foreground/80 transition-all duration-300 ease-in-out hover:bg-foreground/5 hover:text-foreground"
+          >
+            <span className="relative flex h-6 w-6 shrink-0 items-center justify-center">
+              {leadingAction.icon}
+            </span>
+            <span
+              className={`relative overflow-hidden whitespace-nowrap text-sm font-medium transition-all duration-300 ease-in-out ${
+                isOpen ? 'max-w-[120px] opacity-100' : 'max-w-0 opacity-0'
+              }`}
+            >
+              {leadingAction.label}
+            </span>
+          </button>
+        )}
+
         {navItems.map((item) => {
           const isActive =
             pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -200,10 +227,13 @@ export function MainShell({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { isAuthenticated, logout } = useUserAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarAction, setSidebarAction] =
+    useState<MainShellSidebarAction | null>(null);
   const [loginOpen, setLoginOpen] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState<string | null>(
     null
   );
+  const sidebarActionContextValue = useMemo(() => ({ setSidebarAction }), []);
 
   useEffect(() => {
     if (!pendingNavigation || sidebarOpen) {
@@ -219,7 +249,11 @@ export function MainShell({ children }: { children: ReactNode }) {
   }, [pendingNavigation, router, sidebarOpen]);
 
   if (!isShellRoute(pathname)) {
-    return <>{children}</>;
+    return (
+      <MainShellSidebarActionProvider value={sidebarActionContextValue}>
+        {children}
+      </MainShellSidebarActionProvider>
+    );
   }
 
   const handleLogout = async () => {
@@ -243,55 +277,62 @@ export function MainShell({ children }: { children: ReactNode }) {
   };
 
   return (
-    <>
-      <div className="h-dvh overflow-hidden bg-[#fcfaf8]">
-        <div className="relative flex h-full w-full overflow-hidden">
-          <ShellSidebar
-            isOpen={sidebarOpen}
-            isAuthenticated={isAuthenticated}
-            onNavigate={handleSidebarNavigation}
-            onPrimaryAction={() => {
-              if (isAuthenticated) {
-                void handleLogout();
-                return;
-              }
+    <MainShellSidebarActionProvider value={sidebarActionContextValue}>
+      <>
+        <div className="h-dvh overflow-hidden bg-[#fcfaf8]">
+          <div className="relative flex h-full w-full overflow-hidden">
+            <ShellSidebar
+              isOpen={sidebarOpen}
+              isAuthenticated={isAuthenticated}
+              leadingAction={sidebarAction}
+              onLeadingAction={(action) => {
+                action.onClick();
+                setSidebarOpen(false);
+              }}
+              onNavigate={handleSidebarNavigation}
+              onPrimaryAction={() => {
+                if (isAuthenticated) {
+                  void handleLogout();
+                  return;
+                }
 
-              setLoginOpen(true);
-            }}
-          />
+                setLoginOpen(true);
+              }}
+            />
 
-          <div className="flex min-w-0 flex-1 flex-col p-3">
-            <div className="relative min-h-0 min-w-0 flex-1 overflow-hidden border-[3px] border-[#fcfaf8] bg-[#fcfaf8]">
-              <div className="relative h-full w-full overflow-hidden border-[3px] border-black bg-white">
-                <button
-                  type="button"
-                  onClick={() => setSidebarOpen((prev) => !prev)}
-                  className="group absolute left-4 top-12 z-30 h-14 w-14 overflow-hidden border-[3px] border-border transition-all hover:translate-x-[2px] hover:translate-y-[2px] active:translate-x-[4px] active:translate-y-[4px] sm:left-6 sm:top-14"
-                  aria-label={
-                    sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'
-                  }
-                >
-                  <div className="absolute inset-0 bg-card transition-all group-hover:bg-[#f6cb48] group-active:bg-[#f6cb48]" />
-                  <span className="relative flex h-full w-full flex-col items-center justify-center gap-1.5 text-foreground">
-                    <span className="block h-0.5 w-6 rounded-full bg-current" />
-                    <span className="block h-0.5 w-6 rounded-full bg-current" />
-                    <span className="block h-0.5 w-6 rounded-full bg-current" />
-                  </span>
-                </button>
+            <div className="flex min-w-0 flex-1 flex-col p-3">
+              <div className="relative min-h-0 min-w-0 flex-1 overflow-hidden border-[3px] border-[#fcfaf8] bg-[#fcfaf8]">
+                <div className="relative h-full w-full overflow-hidden border-[3px] border-black bg-white">
+                  <button
+                    type="button"
+                    onClick={() => setSidebarOpen((prev) => !prev)}
+                    className="group absolute left-4 top-12 z-30 h-14 w-14 overflow-hidden border-[3px] border-border transition-all hover:translate-x-[2px] hover:translate-y-[2px] active:translate-x-[4px] active:translate-y-[4px] sm:left-6 sm:top-14"
+                    aria-label={
+                      sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'
+                    }
+                  >
+                    <div className="absolute inset-0 bg-card transition-all group-hover:bg-[#f6cb48] group-active:bg-[#f6cb48]" />
+                    <span className="relative flex h-full w-full flex-col items-center justify-center gap-1.5 text-foreground">
+                      <span className="block h-0.5 w-6 rounded-full bg-current" />
+                      <span className="block h-0.5 w-6 rounded-full bg-current" />
+                      <span className="block h-0.5 w-6 rounded-full bg-current" />
+                    </span>
+                  </button>
 
-                {children}
+                  {children}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <Dialog open={loginOpen} onOpenChange={setLoginOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogTitle className="sr-only">Login</DialogTitle>
-          <LoginForm />
-        </DialogContent>
-      </Dialog>
-    </>
+        <Dialog open={loginOpen} onOpenChange={setLoginOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogTitle className="sr-only">Login</DialogTitle>
+            <LoginForm />
+          </DialogContent>
+        </Dialog>
+      </>
+    </MainShellSidebarActionProvider>
   );
 }
