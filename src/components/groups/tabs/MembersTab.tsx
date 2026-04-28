@@ -192,7 +192,7 @@ export function MembersTab({
     <>
       <div className="flex flex-col bg-[#f8f4ea]">
         {/* Search and Filter Controls */}
-        <div className="border-b-2 border-black bg-[#efe7da] px-5 py-4">
+        <div className="bg-[#fffdf8] px-3 pt-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <input
@@ -200,7 +200,7 @@ export function MembersTab({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by name or email..."
-              className="w-full border-2 border-black bg-card py-2 pl-9 pr-8 text-sm text-foreground placeholder:text-muted-foreground focus:border-black focus:outline-none focus:ring-1 focus:ring-skolaroid-blue"
+              className="w-full border-2 border-black bg-card py-3 pl-9 pr-8 text-sm text-foreground placeholder:text-muted-foreground focus:border-black focus:outline-none focus:ring-1 focus:ring-skolaroid-blue"
             />
             {searchQuery && (
               <button
@@ -213,10 +213,7 @@ export function MembersTab({
             )}
           </div>
 
-          <div className="mt-3 flex flex-wrap items-center gap-2">
-            <span className="text-xs font-semibold uppercase tracking-[0.12em] text-black">
-              Role:
-            </span>
+          <div className="flex flex-wrap items-center gap-2 py-3">
             <div className="flex flex-wrap gap-2">
               {(['ALL', 'OWNER', 'ADMIN', 'MEMBER'] as const).map((role) => (
                 <button
@@ -239,9 +236,9 @@ export function MembersTab({
         </div>
 
         {/* Members Table */}
-        <div className="flex-1 overflow-x-auto bg-[#fffdf8]">
+        <div className="flex-1 overflow-x-auto bg-[#fffdf8] px-3 pt-1">
           {filteredMembers.length > 0 ? (
-            <table className="w-full">
+            <table className="w-full border-2 border-black">
               <thead>
                 <tr className="border-b-2 border-black bg-[#4384dc] text-left">
                   <th className="px-5 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-white">
@@ -417,17 +414,6 @@ export function MembersTab({
                   ? `No members match "${searchQuery}"`
                   : 'No members with this role'}
               </p>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="mt-3 border-2 border-black bg-white font-semibold text-black hover:bg-[#f6cb48]"
-                onClick={() => {
-                  setSearchQuery('');
-                  setRoleFilter('ALL');
-                }}
-              >
-                Clear filters
-              </Button>
             </div>
           )}
         </div>
@@ -477,7 +463,7 @@ export function MembersTab({
               </div>
 
               {/* Profile */}
-              <div className="flex flex-col items-center bg-[#efe7da] px-6 py-6">
+              <div className="flex flex-col items-center bg-[#fffdf8] px-6 py-6">
                 <Avatar className="h-16 w-16 border-2 border-black bg-white">
                   {memberToView.avatarUrl ? (
                     <AvatarImage
@@ -514,7 +500,7 @@ export function MembersTab({
               {memberToView.id !== currentUserId &&
                 memberToView.role !== 'OWNER' &&
                 (canManageMembers || canChangeRoles) && (
-                  <div className="space-y-2 border-t-2 border-black bg-[#efe7da] px-6 py-4">
+                  <div className="space-y-2 border-t-2 border-black bg-[#fffdf8] px-6 py-4">
                     {canChangeRoles && (
                       <Button
                         variant="secondary"
@@ -570,7 +556,7 @@ export function MembersTab({
                 </p>
               </div>
 
-              <div className="border-b-2 border-black bg-[#efe7da] px-6 py-4 text-sm text-[#5a5a5a]">
+              <div className="border-b-2 border-black bg-[#fffdf8] px-6 py-4 text-sm text-[#5a5a5a]">
                 Group memories remain in this group after ownership changes.
               </div>
 

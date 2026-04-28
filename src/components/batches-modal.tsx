@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { cn, getEraFromBatchTag } from '@/lib/utils';
 import { X, Search, Plus, MapPin } from 'lucide-react';
@@ -69,6 +69,13 @@ export function BatchesModal({
     () => memoriesProp ?? [],
     [memoriesProp]
   );
+
+  useEffect(() => {
+    if (!open) return;
+
+    setSelectedDecade(activeMapEra);
+    setSearchQuery('');
+  }, [activeMapEra, open]);
 
   // Filter memories by era (batch tag) and keyword search.
   const displayedMemories = useMemo<MemoryWithCoordinates[]>(() => {
