@@ -55,7 +55,6 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
 interface GroupPanelProps {
@@ -294,7 +293,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
         <section
           aria-label={selectedGroup?.name ?? 'Groups'}
           className={cn(
-            'pointer-events-auto flex w-full max-w-[64rem] flex-col overflow-hidden border-[3px] border-[#1f1f1f] bg-[#ece9d8] shadow-none transition-transform duration-300 ease-out sm:w-[min(64rem,calc(100vw-3rem))]',
+            'pointer-events-auto flex w-full max-w-[64rem] flex-col overflow-hidden border-[3px] border-[#1f1f1f] bg-[#f0eeec] shadow-none transition-transform duration-300 ease-out sm:w-[min(64rem,calc(100vw-3rem))]',
             'h-[min(84vh,52rem)]',
             open ? 'translate-y-0' : 'translate-y-[calc(100%-2.75rem)]'
           )}
@@ -362,7 +361,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
 
           <div className="flex min-h-0 flex-1 flex-col bg-[#f7f4ea]">
             <div className="flex min-h-0 flex-1 flex-col md:flex-row">
-              <div className="flex w-full shrink-0 flex-col border-b border-[#c6c0b2] bg-[#ece9d8] md:w-60 md:border-b-0 md:border-r">
+              <div className="flex w-full shrink-0 flex-col border-b border-[#c6c0b2] bg-[#f0eeec] md:w-60 md:border-b-0 md:border-r">
                 <div className="border-b border-[#c6c0b2] px-2 py-3">
                   <GroupSwitcher
                     groups={groups}
@@ -387,7 +386,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                           'flex shrink-0 items-center gap-2 rounded-sm border-2 px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
                           activeTab === 'members'
                             ? 'border-[#7f9db9] bg-[#fff7d6] text-[#1f1f1f]'
-                            : 'border-[#b8b1a3] bg-[#ece9d8] text-[#5a5a5a] hover:bg-[#f5f1e3]'
+                            : 'border-[#b8b1a3] bg-[#f0eeec] text-[#5a5a5a] hover:bg-[#f5f1e3]'
                         )}
                       >
                         <Users className="h-4 w-4" />
@@ -400,7 +399,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                           'flex shrink-0 items-center gap-2 rounded-sm border-2 px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
                           activeTab === 'media'
                             ? 'border-[#7f9db9] bg-[#fff7d6] text-[#1f1f1f]'
-                            : 'border-[#b8b1a3] bg-[#ece9d8] text-[#5a5a5a] hover:bg-[#f5f1e3]'
+                            : 'border-[#b8b1a3] bg-[#f0eeec] text-[#5a5a5a] hover:bg-[#f5f1e3]'
                         )}
                       >
                         <ImageIcon className="h-4 w-4" />
@@ -414,7 +413,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                             'flex shrink-0 items-center gap-2 rounded-sm border-2 px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
                             activeTab === 'settings'
                               ? 'border-[#7f9db9] bg-[#fff7d6] text-[#1f1f1f]'
-                              : 'border-[#b8b1a3] bg-[#ece9d8] text-[#5a5a5a] hover:bg-[#f5f1e3]'
+                              : 'border-[#b8b1a3] bg-[#f0eeec] text-[#5a5a5a] hover:bg-[#f5f1e3]'
                           )}
                         >
                           <Settings className="h-4 w-4" />
@@ -428,7 +427,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                           'flex shrink-0 items-center gap-2 rounded-sm border-2 px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
                           activeTab === 'about'
                             ? 'border-[#7f9db9] bg-[#fff7d6] text-[#1f1f1f]'
-                            : 'border-[#b8b1a3] bg-[#ece9d8] text-[#5a5a5a] hover:bg-[#f5f1e3]'
+                            : 'border-[#b8b1a3] bg-[#f0eeec] text-[#5a5a5a] hover:bg-[#f5f1e3]'
                         )}
                       >
                         <Info className="h-4 w-4" />
@@ -441,7 +440,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                           'flex shrink-0 items-center gap-2 rounded-sm border-2 px-3 py-2 text-left text-sm font-medium shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] md:w-full',
                           activeTab === 'roles'
                             ? 'border-[#7f9db9] bg-[#fff7d6] text-[#1f1f1f]'
-                            : 'border-[#b8b1a3] bg-[#ece9d8] text-[#5a5a5a] hover:bg-[#f5f1e3]'
+                            : 'border-[#b8b1a3] bg-[#f0eeec] text-[#5a5a5a] hover:bg-[#f5f1e3]'
                         )}
                       >
                         <Shield className="h-4 w-4" />
@@ -479,7 +478,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                               )}
                             </Badge>
                           </div>
-                          <p className="mt-1 text-sm text-[#5a5a5a]">
+                          <p className="mt-1 text-xs text-[#5a5a5a]">
                             {selectedGroup.memberCount} members ·{' '}
                             {selectedGroup.postCount} posts
                           </p>
@@ -487,13 +486,16 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
 
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8 shrink-0 rounded-sm border-2 border-[#b8b1a3] bg-[#ece9d8] text-[#2f2f2f] shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#b9b2a1] hover:bg-[#f5f1e3]"
+                            <button
+                              type="button"
+                              className="group relative h-8 w-8 shrink-0 overflow-hidden border-2 border-border transition-all hover:translate-x-px hover:translate-y-px active:translate-x-[2px] active:translate-y-[2px]"
+                              aria-label="Open group actions"
                             >
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
+                              <div className="absolute inset-0 bg-card transition-all group-hover:bg-[#f6cb48] group-active:bg-[#f6cb48]" />
+                              <span className="relative flex h-full w-full items-center justify-center text-foreground">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </span>
+                            </button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-48">
                             {isOwner && (
