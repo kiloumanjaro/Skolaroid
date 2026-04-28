@@ -1348,7 +1348,7 @@ export function AddMemoryModal({
               type="button"
               aria-label="Close add memory modal"
               onClick={handleAttemptClose}
-              className="grid h-6 w-6 shrink-0 place-items-center border-2 border-black bg-[#f7d6d5] text-[#7a1111] shadow-[inset_1px_1px_0_#fff8f7,inset_-1px_-1px_0_#c68787]"
+              className="grid h-7 w-7 shrink-0 place-items-center border-2 border-black bg-[#f7d6d5] text-[#7a1111] shadow-[inset_1px_1px_0_#fff8f7,inset_-1px_-1px_0_#c68787]"
             >
               <X className="h-4 w-4 stroke-[2]" />
             </button>

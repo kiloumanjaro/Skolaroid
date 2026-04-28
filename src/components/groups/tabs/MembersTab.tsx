@@ -4,7 +4,6 @@ import { useState, useMemo, useCallback } from 'react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { RemoveMemberDialog } from '@/components/groups/RemoveMemberDialog';
 import {
@@ -161,7 +160,7 @@ export function MembersTab({
       return (
         <Badge
           variant="outline"
-          className="flex items-center gap-1 border-amber-200 bg-amber-50 text-amber-700"
+          className="flex items-center gap-1 border-2 border-black bg-[#f6cb48] font-semibold text-black"
         >
           <Crown className="h-3 w-3" />
           Owner
@@ -172,7 +171,7 @@ export function MembersTab({
       return (
         <Badge
           variant="outline"
-          className="flex items-center gap-1 border-blue-200 bg-blue-50 text-blue-700"
+          className="flex items-center gap-1 border-2 border-black bg-[#4384dc] font-semibold text-white"
         >
           <ShieldCheck className="h-3 w-3" />
           Admin
@@ -182,7 +181,7 @@ export function MembersTab({
     return (
       <Badge
         variant="outline"
-        className="border-border bg-secondary text-muted-foreground"
+        className="border-2 border-black bg-white font-semibold text-black"
       >
         Member
       </Badge>
@@ -191,34 +190,43 @@ export function MembersTab({
 
   return (
     <>
-      <div className="flex flex-col">
+      <div className="flex flex-col bg-[#f8f4ea]">
         {/* Search and Filter Controls */}
-        <div className="border-b border-border px-5 py-3">
+        <div className="border-b-2 border-black bg-[#efe7da] px-5 py-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
+            <input
               type="text"
-              placeholder="Search by name or email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 pr-3"
+              placeholder="Search by name or email..."
+              className="w-full border-2 border-black bg-card py-2 pl-9 pr-8 text-sm text-foreground placeholder:text-muted-foreground focus:border-black focus:outline-none focus:ring-1 focus:ring-skolaroid-blue"
             />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
           </div>
 
-          <div className="mt-3 flex items-center gap-2">
-            <span className="text-xs font-medium text-muted-foreground">
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <span className="text-xs font-semibold uppercase tracking-[0.12em] text-black">
               Role:
             </span>
-            <div className="flex gap-1">
+            <div className="flex flex-wrap gap-2">
               {(['ALL', 'OWNER', 'ADMIN', 'MEMBER'] as const).map((role) => (
                 <button
                   key={role}
                   onClick={() => setRoleFilter(role)}
                   className={cn(
-                    'px-3 py-1.5 text-xs font-medium transition-colors',
+                    'border-2 border-black px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.08em] transition-colors',
                     roleFilter === role
-                      ? 'bg-foreground text-background'
-                      : 'text-muted-foreground hover:bg-secondary'
+                      ? 'bg-[#f6cb48] text-black'
+                      : 'bg-white text-black hover:bg-[#f7d6d5]'
                   )}
                 >
                   {role === 'ALL'
@@ -231,26 +239,26 @@ export function MembersTab({
         </div>
 
         {/* Members Table */}
-        <div className="flex-1 overflow-x-auto">
+        <div className="flex-1 overflow-x-auto bg-[#fffdf8]">
           {filteredMembers.length > 0 ? (
             <table className="w-full">
               <thead>
-                <tr className="border-b border-border text-left">
-                  <th className="px-5 py-2.5 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                <tr className="border-b-2 border-black bg-[#4384dc] text-left">
+                  <th className="px-5 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-white">
                     Member
                   </th>
-                  <th className="px-3 py-2.5 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  <th className="px-3 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-white">
                     Role
                   </th>
-                  <th className="hidden px-3 py-2.5 text-xs font-medium uppercase tracking-wider text-muted-foreground md:table-cell">
+                  <th className="hidden px-3 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-white md:table-cell">
                     Joined
                   </th>
-                  <th className="px-3 py-2.5 text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  <th className="px-3 py-3 text-right text-xs font-semibold uppercase tracking-[0.12em] text-white">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
+              <tbody>
                 {filteredMembers.map((member) => {
                   const isCurrentUser = member.id === currentUserId;
                   const canRemove =
@@ -266,32 +274,32 @@ export function MembersTab({
                   return (
                     <tr
                       key={member.id}
-                      className="transition-colors hover:bg-secondary/50"
+                      className="border-b-2 border-black transition-colors hover:bg-[#fff1bf]"
                     >
                       {/* Member info */}
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-3">
-                          <Avatar className="h-8 w-8 border-2 border-foreground">
+                          <Avatar className="h-8 w-8 border-2 border-black bg-white">
                             {member.avatarUrl ? (
                               <AvatarImage
                                 src={member.avatarUrl}
                                 alt={member.name}
                               />
                             ) : null}
-                            <AvatarFallback className="bg-card text-xs text-foreground">
+                            <AvatarFallback className="bg-white text-xs font-bold text-black">
                               {getMemberInitials(member.name)}
                             </AvatarFallback>
                           </Avatar>
                           <div className="min-w-0">
-                            <p className="truncate text-sm font-medium text-foreground">
+                            <p className="truncate text-sm font-semibold text-black">
                               {member.name}
                               {isCurrentUser && (
-                                <span className="ml-1 text-xs text-muted-foreground">
+                                <span className="ml-1 text-xs font-medium uppercase tracking-[0.08em] text-[#5a5a5a]">
                                   (you)
                                 </span>
                               )}
                             </p>
-                            <p className="truncate text-xs text-muted-foreground">
+                            <p className="truncate text-xs text-[#5a5a5a]">
                               {member.email}
                             </p>
                           </div>
@@ -310,7 +318,12 @@ export function MembersTab({
                                   ? 'secondary'
                                   : 'outline'
                               }
-                              className="h-7 px-2.5 text-xs"
+                              className={cn(
+                                'h-7 border-2 border-black px-2.5 text-xs font-semibold uppercase tracking-[0.08em]',
+                                member.role === 'ADMIN'
+                                  ? 'bg-[#4384dc] text-white hover:bg-[#3772c4]'
+                                  : 'bg-white text-black hover:bg-[#dbe8ff]'
+                              )}
                               disabled={
                                 isUpdatingRole || updateMemberRole.isPending
                               }
@@ -325,7 +338,12 @@ export function MembersTab({
                                   ? 'secondary'
                                   : 'outline'
                               }
-                              className="h-7 px-2.5 text-xs"
+                              className={cn(
+                                'h-7 border-2 border-black px-2.5 text-xs font-semibold uppercase tracking-[0.08em]',
+                                member.role === 'MEMBER'
+                                  ? 'bg-[#f6cb48] text-black hover:bg-[#e5ba2d]'
+                                  : 'bg-white text-black hover:bg-[#fff1bf]'
+                              )}
                               disabled={
                                 isUpdatingRole || updateMemberRole.isPending
                               }
@@ -339,7 +357,7 @@ export function MembersTab({
 
                       {/* Joined date */}
                       <td className="hidden px-3 py-3 md:table-cell">
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-xs font-medium text-[#5a5a5a]">
                           {formatJoinDate(member.joinedAt)}
                         </span>
                       </td>
@@ -351,28 +369,28 @@ export function MembersTab({
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-7 w-7"
+                              className="h-8 w-8 border-2 border-black bg-white hover:bg-[#f6cb48]"
                               disabled={transferOwnership.isPending}
                               onClick={() => setMemberToTransfer(member)}
                               title="Transfer ownership"
                             >
-                              <Crown className="h-3.5 w-3.5 text-amber-600" />
+                              <Crown className="h-3.5 w-3.5 text-black" />
                             </Button>
                           )}
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-7 w-7"
+                            className="h-8 w-8 border-2 border-black bg-white hover:bg-[#dbe8ff]"
                             onClick={() => setMemberToView(member)}
                             title="View details"
                           >
-                            <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+                            <Eye className="h-3.5 w-3.5 text-black" />
                           </Button>
                           {canRemove && (
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-7 w-7 text-red-500 hover:bg-red-50 hover:text-red-600"
+                              className="h-8 w-8 border-2 border-black bg-white text-[#7a1111] hover:bg-[#f7d6d5] hover:text-[#7a1111]"
                               onClick={() => setMemberToRemove(member)}
                               title="Remove member"
                             >
@@ -387,14 +405,14 @@ export function MembersTab({
               </tbody>
             </table>
           ) : (
-            <div className="flex flex-col items-center justify-center py-12">
-              <div className="bg-secondary p-4">
-                <Search className="h-6 w-6 text-muted-foreground" />
+            <div className="flex flex-col items-center justify-center px-6 py-12">
+              <div className="border-2 border-black bg-[#fff1bf] p-4">
+                <Search className="h-6 w-6 text-black" />
               </div>
-              <h4 className="mt-3 text-sm font-medium text-foreground">
+              <h4 className="mt-3 text-sm font-semibold uppercase tracking-[0.08em] text-black">
                 No members found
               </h4>
-              <p className="mt-1 text-center text-sm text-muted-foreground">
+              <p className="mt-1 text-center text-sm text-[#5a5a5a]">
                 {searchQuery.trim()
                   ? `No members match "${searchQuery}"`
                   : 'No members with this role'}
@@ -402,7 +420,7 @@ export function MembersTab({
               <Button
                 variant="ghost"
                 size="sm"
-                className="mt-3"
+                className="mt-3 border-2 border-black bg-white font-semibold text-black hover:bg-[#f6cb48]"
                 onClick={() => {
                   setSearchQuery('');
                   setRoleFilter('ALL');
@@ -434,7 +452,7 @@ export function MembersTab({
         }}
       >
         <DialogContent
-          className="max-w-sm gap-0 overflow-hidden p-0"
+          className="max-w-sm gap-0 overflow-hidden border-2 border-black p-0 shadow-none"
           showCloseButton={false}
         >
           <DialogTitle className="sr-only">
@@ -442,16 +460,16 @@ export function MembersTab({
           </DialogTitle>
 
           {memberToView && (
-            <div className="flex flex-col">
+            <div className="flex flex-col bg-[#fffdf8]">
               {/* Header */}
-              <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
-                <h2 className="text-sm font-semibold text-foreground">
+              <div className="flex items-center justify-between border-b-2 border-black bg-[#4384dc] px-5 py-3.5 text-white">
+                <h2 className="text-sm font-semibold uppercase tracking-[0.08em]">
                   Member Details
                 </h2>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-7 w-7"
+                  className="h-7 w-7 border-2 border-black bg-[#f7d6d5] text-[#7a1111] hover:bg-[#efc1bf]"
                   onClick={() => setMemberToView(null)}
                 >
                   <X className="h-4 w-4" />
@@ -459,38 +477,35 @@ export function MembersTab({
               </div>
 
               {/* Profile */}
-              <div className="flex flex-col items-center px-6 py-6">
-                <Avatar className="h-16 w-16 border-2 border-foreground">
+              <div className="flex flex-col items-center bg-[#efe7da] px-6 py-6">
+                <Avatar className="h-16 w-16 border-2 border-black bg-white">
                   {memberToView.avatarUrl ? (
                     <AvatarImage
                       src={memberToView.avatarUrl}
                       alt={memberToView.name}
                     />
                   ) : null}
-                  <AvatarFallback className="bg-card text-lg text-foreground">
+                  <AvatarFallback className="bg-white text-lg font-bold text-black">
                     {getMemberInitials(memberToView.name)}
                   </AvatarFallback>
                 </Avatar>
-                <h3 className="mt-3 text-base font-semibold text-foreground">
+                <h3 className="mt-3 text-base font-semibold text-black">
                   {memberToView.name}
                 </h3>
                 <div className="mt-1.5">{getRoleBadge(memberToView.role)}</div>
               </div>
 
               {/* Details */}
-              <div className="space-y-3 border-t border-border px-6 py-4">
-                <div className="flex items-center gap-3">
-                  <Mail size={15} className="shrink-0 text-muted-foreground" />
-                  <span className="truncate text-sm text-muted-foreground">
+              <div className="space-y-3 border-t-2 border-black px-6 py-4">
+                <div className="flex items-center gap-3 border-2 border-black bg-white px-3 py-2">
+                  <Mail size={15} className="shrink-0 text-black" />
+                  <span className="truncate text-sm text-black">
                     {memberToView.email}
                   </span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <Calendar
-                    size={15}
-                    className="shrink-0 text-muted-foreground"
-                  />
-                  <span className="text-sm text-muted-foreground">
+                <div className="flex items-center gap-3 border-2 border-black bg-white px-3 py-2">
+                  <Calendar size={15} className="shrink-0 text-black" />
+                  <span className="text-sm text-black">
                     Joined {formatJoinDate(memberToView.joinedAt)}
                   </span>
                 </div>
@@ -499,11 +514,11 @@ export function MembersTab({
               {memberToView.id !== currentUserId &&
                 memberToView.role !== 'OWNER' &&
                 (canManageMembers || canChangeRoles) && (
-                  <div className="space-y-2 border-t border-border px-6 py-4">
+                  <div className="space-y-2 border-t-2 border-black bg-[#efe7da] px-6 py-4">
                     {canChangeRoles && (
                       <Button
                         variant="secondary"
-                        className="w-full"
+                        className="w-full border-2 border-black bg-[#f6cb48] font-semibold text-black hover:bg-[#e5ba2d]"
                         disabled={transferOwnership.isPending}
                         onClick={() => setMemberToTransfer(memberToView)}
                       >
@@ -514,7 +529,7 @@ export function MembersTab({
                     {canManageMembers && (
                       <Button
                         variant="outline"
-                        className="w-full border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+                        className="w-full border-2 border-black bg-[#f7d6d5] font-semibold text-[#7a1111] hover:bg-[#efc1bf] hover:text-[#7a1111]"
                         onClick={() => {
                           setMemberToRemove(memberToView);
                           setMemberToView(null);
@@ -538,36 +553,38 @@ export function MembersTab({
         }}
       >
         <DialogContent
-          className="max-w-sm gap-0 overflow-hidden p-0"
+          className="max-w-sm gap-0 overflow-hidden border-2 border-black p-0 shadow-none"
           showCloseButton={false}
         >
           <DialogTitle className="sr-only">Transfer ownership</DialogTitle>
 
           {memberToTransfer && (
-            <div className="flex flex-col">
-              <div className="border-b border-border px-6 py-4">
-                <h2 className="font-kalam text-lg font-semibold text-foreground">
+            <div className="flex flex-col bg-[#fffdf8]">
+              <div className="border-b-2 border-black bg-[#f6cb48] px-6 py-4">
+                <h2 className="font-kalam text-lg font-semibold text-black">
                   Transfer Ownership?
                 </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
+                <p className="mt-1 text-sm text-black">
                   {memberToTransfer.name} will become the new owner and you will
                   be changed to admin.
                 </p>
               </div>
 
-              <div className="bg-secondary/40 px-6 py-4 text-sm text-muted-foreground">
+              <div className="border-b-2 border-black bg-[#efe7da] px-6 py-4 text-sm text-[#5a5a5a]">
                 Group memories remain in this group after ownership changes.
               </div>
 
               <div className="flex justify-end gap-2 px-6 py-4">
                 <Button
                   variant="outline"
+                  className="border-2 border-black bg-white font-semibold text-black hover:bg-[#dbe8ff]"
                   onClick={() => setMemberToTransfer(null)}
                 >
                   Cancel
                 </Button>
                 <Button
                   variant="default"
+                  className="border-2 border-black bg-[#4384dc] font-semibold text-white hover:bg-[#3772c4]"
                   disabled={transferOwnership.isPending}
                   onClick={handleConfirmOwnershipTransfer}
                 >
