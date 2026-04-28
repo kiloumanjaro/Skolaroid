@@ -111,7 +111,7 @@ export function GroupSwitcher({
                 onCreateGroup();
                 setIsOpen(false);
               }}
-              className="flex w-full items-center gap-2.5 border-2 border-[#1f1f1f] px-3 py-2.5 text-left text-sm font-medium text-skolaroid-blue transition-colors hover:bg-skolaroid-blue/5"
+              className="flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium text-skolaroid-blue transition-colors hover:bg-skolaroid-blue/5"
             >
               <Plus size={16} />
               Create New Group

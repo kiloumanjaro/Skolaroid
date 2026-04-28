@@ -19,7 +19,6 @@ import {
   ShieldCheck,
   UserMinus,
   Search,
-  Users,
   Eye,
   Mail,
   Calendar,
@@ -193,19 +192,6 @@ export function MembersTab({
   return (
     <>
       <div className="flex flex-col">
-        {/* Header with member count */}
-        <div className="flex items-center justify-between border-b border-border px-5 py-3">
-          <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-semibold text-foreground">
-              Members
-            </span>
-            <span className="bg-secondary px-2 py-0.5 text-xs font-medium text-foreground">
-              {members.length}
-            </span>
-          </div>
-        </div>
-
         {/* Search and Filter Controls */}
         <div className="border-b border-border px-5 py-3">
           <div className="relative">
