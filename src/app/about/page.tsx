@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { AboutAnnouncementStrip } from '@/components/announcement-strips/AboutAnnouncementStrip';
 import { AboutCreatorsMarquee } from '@/components/about-creators-marquee';
-import { ShellBatchesSidebarAction } from '@/components/ShellBatchesSidebarAction';
+import { ShellBatchesSidebarAction } from '@/components/shell-batches-sidebar-action';
 
 const pillars = [
   {

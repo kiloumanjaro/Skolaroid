@@ -3,10 +3,10 @@
 import {
   BatchSidebarContent,
   type Era,
-} from '@/components/BatchSidebarContent';
-import { Sidebar } from '@/components/Sidebar';
+} from '@/components/batch-sidebar-content';
+import { Sidebar } from '@/components/sidebar';
 
-export type { Era } from '@/components/BatchSidebarContent';
+export type { Era } from '@/components/batch-sidebar-content';
 
 interface BatchSidebarProps {
   drawerOpen: boolean;

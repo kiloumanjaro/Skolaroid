@@ -11,7 +11,7 @@ import {
   useState,
 } from 'react';
 import { GalleryAnnouncementStrip } from '@/components/announcement-strips/GalleryAnnouncementStrip';
-import { ShellBatchesSidebarAction } from '@/components/ShellBatchesSidebarAction';
+import { ShellBatchesSidebarAction } from '@/components/shell-batches-sidebar-action';
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 import { GalleryMemoryCard } from '@/components/gallery/GalleryMemoryCard';
 import { useAllMemoriesWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
