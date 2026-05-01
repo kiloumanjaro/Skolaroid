@@ -11,7 +11,7 @@ import {
   useMemo,
 } from 'react';
 import { getEraFromBatchTag } from '@/lib/utils';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { createRoot, type Root } from 'react-dom/client';
 import { AddMemoryModal } from './add-memory-modal';
 import { GroupPanel } from './groups/GroupPanel';
@@ -39,7 +39,7 @@ import type {
   MapLocationSelection,
 } from '@/lib/types/map';
 import { AddMemoryButton } from './map/AddMemoryButton';
-import { MapAnnouncementStrip } from './map/MapAnnouncementStrip';
+import { MapAnnouncementStrip } from './announcement-strips/MapAnnouncementStrip';
 import { MapLocationSelector } from './map/MapLocationSelector';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
@@ -137,6 +137,7 @@ export function MapComponent({
   onMemoryDetailOpenStateChange,
 }: MapComponentProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const processedMemoryParamRef = useRef<string | null>(null);
@@ -618,6 +619,24 @@ export function MapComponent({
   );
 
   useMainShellSidebarAction(batchesSidebarAction);
+
+  useEffect(() => {
+    const shouldOpenBatches = searchParams.get('openBatches') === '1';
+    if (!shouldOpenBatches || batchesModalOpen) return;
+
+    setBatchesModalOpen(true);
+  }, [batchesModalOpen, searchParams]);
+
+  useEffect(() => {
+    if (batchesModalOpen || searchParams.get('openBatches') !== '1') return;
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete('openBatches');
+
+    const nextSearch = params.toString();
+    const nextUrl = nextSearch ? `/map?${nextSearch}` : '/map';
+    router.replace(nextUrl, { scroll: false });
+  }, [batchesModalOpen, router, searchParams]);
 
   // ---------------------------------------------------------------------------
   // Location Selection Mode handlers

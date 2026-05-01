@@ -8,7 +8,9 @@ import {
   Tag,
   Users,
 } from 'lucide-react';
+import { AboutAnnouncementStrip } from '@/components/announcement-strips/AboutAnnouncementStrip';
 import { AboutCreatorsMarquee } from '@/components/about-creators-marquee';
+import { ShellBatchesSidebarAction } from '@/components/ShellBatchesSidebarAction';
 
 const pillars = [
   {
@@ -70,10 +72,20 @@ const creators = [
   'Jhon Carlo Sandro',
 ];
 
+const aboutAnnouncements = [
+  'Pinned memories built around real campus places',
+  'Photos, tags, and eras woven into one shared archive',
+  'A softer space for stories that should not disappear',
+];
+
 export default function AboutPage() {
   return (
     <div className="h-full overflow-y-auto bg-background">
-      <div className="relative overflow-hidden pt-20">
+      <ShellBatchesSidebarAction />
+
+      <div className="relative overflow-hidden">
+        <AboutAnnouncementStrip announcements={aboutAnnouncements} />
+
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute left-[-8rem] top-10 h-64 w-64 rounded-full bg-sky-200/35 blur-3xl" />
           <div className="absolute right-[-6rem] top-40 h-72 w-72 rounded-full bg-amber-200/35 blur-3xl" />
