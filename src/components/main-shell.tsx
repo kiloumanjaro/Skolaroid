@@ -1,8 +1,15 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+  type ReactNode,
+} from 'react';
 import { LoginForm } from '@/components/login-form';
 import {
   MainShellSidebarActionProvider,
@@ -10,6 +17,7 @@ import {
 } from '@/components/main-shell-sidebar-action';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
+import { cn } from '@/lib/utils';
 
 const shellRoutes = ['/map', '/gallery', '/about'];
 
@@ -84,6 +92,122 @@ function isShellRoute(pathname: string) {
   );
 }
 
+function SwipeLogoutAction({
+  isOpen,
+  onLogout,
+}: {
+  isOpen: boolean;
+  onLogout: () => void;
+}) {
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const [dragging, setDragging] = useState(false);
+  const [offset, setOffset] = useState(0);
+  const [trackWidth, setTrackWidth] = useState(0);
+  const [hasCompleted, setHasCompleted] = useState(false);
+
+  useEffect(() => {
+    const updateWidth = () => {
+      setTrackWidth(trackRef.current?.offsetWidth ?? 0);
+    };
+
+    updateWidth();
+    window.addEventListener('resize', updateWidth);
+
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
+
+  const handleSize = 48;
+  const maxOffset = Math.max(trackWidth - handleSize, 0);
+  const completionThreshold = Math.max(maxOffset - 20, maxOffset * 0.72);
+
+  const resetSwipe = () => {
+    setDragging(false);
+    setOffset(0);
+  };
+
+  const handlePointerDown = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (hasCompleted) {
+      return;
+    }
+
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setDragging(true);
+  };
+
+  const handlePointerMove = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (!dragging || !trackRef.current) {
+      return;
+    }
+
+    const bounds = trackRef.current.getBoundingClientRect();
+    const nextOffset = event.clientX - bounds.left - handleSize / 2;
+    setOffset(Math.min(Math.max(nextOffset, 0), maxOffset));
+  };
+
+  const handlePointerUp = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (!dragging) {
+      return;
+    }
+
+    event.currentTarget.releasePointerCapture(event.pointerId);
+    setDragging(false);
+
+    if (offset >= completionThreshold) {
+      setHasCompleted(true);
+      setOffset(maxOffset);
+      onLogout();
+      return;
+    }
+
+    setOffset(0);
+  };
+
+  return (
+    <div className="w-full">
+      <div
+        ref={trackRef}
+        className="relative flex h-12 w-full items-center overflow-hidden border-[3px] border-black bg-white"
+      >
+        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-16 pr-4">
+          <span
+            className={cn(
+              'overflow-hidden whitespace-nowrap text-sm font-semibold uppercase tracking-[0.18em] text-foreground transition-all duration-300 ease-in-out',
+              isOpen ? 'max-w-[160px] opacity-100' : 'max-w-0 opacity-0'
+            )}
+          >
+            {hasCompleted ? 'Logging out...' : 'Swipe to logout'}
+          </span>
+        </div>
+
+        <button
+          type="button"
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={resetSwipe}
+          className={cn(
+            'absolute left-0 top-0 flex h-12 w-12 items-center justify-center border-r-[3px] border-black bg-[#539fff] text-black transition-transform duration-200 ease-out',
+            offset > 0 ? 'border-l-[3px]' : 'border-l-0',
+            dragging ? 'cursor-grabbing' : 'cursor-grab'
+          )}
+          style={{ transform: `translateX(${offset}px)` }}
+          aria-label="Swipe to logout"
+        >
+          <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+            <path
+              d="M6 12h12m-4-4 4 4-4 4"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function ShellSidebar({
   isOpen,
   isAuthenticated,
@@ -100,6 +224,10 @@ function ShellSidebar({
   onNavigate: (href: string) => void;
 }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const isBatchesActionActive =
+    leadingAction?.label === 'Batches' &&
+    searchParams.get('openBatches') === '1';
 
   return (
     <aside
@@ -124,8 +252,16 @@ function ShellSidebar({
           <button
             type="button"
             onClick={() => onLeadingAction(leadingAction)}
-            className="group relative flex h-12 items-center gap-3 overflow-hidden rounded-2xl px-3 text-foreground/80 transition-all duration-300 ease-in-out hover:bg-foreground/5 hover:text-foreground"
+            className={cn(
+              'group relative flex h-12 items-center gap-3 overflow-hidden px-3 transition-all duration-300 ease-in-out',
+              isBatchesActionActive
+                ? 'rounded-none border-2 border-black bg-white text-foreground'
+                : 'rounded-2xl text-foreground/80 hover:bg-foreground/5 hover:text-foreground'
+            )}
           >
+            {isBatchesActionActive && (
+              <div className="absolute inset-0 bg-white" />
+            )}
             <span className="relative flex h-6 w-6 shrink-0 items-center justify-center">
               {leadingAction.icon}
             </span>
@@ -151,15 +287,13 @@ function ShellSidebar({
                 event.preventDefault();
                 onNavigate(item.href);
               }}
-              className={`group relative flex h-12 items-center gap-3 overflow-hidden rounded-2xl px-3 transition-all duration-300 ease-in-out ${
+              className={`group relative flex h-12 items-center gap-3 overflow-hidden px-3 transition-all duration-300 ease-in-out ${
                 isActive
-                  ? 'border-2 border-border shadow-[4px_4px_0px_0px_#2d2d2d] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#2d2d2d] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none'
-                  : 'text-foreground/80 hover:bg-foreground/5 hover:text-foreground'
+                  ? 'rounded-none border-2 border-black bg-white'
+                  : 'rounded-2xl text-foreground/80 hover:bg-foreground/5 hover:text-foreground'
               }`}
             >
-              {isActive && (
-                <div className="absolute inset-0 rounded-2xl bg-[#f6cb48]" />
-              )}
+              {isActive && <div className="absolute inset-0 bg-white" />}
               <span
                 className={`relative flex h-6 w-6 shrink-0 items-center justify-center ${
                   isActive ? 'text-foreground' : ''
@@ -180,43 +314,47 @@ function ShellSidebar({
       </nav>
 
       <div className="mt-auto px-2 pb-3 pt-6">
-        <button
-          type="button"
-          onClick={onPrimaryAction}
-          className="flex h-12 w-full items-center gap-3 rounded-2xl px-3 text-foreground/80 transition-all duration-300 ease-in-out hover:bg-foreground/5 hover:text-foreground"
-        >
-          <span className="flex h-6 w-6 shrink-0 items-center justify-center">
-            <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
-              <path
-                d="M9 5.75H6.75A1.75 1.75 0 0 0 5 7.5v9A1.75 1.75 0 0 0 6.75 18.25H9"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M13 8.5 18 12l-5 3.5"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M18 12H9"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-              />
-            </svg>
-          </span>
-          <span
-            className={`overflow-hidden whitespace-nowrap text-sm font-medium transition-all duration-300 ease-in-out ${
-              isOpen ? 'max-w-[120px] opacity-100' : 'max-w-0 opacity-0'
-            }`}
+        {isAuthenticated ? (
+          <SwipeLogoutAction isOpen={isOpen} onLogout={onPrimaryAction} />
+        ) : (
+          <button
+            type="button"
+            onClick={onPrimaryAction}
+            className="flex h-12 w-full items-center gap-3 rounded-2xl px-3 text-foreground/80 transition-all duration-300 ease-in-out hover:bg-foreground/5 hover:text-foreground"
           >
-            {isAuthenticated ? 'Logout' : 'Sign in'}
-          </span>
-        </button>
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center">
+              <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+                <path
+                  d="M9 5.75H6.75A1.75 1.75 0 0 0 5 7.5v9A1.75 1.75 0 0 0 6.75 18.25H9"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M13 8.5 18 12l-5 3.5"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M18 12H9"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </span>
+            <span
+              className={`overflow-hidden whitespace-nowrap text-sm font-medium transition-all duration-300 ease-in-out ${
+                isOpen ? 'max-w-[120px] opacity-100' : 'max-w-0 opacity-0'
+              }`}
+            >
+              Sign in
+            </span>
+          </button>
+        )}
       </div>
     </aside>
   );
