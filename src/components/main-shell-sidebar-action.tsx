@@ -13,8 +13,15 @@ interface MainShellSidebarActionContextValue {
   setSidebarAction: (action: MainShellSidebarAction | null) => void;
 }
 
+interface MainShellChromeContextValue {
+  sidebarOpen: boolean;
+  toggleSidebar: () => void;
+}
+
 const MainShellSidebarActionContext =
   createContext<MainShellSidebarActionContextValue | null>(null);
+const MainShellChromeContext =
+  createContext<MainShellChromeContextValue | null>(null);
 
 export function MainShellSidebarActionProvider({
   children,
@@ -27,6 +34,20 @@ export function MainShellSidebarActionProvider({
     <MainShellSidebarActionContext.Provider value={value}>
       {children}
     </MainShellSidebarActionContext.Provider>
+  );
+}
+
+export function MainShellChromeProvider({
+  children,
+  value,
+}: {
+  children: ReactNode;
+  value: MainShellChromeContextValue;
+}) {
+  return (
+    <MainShellChromeContext.Provider value={value}>
+      {children}
+    </MainShellChromeContext.Provider>
   );
 }
 
@@ -44,4 +65,8 @@ export function useMainShellSidebarAction(
       context.setSidebarAction(null);
     };
   }, [action, context]);
+}
+
+export function useMainShellChrome() {
+  return useContext(MainShellChromeContext);
 }

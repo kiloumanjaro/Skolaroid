@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { AboutAnnouncementStrip } from '@/components/announcement-strips/AboutAnnouncementStrip';
 import { AboutCreatorsMarquee } from '@/components/about-creators-marquee';
+import { ShellInlineSidebarToggle } from '@/components/shell-inline-sidebar-toggle';
 import { ShellBatchesSidebarAction } from '@/components/shell-batches-sidebar-action';
 
 const pillars = [
@@ -80,10 +81,14 @@ const aboutAnnouncements = [
 
 export default function AboutPage() {
   return (
-    <div className="h-full overflow-y-auto bg-background">
+    <div className="scrollbar-hide h-full overflow-y-auto bg-background">
       <ShellBatchesSidebarAction />
 
       <div className="relative overflow-hidden">
+        <div className="absolute left-4 top-12 z-20 sm:left-6 sm:top-14">
+          <ShellInlineSidebarToggle />
+        </div>
+
         <AboutAnnouncementStrip announcements={aboutAnnouncements} />
 
         <div className="pointer-events-none absolute inset-0">

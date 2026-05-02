@@ -1,17 +1,21 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
+  useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
-  type PointerEvent as ReactPointerEvent,
+  type MouseEvent as ReactMouseEvent,
   type ReactNode,
+  type TouchEvent as ReactTouchEvent,
 } from 'react';
 import { LoginForm } from '@/components/login-form';
 import {
+  MainShellChromeProvider,
   MainShellSidebarActionProvider,
   type MainShellSidebarAction,
 } from '@/components/main-shell-sidebar-action';
@@ -95,78 +99,163 @@ function isShellRoute(pathname: string) {
 function SwipeLogoutAction({
   isOpen,
   onLogout,
+  avatarUrl,
+  avatarAlt,
 }: {
   isOpen: boolean;
   onLogout: () => void;
+  avatarUrl?: string | null;
+  avatarAlt: string;
 }) {
   const trackRef = useRef<HTMLDivElement | null>(null);
+  const offsetRef = useRef(0);
+  const dragStartXRef = useRef(0);
+  const dragStartOffsetRef = useRef(0);
   const [dragging, setDragging] = useState(false);
   const [offset, setOffset] = useState(0);
   const [trackWidth, setTrackWidth] = useState(0);
   const [hasCompleted, setHasCompleted] = useState(false);
-
-  useEffect(() => {
-    const updateWidth = () => {
-      setTrackWidth(trackRef.current?.offsetWidth ?? 0);
-    };
-
-    updateWidth();
-    window.addEventListener('resize', updateWidth);
-
-    return () => window.removeEventListener('resize', updateWidth);
-  }, []);
-
   const handleSize = 48;
   const maxOffset = Math.max(trackWidth - handleSize, 0);
   const completionThreshold = Math.max(maxOffset - 20, maxOffset * 0.72);
 
-  const resetSwipe = () => {
+  const resetSwipe = useCallback(() => {
+    dragStartXRef.current = 0;
+    dragStartOffsetRef.current = 0;
+    offsetRef.current = 0;
     setDragging(false);
     setOffset(0);
-  };
+  }, []);
 
-  const handlePointerDown = (event: ReactPointerEvent<HTMLButtonElement>) => {
-    if (hasCompleted) {
-      return;
-    }
+  const updateOffset = useCallback(
+    (nextOffset: number) => {
+      const clampedOffset = Math.min(Math.max(nextOffset, 0), maxOffset);
+      offsetRef.current = clampedOffset;
+      setOffset(clampedOffset);
+    },
+    [maxOffset]
+  );
 
-    event.currentTarget.setPointerCapture(event.pointerId);
-    setDragging(true);
-  };
-
-  const handlePointerMove = (event: ReactPointerEvent<HTMLButtonElement>) => {
-    if (!dragging || !trackRef.current) {
-      return;
-    }
-
-    const bounds = trackRef.current.getBoundingClientRect();
-    const nextOffset = event.clientX - bounds.left - handleSize / 2;
-    setOffset(Math.min(Math.max(nextOffset, 0), maxOffset));
-  };
-
-  const handlePointerUp = (event: ReactPointerEvent<HTMLButtonElement>) => {
-    if (!dragging) {
-      return;
-    }
-
-    event.currentTarget.releasePointerCapture(event.pointerId);
+  const finishDrag = useCallback(() => {
     setDragging(false);
 
-    if (offset >= completionThreshold) {
+    if (maxOffset > 0 && offsetRef.current >= completionThreshold) {
       setHasCompleted(true);
-      setOffset(maxOffset);
+      updateOffset(maxOffset);
       onLogout();
       return;
     }
 
-    setOffset(0);
+    resetSwipe();
+  }, [completionThreshold, maxOffset, onLogout, resetSwipe, updateOffset]);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) {
+      return;
+    }
+
+    const updateWidth = () => {
+      setTrackWidth(track.offsetWidth);
+    };
+
+    updateWidth();
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateWidth();
+    });
+
+    resizeObserver.observe(track);
+
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) {
+      resetSwipe();
+      return;
+    }
+
+    const frameId = window.requestAnimationFrame(() => {
+      setTrackWidth(trackRef.current?.offsetWidth ?? 0);
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [isOpen, resetSwipe]);
+
+  useEffect(() => {
+    if (!dragging) {
+      return;
+    }
+
+    const handleMouseMove = (event: MouseEvent) => {
+      const deltaX = event.clientX - dragStartXRef.current;
+      updateOffset(dragStartOffsetRef.current + deltaX);
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+      const touch = event.touches[0];
+      if (!touch) {
+        return;
+      }
+
+      updateOffset(
+        dragStartOffsetRef.current + (touch.clientX - dragStartXRef.current)
+      );
+    };
+
+    const handleRelease = () => {
+      finishDrag();
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleRelease);
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('touchend', handleRelease);
+    window.addEventListener('touchcancel', handleRelease);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleRelease);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleRelease);
+      window.removeEventListener('touchcancel', handleRelease);
+    };
+  }, [dragging, finishDrag, updateOffset]);
+
+  const startDrag = (clientX: number) => {
+    if (hasCompleted || maxOffset <= 0) {
+      return;
+    }
+
+    dragStartXRef.current = clientX;
+    dragStartOffsetRef.current = offsetRef.current;
+    setDragging(true);
   };
+
+  const handleMouseDown = (event: ReactMouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    startDrag(event.clientX);
+  };
+
+  const handleTouchStart = (event: ReactTouchEvent<HTMLDivElement>) => {
+    const touch = event.touches[0];
+    if (!touch) {
+      return;
+    }
+
+    startDrag(touch.clientX);
+  };
+
+  useEffect(() => {
+    offsetRef.current = offset;
+  }, [offset]);
 
   return (
     <div className="w-full">
       <div
         ref={trackRef}
-        className="relative flex h-12 w-full items-center overflow-hidden border-[3px] border-black bg-white"
+        className="relative flex h-12 w-full items-center overflow-hidden border-2 border-black bg-white"
       >
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-16 pr-4">
           <span
@@ -179,30 +268,34 @@ function SwipeLogoutAction({
           </span>
         </div>
 
-        <button
-          type="button"
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          onPointerCancel={resetSwipe}
+        <div
+          role="button"
+          tabIndex={-1}
+          onMouseDown={handleMouseDown}
+          onTouchStart={handleTouchStart}
           className={cn(
-            'absolute left-0 top-0 flex h-12 w-12 items-center justify-center border-r-[3px] border-black bg-[#539fff] text-black transition-transform duration-200 ease-out',
-            offset > 0 ? 'border-l-[3px]' : 'border-l-0',
+            'absolute left-0 top-0 flex h-12 w-12 touch-none select-none items-center justify-center overflow-hidden border-r-2 border-black bg-[#539fff] text-black transition-transform duration-200 ease-out',
+            offset > 0 ? 'border-l-2' : 'border-l-0',
             dragging ? 'cursor-grabbing' : 'cursor-grab'
           )}
           style={{ transform: `translateX(${offset}px)` }}
           aria-label="Swipe to logout"
         >
-          <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
-            <path
-              d="M6 12h12m-4-4 4 4-4 4"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+          {avatarUrl ? (
+            <Image
+              src={avatarUrl}
+              alt={avatarAlt}
+              width={48}
+              height={48}
+              draggable={false}
+              className="pointer-events-none h-full w-full object-cover"
             />
-          </svg>
-        </button>
+          ) : (
+            <span className="text-sm font-black uppercase tracking-[0.12em]">
+              {avatarAlt.charAt(0)}
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -212,6 +305,8 @@ function ShellSidebar({
   isOpen,
   isAuthenticated,
   leadingAction,
+  userAvatar,
+  userName,
   onPrimaryAction,
   onLeadingAction,
   onNavigate,
@@ -219,6 +314,8 @@ function ShellSidebar({
   isOpen: boolean;
   isAuthenticated: boolean;
   leadingAction: MainShellSidebarAction | null;
+  userAvatar?: string | null;
+  userName: string;
   onPrimaryAction: () => void;
   onLeadingAction: (action: MainShellSidebarAction) => void;
   onNavigate: (href: string) => void;
@@ -256,7 +353,7 @@ function ShellSidebar({
               'group relative flex h-12 items-center gap-3 overflow-hidden px-3 transition-all duration-300 ease-in-out',
               isBatchesActionActive
                 ? 'rounded-none border-2 border-black bg-white text-foreground'
-                : 'rounded-2xl text-foreground/80 hover:bg-foreground/5 hover:text-foreground'
+                : 'rounded-none text-foreground/80 hover:bg-foreground/5 hover:text-foreground'
             )}
           >
             {isBatchesActionActive && (
@@ -290,7 +387,7 @@ function ShellSidebar({
               className={`group relative flex h-12 items-center gap-3 overflow-hidden px-3 transition-all duration-300 ease-in-out ${
                 isActive
                   ? 'rounded-none border-2 border-black bg-white'
-                  : 'rounded-2xl text-foreground/80 hover:bg-foreground/5 hover:text-foreground'
+                  : 'rounded-none text-foreground/80 hover:bg-foreground/5 hover:text-foreground'
               }`}
             >
               {isActive && <div className="absolute inset-0 bg-white" />}
@@ -315,12 +412,17 @@ function ShellSidebar({
 
       <div className="mt-auto px-2 pb-3 pt-6">
         {isAuthenticated ? (
-          <SwipeLogoutAction isOpen={isOpen} onLogout={onPrimaryAction} />
+          <SwipeLogoutAction
+            isOpen={isOpen}
+            onLogout={onPrimaryAction}
+            avatarUrl={userAvatar}
+            avatarAlt={userName}
+          />
         ) : (
           <button
             type="button"
             onClick={onPrimaryAction}
-            className="flex h-12 w-full items-center gap-3 rounded-2xl px-3 text-foreground/80 transition-all duration-300 ease-in-out hover:bg-foreground/5 hover:text-foreground"
+            className="flex h-12 w-full items-center gap-3 rounded-none px-3 text-foreground/80 transition-all duration-300 ease-in-out hover:bg-foreground/5 hover:text-foreground"
           >
             <span className="flex h-6 w-6 shrink-0 items-center justify-center">
               <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
@@ -363,7 +465,7 @@ function ShellSidebar({
 export function MainShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { isAuthenticated, logout } = useUserAuth();
+  const { isAuthenticated, logout, user } = useUserAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarAction, setSidebarAction] =
     useState<MainShellSidebarAction | null>(null);
@@ -372,6 +474,20 @@ export function MainShell({ children }: { children: ReactNode }) {
     null
   );
   const sidebarActionContextValue = useMemo(() => ({ setSidebarAction }), []);
+  const shellChromeContextValue = useMemo(
+    () => ({
+      sidebarOpen,
+      toggleSidebar: () => setSidebarOpen((prev) => !prev),
+    }),
+    [sidebarOpen]
+  );
+  const userAvatar =
+    user?.user_metadata?.avatar_url ?? user?.user_metadata?.picture ?? null;
+  const userName =
+    user?.user_metadata?.full_name ??
+    user?.user_metadata?.name ??
+    user?.email ??
+    'User';
 
   useEffect(() => {
     if (!pendingNavigation || sidebarOpen) {
@@ -416,13 +532,15 @@ export function MainShell({ children }: { children: ReactNode }) {
 
   return (
     <MainShellSidebarActionProvider value={sidebarActionContextValue}>
-      <>
+      <MainShellChromeProvider value={shellChromeContextValue}>
         <div className="h-dvh overflow-hidden bg-[#fcfaf8]">
           <div className="relative flex h-full w-full overflow-hidden">
             <ShellSidebar
               isOpen={sidebarOpen}
               isAuthenticated={isAuthenticated}
               leadingAction={sidebarAction}
+              userAvatar={userAvatar}
+              userName={userName}
               onLeadingAction={(action) => {
                 action.onClick();
                 setSidebarOpen(false);
@@ -441,21 +559,23 @@ export function MainShell({ children }: { children: ReactNode }) {
             <div className="flex min-w-0 flex-1 flex-col p-3">
               <div className="relative min-h-0 min-w-0 flex-1 overflow-hidden border-[3px] border-[#fcfaf8] bg-[#fcfaf8]">
                 <div className="relative h-full w-full overflow-hidden border-[3px] border-black bg-white">
-                  <button
-                    type="button"
-                    onClick={() => setSidebarOpen((prev) => !prev)}
-                    className="group absolute left-4 top-12 z-30 h-14 w-14 overflow-hidden border-[3px] border-border transition-all hover:translate-x-[2px] hover:translate-y-[2px] active:translate-x-[4px] active:translate-y-[4px] sm:left-6 sm:top-14"
-                    aria-label={
-                      sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'
-                    }
-                  >
-                    <div className="absolute inset-0 bg-card transition-all group-hover:bg-[#f6cb48] group-active:bg-[#f6cb48]" />
-                    <span className="relative flex h-full w-full flex-col items-center justify-center gap-1.5 text-foreground">
-                      <span className="block h-0.5 w-6 rounded-full bg-current" />
-                      <span className="block h-0.5 w-6 rounded-full bg-current" />
-                      <span className="block h-0.5 w-6 rounded-full bg-current" />
-                    </span>
-                  </button>
+                  {pathname !== '/about' && (
+                    <button
+                      type="button"
+                      onClick={() => setSidebarOpen((prev) => !prev)}
+                      className="group absolute left-4 top-12 z-30 h-14 w-14 overflow-hidden border-[3px] border-border transition-colors sm:left-6 sm:top-14"
+                      aria-label={
+                        sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'
+                      }
+                    >
+                      <div className="absolute inset-0 bg-card transition-all group-hover:bg-[#f6cb48] group-active:bg-[#f6cb48]" />
+                      <span className="relative flex h-full w-full flex-col items-center justify-center gap-1.5 text-foreground">
+                        <span className="block h-0.5 w-6 rounded-full bg-current" />
+                        <span className="block h-0.5 w-6 rounded-full bg-current" />
+                        <span className="block h-0.5 w-6 rounded-full bg-current" />
+                      </span>
+                    </button>
+                  )}
 
                   {children}
                 </div>
@@ -463,14 +583,13 @@ export function MainShell({ children }: { children: ReactNode }) {
             </div>
           </div>
         </div>
-
-        <Dialog open={loginOpen} onOpenChange={setLoginOpen}>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogTitle className="sr-only">Login</DialogTitle>
-            <LoginForm />
-          </DialogContent>
-        </Dialog>
-      </>
+      </MainShellChromeProvider>
+      <Dialog open={loginOpen} onOpenChange={setLoginOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogTitle className="sr-only">Login</DialogTitle>
+          <LoginForm />
+        </DialogContent>
+      </Dialog>
     </MainShellSidebarActionProvider>
   );
 }
