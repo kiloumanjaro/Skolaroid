@@ -29,6 +29,7 @@ export function MemoryPinStack({ memories, onClick }: MemoryPinStackProps) {
   );
 
   const overflow = memories.length - MAX_VISIBLE_PINS;
+  const pinSize = 74;
 
   /** Calculate fan-out position for each pin in the stack. */
   const getFanOutStyle = useCallback(
@@ -50,7 +51,7 @@ export function MemoryPinStack({ memories, onClick }: MemoryPinStackProps) {
       const radians = (angle * Math.PI) / 180;
 
       // Radius increases with more pins for better spacing
-      const radius = 40 + count * 4;
+      const radius = 44 + count * 4;
       const x = Math.cos(radians) * radius;
       const y = Math.sin(radians) * radius;
 
@@ -72,18 +73,19 @@ export function MemoryPinStack({ memories, onClick }: MemoryPinStackProps) {
       <button
         type="button"
         onClick={() => onClick(mem.id)}
-        className="group relative w-fit cursor-pointer transition-transform hover:scale-110"
+        className="group relative w-fit cursor-pointer transition-transform duration-200 hover:-translate-y-1"
         aria-label={mem.title}
       >
-        <div className="relative h-16 w-16 overflow-hidden rounded-lg border-2 border-white bg-white shadow-lg transition-shadow group-hover:shadow-xl">
-          <Image
-            src={mem.mediaURL}
-            alt={mem.title}
-            fill
-            className="object-cover"
-          />
+        <div className="relative w-[74px] rounded-md border-2 border-black bg-white px-[5px] pb-[20px] pt-[5px]">
+          <div className="relative aspect-square w-full overflow-hidden rounded-sm border-[1px] border-black bg-neutral-100">
+            <Image
+              src={mem.mediaURL}
+              alt={mem.title}
+              fill
+              className="object-cover"
+            />
+          </div>
         </div>
-        <div className="absolute left-1/2 top-full -translate-x-1/2 -translate-y-px border-l-[10px] border-r-[10px] border-t-[15px] border-l-transparent border-r-transparent border-t-white drop-shadow-lg" />
       </button>
     );
   }
@@ -93,7 +95,7 @@ export function MemoryPinStack({ memories, onClick }: MemoryPinStackProps) {
       className="relative cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      style={{ width: 64, height: 64 }}
+      style={{ width: pinSize, height: pinSize }}
     >
       {/* Fanned pins */}
       {visibleMemories.map((mem, index) => (
@@ -104,34 +106,30 @@ export function MemoryPinStack({ memories, onClick }: MemoryPinStackProps) {
             e.stopPropagation();
             onClick(mem.id);
           }}
-          className="absolute left-0 top-0 h-16 w-16 cursor-pointer"
+          className="absolute left-0 top-0 w-[74px] cursor-pointer transition-transform duration-200 hover:-translate-y-1"
           style={getFanOutStyle(index)}
           aria-label={mem.title}
         >
-          <div className="relative h-full w-full overflow-hidden rounded-lg border-2 border-white bg-white shadow-lg transition-shadow hover:shadow-xl hover:ring-2 hover:ring-skolaroid-blue">
-            <Image
-              src={mem.mediaURL}
-              alt={mem.title}
-              fill
-              className="object-cover"
-            />
+          <div className="relative w-[74px] rounded-md border-2 border-black bg-white px-[5px] pb-[20px] pt-[5px]">
+            <div className="relative aspect-square w-full overflow-hidden rounded-sm border-[1px] border-black bg-neutral-100">
+              <Image
+                src={mem.mediaURL}
+                alt={mem.title}
+                fill
+                className="object-cover"
+              />
+            </div>
           </div>
         </button>
       ))}
 
       {/* Count badge — visible when NOT hovered, or when overflow exists */}
       <div
-        className="absolute -right-2 -top-2 z-50 flex h-6 min-w-6 items-center justify-center rounded-full bg-skolaroid-blue px-1.5 text-[10px] font-bold text-white shadow-md ring-2 ring-white transition-opacity duration-200"
+        className="absolute -right-2 -top-2 z-50 flex h-6 min-w-6 items-center justify-center rounded-full border-2 border-black bg-[#c0f7fe] px-1.5 text-[10px] font-bold text-black shadow-md transition-opacity duration-200"
         style={{ opacity: isHovered && overflow <= 0 ? 0 : 1 }}
       >
         {isHovered && overflow > 0 ? `+${overflow}` : memories.length}
       </div>
-
-      {/* Pointer at the bottom (only when not fanned) */}
-      <div
-        className="absolute left-1/2 top-full -translate-x-1/2 -translate-y-px border-l-[10px] border-r-[10px] border-t-[15px] border-l-transparent border-r-transparent border-t-white drop-shadow-lg transition-opacity duration-200"
-        style={{ opacity: isHovered ? 0 : 1 }}
-      />
     </div>
   );
 }
