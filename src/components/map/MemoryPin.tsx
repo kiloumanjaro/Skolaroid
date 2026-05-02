@@ -13,16 +13,14 @@ export function MemoryPin({ src, alt = 'Memory', onClick }: MemoryPinProps) {
     <button
       type="button"
       onClick={onClick}
-      className="group relative w-fit cursor-pointer transition-transform hover:scale-110"
+      className="group relative w-fit cursor-pointer transition-transform duration-200 hover:-translate-y-1"
       aria-label={alt}
     >
-      {/* Pin container with white border and shadow */}
-      <div className="relative h-16 w-16 overflow-hidden rounded-lg border-2 border-white bg-white shadow-lg transition-shadow group-hover:shadow-xl">
-        <Image src={src} alt={alt} fill className="object-cover" />
+      <div className="relative w-[74px] rounded-md border-2 border-black bg-white px-[5px] pb-[20px] pt-[5px]">
+        <div className="relative aspect-square w-full overflow-hidden rounded-sm border-[1px] border-black bg-neutral-100">
+          <Image src={src} alt={alt} fill className="object-cover" />
+        </div>
       </div>
-
-      {/* Pointer at the bottom */}
-      <div className="absolute left-1/2 top-full -translate-x-1/2 -translate-y-px border-l-[10px] border-r-[10px] border-t-[15px] border-l-transparent border-r-transparent border-t-white drop-shadow-lg" />
     </button>
   );
 }
