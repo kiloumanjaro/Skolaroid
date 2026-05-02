@@ -1,67 +1,38 @@
-import Link from 'next/link';
 import {
-  ArrowRight,
-  Camera,
-  Heart,
-  Images,
-  MapPin,
-  Tag,
-  Users,
-} from 'lucide-react';
+  AboutWorkflowCard,
+  type AboutWorkflowCardProps,
+} from '@/components/about/about-workflow-card';
+import { AboutHero } from '@/components/about/about-hero';
 import { AboutAnnouncementStrip } from '@/components/announcement-strips/AboutAnnouncementStrip';
 import { AboutCreatorsMarquee } from '@/components/about-creators-marquee';
 import { ShellInlineSidebarToggle } from '@/components/shell-inline-sidebar-toggle';
 import { ShellBatchesSidebarAction } from '@/components/shell-batches-sidebar-action';
+import { prisma } from '@/lib/prisma';
 
-const pillars = [
+const pillars: AboutWorkflowCardProps[] = [
   {
-    icon: MapPin,
-    title: 'Memories live in real places',
+    eyebrow: 'How Skolaroid Works',
+    date: 'Step 01',
+    title: 'PIN THE MEMORY TO A REAL PLACE',
     description:
-      'Every post is tied to a campus landmark, so stories stay connected to the halls, corners, and buildings where they happened.',
-    accent: 'bg-sky-100 text-sky-700',
+      'Every post begins with a real campus location, so the story stays attached to the building, hallway, or landmark where it happened.',
+    bannerColor: '#c78ae6',
   },
   {
-    icon: Camera,
-    title: 'Photos feel like keepsakes',
+    eyebrow: 'How Skolaroid Works',
+    date: 'Step 02',
+    title: 'ADD THE PHOTO AND TELL THE STORY',
     description:
-      'Skolaroid turns everyday uploads into something more personal: a visual keepsake that feels handwritten, shared, and worth revisiting.',
-    accent: 'bg-amber-100 text-amber-700',
+      'Upload a photo, add context, and turn a quick snapshot into something more meaningful than a post that disappears in a feed.',
+    bannerColor: '#90a8ee',
   },
   {
-    icon: Tag,
-    title: 'Tags make stories discoverable',
+    eyebrow: 'How Skolaroid Works',
+    date: 'Step 03',
+    title: 'BROWSE THE ARCHIVE BY PLACE OR ERA',
     description:
-      'Moments can be grouped by batch, theme, event, or feeling, making it easy to browse memories from every era of campus life.',
-    accent: 'bg-emerald-100 text-emerald-700',
-  },
-  {
-    icon: Users,
-    title: 'Community gives the archive life',
-    description:
-      'What starts as one memory becomes a shared timeline when classmates, alumni, and friends add their own perspectives.',
-    accent: 'bg-rose-100 text-rose-700',
-  },
-];
-
-const journey = [
-  {
-    step: '01',
-    title: 'Capture a moment',
-    description:
-      'Upload a photo that means something, whether it is a quiet in-between memory or a major milestone.',
-  },
-  {
-    step: '02',
-    title: 'Pin it to campus',
-    description:
-      'Place that memory on the map so it stays anchored to the exact location where it belongs.',
-  },
-  {
-    step: '03',
-    title: 'Let others find it',
-    description:
-      'Tags, eras, and the gallery view help the memory become part of a bigger story that others can explore.',
+      'Once shared, memories become part of a place-based collection that people can revisit through landmarks, timelines, and campus moments.',
+    bannerColor: '#f6cb48',
   },
 ];
 
@@ -79,7 +50,19 @@ const aboutAnnouncements = [
   'A softer space for stories that should not disappear',
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const users = await prisma.user.count({
+    where: {
+      deletedAt: null,
+    },
+  });
+
+  const memoryUploads = await prisma.memory.count({
+    where: {
+      deletedAt: null,
+    },
+  });
+
   return (
     <div className="scrollbar-hide h-full overflow-y-auto bg-background">
       <ShellBatchesSidebarAction />
@@ -97,193 +80,49 @@ export default function AboutPage() {
           <div className="absolute bottom-10 left-1/3 h-56 w-56 rounded-full bg-emerald-200/25 blur-3xl" />
         </div>
 
-        <section className="relative overflow-hidden border-b-2 border-border">
-          <div
-            className="pointer-events-none absolute inset-0 opacity-70"
-            style={{
-              backgroundColor: '#f8f9f4',
-              backgroundImage: 'radial-gradient(#cccdc9 1px, transparent 1px)',
-              backgroundSize: '24px 24px',
-            }}
-          />
-
-          <div className="relative z-10 mx-auto grid w-full max-w-7xl gap-12 px-6 py-14 md:px-10 lg:grid-cols-[1.15fr_0.85fr] lg:px-16 lg:py-20">
-            <div className="max-w-2xl">
-              <h1 className="max-w-3xl text-5xl leading-[0.95] tracking-tight text-foreground sm:text-6xl lg:text-7xl">
-                About{' '}
-                <span className="font-dancing font-bold text-skolaroid-blue">
-                  Skolaroid
-                </span>
-              </h1>
-
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground sm:text-xl">
-                Skolaroid is a place-based memory archive for campus life. It
-                helps students, alumni, and communities turn photos into stories
-                that stay attached to the buildings, eras, and shared moments
-                that shaped them.
-              </p>
-
-              <p className="mt-5 max-w-2xl text-base leading-7 text-foreground/80 sm:text-lg">
-                The point is not just to store images. It is to remember where a
-                moment happened, who it belonged to, and how it fits into the
-                bigger timeline of a school community.
-              </p>
-
-              <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-                <Link
-                  href="/map"
-                  className="inline-flex items-center justify-center gap-2 border-2 border-border bg-skolaroid-blue px-6 py-3 text-base font-semibold text-white shadow-[4px_4px_0px_0px_#2d2d2d] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#2d2d2d]"
-                >
-                  Explore the map
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-
-                <Link
-                  href="/gallery"
-                  className="inline-flex items-center justify-center gap-2 border-2 border-border bg-card px-6 py-3 text-base font-semibold text-foreground shadow-[4px_4px_0px_0px_#2d2d2d] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:bg-secondary hover:shadow-[2px_2px_0px_0px_#2d2d2d]"
-                >
-                  Browse the gallery
-                </Link>
-              </div>
-            </div>
-
-            <div className="relative mx-auto flex w-full max-w-xl items-center justify-center">
-              <div className="relative w-full max-w-md">
-                <div className="absolute -left-4 top-6 h-full w-full rotate-[-5deg] border-2 border-border bg-card/80 shadow-[4px_4px_0px_0px_#2d2d2d]" />
-                <div className="absolute right-[-1rem] top-16 h-full w-full rotate-[6deg] border-2 border-border bg-[#fff5dd] shadow-[4px_4px_0px_0px_#2d2d2d]" />
-
-                <div className="relative overflow-hidden border-2 border-border bg-card p-5 shadow-[8px_8px_0px_0px_#2d2d2d]">
-                  <div className="h-56 rounded-sm border-2 border-border bg-[linear-gradient(135deg,#dbeafe_0%,#fef3c7_52%,#dcfce7_100%)] p-5">
-                    <div className="flex h-full flex-col justify-between rounded-sm border border-dashed border-border/30 bg-white/40 p-4 backdrop-blur-[1px]">
-                      <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.24em] text-foreground/60">
-                        <span>Skolaroid snapshot</span>
-                        <span>Campus memory</span>
-                      </div>
-
-                      <div>
-                        <p className="font-dancing text-4xl leading-none text-skolaroid-blue">
-                          every hallway
-                        </p>
-                        <p className="mt-2 text-xl leading-tight text-foreground">
-                          can hold a story worth keeping.
-                        </p>
-                      </div>
-
-                      <div className="grid gap-2 text-sm text-foreground/75">
-                        <div className="flex items-center gap-2">
-                          <MapPin className="h-4 w-4 text-skolaroid-blue" />
-                          Linked to a real campus location
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Images className="h-4 w-4 text-skolaroid-blue" />
-                          Browse by era, gallery, or map
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Heart className="h-4 w-4 text-skolaroid-blue" />
-                          Built for shared remembrance
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                    <div className="rotate-[-2deg] border-2 border-border bg-[#fff9c4] p-4 shadow-[3px_3px_0px_0px_#2d2d2d]">
-                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-foreground/60">
-                        Why it matters
-                      </p>
-                      <p className="mt-2 text-base leading-6 text-foreground">
-                        Campus culture can disappear fast when memories stay
-                        buried in private camera rolls.
-                      </p>
-                    </div>
-
-                    <div className="rotate-[2deg] border-2 border-border bg-[#e0f2fe] p-4 shadow-[3px_3px_0px_0px_#2d2d2d]">
-                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-foreground/60">
-                        What Skolaroid does
-                      </p>
-                      <p className="mt-2 text-base leading-6 text-foreground">
-                        It gives those memories a place, a timeline, and a
-                        community to return to.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+        <section className="relative z-10">
+          <div className="bg-[#fcf5ef]">
+            <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-14 md:px-10 lg:px-16 lg:py-20">
+              <AboutHero users={users} memoryUploads={memoryUploads} />
             </div>
           </div>
+
+          <svg
+            viewBox="0 0 1440 64"
+            preserveAspectRatio="none"
+            className="-mt-px block h-16 w-full"
+            aria-hidden="true"
+          >
+            <path
+              d="M0,0 H1440 V40 C1320,52 1200,52 1080,40 C960,28 840,28 720,40 C600,52 480,52 360,40 C240,28 120,28 0,40 Z"
+              fill="#fcf5ef"
+            />
+            <path
+              d="M0,40 C120,28 240,28 360,40 C480,52 600,52 720,40 C840,28 960,28 1080,40 C1200,52 1320,52 1440,40"
+              stroke="#2d2d2d"
+              strokeWidth="2"
+              vectorEffect="non-scaling-stroke"
+              strokeLinecap="round"
+              fill="none"
+            />
+          </svg>
         </section>
 
-        <section className="relative">
-          <div className="mx-auto w-full max-w-7xl px-6 py-6 md:px-10 lg:px-16 lg:py-10">
+        <section className="relative z-0 -mt-10 bg-[#00c59a] pt-10">
+          <div className="mx-auto w-full max-w-7xl px-6 py-10 md:px-10 lg:px-16 lg:py-14">
             <div className="mb-8 max-w-2xl">
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-skolaroid-blue">
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-foreground/70">
                 What makes it feel like Skolaroid
               </p>
               <h2 className="mt-3 text-3xl leading-tight text-foreground sm:text-4xl">
-                More than a gallery, more personal than a feed
+                how skolaroid works..
               </h2>
             </div>
 
-            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-              {pillars.map(({ icon: Icon, title, description, accent }) => (
-                <article
-                  key={title}
-                  className="border-2 border-border bg-card p-6 shadow-[5px_5px_0px_0px_#2d2d2d]"
-                >
-                  <div
-                    className={`mb-4 flex h-12 w-12 items-center justify-center rounded-full ${accent}`}
-                  >
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="text-xl leading-tight text-foreground">
-                    {title}
-                  </h3>
-                  <p className="mt-3 text-base leading-7 text-muted-foreground">
-                    {description}
-                  </p>
-                </article>
+            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {pillars.map((pillar) => (
+                <AboutWorkflowCard key={pillar.title} {...pillar} />
               ))}
-            </div>
-          </div>
-
-          <div className="mx-auto w-full max-w-7xl px-6 py-10 md:px-10 lg:px-16 lg:py-16">
-            <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-              <div className="border-2 border-border bg-[#fffaf1] p-7 shadow-[6px_6px_0px_0px_#2d2d2d]">
-                <p className="text-sm font-semibold uppercase tracking-[0.24em] text-skolaroid-blue">
-                  The idea
-                </p>
-                <h2 className="mt-3 text-3xl leading-tight text-foreground">
-                  A school is made of places, but also the stories left inside
-                  them.
-                </h2>
-                <p className="mt-5 text-lg leading-8 text-foreground/80">
-                  Skolaroid is designed to make memory-keeping feel communal.
-                  The map helps people rediscover where something happened. The
-                  gallery helps them browse moods and eras. The tags help them
-                  connect scattered moments into a larger history.
-                </p>
-              </div>
-
-              <div className="grid gap-4">
-                {journey.map(({ step, title, description }) => (
-                  <div
-                    key={step}
-                    className="flex gap-4 border-2 border-border bg-card p-5 shadow-[5px_5px_0px_0px_#2d2d2d]"
-                  >
-                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-skolaroid-blue text-lg font-semibold text-white">
-                      {step}
-                    </div>
-                    <div>
-                      <h3 className="text-2xl leading-tight text-foreground">
-                        {title}
-                      </h3>
-                      <p className="mt-2 text-base leading-7 text-muted-foreground">
-                        {description}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </section>
