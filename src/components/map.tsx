@@ -16,7 +16,6 @@ import { createRoot, type Root } from 'react-dom/client';
 import { AddMemoryModal } from './add-memory-modal';
 import { GroupPanel } from './groups/GroupPanel';
 import { BatchesModal } from './batches-modal';
-import { ExpandableToolbar } from './expandable-toolbar';
 import { useMainShellSidebarAction } from './main-shell-sidebar-action';
 import { LandmarkMarker } from './map/LandmarkMarker';
 import { LandmarkMemoriesPanel } from './map/LandmarkMemoriesPanel';
@@ -202,8 +201,6 @@ export function MapComponent({
   const { data: locationsData } = useLocations();
   const { data: userGroupsData } = useUserGroups();
   const userGroups = userGroupsData ?? EMPTY_USER_GROUPS;
-  const isAdmin = currentUserData?.data?.role === 'ADMIN';
-
   const showFirstMemoryPrompt =
     !!currentUserData?.data &&
     !creatorMemoriesLoading &&
@@ -1091,10 +1088,6 @@ export function MapComponent({
           <div ref={mapContainerRef} className="h-full w-full" />
 
           <AddMemoryButton onClick={() => setAddMemoryOpen(true)} />
-
-          <ExpandableToolbar
-            onConfigureClick={isAdmin ? () => router.push('/admin') : undefined}
-          />
 
           <GroupPanel
             open={groupModalOpen}

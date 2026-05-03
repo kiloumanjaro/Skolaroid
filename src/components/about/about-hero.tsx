@@ -52,9 +52,12 @@ export function AboutHero({ users, memoryUploads }: AboutHeroProps) {
 
       <Link
         href="/map"
-        className="mt-20 inline-flex items-center justify-center border-2 border-border bg-[#c3f61d] px-10 py-4 text-base font-semibold uppercase tracking-[0.08em] text-black transition-all hover:scale-[1.02]"
+        className="group relative mt-20 inline-flex h-16 w-40 items-center justify-center overflow-hidden border-2 border-border shadow-[4px_4px_0px_0px_#2d2d2d] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#2d2d2d] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
       >
-        Go to map
+        <span className="absolute left-0 top-0 h-16 w-40 bg-card transition-all group-hover:bg-skolaroid-blue group-active:bg-skolaroid-blue" />
+        <span className="relative flex h-16 w-40 items-center justify-center text-center text-lg font-medium text-foreground transition-colors group-hover:text-white group-active:text-white">
+          Go to map
+        </span>
       </Link>
     </div>
   );

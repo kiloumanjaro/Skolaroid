@@ -20,10 +20,11 @@ import {
   type MainShellSidebarAction,
 } from '@/components/main-shell-sidebar-action';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
 import { cn } from '@/lib/utils';
 
-const shellRoutes = ['/map', '/gallery', '/about'];
+const shellRoutes = ['/map', '/gallery', '/admin', '/about'];
 
 const navItems = [
   {
@@ -58,6 +59,28 @@ const navItems = [
       <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
         <path
           d="M9 4.5l6-2v17l-6 2-6-2v-17l6 2Zm0 0v17m6-19 6 2v17l-6-2"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+  },
+  {
+    href: '/admin',
+    label: 'Admin',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+        <path
+          d="M12 3.75 18.5 6.5v5.25c0 4.12-2.63 7.92-6.5 9-3.87-1.08-6.5-4.88-6.5-9V6.5L12 3.75Z"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M9.75 12.25 11.25 13.75 14.5 10.5"
           stroke="currentColor"
           strokeWidth="1.8"
           strokeLinecap="round"
@@ -304,6 +327,7 @@ function SwipeLogoutAction({
 function ShellSidebar({
   isOpen,
   isAuthenticated,
+  isAdmin,
   leadingAction,
   userAvatar,
   userName,
@@ -313,6 +337,7 @@ function ShellSidebar({
 }: {
   isOpen: boolean;
   isAuthenticated: boolean;
+  isAdmin: boolean;
   leadingAction: MainShellSidebarAction | null;
   userAvatar?: string | null;
   userName: string;
@@ -325,6 +350,9 @@ function ShellSidebar({
   const isBatchesActionActive =
     leadingAction?.label === 'Batches' &&
     searchParams.get('openBatches') === '1';
+  const visibleNavItems = isAdmin
+    ? navItems
+    : navItems.filter((item) => item.href !== '/admin');
 
   return (
     <aside
@@ -372,7 +400,7 @@ function ShellSidebar({
           </button>
         )}
 
-        {navItems.map((item) => {
+        {visibleNavItems.map((item) => {
           const isActive =
             pathname === item.href || pathname.startsWith(`${item.href}/`);
 
@@ -466,6 +494,7 @@ export function MainShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { isAuthenticated, logout, user } = useUserAuth();
+  const { data: currentUserData } = useCurrentUser();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarAction, setSidebarAction] =
     useState<MainShellSidebarAction | null>(null);
@@ -488,6 +517,7 @@ export function MainShell({ children }: { children: ReactNode }) {
     user?.user_metadata?.name ??
     user?.email ??
     'User';
+  const isAdmin = currentUserData?.data?.role === 'ADMIN';
 
   useEffect(() => {
     if (!pendingNavigation || sidebarOpen) {
@@ -538,6 +568,7 @@ export function MainShell({ children }: { children: ReactNode }) {
             <ShellSidebar
               isOpen={sidebarOpen}
               isAuthenticated={isAuthenticated}
+              isAdmin={isAdmin}
               leadingAction={sidebarAction}
               userAvatar={userAvatar}
               userName={userName}
@@ -559,7 +590,7 @@ export function MainShell({ children }: { children: ReactNode }) {
             <div className="flex min-w-0 flex-1 flex-col p-3">
               <div className="relative min-h-0 min-w-0 flex-1 overflow-hidden border-[3px] border-[#fcfaf8] bg-[#fcfaf8]">
                 <div className="relative h-full w-full overflow-hidden border-[3px] border-black bg-white">
-                  {pathname !== '/about' && (
+                  {pathname !== '/about' && pathname !== '/admin' && (
                     <button
                       type="button"
                       onClick={() => setSidebarOpen((prev) => !prev)}

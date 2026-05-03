@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
 export interface AdminAnalyticsLocation {
   rank: number;
@@ -54,6 +54,7 @@ export function useAdminAnalytics(days = 30) {
       return res.json() as Promise<AdminAnalyticsResponse>;
     },
     staleTime: 60_000,
+    placeholderData: keepPreviousData,
     refetchInterval: 60_000,
     refetchIntervalInBackground: false,
     retry: 1,
