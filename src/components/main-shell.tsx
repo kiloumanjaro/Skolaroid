@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
+  Suspense,
   useCallback,
   useEffect,
   useMemo,
@@ -346,10 +347,6 @@ function ShellSidebar({
   onNavigate: (href: string) => void;
 }) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const isBatchesActionActive =
-    leadingAction?.label === 'Batches' &&
-    searchParams.get('openBatches') === '1';
   const visibleNavItems = isAdmin
     ? navItems
     : navItems.filter((item) => item.href !== '/admin');
@@ -374,30 +371,22 @@ function ShellSidebar({
 
       <nav className="flex flex-col gap-2 px-2">
         {leadingAction && (
-          <button
-            type="button"
-            onClick={() => onLeadingAction(leadingAction)}
-            className={cn(
-              'group relative flex h-12 items-center gap-3 overflow-hidden px-3 transition-all duration-300 ease-in-out',
-              isBatchesActionActive
-                ? 'rounded-none border-2 border-black bg-white text-foreground'
-                : 'rounded-none text-foreground/80 hover:bg-foreground/5 hover:text-foreground'
-            )}
+          <Suspense
+            fallback={
+              <LeadingActionButton
+                action={leadingAction}
+                isOpen={isOpen}
+                isActive={false}
+                onClick={() => onLeadingAction(leadingAction)}
+              />
+            }
           >
-            {isBatchesActionActive && (
-              <div className="absolute inset-0 bg-white" />
-            )}
-            <span className="relative flex h-6 w-6 shrink-0 items-center justify-center">
-              {leadingAction.icon}
-            </span>
-            <span
-              className={`relative overflow-hidden whitespace-nowrap text-sm font-medium transition-all duration-300 ease-in-out ${
-                isOpen ? 'max-w-[120px] opacity-100' : 'max-w-0 opacity-0'
-              }`}
-            >
-              {leadingAction.label}
-            </span>
-          </button>
+            <SearchAwareLeadingActionButton
+              action={leadingAction}
+              isOpen={isOpen}
+              onClick={() => onLeadingAction(leadingAction)}
+            />
+          </Suspense>
         )}
 
         {visibleNavItems.map((item) => {
@@ -487,6 +476,66 @@ function ShellSidebar({
         )}
       </div>
     </aside>
+  );
+}
+
+function LeadingActionButton({
+  action,
+  isOpen,
+  isActive,
+  onClick,
+}: {
+  action: MainShellSidebarAction;
+  isOpen: boolean;
+  isActive: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        'group relative flex h-12 items-center gap-3 overflow-hidden px-3 transition-all duration-300 ease-in-out',
+        isActive
+          ? 'rounded-none border-2 border-black bg-white text-foreground'
+          : 'rounded-none text-foreground/80 hover:bg-foreground/5 hover:text-foreground'
+      )}
+    >
+      {isActive && <div className="absolute inset-0 bg-white" />}
+      <span className="relative flex h-6 w-6 shrink-0 items-center justify-center">
+        {action.icon}
+      </span>
+      <span
+        className={`relative overflow-hidden whitespace-nowrap text-sm font-medium transition-all duration-300 ease-in-out ${
+          isOpen ? 'max-w-[120px] opacity-100' : 'max-w-0 opacity-0'
+        }`}
+      >
+        {action.label}
+      </span>
+    </button>
+  );
+}
+
+function SearchAwareLeadingActionButton({
+  action,
+  isOpen,
+  onClick,
+}: {
+  action: MainShellSidebarAction;
+  isOpen: boolean;
+  onClick: () => void;
+}) {
+  const searchParams = useSearchParams();
+  const isActive =
+    action.label === 'Batches' && searchParams.get('openBatches') === '1';
+
+  return (
+    <LeadingActionButton
+      action={action}
+      isOpen={isOpen}
+      isActive={isActive}
+      onClick={onClick}
+    />
   );
 }
 
