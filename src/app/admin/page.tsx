@@ -1,10 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Header } from '@/components/header';
 import {
-  ArrowLeft,
   Search,
   Filter,
   Trash2,
@@ -40,6 +37,8 @@ import {
   type AuditLogFilters,
   type AuditLogEntry,
 } from '@/lib/hooks/useAuditLog';
+import { AdminAnnouncementStrip } from '@/components/announcement-strips/AdminAnnouncementStrip';
+import { ShellInlineSidebarToggle } from '@/components/shell-inline-sidebar-toggle';
 
 type AdminTab = 'analytics' | 'published' | 'pending' | 'reports' | 'audit';
 type AnalyticsMemoryStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'REMOVED';
@@ -60,6 +59,11 @@ const statusBadgeStyles: Record<AnalyticsMemoryStatus, string> = {
 };
 
 const numberFormatter = new Intl.NumberFormat('en-US');
+const adminAnnouncements = [
+  'Review pending memories before they go live',
+  'Track reports, moderation actions, and audit history',
+  'Keep the archive safe, accurate, and community-ready',
+];
 
 function formatCount(value: number): string {
   return numberFormatter.format(value);
@@ -144,7 +148,7 @@ function PostCard({
         : memory.moderationStatus;
 
   return (
-    <div className="flex items-center gap-4 border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]">
+    <div className="flex items-center gap-4 border-2 border-border bg-card p-4">
       {/* Thumbnail */}
       <div className="relative h-28 w-40 shrink-0 overflow-hidden bg-secondary">
         <Image
@@ -320,16 +324,16 @@ function AnalyticsContent({ searchQuery }: { searchQuery: string }) {
 
   return (
     <div className="space-y-6">
-      <section className="border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]">
+      <section className="border-2 border-border bg-card p-4">
         <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div>
             <div className="mb-1 flex items-center gap-2">
-              <CalendarRange size={15} className="text-skolaroid-blue" />
-              <h2 className="text-sm font-semibold text-foreground">
+              <CalendarRange size={18} className="text-foreground" />
+              <h2 className="text-lg font-semibold text-foreground sm:text-xl">
                 Analytics Window
               </h2>
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground sm:text-base">
               Switch the reporting range to compare activity trends.
             </p>
           </div>
@@ -342,10 +346,10 @@ function AnalyticsContent({ searchQuery }: { searchQuery: string }) {
                 <button
                   key={days}
                   onClick={() => handlePresetClick(days)}
-                  className={`border-2 px-2.5 py-1 text-xs font-medium transition-colors ${
+                  className={`border-2 border-black px-3 py-1.5 text-sm font-medium text-black transition-colors ${
                     isActive
-                      ? 'border-skolaroid-blue bg-skolaroid-blue text-white'
-                      : 'border-border bg-background text-muted-foreground hover:text-foreground'
+                      ? 'bg-[#f6cb48]'
+                      : 'bg-background hover:bg-secondary'
                   }`}
                 >
                   {days}d
@@ -371,22 +375,17 @@ function AnalyticsContent({ searchQuery }: { searchQuery: string }) {
               />
               <button
                 onClick={applyCustomWindowDays}
-                className="border-2 border-border bg-background px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                className="border-2 border-black bg-background px-3 py-1.5 text-sm font-medium text-black transition-colors hover:bg-secondary"
               >
                 Apply
               </button>
             </div>
           </div>
         </div>
-
-        <p className="mt-3 text-xs text-muted-foreground">
-          Showing the last {analytics.windowDays} days. Updated{' '}
-          {formatDate(analytics.generatedAt)}.
-        </p>
       </section>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <div className="border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]">
+        <div className="border-2 border-border bg-card p-4">
           <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-full bg-skolaroid-blue/10 text-skolaroid-blue">
             <Camera size={16} />
           </div>
@@ -398,7 +397,7 @@ function AnalyticsContent({ searchQuery }: { searchQuery: string }) {
           </p>
         </div>
 
-        <div className="border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]">
+        <div className="border-2 border-border bg-card p-4">
           <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-full bg-green-100 text-green-700">
             <Users size={16} />
           </div>
@@ -414,7 +413,7 @@ function AnalyticsContent({ searchQuery }: { searchQuery: string }) {
           </p>
         </div>
 
-        <div className="border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]">
+        <div className="border-2 border-border bg-card p-4">
           <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-full bg-sky-100 text-sky-700">
             <MapPin size={16} />
           </div>
@@ -431,7 +430,7 @@ function AnalyticsContent({ searchQuery }: { searchQuery: string }) {
           </p>
         </div>
 
-        <div className="border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]">
+        <div className="border-2 border-border bg-card p-4">
           <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-full bg-amber-100 text-amber-700">
             <BarChart3 size={16} />
           </div>
@@ -450,7 +449,7 @@ function AnalyticsContent({ searchQuery }: { searchQuery: string }) {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <section className="flex h-full flex-col border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]">
+        <section className="flex h-full flex-col border-2 border-border bg-card p-4">
           <div className="mb-3 flex items-center gap-2">
             <MapPin size={16} className="text-skolaroid-blue" />
             <h2 className="text-sm font-semibold text-foreground">
@@ -493,7 +492,7 @@ function AnalyticsContent({ searchQuery }: { searchQuery: string }) {
           )}
         </section>
 
-        <section className="flex h-full flex-col border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]">
+        <section className="flex h-full flex-col border-2 border-border bg-card p-4">
           <div className="mb-3 flex items-center gap-2">
             <Users size={16} className="text-skolaroid-blue" />
             <h2 className="text-sm font-semibold text-foreground">
@@ -538,7 +537,7 @@ function AnalyticsContent({ searchQuery }: { searchQuery: string }) {
         </section>
       </div>
 
-      <section className="border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]">
+      <section className="border-2 border-border bg-card p-4">
         <h2 className="mb-3 text-sm font-semibold text-foreground">
           Memory Moderation Breakdown
         </h2>
@@ -687,7 +686,7 @@ function ReportsContent({ searchQuery }: { searchQuery: string }) {
       {filtered.map((report) => (
         <div
           key={report.id}
-          className="flex items-start gap-4 border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]"
+          className="flex items-start gap-4 border-2 border-border bg-card p-4"
         >
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-50">
             {report.state === 'OPEN' ? (
@@ -905,7 +904,7 @@ function AuditLogContent({ searchQuery }: { searchQuery: string }) {
             return (
               <div
                 key={entry.id}
-                className="flex items-start gap-4 border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]"
+                className="flex items-start gap-4 border-2 border-border bg-card p-4"
               >
                 {/* Admin avatar */}
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-skolaroid-blue text-sm font-medium text-white">
@@ -970,7 +969,6 @@ function AuditLogContent({ searchQuery }: { searchQuery: string }) {
 }
 
 export default function AdminPage() {
-  const router = useRouter();
   const [currentTab, setCurrentTab] = useState<AdminTab>('analytics');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -994,78 +992,84 @@ export default function AdminPage() {
   const showPostFilter = currentTab === 'published' || currentTab === 'pending';
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <Header />
-
-      <main className="flex-1 px-8 pb-8 pt-24">
-        {/* Top Bar */}
-        <div className="mb-6 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <button
-              onClick={() => router.back()}
-              className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-secondary"
-            >
-              <ArrowLeft size={20} className="text-foreground" />
-            </button>
-
-            {/* Tabs */}
-            <div className="flex gap-6">
-              {tabs.map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setCurrentTab(tab)}
-                  className={`text-sm font-medium transition-colors ${
-                    currentTab === tab
-                      ? 'text-foreground'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  {tabLabels[tab]}
-                </button>
-              ))}
+    <div className="flex h-full min-h-0 flex-col bg-background">
+      <main className="flex-1 overflow-y-auto bg-background">
+        <div className="relative overflow-hidden">
+          <div className="absolute left-4 top-12 z-20 sm:left-6 sm:top-14">
+            <div className="flex items-center gap-6">
+              <ShellInlineSidebarToggle />
+              <div className="font-dancing text-4xl text-black">
+                Admin Dashboard
+              </div>
             </div>
           </div>
 
-          {/* Search & Filter */}
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <Search
-                size={16}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-              />
-              <input
-                type="text"
-                placeholder={searchPlaceholder}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-56 border-2 border-border bg-card py-2 pl-9 pr-4 text-sm placeholder-muted-foreground focus:border-skolaroid-blue focus:outline-none"
-              />
+          <AdminAnnouncementStrip announcements={adminAnnouncements} />
+
+          <div className="px-8 pb-8 pt-24">
+            {/* Top Bar */}
+            <div className="mb-6 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-6">
+                {/* Tabs */}
+                <div className="flex flex-wrap gap-4 sm:gap-6">
+                  {tabs.map((tab) => (
+                    <button
+                      key={tab}
+                      onClick={() => setCurrentTab(tab)}
+                      className={`text-sm font-medium transition-colors ${
+                        currentTab === tab
+                          ? 'text-foreground'
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      {tabLabels[tab]}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Search & Filter */}
+              <div className="flex flex-wrap items-center justify-end gap-3">
+                <div className="relative">
+                  <Search
+                    size={16}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                  />
+                  <input
+                    type="text"
+                    placeholder={searchPlaceholder}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-72 border-2 border-border bg-card py-2 pl-9 pr-4 text-sm placeholder-muted-foreground focus:border-skolaroid-blue focus:outline-none sm:w-80"
+                  />
+                </div>
+                {showPostFilter && (
+                  <button className="flex items-center gap-2 border-2 border-border bg-card px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary">
+                    <Filter size={14} />
+                    Filter Posts
+                  </button>
+                )}
+              </div>
             </div>
-            {showPostFilter && (
-              <button className="flex items-center gap-2 border-2 border-border bg-card px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary">
-                <Filter size={14} />
-                Filter Posts
-              </button>
+
+            {/* Tab Content */}
+            {currentTab === 'analytics' && (
+              <AnalyticsContent searchQuery={searchQuery} />
+            )}
+            {currentTab === 'published' && (
+              <PublishedPostsContent searchQuery={searchQuery} />
+            )}
+            {currentTab === 'pending' && (
+              <PendingReviewContent searchQuery={searchQuery} />
+            )}
+            {currentTab === 'reports' && (
+              <ReportsContent searchQuery={searchQuery} />
+            )}
+            {currentTab === 'audit' && (
+              <AuditLogContent searchQuery={searchQuery} />
             )}
           </div>
         </div>
-
-        {/* Tab Content */}
-        {currentTab === 'analytics' && (
-          <AnalyticsContent searchQuery={searchQuery} />
-        )}
-        {currentTab === 'published' && (
-          <PublishedPostsContent searchQuery={searchQuery} />
-        )}
-        {currentTab === 'pending' && (
-          <PendingReviewContent searchQuery={searchQuery} />
-        )}
-        {currentTab === 'reports' && (
-          <ReportsContent searchQuery={searchQuery} />
-        )}
-        {currentTab === 'audit' && (
-          <AuditLogContent searchQuery={searchQuery} />
-        )}
       </main>
     </div>
   );
