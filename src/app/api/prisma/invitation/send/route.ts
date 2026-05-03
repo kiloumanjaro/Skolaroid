@@ -110,12 +110,23 @@ export async function POST(request: NextRequest) {
 
     // ── 5. Build invite links ────────────────────────────────────────
     const origin = request.headers.get('origin') ?? request.nextUrl.origin;
-    const results = invitations.map((inv) => ({
-      id: inv.id,
-      email: inv.email,
-      inviteLink: `${origin}/invite?token=${inv.token}`,
-      expiresAt: inv.expiresAt.toISOString(),
-    }));
+    const results = invitations.flatMap((inv) => {
+      if (!inv.email) {
+        console.warn(
+          `[invitation/send] Invitation ${inv.id} was created without an email address`
+        );
+        return [];
+      }
+
+      return [
+        {
+          id: inv.id,
+          email: inv.email,
+          inviteLink: `${origin}/invite?token=${inv.token}`,
+          expiresAt: inv.expiresAt.toISOString(),
+        },
+      ];
+    });
 
     // ── 6. Send invitation emails ────────────────────────────────────
     const inviterName =
