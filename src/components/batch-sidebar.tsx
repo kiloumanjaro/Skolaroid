@@ -3,10 +3,10 @@
 import {
   BatchSidebarContent,
   type Era,
-} from '@/components/BatchSidebarContent';
-import { Sidebar } from '@/components/Sidebar';
+} from '@/components/batch-sidebar-content';
+import { Sidebar } from '@/components/sidebar';
 
-export type { Era } from '@/components/BatchSidebarContent';
+export type { Era } from '@/components/batch-sidebar-content';
 
 interface BatchSidebarProps {
   drawerOpen: boolean;
@@ -36,6 +36,7 @@ export function BatchSidebar({
       isDragging={isDragging}
       onMouseDown={onMouseDown}
       drawerContentRef={drawerContentRef}
+      expandedWidthClassName="w-screen max-w-[600px]"
     >
       <BatchSidebarContent
         eras={eras}

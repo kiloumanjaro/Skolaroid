@@ -77,9 +77,52 @@ export const createMemorySchema = z.object({
 /** Server-side schema — same fields sent over the wire (no File objects). */
 export const createMemoryServerSchema = createMemorySchema.extend({
   mediaURL: z.string().url('Invalid media URL').optional(),
+  mediaURLs: z.array(z.string().url('Invalid media URL')).optional(),
   memoryDate: z.coerce.date().optional(),
   privateGroupId: z.string().uuid('Invalid group ID').optional(),
 });
+
+/** Client-side schema for editing a memory — all fields optional, at least one required. */
+export const editMemorySchema = z
+  .object({
+    title: z
+      .string()
+      .trim()
+      .min(1, 'Title is required')
+      .max(255, 'Title must be 255 characters or less')
+      .optional(),
+    description: z
+      .string()
+      .trim()
+      .max(5000, 'Description is too long')
+      .optional(),
+    visibility: memoryVisibilityEnum.optional(),
+    tags: z
+      .array(z.string().trim().min(1).max(50))
+      .max(MAX_TAGS, 'Maximum 10 tags')
+      .optional(),
+    privateGroupId: z.string().uuid('Invalid group ID').nullable().optional(),
+  })
+  .refine((v) => Object.values(v).some((x) => x !== undefined), {
+    message: 'At least one field must be provided',
+  });
+
+/** Server-side schema for editing a memory — no additional coercions needed. */
+export const editMemoryServerSchema = editMemorySchema;
+
+export type EditMemoryInput = z.infer<typeof editMemoryServerSchema>;
+
+// ============================================================================
+// GLOBAL SEARCH SCHEMAS
+// ============================================================================
+
+export const searchQuerySchema = z.object({
+  q: z.string().trim().min(1, 'Search query cannot be empty'),
+  page: z.coerce.number().int().min(1).catch(1),
+  limit: z.coerce.number().int().min(1).max(50).catch(20),
+});
+
+export type SearchQueryInput = z.infer<typeof searchQuerySchema>;
 
 /** Schema for updating tags on an existing memory. */
 export const updateMemoryTagsSchema = z.object({
@@ -228,6 +271,51 @@ export const onboardUserSchema = z.object({
 export type OnboardUserInput = z.infer<typeof onboardUserSchema>;
 
 // ============================================================================
+// PROFILE UPDATE SCHEMA
+// ============================================================================
+
+export const updateProfileSchema = z.object({
+  bio: z
+    .string()
+    .trim()
+    .max(500, 'Bio must be 500 characters or less')
+    .optional(),
+  phone: z
+    .string()
+    .trim()
+    .max(50, 'Phone must be 50 characters or less')
+    .refine(
+      (val) => /^(\+639\d{9}|09\d{9})$/.test(val.replace(/[\s\-]/g, '')),
+      'Must be a valid Philippine number (e.g. 09XX XXX XXXX or +63 9XX XXX XXXX)'
+    )
+    .optional(),
+  linkedinUrl: z
+    .string()
+    .trim()
+    .max(255)
+    .url('Must be a valid URL')
+    .optional()
+    .or(z.literal('')),
+  facebookUrl: z
+    .string()
+    .trim()
+    .max(255)
+    .url('Must be a valid URL')
+    .optional()
+    .or(z.literal('')),
+  contactOther: z
+    .string()
+    .trim()
+    .max(255)
+    .url('Must be a valid URL')
+    .optional()
+    .or(z.literal('')),
+  avatarUrl: z.string().url().nullable().optional(),
+});
+
+export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
+
+// ============================================================================
 // SHARED TYPES
 // ============================================================================
 
@@ -237,13 +325,18 @@ export interface MemoryWithRelations {
   title: string;
   description?: string | null;
   mediaURL?: string | null;
+  mediaURLs?: string[];
   visibility: MemoryVisibility;
   creatorId?: string | null;
   privateGroupId?: string | null;
   createdAt?: string;
   tags?: { id: string; name: string }[];
   location?: { buildingName: string };
-  creator?: { firstName: string; lastName: string } | null;
+  creator?: {
+    firstName: string;
+    lastName: string;
+    avatarUrl?: string | null;
+  } | null;
   _count?: { votes: number; comments: number };
 }
 
@@ -378,8 +471,21 @@ export const invitationActionSchema = z.object({
   token: z.string().min(1, 'Token is required'),
 });
 
+/** Schema for generating a public invitation link. */
+export const createInvitationLinkSchema = z.object({
+  groupId: z.string().uuid('Invalid group ID'),
+  maxUses: z
+    .number({ error: 'Max uses must be a number' })
+    .int('Max uses must be a whole number')
+    .min(1, 'Max uses must be at least 1')
+    .max(1000, 'Max uses cannot exceed 1000'),
+});
+
 export type SendInvitationsInput = z.infer<typeof sendInvitationsSchema>;
 export type InvitationTokenInput = z.infer<typeof invitationTokenSchema>;
+export type CreateInvitationLinkInput = z.infer<
+  typeof createInvitationLinkSchema
+>;
 export type InvitationActionInput = z.infer<typeof invitationActionSchema>;
 
 // ============================================================================
@@ -412,6 +518,11 @@ export const adminReportsQuerySchema = z.object({
   state: reportStateEnum.optional(),
 });
 
+/** Query params for fetching platform analytics (admin). */
+export const adminAnalyticsQuerySchema = z.object({
+  days: z.coerce.number().int().min(7).max(365).default(30),
+});
+
 /** Payload for resolving or dismissing a report (admin). */
 export const resolveReportSchema = z.object({
   reportId: z.string().uuid('Invalid report ID'),
@@ -422,6 +533,7 @@ export const resolveReportSchema = z.object({
 export type ModerationStatus = z.infer<typeof moderationStatusEnum>;
 export type ModerateMemoryInput = z.infer<typeof moderateMemorySchema>;
 export type ResolveReportInput = z.infer<typeof resolveReportSchema>;
+export type AdminAnalyticsQuery = z.infer<typeof adminAnalyticsQuerySchema>;
 
 export const moderationActionTypeEnum = z.enum([
   'MEMORY_APPROVED',
@@ -480,6 +592,33 @@ export type NotificationType = z.infer<typeof notificationTypeEnum>;
 export type GetNotificationsQuery = z.infer<typeof getNotificationsQuerySchema>;
 export type MarkNotificationsReadInput = z.infer<
   typeof markNotificationsReadSchema
+>;
+
+// ============================================================================
+// MESSAGE SCHEMAS
+// ============================================================================
+
+export const MAX_MESSAGE_LENGTH = 1000;
+
+/** Payload for broadcasting a text-only announcement as a Memory post. */
+export const createMessageSchema = z.object({
+  content: z
+    .string()
+    .trim()
+    .min(1, 'Message cannot be empty')
+    .max(
+      MAX_MESSAGE_LENGTH,
+      `Message must be ${MAX_MESSAGE_LENGTH} characters or less`
+    ),
+  locationId: z.string().uuid('Invalid location ID'),
+});
+
+/** Server-side variant — same shape, no additional coercions needed. */
+export const createMessageServerSchema = createMessageSchema;
+
+export type CreateMessageInput = z.infer<typeof createMessageSchema>;
+export type CreateMessageServerInput = z.infer<
+  typeof createMessageServerSchema
 >;
 
 // ============================================================================

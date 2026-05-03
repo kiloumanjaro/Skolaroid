@@ -2,6 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --polaroid-base: 280px; /* was 360px */
+  --gallery-card-gap: 16rem;
+  --gallery-cluster-caption-gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --polaroid-base: 240px;
+  } /* was 220px */
+}
+
+@media (max-width: 640px) {
+  :root {
+    --polaroid-base: 200px;
+  } /* was 160px */
+}
+
 @layer base {
   :root {
     /* Hand-Drawn warm paper palette */
@@ -47,5 +65,19 @@
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+
+  .gallery-scroll-container {
+    scroll-snap-type: x proximity;
+    padding-left: calc(50% - var(--polaroid-base) / 2);
+    padding-right: calc(50% - var(--polaroid-base) / 2);
+    scroll-padding-left: calc(50% - var(--polaroid-base) / 2);
+    scroll-padding-right: calc(50% - var(--polaroid-base) / 2);
+  }
+
+  @media (max-width: 640px) {
+    .gallery-scroll-container {
+      scroll-snap-type: x mandatory;
+    }
   }
 }

@@ -4,6 +4,7 @@ export interface CommentAuthor {
   id: string;
   firstName: string;
   lastName: string;
+  avatarUrl?: string | null;
 }
 
 export interface Comment {
@@ -22,7 +23,12 @@ export interface GetCommentsResult {
   hasMore: boolean;
 }
 
-const AUTHOR_SELECT = { id: true, firstName: true, lastName: true } as const;
+const AUTHOR_SELECT = {
+  id: true,
+  firstName: true,
+  lastName: true,
+  avatarUrl: true,
+} as const;
 
 /**
  * Fetches comments for a memory using cursor-based pagination.

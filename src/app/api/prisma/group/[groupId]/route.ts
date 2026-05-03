@@ -37,7 +37,13 @@ export async function GET(
           select: { id: true, firstName: true, lastName: true, email: true },
         },
         members: {
-          select: { id: true, firstName: true, lastName: true, email: true },
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            avatarUrl: true,
+          },
         },
         groupMemberships: {
           select: { userId: true, role: true, joinedAt: true },
@@ -106,8 +112,9 @@ export async function GET(
 /**
  * PATCH /api/prisma/group/[groupId]
  *
- * Updates a group's name, description, or message. Only the group creator
- * (owner) is allowed to perform this action.
+ * Updates a group's name, description, or message.
+ * OWNER: can update name, description, message.
+ * ADMIN: can update message only.
  */
 export async function PATCH(
   request: NextRequest,
@@ -149,15 +156,32 @@ export async function PATCH(
       group.groupMemberships[0]?.role
     );
 
-    if (currentUserRole !== 'OWNER') {
+    const body = await request.json();
+
+    if (currentUserRole !== 'OWNER' && currentUserRole !== 'ADMIN') {
       return NextResponse.json(
-        { error: 'Only the group owner can update settings' },
+        { error: 'Only group owners or admins can update settings' },
         { status: 403 }
       );
     }
 
+    // ADMINs may only update the message field.
+    if (currentUserRole === 'ADMIN') {
+      const bodyKeys = Object.keys(body ?? {}).filter(
+        (k) => body[k] !== undefined
+      );
+      const forbidden = bodyKeys.filter(
+        (k) => k === 'name' || k === 'description'
+      );
+      if (forbidden.length > 0) {
+        return NextResponse.json(
+          { error: 'Only the group owner can update name or description' },
+          { status: 403 }
+        );
+      }
+    }
+
     // ── 3. Validate body ─────────────────────────────────────────────
-    const body = await request.json();
     const parsed = updateGroupServerSchema.safeParse(body);
 
     if (!parsed.success) {

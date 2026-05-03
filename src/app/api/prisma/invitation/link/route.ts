@@ -1,8 +1,8 @@
 import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
 import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
+import { createInvitationLinkSchema } from '@/lib/schemas';
 import {
   canRoleUsePermission,
   resolveGroupMemberRole,
@@ -10,17 +10,14 @@ import {
 
 const INVITATION_EXPIRY_DAYS = 7;
 
-const createInvitationLinkSchema = z.object({
-  groupId: z.string().uuid('Invalid group ID'),
-});
-
 /**
- * TEMPORARY PATCH:
- * This endpoint exists so invitation links can work right now for role-privilege
- * verification while the invitation system is still being finalized.
+ * POST /api/prisma/invitation/link
  *
- * It keeps the existing invitation system untouched and only adds a link-only
- * token generation path.
+ * Generates a public, multi-use invitation link for a group.
+ * The link is not tied to a specific email and can be used by
+ * anyone up to `maxUses` times.
+ *
+ * Requires sendInvitations privilege for the actor role.
  */
 export async function POST(request: NextRequest) {
   try {
@@ -45,7 +42,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { groupId } = parsed.data;
+    const { groupId, maxUses } = parsed.data;
 
     // ── 3. Authorise actor by current role privileges ────────────────
     const group = await prisma.privateGroup.findUnique({
@@ -91,7 +88,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // ── 4. Create invitation token ───────────────────────────────────
+    // ── 4. Create public invitation token ─────────────────────────────
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + INVITATION_EXPIRY_DAYS);
 
@@ -99,16 +96,16 @@ export async function POST(request: NextRequest) {
       data: {
         groupId,
         invitedBy: authUser.id,
-        // Keep the current schema intact: invitation requires an email.
-        // For link-only generation, we store the actor email as audit metadata.
-        email:
-          authUser.email?.toLowerCase() ?? 'temporary-link@skolaroid.local',
+        email: null,
         token: crypto.randomBytes(32).toString('hex'),
+        isForAll: true,
+        maxUses,
         expiresAt,
       },
       select: {
         id: true,
         token: true,
+        maxUses: true,
         expiresAt: true,
       },
     });
@@ -120,12 +117,14 @@ export async function POST(request: NextRequest) {
       data: {
         id: invitation.id,
         inviteLink: `${origin}/invite?token=${invitation.token}`,
+        maxUses: invitation.maxUses,
         expiresAt: invitation.expiresAt.toISOString(),
       },
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
+    const message =
+      error instanceof Error ? error.stack || error.message : 'Unknown error';
     console.error('[invitation/link] Error:', message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json({ error: String(message) }, { status: 500 });
   }
 }

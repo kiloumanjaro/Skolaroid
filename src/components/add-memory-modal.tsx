@@ -7,6 +7,7 @@ import { useCreateMemory } from '@/lib/hooks/useCreateMemory';
 import { useCreateCustomLocation } from '@/lib/hooks/useCreateCustomLocation';
 import { useLocations } from '@/lib/hooks/useLocations';
 import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
+import { useUserGroups } from '@/lib/hooks/useUserGroups';
 import {
   MAX_TAGS,
   VISIBILITY_LABELS,
@@ -19,12 +20,14 @@ import {
 } from '@/lib/constants/landmarks';
 import type { MapLocationSelection } from '@/lib/types/map';
 import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
   CheckCircle,
   Eye,
   FileText,
   Globe,
   Grid3X3,
-  ImageIcon,
   Info,
   List,
   Loader2,
@@ -95,6 +98,7 @@ const VISIBILITY_OPTIONS: {
   label: string;
   description: string;
   icon: typeof Globe;
+  requiresGroup?: boolean;
 }[] = [
   {
     value: 'PUBLIC',
@@ -115,16 +119,11 @@ const VISIBILITY_OPTIONS: {
     icon: Shield,
   },
   {
-    value: 'PRIVATE',
-    label: VISIBILITY_LABELS.PRIVATE,
-    description: 'Only you can see this',
-    icon: Lock,
-  },
-  {
     value: 'GROUP_ONLY',
-    label: 'Group Only',
-    description: 'Visible to group members only',
-    icon: Users,
+    label: 'Private',
+    description: 'Visible to selected group only',
+    icon: Lock,
+    requiresGroup: true,
   },
 ];
 
@@ -249,6 +248,13 @@ export function AddMemoryModal({
 
   const programBatch = currentUserData?.data?.programBatch ?? null;
 
+  const { data: userGroups, isLoading: isLoadingGroups } = useUserGroups();
+  const hasGroups = (userGroups?.length ?? 0) > 0;
+  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(
+    defaultGroupId ?? null
+  );
+  const [showGroupDropdown, setShowGroupDropdown] = useState(false);
+
   const batchLabel = useMemo(() => {
     if (!programBatch) return null;
     return `${programBatch.program.name} • Batch ${programBatch.batch.year}`;
@@ -333,6 +339,8 @@ export function AddMemoryModal({
     setSelectedLocationId(null);
     setSearchQuery('');
     setIsCreatingLocation(false);
+    setSelectedGroupId(defaultGroupId ?? null);
+    setShowGroupDropdown(false);
   }, [defaultGroupId]);
 
   // ---------------------------------------------------------------------------
@@ -533,11 +541,15 @@ export function AddMemoryModal({
     setSubmitError(null);
 
     const firstCompleted = completedFiles[0];
+    const uploadedMediaURLs = completedFiles
+      .map((file) => file.uploadedUrl?.trim())
+      .filter((url): url is string => Boolean(url));
+    const primaryMediaURL = uploadedMediaURLs[0];
 
     const locationId = selectedLocationId ?? locations[0]?.id ?? '';
 
-    if (visibility === 'GROUP_ONLY' && !defaultGroupId) {
-      setSubmitError('GROUP_ONLY visibility requires opening from a group');
+    if (visibility === 'GROUP_ONLY' && !selectedGroupId) {
+      setSubmitError('Please select a group for private visibility');
       return;
     }
 
@@ -549,10 +561,14 @@ export function AddMemoryModal({
         locationId,
         memoryDate: memoryDate ? new Date(memoryDate) : undefined,
         tags,
-        mediaFile: firstCompleted?.file,
-        ...(visibility === 'GROUP_ONLY' && defaultGroupId
-          ? { privateGroupId: defaultGroupId }
+        ...(visibility === 'GROUP_ONLY' && selectedGroupId
+          ? { privateGroupId: selectedGroupId }
           : {}),
+        ...(primaryMediaURL
+          ? { mediaURL: primaryMediaURL, mediaURLs: uploadedMediaURLs }
+          : firstCompleted?.file
+            ? { mediaFile: firstCompleted.file }
+            : {}),
       },
       {
         onSuccess: () => {
@@ -580,7 +596,7 @@ export function AddMemoryModal({
     createMemory,
     resetState,
     onOpenChange,
-    defaultGroupId,
+    selectedGroupId,
   ]);
 
   // ---------------------------------------------------------------------------
@@ -591,7 +607,7 @@ export function AddMemoryModal({
     <div className="flex h-full flex-col gap-4">
       {/* Selected location badge */}
       {selectedLocationName && (
-        <div className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2">
+        <div className="flex items-center gap-2 rounded-lg border-2 border-black bg-emerald-50 px-3 py-2">
           <MapPin className="h-4 w-4 text-emerald-600" />
           <span className="flex-1 text-sm font-medium text-emerald-800">
             {selectedLocationName}
@@ -611,18 +627,18 @@ export function AddMemoryModal({
 
       {/* Creating location loading state */}
       {isCreatingLocation && (
-        <div className="flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2">
+        <div className="flex items-center gap-2 rounded-lg border-2 border-black bg-blue-50 px-3 py-2">
           <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
           <span className="text-sm text-blue-700">Creating location...</span>
         </div>
       )}
 
       {/* Action cards */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <button
           type="button"
           onClick={() => handleSelectOnMap('landmark')}
-          className="flex flex-col items-center gap-2 rounded-xl border-2 border-skolaroid-blue bg-blue-50/50 px-4 py-5 transition-colors hover:bg-blue-50"
+          className="flex flex-col items-center gap-2 rounded-xl border-2 border-black bg-blue-50/50 px-4 py-5 transition-colors hover:bg-blue-50"
         >
           <MapPin className="h-6 w-6 text-skolaroid-blue" />
           <span className="text-sm font-semibold text-skolaroid-blue">
@@ -636,7 +652,7 @@ export function AddMemoryModal({
         <button
           type="button"
           onClick={() => handleSelectOnMap('custom')}
-          className="flex flex-col items-center gap-2 rounded-xl border-2 border-border bg-card px-4 py-5 transition-colors hover:border-foreground/30 hover:bg-secondary"
+          className="flex flex-col items-center gap-2 rounded-xl border-2 border-black bg-card px-4 py-5 transition-colors hover:border-black hover:bg-secondary"
         >
           <MapPinned className="h-6 w-6 text-muted-foreground" />
           <span className="text-sm font-semibold text-foreground">
@@ -656,7 +672,7 @@ export function AddMemoryModal({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search landmarks..."
-          className="w-full border-2 border-border bg-card py-2 pl-9 pr-8 text-sm text-foreground placeholder:text-muted-foreground focus:border-skolaroid-blue focus:outline-none focus:ring-1 focus:ring-skolaroid-blue"
+          className="w-full border-2 border-black bg-card py-2 pl-9 pr-8 text-sm text-foreground placeholder:text-muted-foreground focus:border-black focus:outline-none focus:ring-1 focus:ring-skolaroid-blue"
         />
         {searchQuery && (
           <button
@@ -798,8 +814,8 @@ export function AddMemoryModal({
         onClick={() => fileInputRef.current?.click()}
         className={`flex h-40 w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed transition-colors ${
           isDragging
-            ? 'border-skolaroid-blue bg-blue-50/50'
-            : 'border-border hover:border-skolaroid-blue hover:bg-blue-50/30'
+            ? 'border-black bg-blue-50/50'
+            : 'border-black hover:border-black hover:bg-blue-50/30'
         }`}
       >
         <Upload className="h-5 w-5 text-muted-foreground" />
@@ -859,7 +875,7 @@ export function AddMemoryModal({
             .map((f) => (
               <div
                 key={f.id}
-                className="flex items-center justify-between rounded-md border border-red-200 bg-red-50 px-3 py-2"
+                className="flex items-center justify-between rounded-md border-2 border-black bg-red-50 px-3 py-2"
               >
                 <p className="truncate text-xs text-red-600">
                   {f.file.name} — upload failed
@@ -916,7 +932,7 @@ export function AddMemoryModal({
           </div>
 
           {viewMode === 'grid' ? (
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {completedFiles.map((f) => (
                 <div
                   key={f.id}
@@ -949,7 +965,7 @@ export function AddMemoryModal({
               {completedFiles.map((f) => (
                 <div
                   key={f.id}
-                  className="flex items-center gap-3 rounded-md border border-border p-2"
+                  className="flex items-center gap-3 rounded-md border-2 border-black p-2"
                 >
                   <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded">
                     <Image
@@ -1009,7 +1025,7 @@ export function AddMemoryModal({
           placeholder="Write a caption for your memory..."
           value={caption}
           onChange={(e) => setCaption(e.target.value)}
-          className="min-h-[100px] w-full rounded-md border border-input px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="min-h-[100px] w-full rounded-md border-2 border-black px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         />
       </div>
 
@@ -1026,7 +1042,7 @@ export function AddMemoryModal({
           max={new Date().toISOString().split('T')[0]}
           value={memoryDate}
           onChange={(e) => setMemoryDate(e.target.value)}
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="w-full rounded-md border-2 border-black bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         />
         <p className="mt-1 text-xs text-muted-foreground">
           This helps us automatically tag your memory with the correct year and
@@ -1059,7 +1075,7 @@ export function AddMemoryModal({
     return (
       <div className="flex h-full flex-col gap-6">
         {/* Batch context badge */}
-        <div className="flex items-center gap-2 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2">
+        <div className="flex items-center gap-2 rounded-lg border-2 border-black bg-blue-50 px-3 py-2">
           <Shield className="h-4 w-4 shrink-0 text-skolaroid-blue" />
           <div className="flex min-w-0 flex-col">
             <span className="text-xs font-medium text-muted-foreground">
@@ -1151,8 +1167,21 @@ export function AddMemoryModal({
           <button
             type="button"
             onClick={() => {
-              // TODO: Implement set privacy
-              console.log('[AddMemoryModal] set privacy clicked');
+              // Cycle through visibility options
+              const currentIndex = VISIBILITY_OPTIONS.findIndex(
+                (o) => o.value === visibility
+              );
+              const nextIndex = (currentIndex + 1) % VISIBILITY_OPTIONS.length;
+              const nextOption = VISIBILITY_OPTIONS[nextIndex];
+              // Skip GROUP_ONLY if user has no groups
+              if (nextOption.requiresGroup && !hasGroups) {
+                setVisibility(VISIBILITY_OPTIONS[0].value);
+              } else {
+                setVisibility(nextOption.value);
+              }
+              if (nextOption.value !== 'GROUP_ONLY') {
+                setSelectedGroupId(null);
+              }
             }}
             className="text-sm font-medium text-skolaroid-blue hover:underline"
           >
@@ -1160,9 +1189,65 @@ export function AddMemoryModal({
           </button>
         </div>
 
+        {/* Group selector (shown when Private/GROUP_ONLY is selected) */}
+        {visibility === 'GROUP_ONLY' && (
+          <div className="flex items-start gap-3 pl-8">
+            <div className="relative w-full">
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">
+                Select Group
+              </label>
+              <button
+                type="button"
+                onClick={() => setShowGroupDropdown(!showGroupDropdown)}
+                disabled={isLoadingGroups}
+                className="flex w-full items-center justify-between rounded-md border-2 border-black bg-background px-3 py-2 text-sm"
+              >
+                <span>
+                  {isLoadingGroups
+                    ? 'Loading groups...'
+                    : (userGroups?.find((g) => g.id === selectedGroupId)
+                        ?.name ?? 'Choose a group...')}
+                </span>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </button>
+              {showGroupDropdown && userGroups && (
+                <div className="absolute left-0 right-0 top-full z-50 mt-1 max-h-40 overflow-y-auto rounded-md border-2 border-black bg-card shadow-md">
+                  {userGroups.length === 0 ? (
+                    <p className="px-3 py-3 text-center text-sm text-muted-foreground">
+                      No groups available. Create a group first.
+                    </p>
+                  ) : (
+                    userGroups.map((group) => (
+                      <button
+                        key={group.id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedGroupId(group.id);
+                          setShowGroupDropdown(false);
+                        }}
+                        className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors ${
+                          selectedGroupId === group.id
+                            ? 'bg-blue-50 text-skolaroid-blue'
+                            : 'hover:bg-secondary'
+                        }`}
+                      >
+                        <span className="flex-1 truncate">{group.name}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {group._count.members} member
+                          {group._count.members !== 1 ? 's' : ''}
+                        </span>
+                      </button>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Submit error */}
         {submitError && (
-          <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2">
+          <div className="rounded-md border-2 border-black bg-red-50 px-3 py-2">
             <p className="text-sm text-red-600">{submitError}</p>
           </div>
         )}
@@ -1180,6 +1265,13 @@ export function AddMemoryModal({
     caption: renderCaptionTab,
     privacy: renderPrivacyTab,
   };
+
+  const footerActionButtonBaseClassName =
+    'box-border appearance-none h-full w-14 shrink-0 rounded-none border-0 border-l-2 border-r-0 border-b-0 border-black outline-none transition-colors disabled:opacity-100';
+  const footerSecondaryActionClassName = `${footerActionButtonBaseClassName} text-foreground `;
+  const footerPrimaryActionClassName = `${footerActionButtonBaseClassName} bg-skolaroid-blue text-white disabled:cursor-not-allowed disabled:text-white/70`;
+  const footerLeadingActionClassName = footerSecondaryActionClassName;
+  const footerActionIconClassName = 'mx-auto h-6 w-6 stroke-[2]';
 
   // ---------------------------------------------------------------------------
   // Main render
@@ -1219,7 +1311,8 @@ export function AddMemoryModal({
         }}
       >
         <DialogContent
-          className="flex h-[85vh] w-[70vw] max-w-none gap-0 overflow-hidden p-0 sm:max-w-none"
+          className="flex h-[calc(100vh-1rem)] w-[calc(100vw-1rem)] max-w-none flex-col gap-0 overflow-hidden rounded-none border-2 border-[#1f1f1f] p-0 shadow-none sm:max-w-none md:h-[85vh] md:w-[70vw]"
+          style={{ borderRadius: 0 }}
           showCloseButton={false}
         >
           {/* Success toast overlay */}
@@ -1232,7 +1325,7 @@ export function AddMemoryModal({
                 transition={{ duration: 0.3 }}
                 className="absolute inset-x-0 top-0 z-50 flex items-center justify-center p-4"
               >
-                <div className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 shadow-md">
+                <div className="flex items-center gap-2 rounded-lg border-2 border-black bg-emerald-50 px-4 py-3 shadow-md">
                   <CheckCircle className="h-5 w-5 text-emerald-600" />
                   <p className="text-sm font-medium text-emerald-800">
                     Memory saved successfully!
@@ -1242,154 +1335,185 @@ export function AddMemoryModal({
             )}
           </AnimatePresence>
 
-          {/* Left Sidebar */}
-          <div className="flex w-48 flex-col border-r bg-secondary/50">
-            <div className="flex-1 p-6">
-              <DialogTitle className="sr-only">Add Memory</DialogTitle>
-              <div className="space-y-3">
-                {TABS.map((tab, index) => {
-                  const meta = TAB_META[tab];
-                  const Icon = meta.icon;
-                  const isActive = activeTab === tab;
-                  const isAccessible = index <= highestReachedTab;
+          <DialogTitle className="sr-only">Add Memory</DialogTitle>
 
-                  return (
-                    <button
-                      key={tab}
-                      type="button"
-                      onClick={() => handleTabClick(tab)}
-                      disabled={!isAccessible}
-                      className={`relative flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors ${
-                        isActive
-                          ? 'bg-blue-50 text-skolaroid-blue'
-                          : isAccessible
-                            ? 'text-muted-foreground hover:bg-secondary hover:text-foreground'
-                            : 'cursor-not-allowed text-muted-foreground/50'
-                      }`}
-                    >
-                      {isActive && (
-                        <div className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-skolaroid-blue" />
-                      )}
-                      <Icon className="h-4 w-4" />
-                      {meta.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Thumbnail info box */}
-            <div className="mx-3 mb-4 rounded-lg bg-amber-100 p-3">
-              <ImageIcon className="mb-1 h-5 w-5 text-foreground" />
-              <p className="text-xs text-foreground">
-                The first image uploaded will be used as thumbnail
+          <div className="flex items-center justify-between gap-3 border-b-2 border-b-black bg-[#4384dc] px-3 py-2 text-white">
+            <div className="min-w-0">
+              <p className="truncate text-base font-medium tracking-[0.01em] sm:text-lg">
+                Add Memory Window
               </p>
             </div>
-          </div>
-          <div className="relative flex flex-1 flex-col">
-            {/* Close button */}
+
             <button
               type="button"
+              aria-label="Close add memory modal"
               onClick={handleAttemptClose}
-              className="absolute right-3 top-3 z-10 rounded-full p-1 hover:bg-secondary"
+              className="grid h-7 w-7 shrink-0 place-items-center border-2 border-black bg-[#f7d6d5] text-[#7a1111] shadow-[inset_1px_1px_0_#fff8f7,inset_-1px_-1px_0_#c68787]"
             >
-              <X className="h-4 w-4 text-muted-foreground" />
+              <X className="h-4 w-4 stroke-[2]" />
             </button>
+          </div>
 
-            {/* Body */}
-            <div className="flex-1 overflow-y-auto p-6 pt-10">
-              {TAB_RENDERERS[activeTab]()}
+          <div className="flex min-h-0 flex-1 flex-col md:flex-row">
+            {/* Left Sidebar */}
+            <div className="flex w-full shrink-0 flex-col border-b-2 border-black bg-secondary/50 md:w-48 md:border-b-0 md:border-r-2">
+              <div className="scrollbar-hide overflow-x-auto overflow-y-hidden px-0 py-0 md:flex-1">
+                <div className="flex gap-0 md:block md:space-y-0">
+                  {TABS.map((tab, index) => {
+                    const meta = TAB_META[tab];
+                    const Icon = meta.icon;
+                    const isActive = activeTab === tab;
+                    const isAccessible = index <= highestReachedTab;
+                    const isFirstTab = index === 0;
+                    const isLastTab = index === TABS.length - 1;
+                    const activeTabBorderClassName = isFirstTab
+                      ? 'border-r-2 border-r-black md:border-r-0'
+                      : isLastTab
+                        ? 'border-l-2 border-l-black md:border-l-0'
+                        : 'border-l-2 border-r-2 border-l-black border-r-black md:border-l-0 md:border-r-0';
+
+                    return (
+                      <button
+                        key={tab}
+                        type="button"
+                        onClick={() => handleTabClick(tab)}
+                        disabled={!isAccessible}
+                        className={`flex shrink-0 appearance-none items-center gap-2 whitespace-nowrap border-0 px-4 py-3 text-left text-sm font-medium transition-colors md:w-full ${
+                          isActive
+                            ? `${activeTabBorderClassName} bg-[#f6cb48] text-black md:border-b-2 md:border-t-2 md:border-black`
+                            : isAccessible
+                              ? 'bg-transparent text-muted-foreground hover:bg-secondary hover:text-foreground'
+                              : 'cursor-not-allowed border-transparent text-muted-foreground/50'
+                        }`}
+                        style={
+                          isFirstTab
+                            ? { borderTopColor: 'transparent' }
+                            : undefined
+                        }
+                      >
+                        <Icon className="h-4 w-4" />
+                        {meta.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Thumbnail info box */}
+              {/* <div className="mx-3 mb-4 hidden border border-black bg-[#ffc2fb] p-3 md:block">
+                <ImageIcon className="mb-2 h-5 w-5 text-foreground" />
+                <p className="text-xs text-foreground">
+                  The first image uploaded will be used as thumbnail
+                </p>
+              </div> */}
             </div>
+            <div className="relative flex min-h-0 flex-1 flex-col">
+              {/* Body */}
+              <div className="flex-1 overflow-y-auto p-4 md:p-6">
+                {TAB_RENDERERS[activeTab]()}
+              </div>
 
-            {/* Footer */}
-            <div className="flex justify-end gap-3 border-t bg-card px-6 py-4">
-              {activeTab === 'upload' && (
-                <>
-                  <Button
-                    variant="outline"
-                    className="text-foreground"
-                    onClick={handleAttemptClose}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={handleNext}
-                    className="bg-skolaroid-blue text-white hover:bg-skolaroid-blue/90"
-                  >
-                    Next
-                  </Button>
-                </>
-              )}
+              {/* Footer */}
+              <div className="flex h-14 items-stretch justify-end border-t-2 border-black">
+                <div className="min-w-0 flex-1"></div>
+                {activeTab === 'upload' && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handleAttemptClose}
+                      aria-label="Cancel add memory"
+                      className={footerLeadingActionClassName}
+                    >
+                      <X className={footerActionIconClassName} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleNext}
+                      aria-label="Continue to next step"
+                      className={footerPrimaryActionClassName}
+                    >
+                      <Check className={footerActionIconClassName} />
+                    </button>
+                  </>
+                )}
 
-              {activeTab === 'location' && (
-                <>
-                  <Button
-                    variant="outline"
-                    className="text-foreground"
-                    onClick={handleBack}
-                  >
-                    Back
-                  </Button>
-                  <Button
-                    onClick={handleNext}
-                    disabled={!selectedLocationId || isCreatingLocation}
-                    className="bg-skolaroid-blue text-white hover:bg-skolaroid-blue/90 disabled:opacity-50"
-                  >
-                    {isCreatingLocation ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Creating location...
-                      </>
-                    ) : (
-                      'Next'
-                    )}
-                  </Button>
-                </>
-              )}
+                {activeTab === 'location' && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handleBack}
+                      aria-label="Go back to upload step"
+                      className={footerLeadingActionClassName}
+                    >
+                      <ArrowLeft className={footerActionIconClassName} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleNext}
+                      aria-label="Continue to caption step"
+                      disabled={!selectedLocationId || isCreatingLocation}
+                      className={footerPrimaryActionClassName}
+                    >
+                      {isCreatingLocation ? (
+                        <Loader2
+                          className={`${footerActionIconClassName} animate-spin`}
+                        />
+                      ) : (
+                        <ArrowRight className={footerActionIconClassName} />
+                      )}
+                    </button>
+                  </>
+                )}
 
-              {activeTab === 'caption' && (
-                <>
-                  <Button
-                    variant="outline"
-                    className="text-foreground"
-                    onClick={handleBack}
-                  >
-                    Back
-                  </Button>
-                  <Button
-                    onClick={handleNext}
-                    className="bg-skolaroid-blue text-white hover:bg-skolaroid-blue/90"
-                  >
-                    Next
-                  </Button>
-                </>
-              )}
+                {activeTab === 'caption' && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handleBack}
+                      aria-label="Go back to location step"
+                      className={footerLeadingActionClassName}
+                    >
+                      <ArrowLeft className={footerActionIconClassName} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleNext}
+                      aria-label="Continue to privacy step"
+                      className={footerPrimaryActionClassName}
+                    >
+                      <ArrowRight className={footerActionIconClassName} />
+                    </button>
+                  </>
+                )}
 
-              {activeTab === 'privacy' && (
-                <>
-                  <Button
-                    variant="outline"
-                    className="text-foreground"
-                    onClick={handleBack}
-                  >
-                    Back
-                  </Button>
-                  <Button
-                    onClick={handleSave}
-                    disabled={isPending}
-                    className="bg-skolaroid-blue text-white hover:bg-skolaroid-blue/90"
-                  >
-                    {isPending ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Saving...
-                      </>
-                    ) : (
-                      'Save'
-                    )}
-                  </Button>
-                </>
-              )}
+                {activeTab === 'privacy' && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handleBack}
+                      aria-label="Go back to caption step"
+                      className={footerLeadingActionClassName}
+                    >
+                      <ArrowLeft className={footerActionIconClassName} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleSave}
+                      aria-label="Save memory"
+                      disabled={isPending}
+                      className={footerPrimaryActionClassName}
+                    >
+                      {isPending ? (
+                        <Loader2
+                          className={`${footerActionIconClassName} animate-spin`}
+                        />
+                      ) : (
+                        <Check className={footerActionIconClassName} />
+                      )}
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </DialogContent>

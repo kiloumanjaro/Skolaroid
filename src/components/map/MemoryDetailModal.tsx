@@ -3,13 +3,19 @@
 import {
   MoreHorizontal,
   Globe,
+  GraduationCap,
+  Users,
+  Lock,
   ChevronLeft,
   ChevronRight,
+  MessageSquare,
   X,
   Trash2,
   Flag,
+  User,
+  Pencil,
 } from 'lucide-react';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogTitle } from '@/components/ui/dialog';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
@@ -22,6 +28,7 @@ import {
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 import { ActionBar } from '@/components/map/ActionBar';
 import { DeleteMemoryModal } from '@/components/map/DeleteMemoryModal';
+import { EditMemoryModal } from '@/components/map/EditMemoryModal';
 import { ReportMemoryModal } from '@/components/map/ReportMemoryModal';
 import { useDeleteMemory } from '@/lib/hooks/useDeleteMemory';
 import { CommentSection } from '@/components/map/CommentSection';
@@ -29,8 +36,17 @@ import { useCommentsByMemory } from '@/lib/hooks/useCommentsByMemory';
 import { useCreateComment } from '@/lib/hooks/useCreateComment';
 import { useDeleteComment } from '@/lib/hooks/useDeleteComment';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
+import { useUserGroups } from '@/lib/hooks/useUserGroups';
+import type { MemoryVisibility } from '@/lib/schemas';
 import Image from 'next/image';
-import { useState, useEffect, useMemo, useRef } from 'react';
+import {
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useCallback,
+  type TouchEvent,
+} from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   coverLeftVariants,
@@ -45,6 +61,8 @@ import {
 
 interface MemoryDetailModalProps {
   memory: MemoryWithCoordinates | null;
+  previousMemory?: MemoryWithCoordinates | null;
+  nextMemory?: MemoryWithCoordinates | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onPrevious?: () => void;
@@ -55,17 +73,42 @@ interface MemoryDetailModalProps {
 }
 
 type AnimationPhase = 'closed' | 'opening' | 'open' | 'closing';
+type FlipDirection = 'next' | 'prev' | null;
+type MobileNotebookPage = 'photo' | 'comments';
+type MobileTransitionMode = 'page' | 'memory' | null;
 
-// Page styles shared between left and right pages
+interface MemoryDateInfo {
+  dayOfWeek: string;
+  month: string;
+  dayNumber: number;
+  uploadTime: string;
+}
+
 const PAGE_BASE_STYLES =
-  'flex flex-col gap-4 rounded-xl bg-stone-50 p-6 px-10 shadow-[1px_2px_3px_0px_rgba(0,0,0,0.25)]';
+  'flex flex-col gap-4 overflow-hidden bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,#fdfbf7_100%)] p-6 px-10 shadow-[inset_0_0_0_2px_rgba(18,18,18,0.85),inset_0_18px_30px_rgba(255,255,255,0.6)]';
 
-// Styles for absolutely positioned page faces (front/back of flipping pages) - NO SHADOW to prevent stacking
 const PAGE_FACE_STYLES =
-  'absolute top-0 left-0 w-full h-full flex flex-col gap-4 rounded-xl bg-stone-50 p-6 px-10 overflow-hidden';
+  'absolute top-0 left-0 flex h-full w-full flex-col gap-4 overflow-hidden bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,#fdfbf7_100%)] p-6 px-10 shadow-[inset_0_0_0_2px_rgba(18,18,18,0.85),inset_0_18px_30px_rgba(255,255,255,0.6)]';
 
-// Spine ring component for left page (bar at right edge, circles point inward)
-// Each ring scales individually from its center to prevent vertical movement
+const BOOK_WIDTH = 968;
+const BOOK_HEIGHT = 650;
+const PAGE_WIDTH = 472;
+const BOOK_INNER_PADDING = 8;
+const NOTEBOOK_BORDER_COLOR = '#2d2d2d';
+const NOTEBOOK_COVER_COLOR = '#91a8ec';
+const NOTEBOOK_SPRING_COLOR = '#d9d9d9';
+const NOTEBOOK_SPRING_BORDER_COLOR = '#2b2b2b';
+const NOTEBOOK_SPINE_RING_WIDTH = 26;
+const NOTEBOOK_SPINE_RING_HEIGHT = 14;
+const NOTEBOOK_SPINE_CONNECTOR_WIDTH = 18;
+const MOBILE_BREAKPOINT = 768;
+const MOBILE_VISIBLE_BOOK_WIDTH = 520;
+const MOBILE_BOOK_TOP_OFFSET = 24;
+const MOBILE_LAYOUT_WIDTH_GUTTER = 24;
+const MOBILE_LAYOUT_HEIGHT_GUTTER = 220;
+const MOBILE_MIN_STAGE_WIDTH = 280;
+const PAGE_TURN_DURATION_MS = 610;
+
 const LeftPageSpineRings = ({
   shouldScale = false,
   delay = 0,
@@ -74,13 +117,13 @@ const LeftPageSpineRings = ({
   delay?: number;
 }) => (
   <div
-    className="pointer-events-none absolute -right-1 top-0 flex h-full flex-col items-end justify-around py-4"
+    className="pointer-events-none absolute -right-[6px] top-0 flex h-full flex-col items-end justify-around py-[18px]"
     style={{ transformStyle: 'flat' }}
   >
     {[0, 1, 2].map((i) => (
       <motion.div
         key={i}
-        className="relative flex h-4 w-8 items-center"
+        className="relative"
         animate={{ scale: shouldScale && i !== 0 ? [1, 1.08, 1] : 1 }}
         transition={{
           duration: 0.5,
@@ -90,17 +133,20 @@ const LeftPageSpineRings = ({
         }}
         style={{ transformOrigin: 'center center' }}
       >
-        {/* Circle pointing inward - positioned so bar edge aligns with circle center */}
-        <div className="absolute right-3 h-3.5 w-3.5 rounded-full bg-black" />
-        {/* Bar at right edge - rounded only on inner side, on top of circle */}
-        <div className="absolute right-0 z-10 h-1.5 w-5 rounded-l bg-zinc-400" />
+        <div
+          className="rounded-[8px] border-2"
+          style={{
+            width: `${NOTEBOOK_SPINE_RING_WIDTH}px`,
+            height: `${NOTEBOOK_SPINE_RING_HEIGHT}px`,
+            borderColor: NOTEBOOK_SPRING_BORDER_COLOR,
+            backgroundColor: NOTEBOOK_SPRING_COLOR,
+          }}
+        />
       </motion.div>
     ))}
   </div>
 );
 
-// Spine ring component for right page (bar at left edge, circles point inward)
-// Each ring scales individually from its center to prevent vertical movement
 const RightPageSpineRings = ({
   shouldScale = false,
   delay = 0,
@@ -109,13 +155,13 @@ const RightPageSpineRings = ({
   delay?: number;
 }) => (
   <div
-    className="pointer-events-none absolute -left-1 top-0 flex h-full flex-col items-start justify-around py-4"
+    className="pointer-events-none absolute -left-[6px] top-0 flex h-full flex-col items-start justify-around py-[18px]"
     style={{ transformStyle: 'flat' }}
   >
     {[0, 1, 2].map((i) => (
       <motion.div
         key={i}
-        className="relative flex h-4 w-8 items-center"
+        className="relative"
         animate={{ scale: shouldScale && i !== 0 ? [1, 1.08, 1] : 1 }}
         transition={{
           duration: 0.5,
@@ -125,11 +171,37 @@ const RightPageSpineRings = ({
         }}
         style={{ transformOrigin: 'center center' }}
       >
-        {/* Circle pointing inward - positioned so bar edge aligns with circle center */}
-        <div className="absolute left-3 h-3.5 w-3.5 rounded-full bg-black" />
-        {/* Bar at left edge - rounded only on inner side, on top of circle */}
-        <div className="absolute left-0 z-10 h-1.5 w-5 rounded-r bg-zinc-400" />
+        <div
+          className="rounded-[8px] border-2"
+          style={{
+            width: `${NOTEBOOK_SPINE_RING_WIDTH}px`,
+            height: `${NOTEBOOK_SPINE_RING_HEIGHT}px`,
+            borderColor: NOTEBOOK_SPRING_BORDER_COLOR,
+            backgroundColor: NOTEBOOK_SPRING_COLOR,
+          }}
+        />
       </motion.div>
+    ))}
+  </div>
+);
+
+const NotebookSpineConnectors = () => (
+  <div
+    className="pointer-events-none absolute inset-y-0 left-1/2 z-10 flex -translate-x-1/2 flex-col justify-around py-[18px]"
+    style={{ width: `${NOTEBOOK_SPINE_CONNECTOR_WIDTH}px` }}
+    aria-hidden="true"
+  >
+    {[0, 1, 2].map((i) => (
+      <div key={i} className="flex items-center justify-center">
+        <div
+          className="w-full border-y-2"
+          style={{
+            height: `${NOTEBOOK_SPINE_RING_HEIGHT}px`,
+            borderColor: NOTEBOOK_BORDER_COLOR,
+            backgroundColor: NOTEBOOK_SPRING_COLOR,
+          }}
+        />
+      </div>
     ))}
   </div>
 );
@@ -142,8 +214,143 @@ const isAutoTag = (tagName: string): boolean => {
   );
 };
 
+const VISIBILITY_META: Record<
+  MemoryVisibility,
+  { Icon: typeof Globe; label: string }
+> = {
+  PUBLIC: { Icon: Globe, label: 'Public' },
+  PROGRAM_ONLY: { Icon: GraduationCap, label: 'Program Only' },
+  BATCH_ONLY: { Icon: Users, label: 'Batch Only' },
+  GROUP_ONLY: { Icon: Lock, label: 'Private' },
+  PRIVATE: { Icon: Lock, label: 'Private' },
+};
+
+type MemoryMediaShape = Pick<
+  MemoryWithCoordinates,
+  'id' | 'title' | 'mediaURL' | 'mediaURLs'
+>;
+
+const SWIPE_THRESHOLD_PX = 48;
+
+function getMemoryMediaURLs(memory: MemoryMediaShape | null): string[] {
+  if (!memory) return [];
+
+  return Array.from(
+    new Set(
+      [
+        ...(memory.mediaURLs ?? []),
+        ...(memory.mediaURL ? [memory.mediaURL] : []),
+      ]
+        .map((url) => url.trim())
+        .filter(Boolean)
+    )
+  );
+}
+
+interface PolaroidMediaCarouselProps {
+  memory: MemoryMediaShape;
+  activeIndex: number;
+  onIndexChange?: (nextIndex: number) => void;
+  showControls?: boolean;
+}
+
+function PolaroidMediaCarousel({
+  memory,
+  activeIndex,
+  onIndexChange,
+  showControls = true,
+}: PolaroidMediaCarouselProps) {
+  const mediaURLs = getMemoryMediaURLs(memory);
+  const hasMedia = mediaURLs.length > 0;
+  const canNavigate = showControls && mediaURLs.length > 1 && !!onIndexChange;
+
+  const safeIndex =
+    mediaURLs.length > 0
+      ? ((activeIndex % mediaURLs.length) + mediaURLs.length) % mediaURLs.length
+      : 0;
+
+  const touchStartXRef = useRef<number | null>(null);
+  const touchDeltaXRef = useRef(0);
+
+  const goToIndex = useCallback(
+    (nextIndex: number) => {
+      if (!onIndexChange || mediaURLs.length === 0) return;
+
+      const wrappedIndex =
+        ((nextIndex % mediaURLs.length) + mediaURLs.length) % mediaURLs.length;
+      onIndexChange(wrappedIndex);
+    },
+    [onIndexChange, mediaURLs.length]
+  );
+
+  const handleTouchStart = useCallback(
+    (event: TouchEvent<HTMLDivElement>) => {
+      if (!canNavigate) return;
+
+      touchStartXRef.current = event.touches[0]?.clientX ?? null;
+      touchDeltaXRef.current = 0;
+    },
+    [canNavigate]
+  );
+
+  const handleTouchMove = useCallback(
+    (event: TouchEvent<HTMLDivElement>) => {
+      if (!canNavigate || touchStartXRef.current === null) return;
+
+      const currentX = event.touches[0]?.clientX ?? touchStartXRef.current;
+      touchDeltaXRef.current = currentX - touchStartXRef.current;
+    },
+    [canNavigate]
+  );
+
+  const handleTouchEnd = useCallback(() => {
+    if (!canNavigate) return;
+
+    if (Math.abs(touchDeltaXRef.current) >= SWIPE_THRESHOLD_PX) {
+      if (touchDeltaXRef.current < 0) {
+        goToIndex(safeIndex + 1);
+      } else {
+        goToIndex(safeIndex - 1);
+      }
+    }
+
+    touchStartXRef.current = null;
+    touchDeltaXRef.current = 0;
+  }, [canNavigate, goToIndex, safeIndex]);
+
+  return (
+    <div className="w-full">
+      {hasMedia ? (
+        <div className="border-2 border-black bg-white px-[10px] pb-[60px] pt-[10px]">
+          <div
+            className="relative h-[28rem] w-full overflow-hidden border border-black bg-neutral-100"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            <Image
+              src={mediaURLs[safeIndex]}
+              alt={`${memory.title} image ${safeIndex + 1}`}
+              fill
+              className="object-cover"
+            />
+          </div>
+        </div>
+      ) : (
+        <div className="border-2 border-black bg-white px-[10px] pb-[60px] pt-[10px]">
+          <div className="flex h-[28rem] w-full items-center justify-center border border-black bg-neutral-100">
+            <span className="text-xl text-muted-foreground">No image</span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function MemoryDetailModal({
   memory,
+  previousMemory = null,
+  nextMemory = null,
   open,
   onOpenChange,
   onPrevious,
@@ -154,46 +361,76 @@ export function MemoryDetailModal({
 }: MemoryDetailModalProps) {
   const { user: authUser } = useUserAuth();
   const deleteMemory = useDeleteMemory();
+  const { data: userGroups } = useUserGroups();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [reportModalOpen, setReportModalOpen] = useState(false);
-  const isOwner = !!(
-    authUser &&
-    memory?.creatorId &&
-    memory.creatorId === authUser.id
-  );
+  const [editModalOpen, setEditModalOpen] = useState(false);
 
   const [animationPhase, setAnimationPhase] =
     useState<AnimationPhase>('closed');
   const [isRightPageFlipped, setIsRightPageFlipped] = useState(false);
   const [isLeftPageFlipped, setIsLeftPageFlipped] = useState(false);
   const [isFlipping, setIsFlipping] = useState(false);
-  // Cache the old memory during flip animation so flipping page shows old content
   const [cachedMemory, setCachedMemory] =
     useState<MemoryWithCoordinates | null>(null);
-  // Track which direction we're flipping for animation state
-  type FlipDirection = 'next' | 'prev' | null;
+  const [activeImageIndexByMemoryId, setActiveImageIndexByMemoryId] = useState<
+    Record<string, number>
+  >({});
   const [flipDirection, setFlipDirection] = useState<FlipDirection>(null);
 
-  // Handle open/close state changes
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
+  const [mobileBookScale, setMobileBookScale] = useState(1);
+  const [mobileBookStageWidth, setMobileBookStageWidth] = useState(
+    MOBILE_VISIBLE_BOOK_WIDTH
+  );
+  const [mobileNotebookPage, setMobileNotebookPage] =
+    useState<MobileNotebookPage>('photo');
+  const [isMobilePageTurning, setIsMobilePageTurning] = useState(false);
+  const [mobileTransitionDirection, setMobileTransitionDirection] =
+    useState<FlipDirection>(null);
+  const [mobileTransitionMode, setMobileTransitionMode] =
+    useState<MobileTransitionMode>(null);
+  const [mobileTransitionMemory, setMobileTransitionMemory] =
+    useState<MemoryWithCoordinates | null>(null);
+
+  const getActiveImageIndex = useCallback(
+    (mem: MemoryWithCoordinates | null) => {
+      if (!mem) return 0;
+
+      const mediaURLs = getMemoryMediaURLs(mem);
+      if (mediaURLs.length === 0) return 0;
+
+      const rawIndex = activeImageIndexByMemoryId[mem.id] ?? 0;
+      return Math.min(Math.max(rawIndex, 0), mediaURLs.length - 1);
+    },
+    [activeImageIndexByMemoryId]
+  );
+
+  const handleImageIndexChange = useCallback(
+    (memoryId: string, nextIndex: number) => {
+      setActiveImageIndexByMemoryId((prev) => {
+        if (prev[memoryId] === nextIndex) return prev;
+        return { ...prev, [memoryId]: nextIndex };
+      });
+    },
+    []
+  );
   useEffect(() => {
     if (open) {
-      // Opening sequence
       setAnimationPhase('opening');
       const timer = setTimeout(() => {
         setAnimationPhase('open');
       }, BOOK_OPEN_DURATION * 1000);
       return () => clearTimeout(timer);
-    } else {
-      // Closing sequence
-      setAnimationPhase('closing');
-      const timer = setTimeout(() => {
-        setAnimationPhase('closed');
-      }, BOOK_CLOSE_DURATION * 1000);
-      return () => clearTimeout(timer);
     }
+
+    setAnimationPhase('closing');
+    const timer = setTimeout(() => {
+      setAnimationPhase('closed');
+    }, BOOK_CLOSE_DURATION * 1000);
+    return () => clearTimeout(timer);
   }, [open]);
 
-  // Reset flip state when modal closes
   useEffect(() => {
     if (!open) {
       setIsRightPageFlipped(false);
@@ -201,79 +438,61 @@ export function MemoryDetailModal({
       setIsFlipping(false);
       setCachedMemory(null);
       setFlipDirection(null);
+      setMobileNotebookPage('photo');
+      setIsMobilePageTurning(false);
+      setMobileTransitionDirection(null);
+      setMobileTransitionMode(null);
+      setMobileTransitionMemory(null);
+      setActiveImageIndexByMemoryId({});
     }
   }, [open]);
 
-  // Handle NEXT: right page flips over to the left, revealing new content underneath
-  const handleNext = () => {
-    if (!hasNext || isFlipping || !onNext) return;
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
 
-    // Snapshot comment text and data for the overlay, then clear for the incoming page
-    carriedCommentText.current = commentText;
-    cachedCommentsRef.current = liveComments;
-    cachedCommentCountRef.current = liveCommentCount;
-    setCommentText('');
+    const updateMobileLayout = () => {
+      const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
+      setIsMobileViewport(isMobile);
 
-    // Cache current memory and orientation so the flipping page and base left page
-    // stay stable while the new image loads
-    setCachedMemory(memory);
-    setFlipDirection('next');
-    setIsFlipping(true);
+      if (!isMobile) {
+        setMobileBookScale(1);
+        setMobileBookStageWidth(MOBILE_VISIBLE_BOOK_WIDTH);
+        return;
+      }
 
-    // Call onNext immediately - base layer will show NEW content
-    onNext();
+      const availableWidth = Math.max(
+        window.innerWidth - MOBILE_LAYOUT_WIDTH_GUTTER,
+        MOBILE_MIN_STAGE_WIDTH
+      );
+      const availableHeight = Math.max(
+        window.innerHeight - MOBILE_LAYOUT_HEIGHT_GUTTER,
+        360
+      );
+      const visibleBookWidth = Math.min(
+        availableWidth,
+        MOBILE_VISIBLE_BOOK_WIDTH
+      );
+      const scale = Math.min(
+        1,
+        visibleBookWidth / MOBILE_VISIBLE_BOOK_WIDTH,
+        availableHeight / BOOK_HEIGHT
+      );
 
-    // Start the flip animation
-    setIsRightPageFlipped(true);
+      setMobileBookStageWidth(availableWidth);
+      setMobileBookScale(scale);
+    };
 
-    // After animation completes, clean up
-    setTimeout(() => {
-      setCachedMemory(null);
-      setFlipDirection(null);
-      setIsRightPageFlipped(false);
-      setIsFlipping(false);
-    }, 610);
-  };
+    updateMobileLayout();
+    window.addEventListener('resize', updateMobileLayout);
+    return () => window.removeEventListener('resize', updateMobileLayout);
+  }, []);
 
-  // Handle PREVIOUS: left page flips over to the right, revealing new content underneath
-  const handlePrevious = () => {
-    if (!hasPrevious || isFlipping || !onPrevious) return;
-
-    // Snapshot comment text and data, then clear for the incoming page
-    carriedCommentText.current = commentText;
-    cachedCommentsRef.current = liveComments;
-    cachedCommentCountRef.current = liveCommentCount;
-    setCommentText('');
-
-    // Cache current memory and orientation so the flipping page and base left page
-    // stay stable while the new image loads
-    setCachedMemory(memory);
-    setFlipDirection('prev');
-    setIsFlipping(true);
-
-    // Call onPrevious immediately - base layer will show NEW content
-    onPrevious();
-
-    // Start the flip animation
-    setIsLeftPageFlipped(true);
-
-    // After animation completes, clean up
-    setTimeout(() => {
-      setCachedMemory(null);
-      setFlipDirection(null);
-      setIsLeftPageFlipped(false);
-      setIsFlipping(false);
-    }, 610);
-  };
-
-  // Helper function to compute date info for a memory
-  const getDateInfo = (mem: MemoryWithCoordinates | null) => {
+  const getDateInfo = (
+    mem: MemoryWithCoordinates | null
+  ): MemoryDateInfo | null => {
     if (!mem) return null;
+
     const date = new Date(mem.createdAt || Date.now());
-    const currentDay = date.getDay();
-    const daysLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'];
-    const startOfWeek = new Date(date);
-    startOfWeek.setDate(date.getDate() - currentDay);
 
     return {
       dayOfWeek: date.toLocaleDateString('en-US', { weekday: 'long' }),
@@ -285,28 +504,20 @@ export function MemoryDetailModal({
         second: '2-digit',
         hour12: false,
       }),
-      calendarWeek: Array.from({ length: 7 }, (_, i) => {
-        const day = new Date(startOfWeek);
-        day.setDate(startOfWeek.getDate() + i);
-        return {
-          label: daysLabels[i],
-          number: day.getDate(),
-          active: i === currentDay,
-        };
-      }),
     };
   };
 
-  // Memoize derived date values for current memory
   const dateInfo = useMemo(() => getDateInfo(memory), [memory]);
-
-  // Get date info for cached memory (during flip animation)
   const cachedDateInfo = useMemo(
     () => getDateInfo(cachedMemory),
     [cachedMemory]
   );
+  const previousDateInfo = useMemo(
+    () => getDateInfo(previousMemory),
+    [previousMemory]
+  );
+  const nextDateInfo = useMemo(() => getDateInfo(nextMemory), [nextMemory]);
 
-  // ── Comment hooks (must be before any early return) ───────────────────────
   const { user } = useUserAuth();
   const {
     data: commentsData,
@@ -319,24 +530,197 @@ export function MemoryDetailModal({
   const [commentText, setCommentText] = useState('');
   const carriedCommentText = useRef('');
 
-  // Derive live comment data (safe to call before early return — just derives from query)
   const liveComments = commentsData?.pages.flatMap((p) => p.data.items) ?? [];
   const liveCommentCount = commentsData?.pages[0]?.data.commentCount ?? 0;
 
-  // Cached comments for flip overlays (same pattern as cachedMemory)
   const cachedCommentsRef = useRef(liveComments);
   const cachedCommentCountRef = useRef(liveCommentCount);
+  const mobileCachedCommentsRef = useRef(liveComments);
+  const mobileCachedCommentCountRef = useRef(liveCommentCount);
+  const mobileCarriedCommentText = useRef('');
 
-  // Base page always uses live data; overlays use cached snapshots
-  const allComments = liveComments;
-  const commentCount = liveCommentCount;
+  useEffect(() => {
+    setMobileNotebookPage('photo');
+    setIsMobilePageTurning(false);
+    setMobileTransitionDirection(null);
+    setMobileTransitionMode(null);
+    setMobileTransitionMemory(null);
+    setCommentText('');
+  }, [memory?.id]);
 
   if (!memory || !dateInfo) return null;
 
-  const authorName = memory.creator
-    ? `${memory.creator.firstName} ${memory.creator.lastName}`
-    : 'Unknown Author';
-  const authorInitial = authorName.charAt(0);
+  const handleNext = () => {
+    if (!hasNext || isFlipping || !onNext) return;
+
+    carriedCommentText.current = commentText;
+    cachedCommentsRef.current = liveComments;
+    cachedCommentCountRef.current = liveCommentCount;
+    setCommentText('');
+
+    setCachedMemory(memory);
+    setFlipDirection('next');
+    setIsFlipping(true);
+    onNext();
+    setIsRightPageFlipped(true);
+
+    setTimeout(() => {
+      setCachedMemory(null);
+      setFlipDirection(null);
+      setIsRightPageFlipped(false);
+      setIsFlipping(false);
+    }, PAGE_TURN_DURATION_MS);
+  };
+
+  const handlePrevious = () => {
+    if (!hasPrevious || isFlipping || !onPrevious) return;
+
+    carriedCommentText.current = commentText;
+    cachedCommentsRef.current = liveComments;
+    cachedCommentCountRef.current = liveCommentCount;
+    setCommentText('');
+
+    setCachedMemory(memory);
+    setFlipDirection('prev');
+    setIsFlipping(true);
+    onPrevious();
+    setIsLeftPageFlipped(true);
+
+    setTimeout(() => {
+      setCachedMemory(null);
+      setFlipDirection(null);
+      setIsLeftPageFlipped(false);
+      setIsFlipping(false);
+    }, PAGE_TURN_DURATION_MS);
+  };
+
+  const handleMobileShowComments = () => {
+    if (mobileNotebookPage !== 'photo' || isMobilePageTurning) return;
+
+    carriedCommentText.current = commentText;
+    cachedCommentsRef.current = liveComments;
+    cachedCommentCountRef.current = liveCommentCount;
+    mobileCarriedCommentText.current = commentText;
+    mobileCachedCommentsRef.current = liveComments;
+    mobileCachedCommentCountRef.current = liveCommentCount;
+
+    setMobileTransitionDirection('next');
+    setMobileTransitionMode('page');
+    setIsMobilePageTurning(true);
+
+    setTimeout(() => {
+      setMobileNotebookPage('comments');
+      setIsMobilePageTurning(false);
+      setMobileTransitionDirection(null);
+      setMobileTransitionMode(null);
+    }, PAGE_TURN_DURATION_MS);
+  };
+
+  const handleMobileShowPhoto = () => {
+    if (mobileNotebookPage !== 'comments' || isMobilePageTurning) return;
+
+    carriedCommentText.current = commentText;
+    cachedCommentsRef.current = liveComments;
+    cachedCommentCountRef.current = liveCommentCount;
+    mobileCarriedCommentText.current = commentText;
+    mobileCachedCommentsRef.current = liveComments;
+    mobileCachedCommentCountRef.current = liveCommentCount;
+
+    setMobileTransitionDirection('prev');
+    setMobileTransitionMode('page');
+    setIsMobilePageTurning(true);
+
+    setTimeout(() => {
+      setMobileNotebookPage('photo');
+      setIsMobilePageTurning(false);
+      setMobileTransitionDirection(null);
+      setMobileTransitionMode(null);
+    }, PAGE_TURN_DURATION_MS);
+  };
+
+  const handleMobileLeftChevron = () => {
+    if (mobileNotebookPage === 'comments') {
+      handleMobileShowPhoto();
+      return;
+    }
+
+    if (
+      !hasPrevious ||
+      isMobilePageTurning ||
+      !onPrevious ||
+      !previousMemory ||
+      !previousDateInfo
+    ) {
+      return;
+    }
+
+    carriedCommentText.current = commentText;
+    cachedCommentsRef.current = liveComments;
+    cachedCommentCountRef.current = liveCommentCount;
+    mobileCarriedCommentText.current = commentText;
+    mobileCachedCommentsRef.current = liveComments;
+    mobileCachedCommentCountRef.current = liveCommentCount;
+    setMobileTransitionMemory(memory);
+    setMobileTransitionDirection('prev');
+    setMobileTransitionMode('memory');
+    setIsMobilePageTurning(true);
+
+    setTimeout(() => {
+      setCommentText('');
+      onPrevious();
+      setMobileNotebookPage('photo');
+      setIsMobilePageTurning(false);
+      setMobileTransitionDirection(null);
+      setMobileTransitionMode(null);
+      setMobileTransitionMemory(null);
+    }, PAGE_TURN_DURATION_MS);
+  };
+
+  const handleMobileRightChevron = () => {
+    if (mobileNotebookPage === 'photo') {
+      handleMobileShowComments();
+      return;
+    }
+
+    if (!hasNext || isMobilePageTurning || !onNext || !nextMemory) return;
+
+    carriedCommentText.current = commentText;
+    cachedCommentsRef.current = liveComments;
+    cachedCommentCountRef.current = liveCommentCount;
+    mobileCarriedCommentText.current = commentText;
+    mobileCachedCommentsRef.current = liveComments;
+    mobileCachedCommentCountRef.current = liveCommentCount;
+    setMobileTransitionMemory(memory);
+    setMobileTransitionDirection('next');
+    setMobileTransitionMode('memory');
+    setIsMobilePageTurning(true);
+
+    setTimeout(() => {
+      setCommentText('');
+      onNext();
+      setMobileNotebookPage('photo');
+      setIsMobilePageTurning(false);
+      setMobileTransitionDirection(null);
+      setMobileTransitionMode(null);
+      setMobileTransitionMemory(null);
+    }, PAGE_TURN_DURATION_MS);
+  };
+
+  // Resolve visibility display for a memory (icon + label, with group name for GROUP_ONLY)
+  const getVisibilityDisplay = (
+    vis: MemoryVisibility,
+    pgId?: string | null
+  ) => {
+    const meta = VISIBILITY_META[vis] ?? VISIBILITY_META.PUBLIC;
+    if (vis === 'GROUP_ONLY' && pgId) {
+      const group = userGroups?.find((g) => g.id === pgId);
+      return {
+        Icon: meta.Icon,
+        label: group ? `Private · ${group.name}` : 'Private',
+      };
+    }
+    return meta;
+  };
 
   function handleCommentSubmit(content: string) {
     createComment.mutate({ memoryId: memory!.id, content });
@@ -347,16 +731,8 @@ export function MemoryDetailModal({
     deleteComment.mutate({ commentId, memoryId: memory!.id });
   }
 
-  // Whether covers should be visible (during open/close animations or closed state)
   const showCovers = animationPhase !== 'open';
 
-  // During a flip, the base page that starts EXPOSED (not yet covered by the overlay)
-  // must hold old content so the reveal stays intact until the overlay sweeps over it.
-  // - 'next' flip: left base is exposed first → hold old content there
-  // - 'prev' flip: right base is exposed first → hold old content there
-  const baseLeftDateInfo = (
-    isFlipping && flipDirection === 'next' ? cachedDateInfo : dateInfo
-  )!;
   const baseLeftMemory = (
     isFlipping && flipDirection === 'next' ? cachedMemory : memory
   )!;
@@ -364,13 +740,995 @@ export function MemoryDetailModal({
     isFlipping && flipDirection === 'prev' ? cachedMemory : memory
   )!;
 
+  const mobileBookStageHeight =
+    BOOK_HEIGHT * mobileBookScale + MOBILE_BOOK_TOP_OFFSET * mobileBookScale;
+  const mobileVisibleBookWidth = MOBILE_VISIBLE_BOOK_WIDTH * mobileBookScale;
+  const mobileBookOffsetX =
+    mobileBookStageWidth / 2 -
+    (BOOK_INNER_PADDING + PAGE_WIDTH / 2) * mobileBookScale;
+  const mobileLeftChevronDisabled =
+    isMobilePageTurning ||
+    (mobileNotebookPage === 'photo' ? !hasPrevious : false);
+  const mobileRightChevronDisabled =
+    isMobilePageTurning ||
+    (mobileNotebookPage === 'comments' ? !hasNext : false);
+  const mobileLeftChevronLabel =
+    mobileNotebookPage === 'comments' ? 'Show photo page' : 'Previous memory';
+  const mobileRightChevronLabel =
+    mobileNotebookPage === 'photo' ? 'Show comments page' : 'Next memory';
+  const mobileRightShowsComments = mobileNotebookPage === 'photo';
+  const mobileVisibleMemory = mobileTransitionMemory ?? memory;
+  const isMobileNextMemoryTransition =
+    mobileTransitionMode === 'memory' && mobileTransitionDirection === 'next';
+  const isMobilePrevMemoryTransition =
+    mobileTransitionMode === 'memory' && mobileTransitionDirection === 'prev';
+  const shouldShowMobileCommentsPage =
+    mobileNotebookPage === 'comments' &&
+    !(
+      isMobilePageTurning &&
+      mobileTransitionDirection === 'prev' &&
+      mobileTransitionMode === 'page'
+    );
+
+  const renderMemoryMenu = (
+    pageMemory: MemoryWithCoordinates,
+    triggerClassName = 'text-muted-foreground hover:text-foreground'
+  ) => {
+    const isPageOwner = !!(
+      authUser &&
+      pageMemory.creatorId &&
+      pageMemory.creatorId === authUser.id
+    );
+
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button className={triggerClassName} aria-label="More options">
+            <MoreHorizontal className="h-5 w-5" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="end"
+          sideOffset={6}
+          className="min-w-[9.5rem] rounded-none border-2 border-[#2d2d2d] bg-[#fff4fb] p-0.5 shadow-none"
+        >
+          {isPageOwner && (
+            <DropdownMenuItem
+              className="min-h-8 rounded-none border border-transparent px-2 py-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-black focus:border-[#2d2d2d] focus:bg-[#fd91e6] focus:text-black"
+              onClick={() => setEditModalOpen(true)}
+            >
+              <Pencil className="mr-1.5 h-3.5 w-3.5" />
+              Edit Memory
+            </DropdownMenuItem>
+          )}
+          <DropdownMenuItem
+            className="min-h-8 rounded-none border border-transparent px-2 py-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-black focus:border-[#2d2d2d] focus:bg-[#ffd36b] focus:text-black"
+            onClick={() => setReportModalOpen(true)}
+          >
+            <Flag className="mr-1.5 h-3.5 w-3.5" />
+            Report Memory
+          </DropdownMenuItem>
+          {isPageOwner && (
+            <DropdownMenuItem
+              className="min-h-8 rounded-none border border-transparent px-2 py-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-black focus:border-[#2d2d2d] focus:bg-[#ff9f9f] focus:text-black"
+              onClick={() => setDeleteModalOpen(true)}
+            >
+              <Trash2 className="mr-1.5 h-3.5 w-3.5" />
+              Delete Memory
+            </DropdownMenuItem>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  };
+
+  const renderAuthorHeader = (pageMemory: MemoryWithCoordinates) => {
+    const pageAuthorName = pageMemory.creator
+      ? `${pageMemory.creator.firstName} ${pageMemory.creator.lastName}`
+      : 'Unknown Author';
+    const pageAuthorPhoto = pageMemory.creator?.avatarUrl ?? null;
+
+    return (
+      <div className="flex items-start gap-3.5">
+        <Avatar className="h-11 w-11 bg-white">
+          {pageAuthorPhoto && (
+            <AvatarImage
+              src={pageAuthorPhoto}
+              alt={pageAuthorName}
+              className="bg-white object-contain"
+            />
+          )}
+          <AvatarFallback className="bg-secondary text-sm text-black">
+            <User className="h-5 w-5" />
+          </AvatarFallback>
+        </Avatar>
+        <div className="flex flex-1 flex-col gap-0.5">
+          <p className="text-normal text-black">{pageAuthorName}</p>
+          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+            {(() => {
+              const visibilityDisplay = getVisibilityDisplay(
+                pageMemory.visibility,
+                pageMemory.privateGroupId
+              );
+              return (
+                <>
+                  <visibilityDisplay.Icon className="h-3 w-3 shrink-0" />
+                  <span>{visibilityDisplay.label}</span>
+                </>
+              );
+            })()}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderPhotoPageContent = ({
+    pageMemory,
+    showSpineScale = false,
+    pageSide = 'left',
+  }: {
+    pageMemory: MemoryWithCoordinates;
+    showSpineScale?: boolean;
+    pageSide?: 'left' | 'right';
+  }) => {
+    const mediaURLs = getMemoryMediaURLs(pageMemory);
+    const mediaCount = mediaURLs.length;
+    const activeImageIndex = getActiveImageIndex(pageMemory);
+    const hasMultipleImages = mediaCount > 1;
+
+    return (
+      <>
+        <div className="flex flex-1 items-center justify-center">
+          <PolaroidMediaCarousel
+            memory={pageMemory}
+            activeIndex={activeImageIndex}
+            onIndexChange={(nextIndex) =>
+              handleImageIndexChange(pageMemory.id, nextIndex)
+            }
+          />
+        </div>
+
+        {mediaCount > 0 && (
+          <div className="flex items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={() =>
+                handleImageIndexChange(pageMemory.id, activeImageIndex - 1)
+              }
+              disabled={!hasMultipleImages}
+              className="inline-flex h-8 w-8 items-center justify-center border-2 border-black bg-white text-black transition-colors hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-white"
+              aria-label="Previous image"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+
+            <div className="text-sm font-medium uppercase tracking-[0.12em] text-black">
+              {activeImageIndex + 1} of {mediaCount}
+            </div>
+
+            <button
+              type="button"
+              onClick={() =>
+                handleImageIndexChange(pageMemory.id, activeImageIndex + 1)
+              }
+              disabled={!hasMultipleImages}
+              className="inline-flex h-8 w-8 items-center justify-center border-2 border-black bg-white text-black transition-colors hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-white"
+              aria-label="Next image"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
+        )}
+
+        {pageSide === 'left' ? (
+          <LeftPageSpineRings shouldScale={showSpineScale} />
+        ) : (
+          <RightPageSpineRings shouldScale={showSpineScale} />
+        )}
+      </>
+    );
+  };
+
+  const renderDetailsPageContent = ({
+    pageMemory,
+    comments,
+    totalComments,
+    hasMore,
+    isLoadingMore,
+    isSubmitting,
+    onSubmit,
+    onDelete,
+    onLoadMore,
+    commentValue,
+    onCommentValueChange,
+    showSpineScale = false,
+    pageSide = 'right',
+    showCloseButton = false,
+  }: {
+    pageMemory: MemoryWithCoordinates;
+    comments: typeof liveComments;
+    totalComments: number;
+    hasMore: boolean;
+    isLoadingMore: boolean;
+    isSubmitting: boolean;
+    onSubmit: (content: string) => void;
+    onDelete: (commentId: string) => void;
+    onLoadMore: () => void;
+    commentValue?: string;
+    onCommentValueChange?: (text: string) => void;
+    showSpineScale?: boolean;
+    pageSide?: 'left' | 'right';
+    showCloseButton?: boolean;
+  }) => (
+    <>
+      {showCloseButton && (
+        <div className="absolute right-10 top-7 z-20 flex items-center gap-1">
+          {renderMemoryMenu(
+            pageMemory,
+            'inline-flex h-[34px] w-[34px] items-center justify-center border-2 bg-white text-black transition-colors hover:bg-[#fff4cc]'
+          )}
+
+          <button
+            type="button"
+            onClick={() => onOpenChange(false)}
+            className="inline-flex h-[34px] w-[34px] items-center justify-center border-2 bg-white text-black transition-colors hover:bg-[#fff4cc]"
+            style={{ borderColor: NOTEBOOK_BORDER_COLOR }}
+            aria-label="Close memory details"
+          >
+            <X className="h-[14px] w-[14px]" />
+          </button>
+        </div>
+      )}
+
+      {renderAuthorHeader(pageMemory)}
+
+      <div className="relative px-8 py-7">
+        <div
+          className="pointer-events-none absolute inset-[10px] border-2 border-black"
+          aria-hidden="true"
+        />
+        <span
+          className="pointer-events-none absolute left-[4px] top-[4px] h-4 w-4 border-2 border-black bg-white"
+          aria-hidden="true"
+        />
+        <span
+          className="pointer-events-none absolute right-[4px] top-[4px] h-4 w-4 border-2 border-black bg-white"
+          aria-hidden="true"
+        />
+        <span
+          className="pointer-events-none absolute bottom-[4px] left-[4px] h-4 w-4 border-2 border-black bg-white"
+          aria-hidden="true"
+        />
+        <span
+          className="pointer-events-none absolute bottom-[4px] right-[4px] h-4 w-4 border-2 border-black bg-white"
+          aria-hidden="true"
+        />
+        <p className="relative z-10 text-center font-dancing text-2xl leading-relaxed text-black">
+          {pageMemory.description || 'A memorable moment...'}
+        </p>
+      </div>
+
+      <div className="flex flex-1 flex-col gap-4">
+        <ActionBar
+          memory={pageMemory}
+          onReport={() => setReportModalOpen(true)}
+        />
+
+        {pageMemory.tags && pageMemory.tags.length > 0 && (
+          <div className="flex flex-col gap-2">
+            <h3 className="text-sm font-semibold uppercase tracking-[0.08em] text-black">
+              Tags
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {pageMemory.tags.map((tag) => (
+                <Badge
+                  key={tag.id}
+                  variant="outline"
+                  style={{ borderRadius: 0 }}
+                  className={
+                    isAutoTag(tag.name)
+                      ? 'border-black bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-black'
+                      : 'border-black bg-[#f6cb48] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-black'
+                  }
+                >
+                  {tag.name}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <CommentSection
+          comments={comments}
+          commentCount={totalComments}
+          currentUserId={user?.id}
+          hasMore={hasMore}
+          isLoadingMore={isLoadingMore}
+          isSubmitting={isSubmitting}
+          onSubmit={onSubmit}
+          onDelete={onDelete}
+          onLoadMore={onLoadMore}
+          commentText={commentValue}
+          onCommentTextChange={onCommentValueChange}
+        />
+      </div>
+
+      {pageSide === 'left' ? (
+        <LeftPageSpineRings shouldScale={showSpineScale} />
+      ) : (
+        <RightPageSpineRings shouldScale={showSpineScale} />
+      )}
+    </>
+  );
+
+  const renderMobilePeekPageContent = () => {
+    if (mobileNotebookPage === 'comments' && nextMemory && nextDateInfo) {
+      return (
+        <>
+          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[1px_2px_3px_0px_rgba(0,0,0,0.12)]">
+            <div className="relative aspect-[4/3] bg-slate-100">
+              {nextMemory.mediaURL ? (
+                <Image
+                  src={nextMemory.mediaURL}
+                  alt={nextMemory.title}
+                  fill
+                  sizes="320px"
+                  className="object-cover"
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center bg-gradient-to-br from-sky-100 to-blue-50 px-6 text-center text-sm font-medium text-slate-500">
+                  Next memory
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-2 p-4 text-left">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-skolaroid-blue">
+                Up Next
+              </p>
+              <p className="line-clamp-2 text-sm font-semibold text-foreground">
+                {nextMemory.title || 'Untitled memory'}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {nextDateInfo.month} {nextDateInfo.dayNumber}
+              </p>
+            </div>
+          </div>
+
+          <RightPageSpineRings />
+        </>
+      );
+    }
+
+    if (mobileNotebookPage === 'comments') {
+      return (
+        <>
+          <div className="flex flex-1 flex-col justify-between rounded-xl border border-dashed border-slate-200 bg-white/70 p-5 text-center">
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-skolaroid-blue">
+                Last Memory
+              </p>
+              <p className="mt-3 text-sm font-medium text-foreground">
+                You&apos;ve reached the end of this notebook.
+              </p>
+            </div>
+
+            <div className="flex flex-1 items-center justify-center">
+              <div className="rounded-full border border-slate-200 bg-card px-4 py-2 text-xs font-medium text-muted-foreground shadow-sm">
+                No More Pages
+              </div>
+            </div>
+          </div>
+
+          <RightPageSpineRings />
+        </>
+      );
+    }
+
+    return (
+      <>
+        <div className="flex flex-1 flex-col justify-between rounded-xl border border-dashed border-slate-200 bg-white/70 p-5 text-center">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-skolaroid-blue">
+              Next Page
+            </p>
+            <p className="mt-3 text-sm font-medium text-foreground">
+              Comments, reactions, and tags wait on the next turn.
+            </p>
+          </div>
+
+          <div className="flex flex-1 items-center justify-center">
+            <div className="rounded-full border border-slate-200 bg-card px-4 py-2 text-xs font-medium text-muted-foreground shadow-sm">
+              Flip To Continue
+            </div>
+          </div>
+        </div>
+
+        <RightPageSpineRings />
+      </>
+    );
+  };
+
+  const renderMobilePreviousMemoryDetailsPage = () => {
+    if (!previousMemory) {
+      return renderMobilePeekPageContent();
+    }
+
+    return renderDetailsPageContent({
+      pageMemory: previousMemory,
+      comments: [],
+      totalComments: 0,
+      hasMore: false,
+      isLoadingMore: false,
+      isSubmitting: false,
+      onSubmit: () => {},
+      onDelete: () => {},
+      onLoadMore: () => {},
+      commentValue: '',
+      onCommentValueChange: () => {},
+    });
+  };
+
+  const renderMobileStaticRightPageContent = () => {
+    if (isMobilePrevMemoryTransition) {
+      return renderMobilePreviousMemoryDetailsPage();
+    }
+
+    return renderMobilePeekPageContent();
+  };
+
+  const renderCoverLayers = () => {
+    if (!showCovers) return null;
+
+    return (
+      <>
+        <motion.div
+          className="absolute left-0 top-0 h-full w-1/2 overflow-hidden"
+          style={{
+            transformOrigin: 'right center',
+            transformStyle: 'preserve-3d',
+          }}
+          variants={coverLeftVariants}
+          initial="closed"
+          animate={animationPhase}
+        >
+          <div
+            className="relative flex h-full items-center justify-center"
+            style={{
+              backgroundColor: NOTEBOOK_COVER_COLOR,
+              backfaceVisibility: 'hidden',
+            }}
+          >
+            <div className="relative flex flex-col items-center gap-2">
+              <div className="h-24 w-1 rounded-full bg-[#8b6b12]/40" />
+            </div>
+            <div
+              className="pointer-events-none absolute right-[-6px] top-0 flex h-full flex-col items-end justify-around py-[18px]"
+              style={{ backfaceVisibility: 'hidden' }}
+            >
+              {[0, 1, 2].map((i) => (
+                <div
+                  key={i}
+                  className="rounded-[8px] border-2"
+                  style={{
+                    width: `${NOTEBOOK_SPINE_RING_WIDTH}px`,
+                    height: `${NOTEBOOK_SPINE_RING_HEIGHT}px`,
+                    borderColor: NOTEBOOK_SPRING_BORDER_COLOR,
+                    backgroundColor: NOTEBOOK_SPRING_COLOR,
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+          <div
+            className="absolute inset-0 bg-white"
+            style={{
+              transform: 'rotateY(180deg)',
+              backfaceVisibility: 'hidden',
+            }}
+          />
+        </motion.div>
+
+        <motion.div
+          className="absolute right-0 top-0 h-full w-1/2 overflow-hidden"
+          style={{
+            transformOrigin: 'left center',
+            transformStyle: 'preserve-3d',
+          }}
+          variants={coverRightVariants}
+          initial="closed"
+          animate={animationPhase}
+        >
+          <div
+            className="relative flex h-full items-center justify-center"
+            style={{
+              backgroundColor: NOTEBOOK_COVER_COLOR,
+              backfaceVisibility: 'hidden',
+            }}
+          >
+            <div className="relative flex flex-col items-center gap-2">
+              <div className="h-24 w-1 rounded-full bg-[#8b6b12]/40" />
+            </div>
+            <div className="pointer-events-none absolute left-[-6px] top-0 flex h-full flex-col items-start justify-around py-[18px]">
+              {[0, 1, 2].map((i) => (
+                <div
+                  key={i}
+                  className="rounded-[8px] border-2"
+                  style={{
+                    width: `${NOTEBOOK_SPINE_RING_WIDTH}px`,
+                    height: `${NOTEBOOK_SPINE_RING_HEIGHT}px`,
+                    borderColor: NOTEBOOK_SPRING_BORDER_COLOR,
+                    backgroundColor: NOTEBOOK_SPRING_COLOR,
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+          <div
+            className="absolute inset-0 bg-white"
+            style={{
+              transform: 'rotateY(180deg)',
+              backfaceVisibility: 'hidden',
+            }}
+          />
+        </motion.div>
+      </>
+    );
+  };
+
+  const renderDesktopBook = () => (
+    <div className="flex items-center gap-6" style={{ perspective: '2000px' }}>
+      <motion.button
+        onClick={handlePrevious}
+        disabled={!hasPrevious || isFlipping}
+        className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-border bg-card text-black shadow-[3px_3px_0px_0px_#2d2d2d] transition-colors hover:shadow-[4px_4px_0px_0px_#2d2d2d] disabled:cursor-not-allowed disabled:opacity-30"
+        variants={chevronVariants}
+        initial="idle"
+        whileHover={hasPrevious ? 'hover' : 'disabled'}
+        whileTap={hasPrevious ? 'tap' : 'disabled'}
+        aria-label="Previous memory"
+      >
+        <ChevronLeft className="h-6 w-6" />
+      </motion.button>
+
+      <div
+        className="relative"
+        style={{
+          width: `${BOOK_WIDTH}px`,
+          height: `${BOOK_HEIGHT}px`,
+          overflow: 'visible',
+          transformStyle: 'preserve-3d',
+        }}
+      >
+        <div
+          className="absolute inset-0 p-2"
+          style={{
+            border: `2px solid ${NOTEBOOK_BORDER_COLOR}`,
+            backgroundColor: NOTEBOOK_COVER_COLOR,
+            overflow: 'visible',
+            transformStyle: 'preserve-3d',
+          }}
+        >
+          <div
+            className="relative z-10 flex h-full gap-2"
+            style={{ transformStyle: 'preserve-3d' }}
+          >
+            <NotebookSpineConnectors />
+
+            <div
+              className={`${PAGE_BASE_STYLES} relative`}
+              style={{ width: `${PAGE_WIDTH}px`, zIndex: 1 }}
+            >
+              {renderPhotoPageContent({
+                pageMemory: baseLeftMemory,
+                showSpineScale: isFlipping && flipDirection === 'next',
+              })}
+            </div>
+
+            <div
+              className={`${PAGE_BASE_STYLES} relative`}
+              style={{ width: `${PAGE_WIDTH}px`, zIndex: 1 }}
+            >
+              {renderDetailsPageContent({
+                pageMemory: baseRightMemory,
+                comments:
+                  isFlipping && flipDirection === 'prev'
+                    ? cachedCommentsRef.current
+                    : liveComments,
+                totalComments:
+                  isFlipping && flipDirection === 'prev'
+                    ? cachedCommentCountRef.current
+                    : liveCommentCount,
+                hasMore: isFlipping ? false : (hasNextPage ?? false),
+                isLoadingMore: isFlipping ? false : isFetchingNextPage,
+                isSubmitting: isFlipping ? false : createComment.isPending,
+                onSubmit: isFlipping ? () => {} : handleCommentSubmit,
+                onDelete: isFlipping ? () => {} : handleCommentDelete,
+                onLoadMore: isFlipping ? () => {} : fetchNextPage,
+                commentValue:
+                  isFlipping && flipDirection === 'prev'
+                    ? carriedCommentText.current
+                    : commentText,
+                onCommentValueChange: isFlipping ? () => {} : setCommentText,
+                showSpineScale: isFlipping && flipDirection === 'prev',
+                showCloseButton: true,
+              })}
+            </div>
+
+            {cachedMemory && cachedDateInfo && flipDirection === 'prev' && (
+              <motion.div
+                className="absolute top-0"
+                style={{
+                  left: `${BOOK_INNER_PADDING}px`,
+                  width: `${PAGE_WIDTH}px`,
+                  height: '100%',
+                  transformStyle: 'preserve-3d',
+                  transformOrigin: `${PAGE_WIDTH}px 50%`,
+                  willChange: 'transform',
+                  zIndex: 20,
+                }}
+                variants={leftPageFlipVariants}
+                initial="flat"
+                animate={isLeftPageFlipped ? 'flipped' : 'flat'}
+              >
+                <div
+                  className={PAGE_FACE_STYLES}
+                  style={{ backfaceVisibility: 'hidden' }}
+                >
+                  {renderPhotoPageContent({
+                    pageMemory: cachedMemory,
+                  })}
+                </div>
+
+                <div
+                  className={PAGE_FACE_STYLES}
+                  style={{
+                    transform: 'rotateY(180deg)',
+                    backfaceVisibility: 'hidden',
+                  }}
+                >
+                  {renderDetailsPageContent({
+                    pageMemory: memory,
+                    comments: cachedCommentsRef.current,
+                    totalComments: cachedCommentCountRef.current,
+                    hasMore: false,
+                    isLoadingMore: false,
+                    isSubmitting: false,
+                    onSubmit: () => {},
+                    onDelete: () => {},
+                    onLoadMore: () => {},
+                    commentValue: '',
+                    onCommentValueChange: () => {},
+                  })}
+                </div>
+              </motion.div>
+            )}
+
+            {cachedMemory && flipDirection === 'next' && (
+              <motion.div
+                className="absolute top-0"
+                style={{
+                  right: `${BOOK_INNER_PADDING}px`,
+                  width: `${PAGE_WIDTH}px`,
+                  height: '100%',
+                  transformStyle: 'preserve-3d',
+                  transformOrigin: '0px 50%',
+                  willChange: 'transform',
+                  zIndex: 20,
+                }}
+                variants={rightPageFlipVariants}
+                initial="flat"
+                animate={isRightPageFlipped ? 'flipped' : 'flat'}
+              >
+                <div
+                  className={PAGE_FACE_STYLES}
+                  style={{ backfaceVisibility: 'hidden' }}
+                >
+                  {renderDetailsPageContent({
+                    pageMemory: cachedMemory,
+                    comments: cachedCommentsRef.current,
+                    totalComments: cachedCommentCountRef.current,
+                    hasMore: false,
+                    isLoadingMore: false,
+                    isSubmitting: false,
+                    onSubmit: () => {},
+                    onDelete: () => {},
+                    onLoadMore: () => {},
+                    commentValue: carriedCommentText.current,
+                    onCommentValueChange: () => {},
+                  })}
+                </div>
+
+                <div
+                  className={PAGE_FACE_STYLES}
+                  style={{
+                    transform: 'rotateY(180deg)',
+                    backfaceVisibility: 'hidden',
+                  }}
+                >
+                  {renderPhotoPageContent({
+                    pageMemory: memory,
+                  })}
+                </div>
+              </motion.div>
+            )}
+          </div>
+        </div>
+
+        {renderCoverLayers()}
+      </div>
+
+      <motion.button
+        onClick={handleNext}
+        disabled={!hasNext || isFlipping}
+        className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-border bg-card text-black shadow-[3px_3px_0px_0px_#2d2d2d] transition-colors hover:shadow-[4px_4px_0px_0px_#2d2d2d] disabled:cursor-not-allowed disabled:opacity-30"
+        variants={chevronVariants}
+        initial="idle"
+        whileHover={hasNext ? 'hover' : 'disabled'}
+        whileTap={hasNext ? 'tap' : 'disabled'}
+        aria-label="Next memory"
+      >
+        <ChevronRight className="h-6 w-6" />
+      </motion.button>
+    </div>
+  );
+
+  const renderMobileBook = () => (
+    <div className="flex w-full max-w-[32rem] flex-col items-center gap-4 overflow-visible">
+      <div className="flex w-full justify-end">
+        <button
+          type="button"
+          onClick={() => onOpenChange(false)}
+          className="inline-flex h-[42px] w-[42px] items-center justify-center border-2 bg-white text-black transition-colors hover:bg-[#fff4cc] active:translate-x-[2px] active:translate-y-[2px]"
+          style={{ borderColor: NOTEBOOK_BORDER_COLOR }}
+          aria-label="Close memory details"
+        >
+          <X className="h-[18px] w-[18px]" />
+        </button>
+      </div>
+
+      <div
+        className="relative overflow-visible"
+        style={{
+          width: mobileBookStageWidth,
+          height: mobileBookStageHeight,
+          perspective: '2000px',
+        }}
+      >
+        <div
+          className="absolute left-0 top-0"
+          style={{
+            width: `${BOOK_WIDTH}px`,
+            height: `${BOOK_HEIGHT}px`,
+            transform: `translate3d(${mobileBookOffsetX}px, ${MOBILE_BOOK_TOP_OFFSET * mobileBookScale}px, 0) scale(${mobileBookScale})`,
+            transformOrigin: 'top left',
+            transformStyle: 'preserve-3d',
+          }}
+        >
+          <div
+            className="absolute inset-0 p-2"
+            style={{
+              border: `2px solid ${NOTEBOOK_BORDER_COLOR}`,
+              backgroundColor: NOTEBOOK_COVER_COLOR,
+              overflow: 'visible',
+              transformStyle: 'preserve-3d',
+            }}
+          >
+            <div
+              className="relative z-10 flex h-full gap-2"
+              style={{ transformStyle: 'preserve-3d' }}
+            >
+              <NotebookSpineConnectors />
+
+              <div
+                className={`${PAGE_BASE_STYLES} relative`}
+                style={{ width: `${PAGE_WIDTH}px`, zIndex: 1 }}
+              >
+                {shouldShowMobileCommentsPage || isMobileNextMemoryTransition
+                  ? renderDetailsPageContent({
+                      pageMemory: mobileVisibleMemory,
+                      comments: isMobileNextMemoryTransition
+                        ? mobileCachedCommentsRef.current
+                        : liveComments,
+                      totalComments: isMobileNextMemoryTransition
+                        ? mobileCachedCommentCountRef.current
+                        : liveCommentCount,
+                      hasMore: isMobileNextMemoryTransition
+                        ? false
+                        : (hasNextPage ?? false),
+                      isLoadingMore: isMobileNextMemoryTransition
+                        ? false
+                        : isFetchingNextPage,
+                      isSubmitting: isMobileNextMemoryTransition
+                        ? false
+                        : createComment.isPending,
+                      onSubmit: isMobileNextMemoryTransition
+                        ? () => {}
+                        : handleCommentSubmit,
+                      onDelete: isMobileNextMemoryTransition
+                        ? () => {}
+                        : handleCommentDelete,
+                      onLoadMore: isMobileNextMemoryTransition
+                        ? () => {}
+                        : fetchNextPage,
+                      commentValue: isMobileNextMemoryTransition
+                        ? mobileCarriedCommentText.current
+                        : commentText,
+                      onCommentValueChange: isMobileNextMemoryTransition
+                        ? () => {}
+                        : setCommentText,
+                      pageSide: 'left',
+                    })
+                  : renderPhotoPageContent({
+                      pageMemory:
+                        isMobilePrevMemoryTransition && previousMemory
+                          ? previousMemory
+                          : memory,
+                    })}
+              </div>
+
+              <div
+                className={`${PAGE_BASE_STYLES} relative`}
+                style={{ width: `${PAGE_WIDTH}px`, zIndex: 1 }}
+              >
+                {renderMobileStaticRightPageContent()}
+              </div>
+
+              {isMobilePageTurning && mobileTransitionDirection === 'prev' && (
+                <motion.div
+                  className="absolute top-0"
+                  style={{
+                    left: `${BOOK_INNER_PADDING}px`,
+                    width: `${PAGE_WIDTH}px`,
+                    height: '100%',
+                    transformStyle: 'preserve-3d',
+                    transformOrigin: `${PAGE_WIDTH}px 50%`,
+                    willChange: 'transform',
+                    zIndex: 20,
+                  }}
+                  variants={leftPageFlipVariants}
+                  initial="flat"
+                  animate="flipped"
+                >
+                  <div
+                    className={PAGE_FACE_STYLES}
+                    style={{ backfaceVisibility: 'hidden' }}
+                  >
+                    {isMobilePrevMemoryTransition
+                      ? renderPhotoPageContent({
+                          pageMemory: mobileTransitionMemory ?? memory,
+                        })
+                      : renderDetailsPageContent({
+                          pageMemory: memory,
+                          comments: mobileCachedCommentsRef.current,
+                          totalComments: mobileCachedCommentCountRef.current,
+                          hasMore: false,
+                          isLoadingMore: false,
+                          isSubmitting: false,
+                          onSubmit: () => {},
+                          onDelete: () => {},
+                          onLoadMore: () => {},
+                          commentValue: mobileCarriedCommentText.current,
+                          onCommentValueChange: () => {},
+                          pageSide: 'left',
+                        })}
+                  </div>
+
+                  <div
+                    className={PAGE_FACE_STYLES}
+                    style={{
+                      transform: 'rotateY(180deg)',
+                      backfaceVisibility: 'hidden',
+                    }}
+                  >
+                    {isMobilePrevMemoryTransition
+                      ? renderMobilePreviousMemoryDetailsPage()
+                      : renderPhotoPageContent({
+                          pageMemory: memory,
+                          pageSide: 'right',
+                        })}
+                  </div>
+                </motion.div>
+              )}
+
+              {isMobilePageTurning && mobileTransitionDirection === 'next' && (
+                <motion.div
+                  className="absolute top-0"
+                  style={{
+                    right: `${BOOK_INNER_PADDING}px`,
+                    width: `${PAGE_WIDTH}px`,
+                    height: '100%',
+                    transformStyle: 'preserve-3d',
+                    transformOrigin: '0px 50%',
+                    willChange: 'transform',
+                    zIndex: 20,
+                  }}
+                  variants={rightPageFlipVariants}
+                  initial="flat"
+                  animate="flipped"
+                >
+                  <div
+                    className={PAGE_FACE_STYLES}
+                    style={{ backfaceVisibility: 'hidden' }}
+                  >
+                    {renderMobilePeekPageContent()}
+                  </div>
+
+                  <div
+                    className={PAGE_FACE_STYLES}
+                    style={{
+                      transform: 'rotateY(180deg)',
+                      backfaceVisibility: 'hidden',
+                    }}
+                  >
+                    {mobileTransitionMode === 'memory' &&
+                    nextMemory &&
+                    nextDateInfo
+                      ? renderPhotoPageContent({
+                          pageMemory: nextMemory,
+                        })
+                      : renderDetailsPageContent({
+                          pageMemory: memory,
+                          comments: mobileCachedCommentsRef.current,
+                          totalComments: mobileCachedCommentCountRef.current,
+                          hasMore: false,
+                          isLoadingMore: false,
+                          isSubmitting: false,
+                          onSubmit: () => {},
+                          onDelete: () => {},
+                          onLoadMore: () => {},
+                          commentValue: '',
+                          onCommentValueChange: () => {},
+                          pageSide: 'left',
+                        })}
+                  </div>
+                </motion.div>
+              )}
+            </div>
+          </div>
+
+          {renderCoverLayers()}
+        </div>
+      </div>
+
+      <div
+        className="flex items-center justify-between"
+        style={{ width: mobileVisibleBookWidth }}
+      >
+        <button
+          type="button"
+          onClick={handleMobileLeftChevron}
+          disabled={mobileLeftChevronDisabled}
+          className="z-30 flex h-10 w-10 items-center justify-center rounded-full border-2 border-border bg-card text-black shadow-[3px_3px_0px_0px_#2d2d2d] transition-colors hover:shadow-[4px_4px_0px_0px_#2d2d2d] disabled:cursor-not-allowed disabled:opacity-30"
+          aria-label={mobileLeftChevronLabel}
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+
+        <button
+          type="button"
+          onClick={handleMobileRightChevron}
+          disabled={mobileRightChevronDisabled}
+          className="z-30 flex h-10 w-10 items-center justify-center rounded-full border-2 border-border bg-card text-black shadow-[3px_3px_0px_0px_#2d2d2d] transition-colors hover:shadow-[4px_4px_0px_0px_#2d2d2d] disabled:cursor-not-allowed disabled:opacity-30"
+          aria-label={mobileRightChevronLabel}
+        >
+          {mobileRightShowsComments ? (
+            <MessageSquare className="h-5 w-5" />
+          ) : (
+            <ChevronRight className="h-5 w-5" />
+          )}
+        </button>
+      </div>
+    </div>
+  );
+
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <AnimatePresence>
           {open && (
             <DialogPrimitive.Portal forceMount>
-              {/* Overlay */}
               <motion.div
                 className="fixed inset-0 z-50 bg-[#2d2d2d]/50"
                 variants={overlayVariants}
@@ -380,769 +1738,16 @@ export function MemoryDetailModal({
                 onClick={() => onOpenChange(false)}
               />
 
-              {/* Content Container */}
               <DialogPrimitive.Content asChild forceMount>
-                <div className="fixed inset-0 z-50 flex items-center justify-center">
+                <div
+                  className={`fixed inset-0 z-50 flex ${
+                    isMobileViewport
+                      ? 'items-start justify-center px-3 pb-6 pt-20'
+                      : 'items-center justify-center'
+                  }`}
+                >
                   <DialogTitle className="sr-only">{memory.title}</DialogTitle>
-
-                  {/* Wrapper with perspective for 3D */}
-                  <div
-                    className="flex items-center gap-6"
-                    style={{ perspective: '2000px' }}
-                  >
-                    {/* Left chevron */}
-                    <motion.button
-                      onClick={handlePrevious}
-                      disabled={!hasPrevious || isFlipping}
-                      className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-border bg-card text-foreground shadow-[3px_3px_0px_0px_#2d2d2d] transition-colors hover:shadow-[4px_4px_0px_0px_#2d2d2d] disabled:cursor-not-allowed disabled:opacity-30"
-                      variants={chevronVariants}
-                      initial="idle"
-                      whileHover={hasPrevious ? 'hover' : 'disabled'}
-                      whileTap={hasPrevious ? 'tap' : 'disabled'}
-                      aria-label="Previous memory"
-                    >
-                      <ChevronLeft className="h-6 w-6" />
-                    </motion.button>
-
-                    {/* Book */}
-                    <div
-                      className="relative"
-                      style={{
-                        width: '968px',
-                        height: '650px', // Fixed height for the book
-                        overflow: 'visible',
-                        transformStyle: 'preserve-3d',
-                      }}
-                    >
-                      <button
-                        type="button"
-                        onClick={() => onOpenChange(false)}
-                        className="absolute right-4 top-4 z-30 flex h-10 w-10 items-center justify-center rounded-full border-2 border-border bg-card text-foreground shadow-[3px_3px_0px_0px_#2d2d2d] transition-colors hover:shadow-[4px_4px_0px_0px_#2d2d2d]"
-                        aria-label="Close memory details"
-                      >
-                        <X className="h-5 w-5" />
-                      </button>
-
-                      {/* Pages Layer (always visible) */}
-                      <div
-                        className="absolute inset-0 rounded-2xl bg-sky-200 p-2 shadow-[0px_2px_4px_0px_rgba(0,0,0,0.25)]"
-                        style={{
-                          overflow: 'visible',
-                          transformStyle: 'preserve-3d',
-                        }}
-                      >
-                        {/* Notebook tab */}
-                        <div className="absolute -top-5 left-3 rounded-t-md bg-sky-200 px-3 py-0.5">
-                          <span className="text-[10px] text-muted-foreground">
-                            {memory.location?.buildingName || 'Memory'}
-                          </span>
-                        </div>
-
-                        {/* Two-page spread */}
-                        <div
-                          className="relative flex h-full gap-2"
-                          style={{
-                            transformStyle: 'preserve-3d',
-                          }}
-                        >
-                          {/* BASE LEFT PAGE (shows current/new content) */}
-                          <div
-                            className={`${PAGE_BASE_STYLES} relative`}
-                            style={{
-                              width: '472px',
-                              zIndex: 1,
-                            }}
-                          >
-                            {/* Date card */}
-                            <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4">
-                              <div>
-                                <p className="text-xs font-normal text-skolaroid-blue">
-                                  WHEN
-                                </p>
-                                <p className="text-base font-medium text-black">
-                                  {baseLeftDateInfo.dayOfWeek},{' '}
-                                  {baseLeftDateInfo.month}{' '}
-                                  {baseLeftDateInfo.dayNumber}
-                                </p>
-                                <p className="text-[8px] text-muted-foreground">
-                                  {baseLeftDateInfo.uploadTime.replace(
-                                    /:/g,
-                                    '-'
-                                  )}
-                                </p>
-                              </div>
-                              <div className="flex h-14 w-14 flex-col overflow-hidden rounded-md border border-slate-200 bg-gradient-to-b from-neutral-50/50 to-gray-400/50">
-                                <div className="h-3 w-full rounded-t-md bg-skolaroid-blue" />
-                                <div className="flex flex-1 items-center justify-center">
-                                  <span className="text-2xl font-medium text-black">
-                                    {baseLeftDateInfo.dayNumber}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Polaroid photo */}
-                            <div className="flex flex-1 items-center justify-center">
-                              <div className="w-full">
-                                {baseLeftMemory.mediaURL ? (
-                                  <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
-                                    <div className="relative h-80 w-full overflow-hidden bg-secondary">
-                                      <Image
-                                        src={baseLeftMemory.mediaURL}
-                                        alt={baseLeftMemory.title}
-                                        fill
-                                        className="object-cover"
-                                      />
-                                    </div>
-                                  </div>
-                                ) : (
-                                  <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
-                                    <div className="flex h-80 w-full items-center justify-center bg-secondary">
-                                      <span className="text-xs text-muted-foreground">
-                                        No image
-                                      </span>
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-
-                            {/* Calendar week strip */}
-                            <div className="flex items-center justify-center gap-0.5">
-                              {baseLeftDateInfo.calendarWeek.map((day) => (
-                                <div
-                                  key={day.label + day.number}
-                                  className="flex h-20 w-14 flex-col items-center overflow-hidden rounded bg-stone-50"
-                                >
-                                  <span className="mt-1 text-[10px] text-muted-foreground">
-                                    {day.label}
-                                  </span>
-                                  <div className="flex flex-1 items-center justify-center">
-                                    {day.active ? (
-                                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-skolaroid-blue">
-                                        <span className="text-sm font-medium text-white">
-                                          {day.number}
-                                        </span>
-                                      </div>
-                                    ) : (
-                                      <span className="text-sm font-medium text-foreground">
-                                        {day.number}
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-
-                            {/* Spine rings on right edge of left page - scales when right page is flipping */}
-                            <LeftPageSpineRings
-                              shouldScale={
-                                isFlipping && flipDirection === 'next'
-                              }
-                            />
-                          </div>
-
-                          {/* BASE RIGHT PAGE (shows current/new content) */}
-                          <div
-                            className={`${PAGE_BASE_STYLES} relative`}
-                            style={{
-                              width: '472px',
-                              zIndex: 1,
-                            }}
-                          >
-                            {/* Author header */}
-                            <div className="flex items-start gap-3">
-                              <Avatar className="h-9 w-9">
-                                <AvatarFallback className="bg-secondary text-sm text-foreground">
-                                  {authorInitial}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="flex-1">
-                                <p className="text-sm font-semibold text-foreground">
-                                  {authorName}
-                                </p>
-                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                  <Globe className="h-3 w-3" />
-                                  <span>Public</span>
-                                </div>
-                              </div>
-                              {isOwner ? (
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <button
-                                      className="text-muted-foreground hover:text-foreground"
-                                      aria-label="More options"
-                                    >
-                                      <MoreHorizontal className="h-5 w-5" />
-                                    </button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="end">
-                                    <DropdownMenuItem
-                                      className="text-amber-600 focus:text-amber-600"
-                                      onClick={() => setReportModalOpen(true)}
-                                    >
-                                      <Flag className="mr-2 h-4 w-4" />
-                                      Report Memory
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                      className="text-red-600 focus:text-red-600"
-                                      onClick={() => setDeleteModalOpen(true)}
-                                    >
-                                      <Trash2 className="mr-2 h-4 w-4" />
-                                      Delete Memory
-                                    </DropdownMenuItem>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              ) : (
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <button
-                                      className="text-muted-foreground hover:text-foreground"
-                                      aria-label="More options"
-                                    >
-                                      <MoreHorizontal className="h-5 w-5" />
-                                    </button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="end">
-                                    <DropdownMenuItem
-                                      className="text-amber-600 focus:text-amber-600"
-                                      onClick={() => setReportModalOpen(true)}
-                                    >
-                                      <Flag className="mr-2 h-4 w-4" />
-                                      Report Memory
-                                    </DropdownMenuItem>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              )}
-                            </div>
-
-                            {/* Caption card */}
-                            <div className="rounded-2xl bg-gradient-to-b from-secondary to-secondary p-5 shadow-[0px_1px_2px_0.5px_rgba(0,0,0,0.25)] outline outline-[3px] outline-white">
-                              <p className="text-center font-dancing text-2xl leading-relaxed text-foreground">
-                                {baseRightMemory.description ||
-                                  'A memorable moment...'}
-                              </p>
-                            </div>
-
-                            {/* Action bar */}
-                            <ActionBar
-                              memory={baseRightMemory}
-                              onReport={() => setReportModalOpen(true)}
-                            />
-
-                            {/* Tags section */}
-                            {baseRightMemory.tags &&
-                              baseRightMemory.tags.length > 0 && (
-                                <div className="mt-4">
-                                  <h3 className="text-sm font-medium text-muted-foreground">
-                                    Tags
-                                  </h3>
-                                  <div className="mt-2 flex flex-wrap gap-2">
-                                    {baseRightMemory.tags.map((tag) => (
-                                      <Badge
-                                        key={tag.id}
-                                        variant={
-                                          isAutoTag(tag.name)
-                                            ? 'outline'
-                                            : 'secondary'
-                                        }
-                                      >
-                                        {tag.name}
-                                      </Badge>
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
-
-                            {/* Comments section — during prev flip, hold old text on exposed base */}
-                            <CommentSection
-                              comments={
-                                isFlipping && flipDirection === 'prev'
-                                  ? cachedCommentsRef.current
-                                  : allComments
-                              }
-                              commentCount={
-                                isFlipping && flipDirection === 'prev'
-                                  ? cachedCommentCountRef.current
-                                  : commentCount
-                              }
-                              currentUserId={user?.id}
-                              hasMore={
-                                isFlipping ? false : (hasNextPage ?? false)
-                              }
-                              isLoadingMore={
-                                isFlipping ? false : isFetchingNextPage
-                              }
-                              isSubmitting={
-                                isFlipping ? false : createComment.isPending
-                              }
-                              onSubmit={
-                                isFlipping ? () => {} : handleCommentSubmit
-                              }
-                              onDelete={
-                                isFlipping ? () => {} : handleCommentDelete
-                              }
-                              onLoadMore={isFlipping ? () => {} : fetchNextPage}
-                              commentText={
-                                isFlipping && flipDirection === 'prev'
-                                  ? carriedCommentText.current
-                                  : commentText
-                              }
-                              onCommentTextChange={
-                                isFlipping ? () => {} : setCommentText
-                              }
-                            />
-
-                            {/* Spine rings on left edge of right page - scales when left page is flipping */}
-                            <RightPageSpineRings
-                              shouldScale={
-                                isFlipping && flipDirection === 'prev'
-                              }
-                            />
-                          </div>
-
-                          {/* ANIMATED LEFT PAGE OVERLAY - shows cached/old content during PREV flip */}
-                          {cachedMemory &&
-                            cachedDateInfo &&
-                            flipDirection === 'prev' && (
-                              <motion.div
-                                className="absolute top-0"
-                                style={{
-                                  left: '8px', // Account for container p-2 padding
-                                  width: '472px', // (968px - 16px padding - 8px gap) / 2
-                                  height: '100%',
-                                  transformStyle: 'preserve-3d',
-                                  transformOrigin: '472px 50%', // Right edge, center
-                                  willChange: 'transform',
-                                  zIndex: 20, // Above base pages
-                                }}
-                                variants={leftPageFlipVariants}
-                                initial="flat"
-                                animate={isLeftPageFlipped ? 'flipped' : 'flat'}
-                              >
-                                {/* Front of flipping left page - shows cached/old content */}
-                                <div
-                                  className={PAGE_FACE_STYLES}
-                                  style={{ backfaceVisibility: 'hidden' }}
-                                >
-                                  {/* Date card - cached content */}
-                                  <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4">
-                                    <div>
-                                      <p className="text-xs font-normal text-skolaroid-blue">
-                                        WHEN
-                                      </p>
-                                      <p className="text-base font-medium text-black">
-                                        {cachedDateInfo.dayOfWeek},{' '}
-                                        {cachedDateInfo.month}{' '}
-                                        {cachedDateInfo.dayNumber}
-                                      </p>
-                                      <p className="text-[8px] text-muted-foreground">
-                                        {cachedDateInfo.uploadTime.replace(
-                                          /:/g,
-                                          '-'
-                                        )}
-                                      </p>
-                                    </div>
-                                    <div className="flex h-14 w-14 flex-col overflow-hidden rounded-md border border-slate-200 bg-gradient-to-b from-neutral-50/50 to-gray-400/50">
-                                      <div className="h-3 w-full rounded-t-md bg-skolaroid-blue" />
-                                      <div className="flex flex-1 items-center justify-center">
-                                        <span className="text-2xl font-medium text-black">
-                                          {cachedDateInfo.dayNumber}
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  {/* Polaroid photo - cached content */}
-                                  <div className="flex flex-1 items-center justify-center">
-                                    <div className="w-full">
-                                      {cachedMemory.mediaURL ? (
-                                        <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
-                                          <div className="relative h-80 w-full overflow-hidden bg-secondary">
-                                            <Image
-                                              src={cachedMemory.mediaURL}
-                                              alt={cachedMemory.title}
-                                              fill
-                                              className="object-cover"
-                                            />
-                                          </div>
-                                        </div>
-                                      ) : (
-                                        <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
-                                          <div className="flex h-80 w-full items-center justify-center bg-secondary">
-                                            <span className="text-xs text-muted-foreground">
-                                              No image
-                                            </span>
-                                          </div>
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div>
-
-                                  {/* Calendar week strip - cached content */}
-                                  <div className="flex items-center justify-center gap-0.5">
-                                    {cachedDateInfo.calendarWeek.map((day) => (
-                                      <div
-                                        key={day.label + day.number}
-                                        className="flex h-20 w-14 flex-col items-center overflow-hidden rounded bg-stone-50"
-                                      >
-                                        <span className="mt-1 text-[10px] text-muted-foreground">
-                                          {day.label}
-                                        </span>
-                                        <div className="flex flex-1 items-center justify-center">
-                                          {day.active ? (
-                                            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-skolaroid-blue">
-                                              <span className="text-sm font-medium text-white">
-                                                {day.number}
-                                              </span>
-                                            </div>
-                                          ) : (
-                                            <span className="text-sm font-medium text-foreground">
-                                              {day.number}
-                                            </span>
-                                          )}
-                                        </div>
-                                      </div>
-                                    ))}
-                                  </div>
-
-                                  {/* Spine rings on right edge */}
-                                  <LeftPageSpineRings />
-                                </div>
-                                {/* Back of flipping left page - shows NEW right content */}
-                                <div
-                                  className={PAGE_FACE_STYLES}
-                                  style={{
-                                    transform: 'rotateY(180deg)',
-                                    backfaceVisibility: 'hidden',
-                                  }}
-                                >
-                                  {/* Author header */}
-                                  <div className="flex items-start gap-3">
-                                    <Avatar className="h-9 w-9">
-                                      <AvatarFallback className="bg-secondary text-sm text-foreground">
-                                        {authorInitial}
-                                      </AvatarFallback>
-                                    </Avatar>
-                                    <div className="flex-1">
-                                      <p className="text-sm font-semibold text-foreground">
-                                        {authorName}
-                                      </p>
-                                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                        <Globe className="h-3 w-3" />
-                                        <span>Public</span>
-                                      </div>
-                                    </div>
-                                    <button
-                                      className="text-muted-foreground hover:text-foreground"
-                                      aria-label="More options"
-                                    >
-                                      <MoreHorizontal className="h-5 w-5" />
-                                    </button>
-                                  </div>
-
-                                  {/* Caption card */}
-                                  <div className="rounded-2xl bg-gradient-to-b from-secondary to-secondary p-5 shadow-[0px_1px_2px_0.5px_rgba(0,0,0,0.25)] outline outline-[3px] outline-white">
-                                    <p className="text-center font-dancing text-2xl leading-relaxed text-foreground">
-                                      {memory.description ||
-                                        'A memorable moment...'}
-                                    </p>
-                                  </div>
-
-                                  {/* Action bar */}
-                                  <ActionBar memory={memory} />
-
-                                  {/* Comments section — PREV flip: cached comments, blank input */}
-                                  <CommentSection
-                                    comments={cachedCommentsRef.current}
-                                    commentCount={cachedCommentCountRef.current}
-                                    currentUserId={user?.id}
-                                    hasMore={false}
-                                    isLoadingMore={false}
-                                    isSubmitting={false}
-                                    onSubmit={() => {}}
-                                    onDelete={() => {}}
-                                    onLoadMore={() => {}}
-                                    commentText=""
-                                    onCommentTextChange={() => {}}
-                                  />
-
-                                  {/* Spine rings on left edge (back of left page shows right content) */}
-                                  <RightPageSpineRings />
-                                </div>
-                              </motion.div>
-                            )}
-
-                          {/* ANIMATED RIGHT PAGE OVERLAY - shows cached/old content during NEXT flip */}
-                          {cachedMemory && flipDirection === 'next' && (
-                            <motion.div
-                              className="absolute top-0"
-                              style={{
-                                right: '8px', // Account for container p-2 padding
-                                width: '472px', // (968px - 16px padding - 8px gap) / 2
-                                height: '100%',
-                                transformStyle: 'preserve-3d',
-                                transformOrigin: '0px 50%', // Left edge, center
-                                willChange: 'transform',
-                                zIndex: 20, // Above base pages
-                              }}
-                              variants={rightPageFlipVariants}
-                              initial="flat"
-                              animate={isRightPageFlipped ? 'flipped' : 'flat'}
-                            >
-                              {/* Front of flipping right page - shows cached/old content */}
-                              <div
-                                className={PAGE_FACE_STYLES}
-                                style={{ backfaceVisibility: 'hidden' }}
-                              >
-                                {/* Author header */}
-                                <div className="flex items-start gap-3">
-                                  <Avatar className="h-9 w-9">
-                                    <AvatarFallback className="bg-secondary text-sm text-foreground">
-                                      {authorInitial}
-                                    </AvatarFallback>
-                                  </Avatar>
-                                  <div className="flex-1">
-                                    <p className="text-sm font-semibold text-foreground">
-                                      {authorName}
-                                    </p>
-                                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                      <Globe className="h-3 w-3" />
-                                      <span>Public</span>
-                                    </div>
-                                  </div>
-                                  <button
-                                    className="text-muted-foreground hover:text-foreground"
-                                    aria-label="More options"
-                                  >
-                                    <MoreHorizontal className="h-5 w-5" />
-                                  </button>
-                                </div>
-
-                                {/* Caption card - cached content */}
-                                <div className="rounded-2xl bg-gradient-to-b from-secondary to-secondary p-5 shadow-[0px_1px_2px_0.5px_rgba(0,0,0,0.25)] outline outline-[3px] outline-white">
-                                  <p className="text-center font-dancing text-2xl leading-relaxed text-foreground">
-                                    {cachedMemory.description ||
-                                      'A memorable moment...'}
-                                  </p>
-                                </div>
-
-                                {/* Action bar */}
-                                <ActionBar memory={cachedMemory!} />
-
-                                {/* Comments section — NEXT flip: cached comments, carry snapshotted text */}
-                                <CommentSection
-                                  comments={cachedCommentsRef.current}
-                                  commentCount={cachedCommentCountRef.current}
-                                  currentUserId={user?.id}
-                                  hasMore={false}
-                                  isLoadingMore={false}
-                                  isSubmitting={false}
-                                  onSubmit={() => {}}
-                                  onDelete={() => {}}
-                                  onLoadMore={() => {}}
-                                  commentText={carriedCommentText.current}
-                                  onCommentTextChange={() => {}}
-                                />
-
-                                {/* Spine rings on left edge */}
-                                <RightPageSpineRings />
-                              </div>
-                              {/* Back of flipping right page - shows NEW left content */}
-                              <div
-                                className={PAGE_FACE_STYLES}
-                                style={{
-                                  transform: 'rotateY(180deg)',
-                                  backfaceVisibility: 'hidden',
-                                }}
-                              >
-                                {/* Date card */}
-                                <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4">
-                                  <div>
-                                    <p className="text-xs font-normal text-skolaroid-blue">
-                                      WHEN
-                                    </p>
-                                    <p className="text-base font-medium text-black">
-                                      {dateInfo.dayOfWeek}, {dateInfo.month}{' '}
-                                      {dateInfo.dayNumber}
-                                    </p>
-                                    <p className="text-[8px] text-muted-foreground">
-                                      {dateInfo.uploadTime.replace(/:/g, '-')}
-                                    </p>
-                                  </div>
-                                  <div className="flex h-14 w-14 flex-col overflow-hidden rounded-md border border-slate-200 bg-gradient-to-b from-neutral-50/50 to-gray-400/50">
-                                    <div className="h-3 w-full rounded-t-md bg-skolaroid-blue" />
-                                    <div className="flex flex-1 items-center justify-center">
-                                      <span className="text-2xl font-medium text-black">
-                                        {dateInfo.dayNumber}
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-
-                                {/* Polaroid photo */}
-                                <div className="flex flex-1 items-center justify-center">
-                                  <div className="w-full">
-                                    {memory.mediaURL ? (
-                                      <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
-                                        <div className="relative h-80 w-full overflow-hidden bg-secondary">
-                                          <Image
-                                            src={memory.mediaURL}
-                                            alt={memory.title}
-                                            fill
-                                            className="object-cover"
-                                          />
-                                        </div>
-                                      </div>
-                                    ) : (
-                                      <div className="border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d]">
-                                        <div className="flex h-80 w-full items-center justify-center bg-secondary">
-                                          <span className="text-xs text-muted-foreground">
-                                            No image
-                                          </span>
-                                        </div>
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-
-                                {/* Calendar week strip */}
-                                <div className="flex items-center justify-center gap-0.5">
-                                  {dateInfo.calendarWeek.map((day) => (
-                                    <div
-                                      key={day.label + day.number}
-                                      className="flex h-20 w-14 flex-col items-center overflow-hidden rounded bg-stone-50"
-                                    >
-                                      <span className="mt-1 text-[10px] text-muted-foreground">
-                                        {day.label}
-                                      </span>
-                                      <div className="flex flex-1 items-center justify-center">
-                                        {day.active ? (
-                                          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-skolaroid-blue">
-                                            <span className="text-sm font-medium text-white">
-                                              {day.number}
-                                            </span>
-                                          </div>
-                                        ) : (
-                                          <span className="text-sm font-medium text-foreground">
-                                            {day.number}
-                                          </span>
-                                        )}
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-
-                                {/* Spine rings on right edge (back of right page shows left content) */}
-                                <LeftPageSpineRings />
-                              </div>
-                            </motion.div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Covers Layer (visible during open/close animation) */}
-                      {showCovers && (
-                        <>
-                          {/* Left cover */}
-                          <motion.div
-                            className="absolute left-0 top-0 h-full w-1/2 rounded-l-2xl bg-sky-200 shadow-[0px_4px_8px_0px_rgba(0,0,0,0.3)]"
-                            style={{
-                              transformOrigin: 'right center',
-                              transformStyle: 'preserve-3d',
-                            }}
-                            variants={coverLeftVariants}
-                            initial="closed"
-                            animate={animationPhase}
-                          >
-                            <div
-                              className="relative flex h-full items-center justify-center rounded-l-2xl bg-sky-200"
-                              style={{ backfaceVisibility: 'hidden' }}
-                            >
-                              <div className="flex flex-col items-center gap-2">
-                                <div className="h-24 w-1 rounded-full bg-sky-300" />
-                                <p className="text-xs text-sky-400">Memories</p>
-                              </div>
-                              {/* Spine connector on right edge */}
-                              <div className="pointer-events-none absolute right-0 top-0 flex h-full flex-col items-end justify-around py-4">
-                                {[0, 1, 2].map((i) => (
-                                  <div
-                                    key={i}
-                                    className="relative flex h-4 w-7 items-center"
-                                  >
-                                    <div className="absolute right-0 h-3.5 w-[7px] rounded-r-full bg-sky-400" />
-                                    <div className="absolute right-0.5 h-1.5 w-5 rounded-l bg-sky-300" />
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                            <div
-                              className="absolute inset-0 rounded-r-2xl bg-sky-100"
-                              style={{
-                                transform: 'rotateY(180deg)',
-                                backfaceVisibility: 'hidden',
-                              }}
-                            />
-                          </motion.div>
-
-                          {/* Right cover */}
-                          <motion.div
-                            className="absolute right-0 top-0 h-full w-1/2 rounded-r-2xl bg-sky-200 shadow-[0px_4px_8px_0px_rgba(0,0,0,0.3)]"
-                            style={{
-                              transformOrigin: 'left center',
-                              transformStyle: 'preserve-3d',
-                            }}
-                            variants={coverRightVariants}
-                            initial="closed"
-                            animate={animationPhase}
-                          >
-                            <div
-                              className="relative flex h-full items-center justify-center rounded-r-2xl bg-sky-200"
-                              style={{ backfaceVisibility: 'hidden' }}
-                            >
-                              <div className="flex flex-col items-center gap-2">
-                                <div className="h-24 w-1 rounded-full bg-sky-300" />
-                                <p className="text-xs text-sky-400">Book</p>
-                              </div>
-                              {/* Spine connector on left edge */}
-                              <div className="pointer-events-none absolute left-0 top-0 flex h-full flex-col items-start justify-around py-4">
-                                {[0, 1, 2].map((i) => (
-                                  <div
-                                    key={i}
-                                    className="relative flex h-4 w-7 items-center"
-                                  >
-                                    <div className="absolute left-0 h-3.5 w-[7px] rounded-l-full bg-sky-400" />
-                                    <div className="absolute left-0.5 h-1.5 w-5 rounded-r bg-sky-300" />
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                            <div
-                              className="absolute inset-0 rounded-l-2xl bg-sky-100"
-                              style={{
-                                transform: 'rotateY(180deg)',
-                                backfaceVisibility: 'hidden',
-                              }}
-                            />
-                          </motion.div>
-                        </>
-                      )}
-                    </div>
-
-                    {/* Right chevron */}
-                    <motion.button
-                      onClick={handleNext}
-                      disabled={!hasNext || isFlipping}
-                      className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-border bg-card text-foreground shadow-[3px_3px_0px_0px_#2d2d2d] transition-colors hover:shadow-[4px_4px_0px_0px_#2d2d2d] disabled:cursor-not-allowed disabled:opacity-30"
-                      variants={chevronVariants}
-                      initial="idle"
-                      whileHover={hasNext ? 'hover' : 'disabled'}
-                      whileTap={hasNext ? 'tap' : 'disabled'}
-                      aria-label="Next memory"
-                    >
-                      <ChevronRight className="h-6 w-6" />
-                    </motion.button>
-                  </div>
+                  {isMobileViewport ? renderMobileBook() : renderDesktopBook()}
                 </div>
               </DialogPrimitive.Content>
             </DialogPrimitive.Portal>
@@ -1173,6 +1778,14 @@ export function MemoryDetailModal({
         memoryId={memory?.id ?? ''}
         memoryTitle={memory?.title ?? ''}
       />
+
+      {memory && (
+        <EditMemoryModal
+          open={editModalOpen}
+          onOpenChange={setEditModalOpen}
+          memory={memory}
+        />
+      )}
     </>
   );
 }

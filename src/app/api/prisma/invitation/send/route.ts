@@ -101,6 +101,8 @@ export async function POST(request: NextRequest) {
             invitedBy: authUser.id,
             email: email.toLowerCase(),
             token,
+            isForAll: false,
+            maxUses: 1,
             expiresAt,
           },
           select: { id: true, email: true, token: true, expiresAt: true },

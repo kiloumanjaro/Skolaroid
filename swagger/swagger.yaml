@@ -16,6 +16,7 @@ servers:
 tags:
   - name: Users
   - name: Groups
+  - name: Batches
   - name: Invitations
   - name: Memories
   - name: Votes
@@ -23,8 +24,52 @@ tags:
   - name: Locations
   - name: Tags
   - name: Storage
+  - name: Reports
+    description: Admin report management endpoints
+  - name: Moderation
+    description: Moderation audit log endpoints
 
 paths:
+  /api/prisma/search:
+    get:
+      tags: [Search]
+      summary: Global search across memories, users, locations, tags, and groups
+      operationId: globalSearch
+      security:
+        - SupabaseSession: []
+      parameters:
+        - in: query
+          name: q
+          required: true
+          schema:
+            type: string
+          description: Search term query
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            default: 20
+          description: Number of results per category
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
   /api/prisma/user/create:
     post:
       tags: [Users]
@@ -513,9 +558,22 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 
   /api/prisma/invitation/cleanup:
-    post:
+    get:
       tags: [Invitations]
       summary: Delete expired invitations (cron endpoint)
+      operationId: cleanupInvitationsCron
+      security:
+        - CronBearer: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags: [Invitations]
+      summary: Delete expired invitations (manual trigger)
       operationId: cleanupInvitations
       security:
         - CronBearer: []
@@ -723,6 +781,35 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
+  /api/prisma/memory/{memoryId}/edit:
+    patch:
+      tags: [Memories]
+      summary: Edit memory
+      operationId: editMemory
+      security:
+        - SupabaseSession: []
+      parameters:
+        - $ref: '#/components/parameters/memoryId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditMemoryInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
   /api/prisma/memory/vote/toggle:
     post:
       tags: [Votes]
@@ -846,6 +933,265 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
+  /api/prisma/report/admin/get-all:
+    get:
+      tags: [Reports]
+      summary: List all reports (admin)
+      operationId: adminGetAllReports
+      security:
+        - SupabaseSession: []
+      parameters:
+        - in: query
+          name: state
+          required: false
+          schema:
+            type: string
+            enum: [OPEN, RESOLVED, DISMISSED]
+          description: Filter reports by state
+      responses:
+        '200':
+          description: Reports fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Reports fetched successfully
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ReportItem'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/report/admin/resolve:
+    patch:
+      tags: [Reports]
+      summary: Resolve or dismiss a report (admin)
+      operationId: adminResolveReport
+      security:
+        - SupabaseSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResolveReportInput'
+      responses:
+        '200':
+          description: Report resolved or dismissed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Report resolved successfully
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      state:
+                        type: string
+                        enum: [RESOLVED, DISMISSED]
+        '400':
+          description: Validation error or invalid state transition
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Report has already been resolved or dismissed
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/moderation/audit-log:
+    get:
+      tags: [Moderation]
+      summary: Fetch paginated moderation audit log (admin)
+      operationId: adminGetAuditLog
+      security:
+        - SupabaseSession: []
+      parameters:
+        - in: query
+          name: action
+          required: false
+          schema:
+            type: string
+            enum:
+              - MEMORY_APPROVED
+              - MEMORY_REJECTED
+              - MEMORY_REMOVED
+              - MEMORY_RESTORED
+              - REPORT_OPENED
+              - REPORT_RESOLVED
+              - REPORT_DISMISSED
+          description: Filter by moderation action type
+        - in: query
+          name: adminId
+          required: false
+          schema:
+            type: string
+            format: uuid
+          description: Filter by admin who performed the action
+        - in: query
+          name: dateFrom
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: Lower bound for createdAt (inclusive)
+        - in: query
+          name: dateTo
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: Upper bound for createdAt (inclusive)
+        - in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
+            format: uuid
+          description: Cursor for pagination (ID of last item from previous page)
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+        - in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        '200':
+          description: Audit log fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Audit log fetched successfully
+                  data:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/AuditLogEntry'
+                      nextCursor:
+                        type: string
+                        format: uuid
+                        nullable: true
+                      hasMore:
+                        type: boolean
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/group/{groupId}/message:
+    post:
+      tags: [Groups]
+      summary: Broadcast a GROUP_ONLY announcement message
+      operationId: createGroupMessage
+      security:
+        - SupabaseSession: []
+      parameters:
+        - $ref: '#/components/parameters/groupId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMessageInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/prisma/batch/{batchId}/message:
+    post:
+      tags: [Batches]
+      summary: Broadcast a BATCH_ONLY announcement message
+      operationId: createBatchMessage
+      security:
+        - SupabaseSession: []
+      parameters:
+        - $ref: '#/components/parameters/batchId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMessageInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
 components:
   securitySchemes:
     SupabaseSession:
@@ -915,6 +1261,14 @@ components:
         type: string
         format: uuid
       description: User id
+    batchId:
+      name: batchId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Program batch id
     groupIdQuery:
       name: groupId
       in: query
@@ -1290,6 +1644,31 @@ components:
           type: string
           format: uri
 
+    EditMemoryInput:
+      type: object
+      minProperties: 1
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          maxLength: 5000
+        visibility:
+          $ref: '#/components/schemas/MemoryVisibility'
+        tags:
+          type: array
+          maxItems: 10
+          items:
+            type: string
+            minLength: 1
+            maxLength: 50
+        privateGroupId:
+          type: string
+          format: uuid
+          nullable: true
+
     UpdateMemoryTagsInput:
       type: object
       required:
@@ -1339,3 +1718,140 @@ components:
           type: string
           format: binary
           description: Image or video file up to 10 MB
+
+    ResolveReportInput:
+      type: object
+      required:
+        - reportId
+        - action
+      properties:
+        reportId:
+          type: string
+          format: uuid
+        action:
+          type: string
+          enum: [RESOLVED, DISMISSED]
+        resolutionNote:
+          type: string
+          maxLength: 1000
+
+    ReportItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        state:
+          type: string
+          enum: [OPEN, RESOLVED, DISMISSED]
+        reason:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        resolvedAt:
+          type: string
+          format: date-time
+          nullable: true
+        resolutionNote:
+          type: string
+          nullable: true
+        reporter:
+          type: object
+          properties:
+            firstName:
+              type: string
+            lastName:
+              type: string
+        memory:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            title:
+              type: string
+            mediaURL:
+              type: string
+              nullable: true
+        resolvedBy:
+          type: object
+          nullable: true
+          properties:
+            firstName:
+              type: string
+            lastName:
+              type: string
+
+    AuditLogEntry:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        action:
+          type: string
+          enum:
+            - MEMORY_APPROVED
+            - MEMORY_REJECTED
+            - MEMORY_REMOVED
+            - MEMORY_RESTORED
+            - REPORT_OPENED
+            - REPORT_RESOLVED
+            - REPORT_DISMISSED
+        targetType:
+          type: string
+          enum: [MEMORY, REPORT]
+        reason:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        admin:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            firstName:
+              type: string
+            lastName:
+              type: string
+        targetMemory:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+              format: uuid
+            title:
+              type: string
+        targetReport:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+              format: uuid
+            reason:
+              type: string
+            state:
+              type: string
+              enum: [OPEN, RESOLVED, DISMISSED]
+
+    CreateMessageInput:
+      type: object
+      required:
+        - content
+        - locationId
+      properties:
+        content:
+          type: string
+          minLength: 1
+          maxLength: 1000
+          description: Text-only announcement body
+        locationId:
+          type: string
+          format: uuid
+          description: Location to associate with the Memory post

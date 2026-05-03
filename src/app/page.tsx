@@ -1,14 +1,15 @@
 'use client';
 
 import {
+  Suspense,
   useEffect,
   useRef,
   useState,
   type MouseEvent as ReactMouseEvent,
   type TouchEvent as ReactTouchEvent,
 } from 'react';
-import { useRouter } from 'next/navigation';
-import { User } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { User, ShieldAlert, X } from 'lucide-react';
 import { BatchSidebar, type Era } from '@/components/batch-sidebar';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { LoginForm } from '@/components/login-form';
@@ -460,8 +461,18 @@ function BatchCanvasCard({
 }
 
 export default function Home() {
+  return (
+    <Suspense fallback={null}>
+      <HomeContent />
+    </Suspense>
+  );
+}
+
+function HomeContent() {
   const { isAuthenticated, loading } = useUserAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [authError, setAuthError] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const drawerContentRef = useRef<HTMLDivElement>(null);
@@ -482,6 +493,21 @@ export default function Home() {
   });
   const dragOriginRef = useRef<DragOrigin | null>(null);
   const [isCanvasDragging, setIsCanvasDragging] = useState(false);
+
+  // Show a fixed error banner if auth_error is present, then clean the URL.
+  useEffect(() => {
+    if (searchParams.get('auth_error')) {
+      setAuthError(
+        'Only @up.edu.ph Google accounts are allowed. Please sign in with your UP mail.'
+      );
+
+      // Clean both the query param and any leftover hash fragments.
+      window.history.replaceState({}, '', window.location.pathname);
+
+      const timer = setTimeout(() => setAuthError(null), 8000);
+      return () => clearTimeout(timer);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (!loading && isAuthenticated) {
@@ -623,6 +649,32 @@ export default function Home() {
 
   return (
     <main className="relative flex min-h-screen w-full items-center justify-center overflow-hidden">
+      {/* ── Auth error banner ── */}
+      {authError && (
+        <div
+          className="fixed left-1/2 top-4 z-[200] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 animate-slide-down"
+          role="alert"
+          id="auth-error-banner"
+        >
+          <div className="flex items-start gap-3 rounded-xl border-2 border-red-300 bg-white px-4 py-3 shadow-[3px_3px_0px_0px_#2d2d2d]">
+            <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-red-700">
+                Sign-in failed
+              </p>
+              <p className="mt-0.5 text-sm text-gray-700">{authError}</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setAuthError(null)}
+              className="shrink-0 text-gray-400 transition-colors hover:text-gray-600"
+              aria-label="Dismiss error"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
       <div className="fixed right-5 top-3 z-50 flex items-center gap-3">
         {loading ? (
           <div className="flex h-8 w-8 animate-pulse items-center justify-center rounded-full border-2 border-foreground bg-card text-foreground">
@@ -664,9 +716,13 @@ export default function Home() {
       )}
 
       <div
-        className={`fixed inset-0 z-10 transition-all duration-300 ease-in-out ${
-          drawerOpen ? 'ml-[600px]' : 'ml-0'
-        }`}
+        className="fixed inset-0 z-10 transition-all duration-300 ease-in-out"
+        style={{
+          marginLeft:
+            drawerOpen && viewportSize.width > 0
+              ? `${Math.min(viewportSize.width, 600)}px`
+              : '0px',
+        }}
       >
         <div
           className={`absolute inset-0 touch-none select-none overflow-hidden ${

@@ -18,6 +18,15 @@ model User {
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
   deletedAt       DateTime?
+  // Deactivation: separate from deletedAt; tracks 30-day grace period
+  accountStatus   AccountStatus   @default(ACTIVE)
+  deactivatedAt   DateTime?
+  bio             String?         @db.VarChar(500)
+  phone           String?         @db.VarChar(50)
+  linkedinUrl     String?         @db.VarChar(255)
+  facebookUrl     String?         @db.VarChar(255)
+  contactOther    String?         @db.VarChar(255)
+  avatarUrl       String?         @db.VarChar(500)
   programBatchId  String          @db.Uuid
   sentInvitations Invitation[]    @relation("SentInvitations")
   memories        Memory[]
@@ -37,6 +46,8 @@ model User {
   @@index([programBatchId])
   @@index([status])
   @@index([deletedAt])
+  @@index([accountStatus])
+  @@index([deactivatedAt])
   @@index([firstName, lastName])
 }
 
@@ -82,6 +93,7 @@ model Memory {
   title          String           @db.VarChar(255)
   description    String?
   mediaURL       String?          @db.VarChar(2048)
+  mediaURLs      String[]         @default([])
   uploadDate     DateTime         @default(now())
   creatorId      String?          @db.Uuid
   locationId     String           @db.Uuid
@@ -261,8 +273,10 @@ model Invitation {
   id        String       @id @default(uuid()) @db.Uuid
   groupId   String       @db.Uuid
   invitedBy String       @db.Uuid
-  email     String       @db.VarChar(255)
+  email     String?      @db.VarChar(255)
   token     String       @unique @db.VarChar(64)
+  isForAll  Boolean      @default(false)
+  maxUses   Int          @default(1)
   expiresAt DateTime
   createdAt DateTime     @default(now())
   group     PrivateGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
@@ -326,6 +340,12 @@ enum ModerationTargetType {
   REPORT
 }
 
+// Tracks whether an account is active or in the 30-day deactivation grace period
+enum AccountStatus {
+  ACTIVE
+  DEACTIVATED
+}
+
 enum NotificationType {
   MEMORY_APPROVED
   MEMORY_REJECTED
@@ -354,4 +374,12 @@ model Notification {
   @@index([userId, createdAt])
   @@index([targetMemoryId])
   @@index([targetReportId])
+}
+
+model UploadRateLimit {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
 }

@@ -5,11 +5,10 @@ import { createCommentSchema } from '@/lib/schemas';
 
 /**
  * Resolves the authenticated user for this request.
- * Mirrors the pattern in vote/toggle/route.ts — dev seed-user fallback included.
  */
-async function resolveUser(
-  isDev: boolean
-): Promise<{ userId: string } | { error: NextResponse }> {
+async function resolveUser(): Promise<
+  { userId: string } | { error: NextResponse }
+> {
   const supabase = await createClient();
   const {
     data: { user: authUser },
@@ -33,15 +32,6 @@ async function resolveUser(
     return { userId: dbUser.id };
   }
 
-  if (isDev) {
-    const seedUser = await prisma.user.findUnique({
-      where: { email: 'seed@skolaroid.dev' },
-      select: { id: true },
-    });
-
-    if (seedUser) return { userId: seedUser.id };
-  }
-
   return {
     error: NextResponse.json(
       { success: false, message: 'Not authenticated' },
@@ -53,11 +43,9 @@ async function resolveUser(
 // ---------------------------------------------------------------------------
 
 export async function POST(request: NextRequest) {
-  const isDev = process.env.NODE_ENV === 'development';
-
   try {
     // ── 1. Auth ────────────────────────────────────────────────────────────
-    const resolved = await resolveUser(isDev);
+    const resolved = await resolveUser();
     if ('error' in resolved) return resolved.error;
     const { userId } = resolved;
 
@@ -98,7 +86,14 @@ export async function POST(request: NextRequest) {
         content: true,
         memoryId: true,
         authorId: true,
-        author: { select: { id: true, firstName: true, lastName: true } },
+        author: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            avatarUrl: true,
+          },
+        },
         createdAt: true,
         updatedAt: true,
       },

@@ -2,7 +2,6 @@
 
 import { cn } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
-import { FormError } from '@/components/ui/form-error';
 import { Button } from '@/components/ui/button';
 import { WOBBLY_RADIUS_MD } from '@/lib/hand-drawn';
 import { useState } from 'react';
@@ -12,56 +11,54 @@ export function LoginForm({
   redirectAfterLogin,
   ...props
 }: React.ComponentPropsWithoutRef<'div'> & { redirectAfterLogin?: string }) {
-  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
     const supabase = createClient();
     setIsLoading(true);
-    setError(null);
 
-    try {
-      const siteUrl =
-        process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-
-      // Store the redirect destination in a cookie so the auth callback
-      // can read it server-side after the OAuth round-trip
-      if (redirectAfterLogin) {
-        document.cookie = `post_login_redirect=${encodeURIComponent(redirectAfterLogin)};path=/;max-age=600;SameSite=Lax`;
-      }
-
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${siteUrl}/auth/callback`,
-        },
-      });
-      if (error) throw error;
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : 'An error occurred');
-      setIsLoading(false);
+    // Store the redirect destination in a cookie so the auth callback
+    // can read it server-side after the OAuth round-trip
+    if (redirectAfterLogin) {
+      document.cookie = `post_login_redirect=${encodeURIComponent(redirectAfterLogin)};path=/;max-age=600;SameSite=Lax`;
     }
+
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${origin}/auth/callback`,
+        queryParams: {
+          hd: 'up.edu.ph',
+          prompt: 'select_account',
+        },
+      },
+    });
   };
 
   return (
     <div
-      className={cn('flex flex-col gap-6 p-6', className)}
+      className={cn('flex flex-col gap-7 p-6', className)}
       style={{ borderRadius: WOBBLY_RADIUS_MD }}
       {...props}
     >
-      <h1 className="font-kalam text-2xl font-bold tracking-tight text-foreground">
-        Welcome to Skolaroid
-      </h1>
-      <p className="text-sm text-muted-foreground">
-        Sign in with your Google account to continue.
-      </p>
-      <FormError message={error} />
+      <div className="space-y-1">
+        <h1 className="text-4xl font-normal tracking-tight text-foreground">
+          <span>Welcome to </span>
+          <span className="font-dancing text-5xl font-medium text-skolaroid-blue">
+            Skolaroid
+          </span>
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Sign in with your Google account to continue.
+        </p>
+      </div>
       <Button
         type="button"
         variant="outline"
         onClick={handleLogin}
         disabled={isLoading}
-        className="w-full gap-3 py-3"
+        className="w-full gap-3 rounded-md border-[2px] py-3 shadow-[4px_4px_0px_0px_#2d2d2d] hover:bg-secondary hover:text-foreground active:bg-secondary"
+        style={{ borderRadius: '0.375rem' }}
       >
         <svg className="h-5 w-5" viewBox="0 0 24 24">
           <path

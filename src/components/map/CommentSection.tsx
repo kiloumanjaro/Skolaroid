@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { Trash2 } from 'lucide-react';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { User } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { formatRelativeDate } from '@/lib/utils/format-date';
 import type { Comment } from '@/services/get-comments-service';
 
@@ -36,69 +37,80 @@ export function CommentSection({
   onCommentTextChange,
 }: CommentSectionProps) {
   return (
-    <div className="flex flex-1 flex-col gap-3">
+    <div className="flex flex-1 flex-col gap-2">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <h3 className="text-base font-medium text-foreground">Comments</h3>
-        <span className="bg-secondary px-2 py-0.5 text-sm font-medium text-foreground">
+        <h3 className="text-sm font-semibold uppercase tracking-[0.08em] text-foreground">
+          Comments
+        </h3>
+        <span className="text-sm font-semibold uppercase tracking-[0.08em] text-black/60">
           {commentCount}
         </span>
       </div>
 
       {/* Comment list */}
-      <div className="flex max-h-48 flex-col gap-3 overflow-y-auto pr-1">
-        {comments.map((comment) => (
-          <div key={comment.id} className="flex items-start gap-2">
-            <Avatar className="h-9 w-9 shrink-0">
-              <AvatarFallback className="bg-secondary text-sm text-foreground">
-                {comment.author.firstName.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-semibold text-foreground">
-                  {comment.author.firstName} {comment.author.lastName}
-                </p>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground">
-                    {formatRelativeDate(comment.createdAt)}
-                  </span>
-                  {currentUserId === comment.author.id && (
-                    <button
-                      onClick={() => onDelete(comment.id)}
-                      className="text-muted-foreground transition-colors hover:text-red-500"
-                      aria-label="Delete comment"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  )}
+      {(comments.length > 0 || hasMore) && (
+        <div className="mt-2 flex max-h-48 flex-col gap-3 overflow-y-auto pr-1">
+          {comments.map((comment) => (
+            <div key={comment.id} className="flex items-start gap-2">
+              <Avatar className="h-9 w-9 shrink-0">
+                {comment.author.avatarUrl && (
+                  <AvatarImage
+                    src={comment.author.avatarUrl}
+                    alt={`${comment.author.firstName} ${comment.author.lastName}`}
+                  />
+                )}
+                <AvatarFallback className="bg-secondary text-sm text-foreground">
+                  <User className="h-4 w-4" />
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-semibold text-foreground">
+                    {comment.author.firstName} {comment.author.lastName}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground">
+                      {formatRelativeDate(comment.createdAt)}
+                    </span>
+                    {currentUserId === comment.author.id && (
+                      <button
+                        onClick={() => onDelete(comment.id)}
+                        className="text-muted-foreground transition-colors hover:text-red-500"
+                        aria-label="Delete comment"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    )}
+                  </div>
                 </div>
+                <p className="text-sm text-foreground">{comment.content}</p>
               </div>
-              <p className="text-sm text-foreground">{comment.content}</p>
             </div>
-          </div>
-        ))}
+          ))}
 
-        {/* Load more */}
-        {hasMore && (
-          <button
-            onClick={onLoadMore}
-            disabled={isLoadingMore}
-            className="text-xs text-skolaroid-blue hover:underline disabled:opacity-50"
-          >
-            {isLoadingMore ? 'Loading...' : 'Load more'}
-          </button>
-        )}
-      </div>
+          {hasMore && (
+            <button
+              onClick={onLoadMore}
+              disabled={isLoadingMore}
+              className="text-xs text-skolaroid-blue hover:underline disabled:opacity-50"
+            >
+              {isLoadingMore ? 'Loading...' : 'Load more'}
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Input — only shown when authenticated */}
       {currentUserId && (
-        <CommentInput
-          onSubmit={onSubmit}
-          isSubmitting={isSubmitting}
-          controlledText={commentText}
-          onControlledTextChange={onCommentTextChange}
-        />
+        <div className="mt-2">
+          <CommentInput
+            onSubmit={onSubmit}
+            isSubmitting={isSubmitting}
+            controlledText={commentText}
+            onControlledTextChange={onCommentTextChange}
+          />
+        </div>
       )}
     </div>
   );
@@ -155,7 +167,8 @@ function CommentInput({
       <button
         onClick={handleSubmit}
         disabled={!text.trim() || isSubmitting}
-        className="bg-skolaroid-blue px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50"
+        className="border-2 border-black bg-[#f6cb48] px-3 py-1.5 text-sm font-semibold text-black disabled:opacity-50"
+        style={{ borderRadius: 0 }}
       >
         {isSubmitting ? 'Posting…' : 'Post'}
       </button>

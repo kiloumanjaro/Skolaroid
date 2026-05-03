@@ -38,9 +38,9 @@ function ToastCard({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 20 }}
+      exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.2, ease: 'easeOut' }}
       className={`flex min-w-[280px] max-w-sm items-center gap-3 rounded-xl border bg-white px-4 py-3 shadow-xl ${borderClass}`}
       role="alert"
@@ -97,7 +97,7 @@ export function useGroupToast(): GroupToastHook {
     if (!mounted) return null;
 
     return createPortal(
-      <div className="pointer-events-none fixed bottom-6 left-1/2 z-[200] -translate-x-1/2">
+      <div className="pointer-events-none fixed left-1/2 top-4 z-[300] -translate-x-1/2">
         <AnimatePresence mode="wait">
           {toast && (
             <div className="pointer-events-auto">

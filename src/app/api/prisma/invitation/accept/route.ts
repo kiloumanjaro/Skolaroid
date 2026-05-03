@@ -83,23 +83,36 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // ── 6b. Verify token belongs to the authenticated user ──────────
-    if (
-      invitation.email &&
-      dbUser.email.toLowerCase() !== invitation.email.toLowerCase()
-    ) {
-      return NextResponse.json(
-        { error: 'Invalid invitation link' },
-        { status: 403 }
-      );
+    // ── 6b. Validate based on invitation type ──────────────────────
+    if (invitation.isForAll) {
+      // Public link: check if uses remain
+      if (invitation.maxUses <= 0) {
+        return NextResponse.json(
+          { error: 'This invitation link has been fully used' },
+          { status: 410 }
+        );
+      }
+    } else {
+      // Targeted link: verify token belongs to the authenticated user
+      if (
+        invitation.email &&
+        dbUser.email.toLowerCase() !== invitation.email.toLowerCase()
+      ) {
+        return NextResponse.json(
+          { error: 'Invalid invitation link' },
+          { status: 403 }
+        );
+      }
     }
 
     // ── 7. Check if already a member ─────────────────────────────────
     const isMember = invitation.group.members.some((m) => m.id === authUser.id);
 
     if (isMember) {
-      // Already a member — just delete the invitation and return
-      await prisma.invitation.delete({ where: { id: invitation.id } });
+      // Already a member — clean up targeted invites, leave public ones
+      if (!invitation.isForAll) {
+        await prisma.invitation.delete({ where: { id: invitation.id } });
+      }
       return NextResponse.json({
         success: true,
         message: 'You are already a member of this group',
@@ -107,31 +120,70 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // ── 8. Add member and delete invitation atomically ───────────────
-    await prisma.$transaction([
-      prisma.privateGroup.update({
-        where: { id: invitation.group.id },
-        data: {
-          members: { connect: { id: dbUser.id } },
-          groupMemberships: {
-            upsert: {
-              where: {
-                groupId_userId: {
-                  groupId: invitation.group.id,
-                  userId: dbUser.id,
+    // ── 8. Add member and handle invitation atomically ───────────────
+    if (invitation.isForAll) {
+      // Public link: decrement maxUses; delete if exhausted
+      const newMaxUses = invitation.maxUses - 1;
+
+      await prisma.$transaction(async (tx) => {
+        await tx.privateGroup.update({
+          where: { id: invitation.group.id },
+          data: {
+            members: { connect: { id: dbUser.id } },
+            groupMemberships: {
+              upsert: {
+                where: {
+                  groupId_userId: {
+                    groupId: invitation.group.id,
+                    userId: dbUser.id,
+                  },
                 },
+                create: {
+                  userId: dbUser.id,
+                  role: 'MEMBER',
+                },
+                update: {},
               },
-              create: {
-                userId: dbUser.id,
-                role: 'MEMBER',
-              },
-              update: {},
             },
           },
-        },
-      }),
-      prisma.invitation.delete({ where: { id: invitation.id } }),
-    ]);
+        });
+
+        if (newMaxUses <= 0) {
+          await tx.invitation.delete({ where: { id: invitation.id } });
+        } else {
+          await tx.invitation.update({
+            where: { id: invitation.id },
+            data: { maxUses: newMaxUses },
+          });
+        }
+      });
+    } else {
+      // Targeted link: add member and delete invitation
+      await prisma.$transaction([
+        prisma.privateGroup.update({
+          where: { id: invitation.group.id },
+          data: {
+            members: { connect: { id: dbUser.id } },
+            groupMemberships: {
+              upsert: {
+                where: {
+                  groupId_userId: {
+                    groupId: invitation.group.id,
+                    userId: dbUser.id,
+                  },
+                },
+                create: {
+                  userId: dbUser.id,
+                  role: 'MEMBER',
+                },
+                update: {},
+              },
+            },
+          },
+        }),
+        prisma.invitation.delete({ where: { id: invitation.id } }),
+      ]);
+    }
 
     return NextResponse.json({
       success: true,

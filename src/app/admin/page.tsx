@@ -1,10 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Header } from '@/components/header';
 import {
-  ArrowLeft,
   Search,
   Filter,
   Trash2,
@@ -17,12 +14,16 @@ import {
   RefreshCw,
   ChevronDown,
   ArrowUpDown,
+  Users,
+  MapPin,
+  CalendarRange,
 } from 'lucide-react';
 import Image from 'next/image';
 import {
   useAdminMemories,
   type AdminMemoryItem,
 } from '@/lib/hooks/useAdminMemories';
+import { useAdminAnalytics } from '@/lib/hooks/useAdminAnalytics';
 import { useModerateMemory } from '@/lib/hooks/useModerateMemory';
 import {
   useAdminReports,
@@ -34,15 +35,60 @@ import {
   type AuditLogFilters,
   type AuditLogEntry,
 } from '@/lib/hooks/useAuditLog';
+import { AdminAnnouncementStrip } from '@/components/announcement-strips/AdminAnnouncementStrip';
+import { ShellInlineSidebarToggle } from '@/components/shell-inline-sidebar-toggle';
 
-type AdminTab = 'published' | 'pending' | 'reports' | 'audit';
+type AdminTab = 'analytics' | 'published' | 'pending' | 'reports' | 'audit';
+type AnalyticsMemoryStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'REMOVED';
 
 const tabLabels: Record<AdminTab, string> = {
+  analytics: 'Analytics',
   published: 'Published Posts',
   pending: 'Pending Review',
   reports: 'Reports',
   audit: 'Audit Log',
 };
+
+const statusBadgeStyles: Record<
+  AnalyticsMemoryStatus,
+  { accent: string; surface: string; text: string }
+> = {
+  APPROVED: {
+    accent: '#e8e8e8',
+    surface: '#ffffff',
+    text: 'text-foreground',
+  },
+  PENDING: {
+    accent: '#e8e8e8',
+    surface: '#ffffff',
+    text: 'text-foreground',
+  },
+  REJECTED: {
+    accent: '#e8e8e8',
+    surface: '#ffffff',
+    text: 'text-foreground',
+  },
+  REMOVED: {
+    accent: '#e8e8e8',
+    surface: '#ffffff',
+    text: 'text-foreground',
+  },
+};
+
+const numberFormatter = new Intl.NumberFormat('en-US');
+const adminAnnouncements = [
+  'Review pending memories before they go live',
+  'Track reports, moderation actions, and audit history',
+  'Keep the archive safe, accurate, and community-ready',
+];
+
+function formatCount(value: number): string {
+  return numberFormatter.format(value);
+}
+
+function formatPercent(value: number): string {
+  return `${value.toFixed(1)}%`;
+}
 
 function formatDate(dateString: string): string {
   return new Date(dateString).toLocaleDateString('en-US', {
@@ -53,6 +99,19 @@ function formatDate(dateString: string): string {
     minute: '2-digit',
     hour12: true,
   });
+}
+
+const MIN_ANALYTICS_WINDOW_DAYS = 7;
+const MAX_ANALYTICS_WINDOW_DAYS = 365;
+const DEFAULT_ANALYTICS_WINDOW_DAYS = 30;
+const ANALYTICS_WINDOW_PRESETS = [7, 14, 30, 60, 90, 180, 365] as const;
+const ANALYTICS_HIGHLIGHT_LIMIT = 5;
+
+function clampAnalyticsWindowDays(days: number): number {
+  return Math.min(
+    MAX_ANALYTICS_WINDOW_DAYS,
+    Math.max(MIN_ANALYTICS_WINDOW_DAYS, Math.round(days))
+  );
 }
 
 function LoadingState() {
@@ -81,6 +140,39 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
   );
 }
 
+function AnalyticsSummaryCard({
+  eyebrow,
+  title,
+  description,
+  bannerColor,
+}: {
+  eyebrow: string;
+  title: string;
+  description: string;
+  bannerColor: string;
+}) {
+  return (
+    <article className="overflow-hidden border-2 border-border bg-[#f8f4ec]">
+      <div
+        className="border-b-2 border-border px-4 py-3"
+        style={{ backgroundColor: bannerColor }}
+      >
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground">
+          {eyebrow}
+        </p>
+      </div>
+      <div className="p-4 pb-8 sm:p-5 sm:pb-9">
+        <h3 className="max-w-[20ch] text-3xl font-black uppercase leading-none text-foreground sm:text-[2.1rem]">
+          {title}
+        </h3>
+        <p className="mt-4 line-clamp-2 text-base leading-7 text-foreground/80">
+          {description}
+        </p>
+      </div>
+    </article>
+  );
+}
+
 function PostCard({
   memory,
   onApprove,
@@ -106,7 +198,7 @@ function PostCard({
         : memory.moderationStatus;
 
   return (
-    <div className="flex items-center gap-4 border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]">
+    <div className="flex items-center gap-4 border-2 border-border bg-card p-4">
       {/* Thumbnail */}
       <div className="relative h-28 w-40 shrink-0 overflow-hidden bg-secondary">
         <Image
@@ -195,6 +287,356 @@ function PostCard({
           </span>
         )}
       </div>
+    </div>
+  );
+}
+
+function AnalyticsContent({ searchQuery }: { searchQuery: string }) {
+  const [selectedWindowDays, setSelectedWindowDays] = useState(
+    DEFAULT_ANALYTICS_WINDOW_DAYS
+  );
+  const [customWindowDays, setCustomWindowDays] = useState(
+    String(DEFAULT_ANALYTICS_WINDOW_DAYS)
+  );
+
+  const { data, isLoading, isFetching, isError, refetch } =
+    useAdminAnalytics(selectedWindowDays);
+
+  const handlePresetClick = (days: number) => {
+    setSelectedWindowDays(days);
+    setCustomWindowDays(String(days));
+  };
+
+  const applyCustomWindowDays = () => {
+    const parsedValue = Number(customWindowDays);
+
+    if (!Number.isFinite(parsedValue)) {
+      setCustomWindowDays(String(selectedWindowDays));
+      return;
+    }
+
+    const clampedValue = clampAnalyticsWindowDays(parsedValue);
+    setSelectedWindowDays(clampedValue);
+    setCustomWindowDays(String(clampedValue));
+  };
+
+  const analytics = data?.data;
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const filteredLocations =
+    analytics == null
+      ? []
+      : normalizedQuery.length === 0
+        ? analytics.topLocations
+        : analytics.topLocations.filter((location) =>
+            location.buildingName.toLowerCase().includes(normalizedQuery)
+          );
+  const filteredBatches =
+    analytics == null
+      ? []
+      : normalizedQuery.length === 0
+        ? analytics.batchEngagementRates
+        : analytics.batchEngagementRates.filter((batch) =>
+            `${batch.programName} ${batch.batchYear}`
+              .toLowerCase()
+              .includes(normalizedQuery)
+          );
+  const topLocation = analytics?.topLocations[0];
+  const topBatch = analytics?.batchEngagementRates[0];
+  const highlightedLocations = filteredLocations.slice(
+    0,
+    ANALYTICS_HIGHLIGHT_LIMIT
+  );
+  const highlightedBatches = filteredBatches.slice(
+    0,
+    ANALYTICS_HIGHLIGHT_LIMIT
+  );
+  const topLocationShare =
+    topLocation && analytics && analytics.totals.memories > 0
+      ? Number(
+          ((topLocation.memoryCount / analytics.totals.memories) * 100).toFixed(
+            1
+          )
+        )
+      : 0;
+
+  return (
+    <div className="space-y-6">
+      <section className="border-2 border-border bg-card px-5 py-4 sm:px-6">
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+          <div>
+            <div className="mb-1 flex items-center gap-2">
+              <CalendarRange size={18} className="text-foreground" />
+              <h2 className="text-lg font-semibold text-foreground sm:text-xl">
+                Analytics Window
+              </h2>
+            </div>
+            <p className="text-sm text-muted-foreground sm:text-base">
+              Switch the reporting range to compare activity trends.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            {ANALYTICS_WINDOW_PRESETS.map((days) => {
+              const isActive = selectedWindowDays === days;
+
+              return (
+                <button
+                  key={days}
+                  onClick={() => handlePresetClick(days)}
+                  className={`border-2 border-black px-3 py-1.5 text-sm font-medium text-black transition-colors ${
+                    isActive
+                      ? 'bg-[#f6cb48]'
+                      : 'bg-background hover:bg-secondary'
+                  }`}
+                >
+                  {days}d
+                </button>
+              );
+            })}
+
+            <div className="ml-0 flex items-center gap-2 sm:ml-2">
+              <input
+                type="number"
+                min={MIN_ANALYTICS_WINDOW_DAYS}
+                max={MAX_ANALYTICS_WINDOW_DAYS}
+                value={customWindowDays}
+                onChange={(event) => setCustomWindowDays(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    event.preventDefault();
+                    applyCustomWindowDays();
+                  }
+                }}
+                className="h-[36px] w-20 border-2 border-border bg-background px-3 text-sm focus:border-skolaroid-blue focus:outline-none"
+                aria-label="Custom analytics range in days"
+              />
+              <button
+                onClick={applyCustomWindowDays}
+                className="border-2 border-black bg-background px-3 py-1.5 text-sm font-medium text-black transition-colors hover:bg-secondary"
+              >
+                Apply
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+      {isError && !analytics ? (
+        <ErrorState onRetry={() => refetch()} />
+      ) : isLoading && !analytics ? (
+        <LoadingState />
+      ) : !analytics ? (
+        <div className="py-16 text-center text-sm text-muted-foreground">
+          No analytics data available.
+        </div>
+      ) : (
+        <div className="relative">
+          <div className="space-y-6">
+            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+              <AnalyticsSummaryCard
+                eyebrow="Total Memories"
+                title={formatCount(analytics.totals.memories)}
+                description="Published and archived memory posts currently tracked across the platform."
+                bannerColor="#c78ae6"
+              />
+
+              <AnalyticsSummaryCard
+                eyebrow={`Active Users (${analytics.windowDays}d)`}
+                title={formatCount(analytics.totals.activeUsers)}
+                description={`${formatPercent(analytics.totals.activeUserRate)} of ${formatCount(analytics.totals.users)} users contributed activity in this range.`}
+                bannerColor="#90a8ee"
+              />
+
+              <AnalyticsSummaryCard
+                eyebrow="Most Photographed Location"
+                title={topLocation?.buildingName ?? 'No Data Yet'}
+                description={
+                  topLocation
+                    ? `${formatCount(topLocation.memoryCount)} memories, making up ${formatPercent(topLocationShare)} of all uploads.`
+                    : 'No uploaded memories yet.'
+                }
+                bannerColor="#f6cb48"
+              />
+
+              <AnalyticsSummaryCard
+                eyebrow="Top Batch Engagement"
+                title={
+                  topBatch
+                    ? formatPercent(topBatch.engagementRate)
+                    : 'No Activity Yet'
+                }
+                description={
+                  topBatch
+                    ? `${topBatch.programName} Batch ${topBatch.batchYear} has the strongest engagement.`
+                    : 'No batch activity yet.'
+                }
+                bannerColor="#00c59a"
+              />
+            </div>
+
+            <div className="grid gap-4 lg:grid-cols-2">
+              <section className="flex flex-col self-start border-2 border-border bg-[#f7f1e3]">
+                <div className="flex items-center justify-between gap-3 border-b-2 border-border bg-[#f6cb48] px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <MapPin size={16} className="text-foreground" />
+                    <h2 className="text-sm font-black uppercase tracking-[0.12em] text-foreground">
+                      Location Highlights
+                    </h2>
+                  </div>
+                  <span className="border-2 border-border bg-[#f7f1e3] px-2 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-foreground">
+                    Top {highlightedLocations.length}
+                  </span>
+                </div>
+
+                {highlightedLocations.length === 0 ? (
+                  <p className="px-4 py-4 text-sm text-muted-foreground">
+                    No locations match your search.
+                  </p>
+                ) : (
+                  <div className="grid gap-0">
+                    {highlightedLocations.map((location) => (
+                      <div
+                        key={location.locationId}
+                        className="grid grid-cols-[auto,1fr] items-center gap-3 border-b-2 border-border px-4 py-3 last:border-b-0 sm:grid-cols-[auto,1fr,auto]"
+                      >
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center border-2 border-border bg-background text-xs font-black text-foreground">
+                          #{location.rank}
+                        </span>
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-bold uppercase tracking-[0.04em] text-foreground">
+                            {location.buildingName}
+                          </p>
+                        </div>
+                        <span className="shrink-0 text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground sm:justify-self-end">
+                          {formatCount(location.memoryCount)} memories
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {filteredLocations.length > ANALYTICS_HIGHLIGHT_LIMIT && (
+                  <p className="border-t-2 border-border px-4 py-3 text-xs text-muted-foreground">
+                    Showing top {ANALYTICS_HIGHLIGHT_LIMIT} of{' '}
+                    {formatCount(filteredLocations.length)} matching locations.
+                  </p>
+                )}
+              </section>
+
+              <section className="flex h-full flex-col border-2 border-border bg-[#edf6f2]">
+                <div className="flex items-center justify-between gap-3 border-b-2 border-border bg-[#00c59a] px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <Users size={16} className="text-foreground" />
+                    <h2 className="text-sm font-black uppercase tracking-[0.12em] text-foreground">
+                      Batch Highlights ({analytics.windowDays}d)
+                    </h2>
+                  </div>
+                  <span className="border-2 border-border bg-[#edf6f2] px-2 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-foreground">
+                    Top {highlightedBatches.length}
+                  </span>
+                </div>
+
+                {highlightedBatches.length === 0 ? (
+                  <p className="px-4 py-4 text-sm text-muted-foreground">
+                    No batches match your search.
+                  </p>
+                ) : (
+                  <div className="grid gap-0">
+                    {highlightedBatches.map((batch) => (
+                      <div
+                        key={batch.programBatchId}
+                        className="grid gap-3 border-b-2 border-border px-4 py-3 last:border-b-0"
+                      >
+                        <div className="flex flex-wrap items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-bold uppercase tracking-[0.04em] text-foreground">
+                              {batch.programName}
+                            </p>
+                            <p className="mt-1 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
+                              Batch {batch.batchYear}
+                            </p>
+                          </div>
+                          <div className="shrink-0 text-right">
+                            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-foreground">
+                              {formatCount(batch.activeUsers)} active of{' '}
+                              {formatCount(batch.totalUsers)} users
+                            </p>
+                            <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                              {formatPercent(batch.engagementRate)}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {filteredBatches.length > ANALYTICS_HIGHLIGHT_LIMIT && (
+                  <p className="border-t-2 border-border px-4 py-3 text-xs text-muted-foreground">
+                    Showing top {ANALYTICS_HIGHLIGHT_LIMIT} of{' '}
+                    {formatCount(filteredBatches.length)} matching batches.
+                  </p>
+                )}
+              </section>
+            </div>
+
+            <section>
+              <h2 className="mb-3 text-sm font-black uppercase tracking-[0.12em] text-foreground">
+                Memory Moderation Breakdown
+              </h2>
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                {analytics.memoriesByStatus.map((status) => (
+                  <article
+                    key={status.status}
+                    className={`border-2 border-border ${statusBadgeStyles[status.status as AnalyticsMemoryStatus].text}`}
+                    style={{
+                      backgroundColor:
+                        statusBadgeStyles[
+                          status.status as AnalyticsMemoryStatus
+                        ].surface,
+                    }}
+                  >
+                    <div
+                      className="border-b-2 border-border px-3 py-2"
+                      style={{
+                        backgroundColor:
+                          statusBadgeStyles[
+                            status.status as AnalyticsMemoryStatus
+                          ].accent,
+                      }}
+                    >
+                      <p className="text-[10px] font-black uppercase tracking-[0.14em]">
+                        {status.status.toLowerCase()}
+                      </p>
+                    </div>
+                    <div className="px-3 py-3">
+                      <p className="text-2xl font-black leading-none">
+                        {formatCount(status.count)}
+                      </p>
+                      <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.12em] text-foreground/65">
+                        total memories
+                      </p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            <p className="text-xs text-muted-foreground">
+              Active users are calculated from the last {analytics.windowDays}{' '}
+              days of memory uploads, comments, votes, and reports.
+            </p>
+          </div>
+
+          {isFetching && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/55">
+              <div className="flex items-center gap-2 border-2 border-border bg-card px-4 py-2 text-sm font-medium text-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Updating analytics...
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -323,7 +765,7 @@ function ReportsContent({ searchQuery }: { searchQuery: string }) {
       {filtered.map((report) => (
         <div
           key={report.id}
-          className="flex items-start gap-4 border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]"
+          className="flex items-start gap-4 border-2 border-border bg-card p-4"
         >
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-50">
             {report.state === 'OPEN' ? (
@@ -541,7 +983,7 @@ function AuditLogContent({ searchQuery }: { searchQuery: string }) {
             return (
               <div
                 key={entry.id}
-                className="flex items-start gap-4 border-2 border-border bg-card p-4 shadow-[4px_4px_0px_0px_#2d2d2d]"
+                className="flex items-start gap-4 border-2 border-border bg-card p-4"
               >
                 {/* Admin avatar */}
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-skolaroid-blue text-sm font-medium text-white">
@@ -606,80 +1048,107 @@ function AuditLogContent({ searchQuery }: { searchQuery: string }) {
 }
 
 export default function AdminPage() {
-  const router = useRouter();
-  const [currentTab, setCurrentTab] = useState<AdminTab>('published');
+  const [currentTab, setCurrentTab] = useState<AdminTab>('analytics');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const tabs: AdminTab[] = ['published', 'pending', 'reports', 'audit'];
+  const tabs: AdminTab[] = [
+    'analytics',
+    'published',
+    'pending',
+    'reports',
+    'audit',
+  ];
+
+  const searchPlaceholder =
+    currentTab === 'analytics'
+      ? 'Search locations or batches'
+      : currentTab === 'reports'
+        ? 'Search reports'
+        : currentTab === 'audit'
+          ? 'Search admins or targets'
+          : 'Search posts';
+
+  const showPostFilter = currentTab === 'published' || currentTab === 'pending';
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <Header />
-
-      <main className="flex-1 px-8 pb-8 pt-24">
-        {/* Top Bar */}
-        <div className="mb-6 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <button
-              onClick={() => router.back()}
-              className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-secondary"
-            >
-              <ArrowLeft size={20} className="text-foreground" />
-            </button>
-
-            {/* Tabs */}
-            <div className="flex gap-6">
-              {tabs.map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setCurrentTab(tab)}
-                  className={`text-sm font-medium transition-colors ${
-                    currentTab === tab
-                      ? 'text-foreground'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  {tabLabels[tab]}
-                </button>
-              ))}
+    <div className="flex h-full min-h-0 flex-col bg-background">
+      <main className="flex-1 overflow-y-auto bg-background">
+        <div className="relative overflow-hidden">
+          <div className="absolute left-4 top-12 z-20 sm:left-6 sm:top-14">
+            <div className="flex items-center gap-6">
+              <ShellInlineSidebarToggle />
+              <div className="font-dancing text-5xl text-black">
+                Admin Dashboard
+              </div>
             </div>
           </div>
 
-          {/* Search & Filter */}
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <Search
-                size={16}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-              />
-              <input
-                type="text"
-                placeholder="Search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-56 border-2 border-border bg-card py-2 pl-9 pr-4 text-sm placeholder-muted-foreground focus:border-skolaroid-blue focus:outline-none"
-              />
+          <AdminAnnouncementStrip announcements={adminAnnouncements} />
+
+          <div className="px-8 pb-8 pt-24">
+            {/* Top Bar */}
+            <div className="mb-6 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-6">
+                {/* Tabs */}
+                <div className="flex flex-wrap gap-4 sm:gap-6">
+                  {tabs.map((tab) => (
+                    <button
+                      key={tab}
+                      onClick={() => setCurrentTab(tab)}
+                      className={`text-sm font-medium transition-colors ${
+                        currentTab === tab
+                          ? 'text-foreground'
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      {tabLabels[tab]}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Search & Filter */}
+              <div className="flex flex-wrap items-center justify-end gap-3">
+                <div className="relative">
+                  <Search
+                    size={16}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                  />
+                  <input
+                    type="text"
+                    placeholder={searchPlaceholder}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-72 border-2 border-border bg-card py-2 pl-9 pr-4 text-sm placeholder-muted-foreground focus:border-skolaroid-blue focus:outline-none sm:w-80"
+                  />
+                </div>
+                {showPostFilter && (
+                  <button className="flex items-center gap-2 border-2 border-border bg-card px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary">
+                    <Filter size={14} />
+                    Filter Posts
+                  </button>
+                )}
+              </div>
             </div>
-            <button className="flex items-center gap-2 border-2 border-border bg-card px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary">
-              <Filter size={14} />
-              Filter Posts
-            </button>
+
+            {/* Tab Content */}
+            {currentTab === 'analytics' && (
+              <AnalyticsContent searchQuery={searchQuery} />
+            )}
+            {currentTab === 'published' && (
+              <PublishedPostsContent searchQuery={searchQuery} />
+            )}
+            {currentTab === 'pending' && (
+              <PendingReviewContent searchQuery={searchQuery} />
+            )}
+            {currentTab === 'reports' && (
+              <ReportsContent searchQuery={searchQuery} />
+            )}
+            {currentTab === 'audit' && (
+              <AuditLogContent searchQuery={searchQuery} />
+            )}
           </div>
         </div>
-
-        {/* Tab Content */}
-        {currentTab === 'published' && (
-          <PublishedPostsContent searchQuery={searchQuery} />
-        )}
-        {currentTab === 'pending' && (
-          <PendingReviewContent searchQuery={searchQuery} />
-        )}
-        {currentTab === 'reports' && (
-          <ReportsContent searchQuery={searchQuery} />
-        )}
-        {currentTab === 'audit' && (
-          <AuditLogContent searchQuery={searchQuery} />
-        )}
       </main>
     </div>
   );

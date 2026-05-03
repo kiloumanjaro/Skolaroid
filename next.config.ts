@@ -2,8 +2,38 @@ import type { NextConfig } from 'next';
 
 const isDev = process.env.NODE_ENV === 'development';
 
+const securityHeaders = [
+  // Prevent MIME-type sniffing
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  // Prevent clickjacking — only allow same-origin framing
+  { key: 'X-Frame-Options', value: 'DENY' },
+  // Legacy XSS filter (still useful for older browsers)
+  { key: 'X-XSS-Protection', value: '1; mode=block' },
+  // Control referrer information sent with requests
+  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  // Restrict browser features the app doesn't need
+  {
+    key: 'Permissions-Policy',
+    value: 'camera=(), microphone=(), geolocation=(self), interest-cohort=()',
+  },
+  // Enforce HTTPS (1 year, include subdomains)
+  {
+    key: 'Strict-Transport-Security',
+    value: 'max-age=31536000; includeSubDomains',
+  },
+];
+
 const nextConfig: NextConfig = {
   cacheComponents: false,
+  async headers() {
+    return [
+      {
+        // Apply security headers to all routes
+        source: '/(.*)',
+        headers: securityHeaders,
+      },
+    ];
+  },
   images: {
     // Skip the optimizer in development — local Supabase uses plain http://
     // which Next.js can't proxy reliably from a server process.

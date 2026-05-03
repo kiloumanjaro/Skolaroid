@@ -48,9 +48,12 @@ next-env.d.ts
 /src/generated/prisma
 
 #plans and layouts
-.plans
-.layouts
 plans/
+.layouts
+plans/git 
+
+
+.docs
 
 
 # claude
@@ -58,3 +61,5 @@ plans/
 
 # test-results
 test-results/
+.github/prompts/MEMORY-2_edit-modal.md
+.github/prompts/profile-4-activity-timeline.prompt.md

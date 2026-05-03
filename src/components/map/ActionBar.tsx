@@ -13,13 +13,6 @@ interface ActionBarProps {
   onReport?: () => void;
 }
 
-/**
- * Engagement bar rendered beneath the caption card on every memory page.
- *
- * Layout (two rows):
- *   ♥ 42          ← vote count strip (left-aligned)
- *   📋  ♥  ↗       ← Copy | Like | Share (centred)
- */
 export function ActionBar({ memory, onReport }: ActionBarProps) {
   const { isAuthenticated } = useUserAuth();
   const { data: voteStatusRes, isLoading } = useVoteStatus(memory.id);
@@ -53,73 +46,61 @@ export function ActionBar({ memory, onReport }: ActionBarProps) {
     );
   };
 
+  const actionButtonBaseClass =
+    'flex h-10 w-10 items-center justify-center border-2 border-black bg-white text-black transition-colors disabled:opacity-50';
+
   return (
-    <div className="flex flex-col gap-1.5">
-      {/* ── Vote count strip ─────────────────────────────────────────── */}
-      <div className="flex items-center gap-1.5 px-1">
+    <div className="flex flex-wrap items-center justify-center gap-3">
+      <button
+        onClick={handleLike}
+        disabled={!isAuthenticated || toggleVote.isPending}
+        className={`flex h-10 min-w-[4.5rem] items-center justify-center gap-2 border-2 border-black px-3 transition-colors disabled:opacity-50 ${
+          !isAuthenticated
+            ? 'cursor-default bg-white text-black'
+            : hasVoted
+              ? 'bg-[#f7d6d5] text-black hover:bg-[#efc1bf]'
+              : 'bg-white text-black hover:bg-[#fff3bf]'
+        }`}
+        aria-label={hasVoted ? 'Unlike' : 'Like'}
+        aria-pressed={hasVoted}
+      >
         <Heart
-          className={`h-4 w-4 shrink-0 transition-colors ${
-            hasVoted ? 'fill-red-500 text-red-500' : 'text-slate-400'
-          }`}
+          className={`h-5 w-5 transition-all ${hasVoted ? 'fill-current' : ''}`}
         />
-        <span className="text-sm font-medium text-slate-500">
+        <span className="text-sm font-medium">
           {formatVoteCount(voteCount)}
         </span>
+      </button>
 
-        {showOnboardPrompt && (
-          <span className="ml-1 text-xs text-amber-500">
-            Complete onboarding to vote
-          </span>
-        )}
-      </div>
+      <button className={actionButtonBaseClass} aria-label="Copy">
+        <Copy className="h-5 w-5" />
+      </button>
 
-      {/* ── Action icons ─────────────────────────────────────────────── */}
-      <div className="flex items-center justify-center gap-4">
-        <button
-          className="text-slate-600 hover:text-slate-800"
-          aria-label="Copy"
-        >
-          <Copy className="h-5 w-5" />
-        </button>
+      <button
+        className={`${actionButtonBaseClass} text-black hover:bg-[#fff3bf]`}
+        aria-label="Share"
+      >
+        <Share className="h-5 w-5" />
+      </button>
 
-        <button
-          onClick={handleLike}
-          disabled={!isAuthenticated || toggleVote.isPending}
-          className={`transition-colors ${
-            !isAuthenticated
-              ? 'cursor-default text-slate-300'
-              : hasVoted
-                ? 'text-red-500 hover:text-red-400'
-                : 'text-slate-600 hover:text-slate-800'
-          }`}
-          aria-label={hasVoted ? 'Unlike' : 'Like'}
-          aria-pressed={hasVoted}
-        >
-          <Heart
-            className={`h-5 w-5 transition-all ${hasVoted ? 'fill-current' : ''}`}
-          />
-        </button>
+      <button
+        onClick={onReport}
+        disabled={!isAuthenticated}
+        className={`${actionButtonBaseClass} ${
+          !isAuthenticated
+            ? 'cursor-default text-black'
+            : 'text-black hover:bg-[#ffe1e1] hover:text-black'
+        }`}
+        aria-label="Report memory"
+      >
+        <Flag className="h-5 w-5" />
+      </button>
 
-        <button
-          className="text-slate-600 hover:text-slate-800"
-          aria-label="Share"
-        >
-          <Share className="h-5 w-5" />
-        </button>
-
-        <button
-          onClick={onReport}
-          disabled={!isAuthenticated}
-          className={`transition-colors ${
-            !isAuthenticated
-              ? 'cursor-default text-slate-300'
-              : 'text-slate-600 hover:text-amber-500'
-          }`}
-          aria-label="Report memory"
-        >
-          <Flag className="h-5 w-5" />
-        </button>
-      </div>
+      {showOnboardPrompt && (
+        <span className="border-2 border-black bg-[#fff3bf] px-2 py-1 text-xs font-medium text-black">
+          Complete onboarding to vote
+        </span>
+      )}
     </div>
   );
 }

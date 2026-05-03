@@ -1,6 +1,7 @@
 'use client';
 
 import mapboxgl from 'mapbox-gl';
+import { Layers } from 'lucide-react';
 import {
   useRef,
   useEffect,
@@ -10,24 +11,21 @@ import {
   useMemo,
 } from 'react';
 import { getEraFromBatchTag } from '@/lib/utils';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { createRoot, type Root } from 'react-dom/client';
-import { Plus } from 'lucide-react';
 import { AddMemoryModal } from './add-memory-modal';
-import type {
-  GroupFilterOption,
-  LocationFilterOption,
-  MemoryFilters,
-} from './map/FilterMemoriesModal';
 import { GroupPanel } from './groups/GroupPanel';
 import { BatchesModal } from './batches-modal';
-import { ExpandableToolbar } from './expandable-toolbar';
+import { useMainShellSidebarAction } from './main-shell-sidebar-action';
 import { LandmarkMarker } from './map/LandmarkMarker';
 import { LandmarkMemoriesPanel } from './map/LandmarkMemoriesPanel';
 import { MemoryPin } from './map/MemoryPin';
 import { MemoryPinStack } from './map/MemoryPinStack';
 import { MemoryDetailModal } from './map/MemoryDetailModal';
 import { useMemoryCountsByLandmark } from '@/lib/hooks/useMemoryCountsByLandmark';
+import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
+import { useMemoriesByCreator } from '@/lib/hooks/useMemoriesByCreator';
+import { MapFirstMemoryPrompt } from './map/MapFirstMemoryPrompt';
 import {
   useAllMemoriesWithCoordinates,
   type MemoryWithCoordinates,
@@ -39,6 +37,8 @@ import type {
   LocationSelectionMode,
   MapLocationSelection,
 } from '@/lib/types/map';
+import { AddMemoryButton } from './map/AddMemoryButton';
+import { MapAnnouncementStrip } from './announcement-strips/MapAnnouncementStrip';
 import { MapLocationSelector } from './map/MapLocationSelector';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
@@ -46,56 +46,20 @@ const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
 // ---------------------------------------------------------------------------
 // Era → Mapbox style mapping
-// Each decade gets a visually distinct style to convey the period feel.
+// Use the outdoors style consistently across all eras.
 // ---------------------------------------------------------------------------
 const ERA_MAP_STYLES: Record<number, string> = {
-  2020: 'mapbox://styles/mapbox/streets-v12', // Vibrant & modern
-  2010: 'mapbox://styles/mapbox/light-v11', // Clean minimalist
-  2000: 'mapbox://styles/mapbox/outdoors-v12', // Detailed outdoors
-  1990: 'mapbox://styles/mapbox/satellite-streets-v12', // Classic photo map
-  1980: 'mapbox://styles/mapbox/satellite-streets-v12',
-  1970: 'mapbox://styles/mapbox/satellite-v9', // Vintage satellite
-  1960: 'mapbox://styles/mapbox/satellite-v9',
-  1950: 'mapbox://styles/mapbox/satellite-v9',
-  1940: 'mapbox://styles/mapbox/satellite-v9',
+  2020: 'mapbox://styles/mapbox/outdoors-v12',
+  2010: 'mapbox://styles/mapbox/outdoors-v12',
+  2000: 'mapbox://styles/mapbox/outdoors-v12',
+  1990: 'mapbox://styles/mapbox/outdoors-v12',
+  1980: 'mapbox://styles/mapbox/outdoors-v12',
+  1970: 'mapbox://styles/mapbox/outdoors-v12',
+  1960: 'mapbox://styles/mapbox/outdoors-v12',
+  1950: 'mapbox://styles/mapbox/outdoors-v12',
+  1940: 'mapbox://styles/mapbox/outdoors-v12',
 };
-const DEFAULT_MAP_STYLE = 'mapbox://styles/mapbox/streets-v12';
-
-const ERA_OVERLAY: Record<number, { label: string; badge: string }> = {
-  2020: { label: '2020s', badge: 'bg-sky-100 text-sky-800 border-sky-200' },
-  2010: {
-    label: '2010s',
-    badge: 'bg-slate-100 text-slate-700 border-slate-200',
-  },
-  2000: {
-    label: '2000s',
-    badge: 'bg-green-100 text-green-800 border-green-200',
-  },
-  1990: {
-    label: '1990s',
-    badge: 'bg-amber-100 text-amber-800 border-amber-200',
-  },
-  1980: {
-    label: '1980s',
-    badge: 'bg-orange-100 text-orange-800 border-orange-200',
-  },
-  1970: {
-    label: '1970s',
-    badge: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-  },
-  1960: {
-    label: '1960s',
-    badge: 'bg-stone-100 text-stone-700 border-stone-200',
-  },
-  1950: {
-    label: '1950s',
-    badge: 'bg-stone-100 text-stone-700 border-stone-200',
-  },
-  1940: {
-    label: '1940s',
-    badge: 'bg-stone-100 text-stone-700 border-stone-200',
-  },
-};
+const DEFAULT_MAP_STYLE = 'mapbox://styles/mapbox/outdoors-v12';
 
 /** Distance threshold (degrees) — if map center is already within this of the target, skip flyTo. */
 const FLY_TO_THRESHOLD = 0.0001;
@@ -114,6 +78,44 @@ const CAMERA_ANIMATION = {
 const DEFAULT_MAP_CENTER: [number, number] = [123.8986, 10.3224];
 const DEFAULT_MAP_ZOOM = 17;
 const EMPTY_USER_GROUPS: { id: string; name: string }[] = [];
+const MAP_ANNOUNCEMENTS = [
+  'Campus stories pinned where they happened',
+  'Switch eras to explore memories across batches',
+  'Drop a memory and add to the living archive',
+];
+
+type SortOption =
+  | 'date-newest'
+  | 'date-oldest'
+  | 'upvotes-high'
+  | 'upvotes-low';
+
+type VisibilityFilter =
+  | 'ALL'
+  | 'PUBLIC'
+  | 'BATCH_ONLY'
+  | 'PROGRAM_ONLY'
+  | 'GROUP_ONLY';
+
+interface MemoryFilters {
+  sortBy: SortOption;
+  visibility: VisibilityFilter;
+  selectedTags: string[];
+  selectedYear: number | null;
+  selectedGroupId: string | null;
+  selectedLocationId: string | null;
+  searchQuery: string;
+}
+
+interface GroupFilterOption {
+  id: string;
+  name: string;
+}
+
+interface LocationFilterOption {
+  id: string;
+  name: string;
+}
 
 interface MapComponentProps {
   filters: MemoryFilters;
@@ -123,13 +125,18 @@ interface MapComponentProps {
     availableGroups: GroupFilterOption[];
     availableLocations: LocationFilterOption[];
   }) => void;
+  onMemoryDetailOpenRequest?: () => Promise<void> | void;
+  onMemoryDetailOpenStateChange?: (open: boolean) => void;
 }
 
 export function MapComponent({
   filters,
   onFilterOptionsChange,
+  onMemoryDetailOpenRequest,
+  onMemoryDetailOpenStateChange,
 }: MapComponentProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const processedMemoryParamRef = useRef<string | null>(null);
@@ -163,6 +170,7 @@ export function MapComponent({
   const markerRootsRef = useRef<{ root: Root; landmark: Landmark }[]>([]);
   const memoryMarkersRef = useRef<mapboxgl.Marker[]>([]);
   const memoryRootsRef = useRef<Root[]>([]);
+  const memoryOpenSequenceRef = useRef(0);
 
   // Pending memory for the flyTo → open detail flow
   const pendingMemoryRef = useRef<MemoryWithCoordinates | null>(null);
@@ -186,9 +194,18 @@ export function MapComponent({
   const { data: memoriesData, isLoading: memoriesLoading } =
     useAllMemoriesWithCoordinates();
   const memories = useMemo(() => memoriesData?.data ?? [], [memoriesData]);
+  const { data: currentUserData } = useCurrentUser();
+  const currentUserId = currentUserData?.data?.id;
+  const { data: creatorMemoriesData, isLoading: creatorMemoriesLoading } =
+    useMemoriesByCreator(currentUserId);
   const { data: locationsData } = useLocations();
   const { data: userGroupsData } = useUserGroups();
   const userGroups = userGroupsData ?? EMPTY_USER_GROUPS;
+  const showFirstMemoryPrompt =
+    !!currentUserData?.data &&
+    !creatorMemoriesLoading &&
+    creatorMemoriesData?.data?.length === 0 &&
+    !addMemoryOpen;
 
   const availableGroups = useMemo<GroupFilterOption[]>(
     () =>
@@ -205,9 +222,40 @@ export function MapComponent({
     );
   }, [memories, activeMapEra]);
 
+  const selectedMemoryIndex = useMemo(
+    () =>
+      selectedMemory
+        ? memories.findIndex((m) => m.id === selectedMemory.id)
+        : -1,
+    [memories, selectedMemory]
+  );
+  const previousSelectedMemory =
+    selectedMemoryIndex > 0 ? memories[selectedMemoryIndex - 1] : null;
+  const nextSelectedMemory =
+    selectedMemoryIndex >= 0 && selectedMemoryIndex < memories.length - 1
+      ? memories[selectedMemoryIndex + 1]
+      : null;
+
   const tagFilteredMemories = useMemo(() => {
     return eraFilteredMemories.filter((memory) => {
-      // Tag filter
+      // ── SEARCH FILTER (live, applied first) ────────────────────────────────
+      if (filters.searchQuery && filters.searchQuery.trim()) {
+        const q = filters.searchQuery.toLowerCase().trim();
+        const inTitle = (memory.title ?? '').toLowerCase().includes(q);
+        const inDesc = (memory.description ?? '').toLowerCase().includes(q);
+        const inLocation = (
+          (memory.location as { buildingName?: string } | undefined)
+            ?.buildingName ?? ''
+        )
+          .toLowerCase()
+          .includes(q);
+        const inTags = (memory.tags ?? []).some((t) =>
+          t.name.toLowerCase().includes(q)
+        );
+        if (!inTitle && !inDesc && !inLocation && !inTags) return false;
+      }
+
+      // ── TAG FILTER (unchanged) ─────────────────────────────────────────────
       if (filters.selectedTags.length > 0) {
         const memoryTagNames = memory.tags?.map((t) => t.name) ?? [];
         const hasAllTags = filters.selectedTags.every((tag) =>
@@ -216,7 +264,7 @@ export function MapComponent({
         if (!hasAllTags) return false;
       }
 
-      // Year filter
+      // ── YEAR FILTER (unchanged) ────────────────────────────────────────────
       if (filters.selectedYear) {
         const memoryDateValue = (memory as { memoryDate?: string }).memoryDate;
         const memoryYear = memoryDateValue
@@ -225,17 +273,17 @@ export function MapComponent({
         if (memoryYear !== filters.selectedYear) return false;
       }
 
-      // Visibility filter
+      // ── VISIBILITY FILTER (unchanged) ─────────────────────────────────────
       if (filters.visibility !== 'ALL') {
         if (memory.visibility !== filters.visibility) return false;
       }
 
-      // Group filter
+      // ── GROUP FILTER (unchanged) ───────────────────────────────────────────
       if (filters.selectedGroupId) {
         if (memory.privateGroupId !== filters.selectedGroupId) return false;
       }
 
-      // Location filter
+      // ── LOCATION FILTER (unchanged) ───────────────────────────────────────
       if (filters.selectedLocationId) {
         const locationId = (memory.location as { id?: string } | undefined)?.id;
         if (locationId !== filters.selectedLocationId) return false;
@@ -362,15 +410,29 @@ export function MapComponent({
     handleClickRef.current(landmark);
   }, []);
 
+  const openMemoryDetail = useCallback(
+    async (memory: MemoryWithCoordinates) => {
+      const sequenceId = ++memoryOpenSequenceRef.current;
+
+      setSelectedMemory(memory);
+      await Promise.resolve(onMemoryDetailOpenRequest?.());
+
+      if (memoryOpenSequenceRef.current !== sequenceId) return;
+
+      setMemoryDetailOpen(true);
+      onMemoryDetailOpenStateChange?.(true);
+    },
+    [onMemoryDetailOpenRequest, onMemoryDetailOpenStateChange]
+  );
+
   const handleMemoryClickRef = useRef<(memory: MemoryWithCoordinates) => void>(
     () => {}
   );
   useLayoutEffect(() => {
     handleMemoryClickRef.current = (memory: MemoryWithCoordinates) => {
-      setSelectedMemory(memory);
-      setMemoryDetailOpen(true);
+      void openMemoryDetail(memory);
     };
-  });
+  }, [openMemoryDetail]);
 
   const handleMemoryClick = useCallback((memory: MemoryWithCoordinates) => {
     handleMemoryClickRef.current(memory);
@@ -380,6 +442,7 @@ export function MapComponent({
     const map = mapRef.current;
 
     setMemoryDetailOpen(false);
+    onMemoryDetailOpenStateChange?.(false);
     setSelectedMemory(null);
     setSelectedLandmark(null);
 
@@ -403,7 +466,7 @@ export function MapComponent({
     if (currentUrl !== nextUrl) {
       router.replace(nextUrl, { scroll: false });
     }
-  }, [activeMapEra, router]);
+  }, [activeMapEra, onMemoryDetailOpenStateChange, router]);
 
   // Force Escape behavior for notebook mode: close and return to era map URL.
   useEffect(() => {
@@ -464,8 +527,7 @@ export function MapComponent({
 
       // Fallback: if map isn't ready, just open the detail modal directly
       if (!map) {
-        setSelectedMemory(memory);
-        setMemoryDetailOpen(true);
+        void openMemoryDetail(memory);
         pendingMemoryRef.current = null;
         return;
       }
@@ -490,8 +552,7 @@ export function MapComponent({
 
         if (isAlreadyCentered) {
           // Already there — open immediately
-          setSelectedMemory(memory);
-          setMemoryDetailOpen(true);
+          void openMemoryDetail(memory);
           pendingMemoryRef.current = null;
           return;
         }
@@ -500,8 +561,7 @@ export function MapComponent({
         flyToMemoryWithSequence(memory, () => {
           // Guard against stale events
           if (pendingMemoryRef.current?.id !== memory.id) return;
-          setSelectedMemory(memory);
-          setMemoryDetailOpen(true);
+          void openMemoryDetail(memory);
           pendingMemoryRef.current = null;
         });
       };
@@ -531,7 +591,7 @@ export function MapComponent({
         }
       }, MODAL_CLOSE_DELAY);
     },
-    [activeMapEra, flyToMemoryWithSequence]
+    [activeMapEra, flyToMemoryWithSequence, openMemoryDetail]
   );
 
   // Clear pending memory when user opens another modal or performs an action
@@ -539,6 +599,41 @@ export function MapComponent({
   const cancelPendingFlyTo = useCallback(() => {
     pendingMemoryRef.current = null;
   }, []);
+
+  const openBatchesModal = useCallback(() => {
+    cancelPendingFlyTo();
+    setBatchesModalOpen(true);
+  }, [cancelPendingFlyTo]);
+
+  const batchesSidebarAction = useMemo(
+    () => ({
+      id: 'map-batches',
+      label: 'Batches',
+      icon: <Layers className="h-5 w-5" />,
+      onClick: openBatchesModal,
+    }),
+    [openBatchesModal]
+  );
+
+  useMainShellSidebarAction(batchesSidebarAction);
+
+  useEffect(() => {
+    const shouldOpenBatches = searchParams.get('openBatches') === '1';
+    if (!shouldOpenBatches || batchesModalOpen) return;
+
+    setBatchesModalOpen(true);
+  }, [batchesModalOpen, searchParams]);
+
+  useEffect(() => {
+    if (batchesModalOpen || searchParams.get('openBatches') !== '1') return;
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete('openBatches');
+
+    const nextSearch = params.toString();
+    const nextUrl = nextSearch ? `/map?${nextSearch}` : '/map';
+    router.replace(nextUrl, { scroll: false });
+  }, [batchesModalOpen, router, searchParams]);
 
   // ---------------------------------------------------------------------------
   // Location Selection Mode handlers
@@ -624,7 +719,7 @@ export function MapComponent({
 
         const map = new mapboxgl.Map({
           container: mapContainerRef.current,
-          style: 'mapbox://styles/mapbox/streets-v12',
+          style: DEFAULT_MAP_STYLE,
           center: DEFAULT_MAP_CENTER,
           zoom: DEFAULT_MAP_ZOOM,
           minZoom: 16,
@@ -640,9 +735,6 @@ export function MapComponent({
         map.once('load', () => {
           setMapReady(true);
         });
-
-        map.addControl(new mapboxgl.NavigationControl(), 'top-left');
-        map.addControl(new mapboxgl.FullscreenControl(), 'top-left');
 
         // Create landmark markers (but don't add to map yet — visibility effect handles this)
         LANDMARKS.forEach((landmark) => {
@@ -724,9 +816,8 @@ export function MapComponent({
     }
 
     processedMemoryParamRef.current = memoryIdParam;
-    setSelectedMemory(targetMemory);
-    setMemoryDetailOpen(true);
-  }, [memories, memoriesLoading]);
+    void openMemoryDetail(targetMemory);
+  }, [memories, memoriesLoading, openMemoryDetail]);
 
   // Phase 2: once map is ready, align era and camera for the selected memory
   useEffect(() => {
@@ -882,7 +973,13 @@ export function MapComponent({
 
   // Render memory pin markers (with stacking for overlapping locations)
   useEffect(() => {
-    if (!mapRef.current || memories.length === 0 || !showMemoryPins) return;
+    if (
+      !mapReady ||
+      !mapRef.current ||
+      memories.length === 0 ||
+      !showMemoryPins
+    )
+      return;
 
     // Clean up existing memory markers
     memoryMarkersRef.current.forEach((m) => m.remove());
@@ -955,6 +1052,7 @@ export function MapComponent({
       memoryMarkersRef.current.push(marker);
     }
   }, [
+    mapReady,
     displayedMemories,
     displayedMemories.length,
     memories.length,
@@ -982,178 +1080,105 @@ export function MapComponent({
   }
 
   return (
-    <div className="relative h-full w-full">
-      <div ref={mapContainerRef} className="h-full w-full" />
+    <div className="h-full w-full overflow-hidden bg-white">
+      <div className="flex h-full w-full flex-col overflow-hidden">
+        <MapAnnouncementStrip announcements={MAP_ANNOUNCEMENTS} />
 
-      {/* Era indicator — bottom left, above Mapbox attribution */}
-      {(() => {
-        const era = ERA_OVERLAY[activeMapEra];
-        if (!era) return null;
-        return (
-          <div className="absolute bottom-8 left-4 z-10 flex items-center gap-3">
-            <button
-              onClick={() => {
-                window.location.href = `/gallery?era=${activeMapEra}`;
-              }}
-              className="flex items-center gap-2 border-2 border-border bg-card px-4 py-2 text-sm font-semibold text-foreground shadow-[3px_3px_0px_0px_#2d2d2d] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#2d2d2d]"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="h-4 w-4"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-                />
-              </svg>
-              View Gallery
-            </button>
+        <div className="relative min-h-0 flex-1 overflow-hidden">
+          <div ref={mapContainerRef} className="h-full w-full" />
 
-            <div
-              className={`flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold shadow-sm backdrop-blur-sm ${era.badge}`}
-            >
-              <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
-              {era.label} Map
-            </div>
-          </div>
-        );
-      })()}
+          <AddMemoryButton onClick={() => setAddMemoryOpen(true)} />
 
-      {/* Add Memory Button - Bottom Right */}
-      <div className="absolute bottom-6 right-6 z-10 flex flex-col items-end gap-3">
-        <div className="group flex items-center gap-0 rounded-full bg-white p-2 shadow-lg transition-all duration-300 hover:gap-3">
-          <button
-            onClick={() => setAddMemoryOpen(true)}
-            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-skolaroid-blue text-white shadow-lg transition-all hover:bg-skolaroid-blue/90 hover:shadow-xl active:scale-95"
-            aria-label="Add memory"
-          >
-            <Plus size={20} />
-          </button>
-          <span className="max-w-0 overflow-hidden whitespace-nowrap text-sm font-medium text-gray-700 opacity-0 transition-all duration-300 group-hover:max-w-40 group-hover:pr-3 group-hover:opacity-100">
-            Add Memory
-          </span>
+          <GroupPanel
+            open={groupModalOpen}
+            onOpenChange={(isOpen) => {
+              setGroupModalOpen(isOpen);
+              if (isOpen) cancelPendingFlyTo();
+            }}
+          />
+
+          <BatchesModal
+            open={batchesModalOpen}
+            onOpenChange={setBatchesModalOpen}
+            activeMapEra={activeMapEra}
+            memories={memories}
+            onAddMemory={(era) => {
+              setBatchesModalOpen(false);
+              setAddMemoryEra(era ?? activeMapEra);
+              setAddMemoryOpen(true);
+            }}
+            onMemorySelected={handleBatchesMemorySelected}
+          />
+
+          <AddMemoryModal
+            open={addMemoryOpen && locationSelectionMode === 'inactive'}
+            onOpenChange={(isOpen) => {
+              setAddMemoryOpen(isOpen);
+              if (!isOpen) {
+                setAddMemoryEra(null);
+                handleCancelMapSelection();
+              }
+            }}
+            defaultEra={addMemoryEra}
+            onRequestMapSelection={handleRequestMapSelection}
+          />
+
+          {locationSelectionMode !== 'inactive' && (
+            <MapLocationSelector
+              mode={locationSelectionMode}
+              onCancel={handleCancelMapSelection}
+              onLocationSelected={handleLocationSelected}
+              pendingSelection={pendingLocationSelection}
+              mapRef={mapRef}
+            />
+          )}
+
+          <LandmarkMemoriesPanel
+            landmark={selectedLandmark}
+            memoryCount={
+              selectedLandmark ? (memoryCounts[selectedLandmark.id] ?? 0) : 0
+            }
+            onClose={() => setSelectedLandmark(null)}
+          />
+
+          {showFirstMemoryPrompt && (
+            <MapFirstMemoryPrompt onAddMemory={() => setAddMemoryOpen(true)} />
+          )}
+
+          <MemoryDetailModal
+            memory={selectedMemory}
+            previousMemory={previousSelectedMemory}
+            nextMemory={nextSelectedMemory}
+            open={memoryDetailOpen}
+            onOpenChange={(isOpen) => {
+              if (!isOpen) {
+                closeNotebookView();
+                return;
+              }
+              setMemoryDetailOpen(true);
+              onMemoryDetailOpenStateChange?.(true);
+            }}
+            onMemoryDeleted={() => setSelectedMemory(null)}
+            hasPrevious={selectedMemoryIndex > 0}
+            hasNext={
+              selectedMemoryIndex >= 0 &&
+              selectedMemoryIndex < memories.length - 1
+            }
+            onPrevious={() => {
+              if (previousSelectedMemory) {
+                setSelectedMemory(previousSelectedMemory);
+                flyToMemoryWithSequence(previousSelectedMemory);
+              }
+            }}
+            onNext={() => {
+              if (nextSelectedMemory) {
+                setSelectedMemory(nextSelectedMemory);
+                flyToMemoryWithSequence(nextSelectedMemory);
+              }
+            }}
+          />
         </div>
       </div>
-
-      {/* Expandable Toolbar - Top Right */}
-      <ExpandableToolbar
-        onPrimaryClick={() => setGroupModalOpen(true)}
-        onBatchesClick={() => setBatchesModalOpen(true)}
-        onConfigureClick={() => router.push('/admin')}
-      />
-
-      {/* Group Panel */}
-      <GroupPanel
-        open={groupModalOpen}
-        onOpenChange={(isOpen) => {
-          setGroupModalOpen(isOpen);
-          if (isOpen) cancelPendingFlyTo();
-        }}
-      />
-
-      {/* Batches Modal */}
-      <BatchesModal
-        open={batchesModalOpen}
-        onOpenChange={setBatchesModalOpen}
-        activeMapEra={activeMapEra}
-        memories={memories}
-        onAddMemory={(era) => {
-          setBatchesModalOpen(false);
-          setAddMemoryEra(era ?? activeMapEra);
-          setAddMemoryOpen(true);
-        }}
-        onMemorySelected={handleBatchesMemorySelected}
-      />
-
-      {/* Add Memory Modal */}
-      <AddMemoryModal
-        open={addMemoryOpen && locationSelectionMode === 'inactive'}
-        onOpenChange={(isOpen) => {
-          setAddMemoryOpen(isOpen);
-          if (!isOpen) {
-            setAddMemoryEra(null);
-            handleCancelMapSelection();
-          }
-        }}
-        defaultEra={addMemoryEra}
-        onRequestMapSelection={handleRequestMapSelection}
-      />
-
-      {/* Map Location Selector Overlay */}
-      {locationSelectionMode !== 'inactive' && (
-        <MapLocationSelector
-          mode={locationSelectionMode}
-          onCancel={handleCancelMapSelection}
-          onLocationSelected={handleLocationSelected}
-          pendingSelection={pendingLocationSelection}
-          mapRef={mapRef}
-        />
-      )}
-
-      {/* Landmark Memories Panel */}
-      <LandmarkMemoriesPanel
-        landmark={selectedLandmark}
-        memoryCount={
-          selectedLandmark ? (memoryCounts[selectedLandmark.id] ?? 0) : 0
-        }
-        onClose={() => setSelectedLandmark(null)}
-      />
-
-      {/* Memory Detail Modal */}
-      <MemoryDetailModal
-        memory={selectedMemory}
-        open={memoryDetailOpen}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) {
-            closeNotebookView();
-            return;
-          }
-          setMemoryDetailOpen(true);
-        }}
-        onMemoryDeleted={() => setSelectedMemory(null)}
-        hasPrevious={
-          selectedMemory
-            ? memories.findIndex((m) => m.id === selectedMemory.id) > 0
-            : false
-        }
-        hasNext={
-          selectedMemory
-            ? memories.findIndex((m) => m.id === selectedMemory.id) <
-              memories.length - 1
-            : false
-        }
-        onPrevious={() => {
-          if (selectedMemory) {
-            const currentIndex = memories.findIndex(
-              (m) => m.id === selectedMemory.id
-            );
-            const prevMemory = memories[currentIndex - 1];
-            if (prevMemory) {
-              // Set memory immediately so the flip back-face shows new content
-              setSelectedMemory(prevMemory);
-              flyToMemoryWithSequence(prevMemory);
-            }
-          }
-        }}
-        onNext={() => {
-          if (selectedMemory) {
-            const currentIndex = memories.findIndex(
-              (m) => m.id === selectedMemory.id
-            );
-            const nextMemory = memories[currentIndex + 1];
-            if (nextMemory) {
-              // Set memory immediately so the flip back-face shows new content
-              setSelectedMemory(nextMemory);
-              flyToMemoryWithSequence(nextMemory);
-            }
-          }
-        }}
-      />
     </div>
   );
 }

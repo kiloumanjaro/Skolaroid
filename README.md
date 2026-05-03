@@ -149,7 +149,13 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY="your-supabase-anon-key"
 
 # Mapbox
 NEXT_PUBLIC_MAPBOX_TOKEN="your-mapbox-token"
+
+# Cron (invitation cleanup)
+CRON_SECRET="your-long-random-secret"
 ```
+
+If you deploy on Vercel, set the same `CRON_SECRET` in your Vercel project
+environment variables so the scheduled cron call is authorized.
 
 #### 4. Run Database Migrations
 

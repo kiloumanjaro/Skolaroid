@@ -141,7 +141,7 @@ export function RolesTab({
   };
 
   return (
-    <div className="space-y-4 px-5 py-4">
+    <div className="space-y-4">
       <Card className="-rotate-[0.3deg]">
         <CardHeader>
           <div className="flex items-center justify-between gap-3">

@@ -30,6 +30,7 @@ export function useResolveReport() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-reports'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-analytics'] });
     },
   });
 }
