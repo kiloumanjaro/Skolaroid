@@ -14,10 +14,8 @@ import {
   RefreshCw,
   ChevronDown,
   ArrowUpDown,
-  Camera,
   Users,
   MapPin,
-  BarChart3,
   CalendarRange,
 } from 'lucide-react';
 import Image from 'next/image';
@@ -51,11 +49,30 @@ const tabLabels: Record<AdminTab, string> = {
   audit: 'Audit Log',
 };
 
-const statusBadgeStyles: Record<AnalyticsMemoryStatus, string> = {
-  APPROVED: 'bg-green-50 text-green-700',
-  PENDING: 'bg-yellow-50 text-yellow-700',
-  REJECTED: 'bg-orange-50 text-orange-700',
-  REMOVED: 'bg-red-50 text-red-700',
+const statusBadgeStyles: Record<
+  AnalyticsMemoryStatus,
+  { accent: string; surface: string; text: string }
+> = {
+  APPROVED: {
+    accent: '#e8e8e8',
+    surface: '#ffffff',
+    text: 'text-foreground',
+  },
+  PENDING: {
+    accent: '#e8e8e8',
+    surface: '#ffffff',
+    text: 'text-foreground',
+  },
+  REJECTED: {
+    accent: '#e8e8e8',
+    surface: '#ffffff',
+    text: 'text-foreground',
+  },
+  REMOVED: {
+    accent: '#e8e8e8',
+    surface: '#ffffff',
+    text: 'text-foreground',
+  },
 };
 
 const numberFormatter = new Intl.NumberFormat('en-US');
@@ -120,6 +137,39 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
         Retry
       </button>
     </div>
+  );
+}
+
+function AnalyticsSummaryCard({
+  eyebrow,
+  title,
+  description,
+  bannerColor,
+}: {
+  eyebrow: string;
+  title: string;
+  description: string;
+  bannerColor: string;
+}) {
+  return (
+    <article className="overflow-hidden border-2 border-border bg-[#f8f4ec]">
+      <div
+        className="border-b-2 border-border px-4 py-3"
+        style={{ backgroundColor: bannerColor }}
+      >
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground">
+          {eyebrow}
+        </p>
+      </div>
+      <div className="p-4 pb-8 sm:p-5 sm:pb-9">
+        <h3 className="max-w-[20ch] text-3xl font-black uppercase leading-none text-foreground sm:text-[2.1rem]">
+          {title}
+        </h3>
+        <p className="mt-4 line-clamp-2 text-base leading-7 text-foreground/80">
+          {description}
+        </p>
+      </div>
+    </article>
   );
 }
 
@@ -249,7 +299,7 @@ function AnalyticsContent({ searchQuery }: { searchQuery: string }) {
     String(DEFAULT_ANALYTICS_WINDOW_DAYS)
   );
 
-  const { data, isLoading, isError, refetch } =
+  const { data, isLoading, isFetching, isError, refetch } =
     useAdminAnalytics(selectedWindowDays);
 
   const handlePresetClick = (days: number) => {
@@ -270,40 +320,28 @@ function AnalyticsContent({ searchQuery }: { searchQuery: string }) {
     setCustomWindowDays(String(clampedValue));
   };
 
-  if (isLoading) return <LoadingState />;
-  if (isError) return <ErrorState onRetry={() => refetch()} />;
-
   const analytics = data?.data;
-
-  if (!analytics) {
-    return (
-      <div className="py-16 text-center text-sm text-muted-foreground">
-        No analytics data available.
-      </div>
-    );
-  }
-
   const normalizedQuery = searchQuery.trim().toLowerCase();
-
   const filteredLocations =
-    normalizedQuery.length === 0
-      ? analytics.topLocations
-      : analytics.topLocations.filter((location) =>
-          location.buildingName.toLowerCase().includes(normalizedQuery)
-        );
-
+    analytics == null
+      ? []
+      : normalizedQuery.length === 0
+        ? analytics.topLocations
+        : analytics.topLocations.filter((location) =>
+            location.buildingName.toLowerCase().includes(normalizedQuery)
+          );
   const filteredBatches =
-    normalizedQuery.length === 0
-      ? analytics.batchEngagementRates
-      : analytics.batchEngagementRates.filter((batch) =>
-          `${batch.programName} ${batch.batchYear}`
-            .toLowerCase()
-            .includes(normalizedQuery)
-        );
-
-  const topLocation = analytics.topLocations[0];
-  const topBatch = analytics.batchEngagementRates[0];
-
+    analytics == null
+      ? []
+      : normalizedQuery.length === 0
+        ? analytics.batchEngagementRates
+        : analytics.batchEngagementRates.filter((batch) =>
+            `${batch.programName} ${batch.batchYear}`
+              .toLowerCase()
+              .includes(normalizedQuery)
+          );
+  const topLocation = analytics?.topLocations[0];
+  const topBatch = analytics?.batchEngagementRates[0];
   const highlightedLocations = filteredLocations.slice(
     0,
     ANALYTICS_HIGHLIGHT_LIMIT
@@ -312,9 +350,8 @@ function AnalyticsContent({ searchQuery }: { searchQuery: string }) {
     0,
     ANALYTICS_HIGHLIGHT_LIMIT
   );
-
   const topLocationShare =
-    topLocation && analytics.totals.memories > 0
+    topLocation && analytics && analytics.totals.memories > 0
       ? Number(
           ((topLocation.memoryCount / analytics.totals.memories) * 100).toFixed(
             1
@@ -324,7 +361,7 @@ function AnalyticsContent({ searchQuery }: { searchQuery: string }) {
 
   return (
     <div className="space-y-6">
-      <section className="border-2 border-border bg-card p-4">
+      <section className="border-2 border-border bg-card px-5 py-4 sm:px-6">
         <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div>
             <div className="mb-1 flex items-center gap-2">
@@ -370,7 +407,7 @@ function AnalyticsContent({ searchQuery }: { searchQuery: string }) {
                     applyCustomWindowDays();
                   }
                 }}
-                className="w-20 border-2 border-border bg-background px-2 py-1 text-xs focus:border-skolaroid-blue focus:outline-none"
+                className="h-[36px] w-20 border-2 border-border bg-background px-3 text-sm focus:border-skolaroid-blue focus:outline-none"
                 aria-label="Custom analytics range in days"
               />
               <button
@@ -383,181 +420,223 @@ function AnalyticsContent({ searchQuery }: { searchQuery: string }) {
           </div>
         </div>
       </section>
-
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <div className="border-2 border-border bg-card p-4">
-          <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-full bg-skolaroid-blue/10 text-skolaroid-blue">
-            <Camera size={16} />
-          </div>
-          <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
-            Total Memories
-          </p>
-          <p className="mt-1 text-2xl font-semibold text-foreground">
-            {formatCount(analytics.totals.memories)}
-          </p>
+      {isError && !analytics ? (
+        <ErrorState onRetry={() => refetch()} />
+      ) : isLoading && !analytics ? (
+        <LoadingState />
+      ) : !analytics ? (
+        <div className="py-16 text-center text-sm text-muted-foreground">
+          No analytics data available.
         </div>
+      ) : (
+        <div className="relative">
+          <div className="space-y-6">
+            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+              <AnalyticsSummaryCard
+                eyebrow="Total Memories"
+                title={formatCount(analytics.totals.memories)}
+                description="Published and archived memory posts currently tracked across the platform."
+                bannerColor="#c78ae6"
+              />
 
-        <div className="border-2 border-border bg-card p-4">
-          <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-full bg-green-100 text-green-700">
-            <Users size={16} />
-          </div>
-          <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
-            Active Users ({analytics.windowDays}d)
-          </p>
-          <p className="mt-1 text-2xl font-semibold text-foreground">
-            {formatCount(analytics.totals.activeUsers)}
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {formatPercent(analytics.totals.activeUserRate)} of{' '}
-            {formatCount(analytics.totals.users)} users
-          </p>
-        </div>
+              <AnalyticsSummaryCard
+                eyebrow={`Active Users (${analytics.windowDays}d)`}
+                title={formatCount(analytics.totals.activeUsers)}
+                description={`${formatPercent(analytics.totals.activeUserRate)} of ${formatCount(analytics.totals.users)} users contributed activity in this range.`}
+                bannerColor="#90a8ee"
+              />
 
-        <div className="border-2 border-border bg-card p-4">
-          <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-full bg-sky-100 text-sky-700">
-            <MapPin size={16} />
-          </div>
-          <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
-            Most Photographed Location
-          </p>
-          <p className="mt-1 text-lg font-semibold text-foreground">
-            {topLocation?.buildingName ?? 'No data yet'}
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {topLocation
-              ? `${formatCount(topLocation.memoryCount)} memories (${formatPercent(topLocationShare)} of all memories)`
-              : 'No uploaded memories yet'}
-          </p>
-        </div>
+              <AnalyticsSummaryCard
+                eyebrow="Most Photographed Location"
+                title={topLocation?.buildingName ?? 'No Data Yet'}
+                description={
+                  topLocation
+                    ? `${formatCount(topLocation.memoryCount)} memories, making up ${formatPercent(topLocationShare)} of all uploads.`
+                    : 'No uploaded memories yet.'
+                }
+                bannerColor="#f6cb48"
+              />
 
-        <div className="border-2 border-border bg-card p-4">
-          <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-full bg-amber-100 text-amber-700">
-            <BarChart3 size={16} />
-          </div>
-          <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
-            Top Batch Engagement
-          </p>
-          <p className="mt-1 text-2xl font-semibold text-foreground">
-            {topBatch ? formatPercent(topBatch.engagementRate) : '0.0%'}
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {topBatch
-              ? `${topBatch.programName} Batch ${topBatch.batchYear}`
-              : 'No batch activity yet'}
-          </p>
-        </div>
-      </div>
+              <AnalyticsSummaryCard
+                eyebrow="Top Batch Engagement"
+                title={
+                  topBatch
+                    ? formatPercent(topBatch.engagementRate)
+                    : 'No Activity Yet'
+                }
+                description={
+                  topBatch
+                    ? `${topBatch.programName} Batch ${topBatch.batchYear} has the strongest engagement.`
+                    : 'No batch activity yet.'
+                }
+                bannerColor="#00c59a"
+              />
+            </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <section className="flex h-full flex-col border-2 border-border bg-card p-4">
-          <div className="mb-3 flex items-center gap-2">
-            <MapPin size={16} className="text-skolaroid-blue" />
-            <h2 className="text-sm font-semibold text-foreground">
-              Location Highlights
-            </h2>
-          </div>
-
-          {highlightedLocations.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              No locations match your search.
-            </p>
-          ) : (
-            <div className="space-y-2">
-              {highlightedLocations.map((location) => (
-                <div
-                  key={location.locationId}
-                  className="flex items-center justify-between gap-3 rounded-md border border-border/70 bg-background px-3 py-2"
-                >
-                  <div className="flex min-w-0 items-center gap-2">
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-secondary text-[10px] font-semibold text-muted-foreground">
-                      {location.rank}
-                    </span>
-                    <span className="truncate text-sm font-medium text-foreground">
-                      {location.buildingName}
-                    </span>
+            <div className="grid gap-4 lg:grid-cols-2">
+              <section className="flex flex-col self-start border-2 border-border bg-[#f7f1e3]">
+                <div className="flex items-center justify-between gap-3 border-b-2 border-border bg-[#f6cb48] px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <MapPin size={16} className="text-foreground" />
+                    <h2 className="text-sm font-black uppercase tracking-[0.12em] text-foreground">
+                      Location Highlights
+                    </h2>
                   </div>
-                  <span className="shrink-0 text-xs text-muted-foreground">
-                    {formatCount(location.memoryCount)} memories
+                  <span className="border-2 border-border bg-[#f7f1e3] px-2 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-foreground">
+                    Top {highlightedLocations.length}
                   </span>
                 </div>
-              ))}
+
+                {highlightedLocations.length === 0 ? (
+                  <p className="px-4 py-4 text-sm text-muted-foreground">
+                    No locations match your search.
+                  </p>
+                ) : (
+                  <div className="grid gap-0">
+                    {highlightedLocations.map((location) => (
+                      <div
+                        key={location.locationId}
+                        className="grid grid-cols-[auto,1fr] items-center gap-3 border-b-2 border-border px-4 py-3 last:border-b-0 sm:grid-cols-[auto,1fr,auto]"
+                      >
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center border-2 border-border bg-background text-xs font-black text-foreground">
+                          #{location.rank}
+                        </span>
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-bold uppercase tracking-[0.04em] text-foreground">
+                            {location.buildingName}
+                          </p>
+                        </div>
+                        <span className="shrink-0 text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground sm:justify-self-end">
+                          {formatCount(location.memoryCount)} memories
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {filteredLocations.length > ANALYTICS_HIGHLIGHT_LIMIT && (
+                  <p className="border-t-2 border-border px-4 py-3 text-xs text-muted-foreground">
+                    Showing top {ANALYTICS_HIGHLIGHT_LIMIT} of{' '}
+                    {formatCount(filteredLocations.length)} matching locations.
+                  </p>
+                )}
+              </section>
+
+              <section className="flex h-full flex-col border-2 border-border bg-[#edf6f2]">
+                <div className="flex items-center justify-between gap-3 border-b-2 border-border bg-[#00c59a] px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <Users size={16} className="text-foreground" />
+                    <h2 className="text-sm font-black uppercase tracking-[0.12em] text-foreground">
+                      Batch Highlights ({analytics.windowDays}d)
+                    </h2>
+                  </div>
+                  <span className="border-2 border-border bg-[#edf6f2] px-2 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-foreground">
+                    Top {highlightedBatches.length}
+                  </span>
+                </div>
+
+                {highlightedBatches.length === 0 ? (
+                  <p className="px-4 py-4 text-sm text-muted-foreground">
+                    No batches match your search.
+                  </p>
+                ) : (
+                  <div className="grid gap-0">
+                    {highlightedBatches.map((batch) => (
+                      <div
+                        key={batch.programBatchId}
+                        className="grid gap-3 border-b-2 border-border px-4 py-3 last:border-b-0"
+                      >
+                        <div className="flex flex-wrap items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-bold uppercase tracking-[0.04em] text-foreground">
+                              {batch.programName}
+                            </p>
+                            <p className="mt-1 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
+                              Batch {batch.batchYear}
+                            </p>
+                          </div>
+                          <div className="shrink-0 text-right">
+                            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-foreground">
+                              {formatCount(batch.activeUsers)} active of{' '}
+                              {formatCount(batch.totalUsers)} users
+                            </p>
+                            <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                              {formatPercent(batch.engagementRate)}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {filteredBatches.length > ANALYTICS_HIGHLIGHT_LIMIT && (
+                  <p className="border-t-2 border-border px-4 py-3 text-xs text-muted-foreground">
+                    Showing top {ANALYTICS_HIGHLIGHT_LIMIT} of{' '}
+                    {formatCount(filteredBatches.length)} matching batches.
+                  </p>
+                )}
+              </section>
             </div>
-          )}
 
-          {filteredLocations.length > ANALYTICS_HIGHLIGHT_LIMIT && (
-            <p className="mt-3 text-xs text-muted-foreground">
-              Showing top {ANALYTICS_HIGHLIGHT_LIMIT} of{' '}
-              {formatCount(filteredLocations.length)} matching locations.
+            <section>
+              <h2 className="mb-3 text-sm font-black uppercase tracking-[0.12em] text-foreground">
+                Memory Moderation Breakdown
+              </h2>
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                {analytics.memoriesByStatus.map((status) => (
+                  <article
+                    key={status.status}
+                    className={`border-2 border-border ${statusBadgeStyles[status.status as AnalyticsMemoryStatus].text}`}
+                    style={{
+                      backgroundColor:
+                        statusBadgeStyles[
+                          status.status as AnalyticsMemoryStatus
+                        ].surface,
+                    }}
+                  >
+                    <div
+                      className="border-b-2 border-border px-3 py-2"
+                      style={{
+                        backgroundColor:
+                          statusBadgeStyles[
+                            status.status as AnalyticsMemoryStatus
+                          ].accent,
+                      }}
+                    >
+                      <p className="text-[10px] font-black uppercase tracking-[0.14em]">
+                        {status.status.toLowerCase()}
+                      </p>
+                    </div>
+                    <div className="px-3 py-3">
+                      <p className="text-2xl font-black leading-none">
+                        {formatCount(status.count)}
+                      </p>
+                      <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.12em] text-foreground/65">
+                        total memories
+                      </p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            <p className="text-xs text-muted-foreground">
+              Active users are calculated from the last {analytics.windowDays}{' '}
+              days of memory uploads, comments, votes, and reports.
             </p>
-          )}
-        </section>
-
-        <section className="flex h-full flex-col border-2 border-border bg-card p-4">
-          <div className="mb-3 flex items-center gap-2">
-            <Users size={16} className="text-skolaroid-blue" />
-            <h2 className="text-sm font-semibold text-foreground">
-              Batch Highlights ({analytics.windowDays}d)
-            </h2>
           </div>
 
-          {highlightedBatches.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              No batches match your search.
-            </p>
-          ) : (
-            <div className="space-y-2">
-              {highlightedBatches.map((batch) => (
-                <div
-                  key={batch.programBatchId}
-                  className="rounded-md border border-border/70 bg-background px-3 py-2"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="truncate text-sm font-medium text-foreground">
-                      {batch.programName} Batch {batch.batchYear}
-                    </p>
-                    <span className="shrink-0 text-xs font-semibold text-skolaroid-blue">
-                      {formatPercent(batch.engagementRate)}
-                    </span>
-                  </div>
-                  <p className="mt-0.5 text-xs text-muted-foreground">
-                    {formatCount(batch.activeUsers)} active of{' '}
-                    {formatCount(batch.totalUsers)} users
-                  </p>
-                </div>
-              ))}
+          {isFetching && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/55">
+              <div className="flex items-center gap-2 border-2 border-border bg-card px-4 py-2 text-sm font-medium text-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Updating analytics...
+              </div>
             </div>
           )}
-
-          {filteredBatches.length > ANALYTICS_HIGHLIGHT_LIMIT && (
-            <p className="mt-3 text-xs text-muted-foreground">
-              Showing top {ANALYTICS_HIGHLIGHT_LIMIT} of{' '}
-              {formatCount(filteredBatches.length)} matching batches.
-            </p>
-          )}
-        </section>
-      </div>
-
-      <section className="border-2 border-border bg-card p-4">
-        <h2 className="mb-3 text-sm font-semibold text-foreground">
-          Memory Moderation Breakdown
-        </h2>
-        <div className="flex flex-wrap gap-2">
-          {analytics.memoriesByStatus.map((status) => (
-            <span
-              key={status.status}
-              className={`rounded-full px-3 py-1 text-xs font-medium ${statusBadgeStyles[status.status as AnalyticsMemoryStatus]}`}
-            >
-              {status.status.toLowerCase()}:{' '}
-              <span className="font-semibold">{formatCount(status.count)}</span>
-            </span>
-          ))}
         </div>
-      </section>
-
-      <p className="text-xs text-muted-foreground">
-        Active users are calculated from the last {analytics.windowDays} days of
-        memory uploads, comments, votes, and reports.
-      </p>
+      )}
     </div>
   );
 }
@@ -998,7 +1077,7 @@ export default function AdminPage() {
           <div className="absolute left-4 top-12 z-20 sm:left-6 sm:top-14">
             <div className="flex items-center gap-6">
               <ShellInlineSidebarToggle />
-              <div className="font-dancing text-4xl text-black">
+              <div className="font-dancing text-5xl text-black">
                 Admin Dashboard
               </div>
             </div>
