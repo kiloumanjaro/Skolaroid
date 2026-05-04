@@ -138,6 +138,7 @@ export function ReportMemoryModal({
       <DialogContent
         className="flex max-w-md gap-0 overflow-hidden p-0"
         showCloseButton={false}
+        style={{ borderRadius: 0 }}
       >
         <DialogTitle className="sr-only">Report Memory</DialogTitle>
         <DialogDescription className="sr-only">
@@ -168,7 +169,7 @@ export function ReportMemoryModal({
           {feedback && (
             <div className="px-6 pt-4">
               <div
-                className={`flex items-start gap-2 rounded-lg border p-3 text-sm ${
+                className={`flex items-start gap-2 border p-3 text-sm ${
                   feedback.type === 'success'
                     ? 'border-green-200 bg-green-50 text-green-800'
                     : feedback.type === 'info'
@@ -214,7 +215,8 @@ export function ReportMemoryModal({
                 rows={4}
                 maxLength={MAX_REPORT_REASON_LENGTH + 100}
                 disabled={reportMemory.isPending}
-                className="w-full resize-none rounded-lg border-2 border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/20 disabled:opacity-50"
+                className="w-full resize-none border-2 border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/20 disabled:opacity-50"
+                style={{ borderRadius: 0 }}
               />
               <div className="mt-1 flex items-center justify-between">
                 {isReasonTooLong && (
@@ -239,6 +241,7 @@ export function ReportMemoryModal({
               variant="outline"
               onClick={handleClose}
               disabled={reportMemory.isPending}
+              style={{ borderRadius: 0 }}
             >
               {showForm ? 'Cancel' : 'Close'}
             </Button>
@@ -247,6 +250,7 @@ export function ReportMemoryModal({
                 onClick={handleSubmit}
                 disabled={isInvalid || reportMemory.isPending}
                 className="bg-amber-500 text-white hover:bg-amber-600"
+                style={{ borderRadius: 0 }}
               >
                 {reportMemory.isPending ? (
                   <>
