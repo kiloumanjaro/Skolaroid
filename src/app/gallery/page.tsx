@@ -126,7 +126,7 @@ function GalleryPageContent() {
   const scrollLeftRef = useRef(0);
   const snapChildRefs = useRef<(HTMLDivElement | null)[]>([]);
   const isTeleporting = useRef(false);
-  const wheelDebounceRef = useRef(false);
+  const wheelTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { data: response, isLoading, error } = useAllMemoriesWithCoordinates();
 
@@ -333,26 +333,19 @@ function GalleryPageContent() {
     }
   };
 
-  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    if (wheelDebounceRef.current) return;
-
-    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-    if (delta === 0) return;
-
-    wheelDebounceRef.current = true;
-    scrollGallery(delta > 0 ? 'right' : 'left');
-
+  const handleWheel = () => {
     const container = containerRef.current;
-    const unlock = () => {
-      wheelDebounceRef.current = false;
-    };
-    if (container) {
-      container.addEventListener('scrollend', unlock, { once: true });
-      setTimeout(unlock, 400);
-    } else {
-      setTimeout(unlock, 400);
-    }
+    if (!container) return;
+
+    // Temporarily disable scroll snapping so native inertial scrolling
+    // can ebb out smoothly without fighting the CSS snap.
+    container.style.scrollSnapType = 'none';
+
+    if (wheelTimeoutRef.current) clearTimeout(wheelTimeoutRef.current);
+    wheelTimeoutRef.current = setTimeout(() => {
+      container.style.scrollSnapType = '';
+      scrollToCard(getClosestCardIndex());
+    }, 150);
   };
 
   return (

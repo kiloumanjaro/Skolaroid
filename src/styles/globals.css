@@ -68,7 +68,7 @@
   }
 
   .gallery-scroll-container {
-    scroll-snap-type: x mandatory;
+    scroll-snap-type: x proximity;
     padding-left: calc(50% - var(--polaroid-base) / 2);
     padding-right: calc(50% - var(--polaroid-base) / 2);
     scroll-padding-left: calc(50% - var(--polaroid-base) / 2);
