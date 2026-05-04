@@ -40,6 +40,8 @@ import type {
 import { AddMemoryButton } from './map/AddMemoryButton';
 import { MapAnnouncementStrip } from './announcement-strips/MapAnnouncementStrip';
 import { MapLocationSelector } from './map/MapLocationSelector';
+import { FilterBookmark } from './map/FilterBookmark';
+import { FilterPanel } from './map/FilterPanel';
 import type {
   MemoryFilters,
   GroupFilterOption,
@@ -91,6 +93,7 @@ const MAP_ANNOUNCEMENTS = [
 
 interface MapComponentProps {
   filters: MemoryFilters;
+  onFiltersChange: (filters: MemoryFilters) => void;
   onFilterOptionsChange?: (options: {
     availableTags: string[];
     availableYears: number[];
@@ -103,6 +106,7 @@ interface MapComponentProps {
 
 export function MapComponent({
   filters,
+  onFiltersChange,
   onFilterOptionsChange,
   onMemoryDetailOpenRequest,
   onMemoryDetailOpenStateChange,
@@ -119,6 +123,7 @@ export function MapComponent({
   const [addMemoryOpen, setAddMemoryOpen] = useState(false);
   const [addMemoryEra, setAddMemoryEra] = useState<number | null>(null);
   const [groupModalOpen, setGroupModalOpen] = useState(false);
+  const [filterPanelOpen, setFilterPanelOpen] = useState(false);
   const [batchesModalOpen, setBatchesModalOpen] = useState(false);
   const [activeMapEra, setActiveMapEra] = useState(2020);
   const [selectedLandmark, setSelectedLandmark] = useState<Landmark | null>(
@@ -1067,6 +1072,20 @@ export function MapComponent({
               setGroupModalOpen(isOpen);
               if (isOpen) cancelPendingFlyTo();
             }}
+            leftSlot={
+              <FilterBookmark onClick={() => setFilterPanelOpen(true)} />
+            }
+          />
+
+          <FilterPanel
+            open={filterPanelOpen}
+            onOpenChange={setFilterPanelOpen}
+            filters={filters}
+            onFiltersChange={onFiltersChange}
+            availableTags={availableTags}
+            availableYears={availableYears}
+            availableGroups={availableGroups}
+            availableLocations={availableLocations}
           />
 
           <BatchesModal
