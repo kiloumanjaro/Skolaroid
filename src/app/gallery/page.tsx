@@ -10,12 +10,13 @@ import {
   useRef,
   useState,
 } from 'react';
+import { Link2 } from 'lucide-react';
 import { GalleryAnnouncementStrip } from '@/components/announcement-strips/GalleryAnnouncementStrip';
 import { ShellBatchesSidebarAction } from '@/components/shell-batches-sidebar-action';
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 import { GalleryMemoryCard } from '@/components/gallery/GalleryMemoryCard';
 import { useAllMemoriesWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
-import { getEraFromBatchTag } from '@/lib/utils';
+import { cn, getEraFromBatchTag } from '@/lib/utils';
 
 const CLONE_COUNT = 3;
 const GALLERY_ANNOUNCEMENTS = [
@@ -29,6 +30,22 @@ function GalleryPageContent() {
   const searchParams = useSearchParams();
   const activeEra = parseInt(searchParams.get('era') || '2020', 10);
   const [isDragging, setIsDragging] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
+
+  const handleCopyLink = useCallback(async () => {
+    const base =
+      process.env.NEXT_PUBLIC_APP_URL ??
+      (typeof window !== 'undefined' ? window.location.origin : '');
+    const url = `${base}/share/gallery?era=${activeEra}`;
+
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopiedLink(true);
+      window.setTimeout(() => setCopiedLink(false), 2000);
+    } catch {
+      // Clipboard access can fail silently on unsupported browsers.
+    }
+  }, [activeEra]);
 
   // 8-bit pixel horizon — random walk that never repeats a height, so every
   // block is a micro step up or down. Range stays tight (1–5 blocks) so dips
@@ -382,6 +399,35 @@ function GalleryPageContent() {
         <GalleryAnnouncementStrip announcements={GALLERY_ANNOUNCEMENTS} />
 
         <div className="relative flex min-w-0 flex-1">
+          <div className="pointer-events-none absolute right-4 top-4 z-10 sm:right-6 sm:top-6">
+            <div className="pointer-events-auto relative">
+              <button
+                onClick={handleCopyLink}
+                aria-label="Copy shareable link"
+                className={cn(
+                  'flex aspect-square items-center justify-center gap-2 border-2 border-black bg-white p-1.5 font-hand text-sm transition-[box-shadow,transform] duration-75 sm:aspect-auto sm:px-4 sm:py-1.5',
+                  'shadow-[4px_4px_0px_0px_#2d2d2d]',
+                  'hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#2d2d2d]',
+                  'active:translate-x-[4px] active:translate-y-[4px] active:shadow-none'
+                )}
+              >
+                <span className="hidden sm:inline">
+                  {copiedLink ? 'Copied!' : 'Copy Link'}
+                </span>
+                <Link2 className="h-4 w-4" />
+              </button>
+
+              {copiedLink && (
+                <span
+                  aria-live="polite"
+                  className="absolute -bottom-8 right-0 whitespace-nowrap border-2 border-black bg-white px-2 py-0.5 font-hand text-xs shadow-[2px_2px_0px_0px_#2d2d2d]"
+                >
+                  Link copied!
+                </span>
+              )}
+            </div>
+          </div>
+
           {isLoading && (
             <div className="flex flex-1 items-center justify-center">
               <p className="text-lg text-gray-600">Loading memories...</p>
