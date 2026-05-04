@@ -54,7 +54,10 @@ export function MediaTab({ group }: MediaTabProps) {
         <h3 className="text-lg font-semibold">
           {group.postCount} {group.postCount === 1 ? 'Post' : 'Posts'}
         </h3>
-        <Button onClick={() => setAddMemoryOpen(true)}>
+        <Button
+          onClick={() => setAddMemoryOpen(true)}
+          style={{ borderRadius: 0 }}
+        >
           <Plus className="mr-2 h-4 w-4" />
           Add Post
         </Button>

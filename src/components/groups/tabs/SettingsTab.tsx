@@ -7,7 +7,6 @@ import { Input } from '@/components/ui/input';
 import { type Group } from '@/lib/types/group';
 import { useUpdateGroup } from '@/lib/hooks/useUpdateGroup';
 import { updateGroupServerSchema } from '@/lib/schemas';
-import { WOBBLY_RADIUS } from '@/lib/hand-drawn';
 import { cn } from '@/lib/utils';
 
 interface SettingsTabProps {
@@ -216,7 +215,7 @@ function FieldRow({
                 'w-full resize-none border-2 border-border bg-card px-3 py-2 font-hand text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring',
                 error && 'border-destructive'
               )}
-              style={{ borderRadius: WOBBLY_RADIUS }}
+              style={{ borderRadius: 0 }}
               onKeyDown={(e) => {
                 if (e.key === 'Escape') onCancel();
               }}
@@ -232,7 +231,7 @@ function FieldRow({
                 'border-2 font-hand text-sm',
                 error && 'border-destructive'
               )}
-              style={{ borderRadius: WOBBLY_RADIUS }}
+              style={{ borderRadius: 0 }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') onSave();
                 if (e.key === 'Escape') onCancel();
@@ -259,7 +258,7 @@ function FieldRow({
               onClick={onSave}
               disabled={isSaving}
               className="gap-1.5 font-hand"
-              style={{ borderRadius: WOBBLY_RADIUS }}
+              style={{ borderRadius: 0 }}
             >
               {isSaving ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -274,7 +273,7 @@ function FieldRow({
               onClick={onCancel}
               disabled={isSaving}
               className="gap-1.5 font-hand"
-              style={{ borderRadius: WOBBLY_RADIUS }}
+              style={{ borderRadius: 0 }}
             >
               <X className="h-3.5 w-3.5" />
               Cancel

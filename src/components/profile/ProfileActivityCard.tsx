@@ -74,7 +74,7 @@ export function ProfileActivityCard({
   const items = data?.data.slice(0, 3) ?? [];
 
   return (
-    <Card>
+    <Card style={{ borderRadius: '1rem' }}>
       <CardHeader className="pb-2">
         <CardTitle className="font-kalam text-base">Recent Activity</CardTitle>
       </CardHeader>

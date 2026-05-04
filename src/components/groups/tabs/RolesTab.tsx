@@ -7,8 +7,6 @@ import {
   type GroupRolePrivileges,
 } from '@/lib/group-permissions';
 import { useUpdateGroupRolePrivileges } from '@/lib/hooks/useGroupRolePrivileges';
-import { cn } from '@/lib/utils';
-import { WOBBLY_RADIUS_MD } from '@/lib/hand-drawn';
 import {
   Card,
   CardContent,
@@ -142,7 +140,7 @@ export function RolesTab({
 
   return (
     <div className="space-y-4">
-      <Card className="-rotate-[0.3deg]">
+      <Card style={{ borderRadius: '1rem' }}>
         <CardHeader>
           <div className="flex items-center justify-between gap-3">
             <div>
@@ -152,7 +150,11 @@ export function RolesTab({
                 that role.
               </CardDescription>
             </div>
-            <Badge variant="secondary" className="gap-1">
+            <Badge
+              variant="secondary"
+              className="gap-1"
+              style={{ borderRadius: 0 }}
+            >
               <Lock className="h-3 w-3" />
               Owner Settings
             </Badge>
@@ -160,19 +162,14 @@ export function RolesTab({
         </CardHeader>
       </Card>
 
-      {roleOrder.map((role, index) => (
-        <Card
-          key={role}
-          className={cn(
-            'transition-transform duration-100 hover:-rotate-[0.5deg]',
-            index % 2 === 0 ? 'rotate-[0.2deg]' : '-rotate-[0.2deg]'
-          )}
-          style={{ borderRadius: WOBBLY_RADIUS_MD }}
-        >
+      {roleOrder.map((role) => (
+        <Card key={role} style={{ borderRadius: '1rem' }}>
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center justify-between text-base">
               <span>{roleMeta[role].label}</span>
-              <Badge variant="outline">{role}</Badge>
+              <Badge variant="outline" style={{ borderRadius: 0 }}>
+                {role}
+              </Badge>
             </CardTitle>
             <CardDescription>{roleMeta[role].description}</CardDescription>
           </CardHeader>
@@ -185,7 +182,7 @@ export function RolesTab({
                 <div
                   key={key}
                   className="flex items-start justify-between gap-3 border-2 border-border/40 bg-secondary/30 px-3 py-2"
-                  style={{ borderRadius: WOBBLY_RADIUS_MD }}
+                  style={{ borderRadius: 0 }}
                 >
                   <div className="flex items-start gap-2">
                     <Icon className="mt-0.5 h-4 w-4 text-skolaroid-blue" />
@@ -229,12 +226,14 @@ export function RolesTab({
           variant="outline"
           onClick={handleReset}
           disabled={!isDirty || updatePrivileges.isPending}
+          style={{ borderRadius: 0 }}
         >
           Reset
         </Button>
         <Button
           onClick={handleSave}
           disabled={!isOwner || !isDirty || updatePrivileges.isPending}
+          style={{ borderRadius: 0 }}
         >
           {updatePrivileges.isPending && (
             <Loader2 className="h-4 w-4 animate-spin" />

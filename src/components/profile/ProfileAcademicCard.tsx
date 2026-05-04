@@ -27,7 +27,7 @@ export function ProfileAcademicCard({
   ];
 
   return (
-    <Card>
+    <Card style={{ borderRadius: '1rem' }}>
       <CardHeader>
         <CardTitle className="text-base">Academic Details</CardTitle>
       </CardHeader>

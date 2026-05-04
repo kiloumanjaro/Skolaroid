@@ -440,6 +440,7 @@ export function MembersTab({
         <DialogContent
           className="max-w-sm gap-0 overflow-hidden border-2 border-black p-0 shadow-none"
           showCloseButton={false}
+          style={{ borderRadius: 0 }}
         >
           <DialogTitle className="sr-only">
             {memberToView?.name ?? 'Member'} Details

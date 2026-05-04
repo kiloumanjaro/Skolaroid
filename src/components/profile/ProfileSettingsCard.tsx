@@ -11,7 +11,7 @@ export function ProfileSettingsCard() {
 
   return (
     <>
-      <Card>
+      <Card style={{ borderRadius: '1rem' }}>
         <CardHeader>
           <CardTitle className="text-base">Account Settings</CardTitle>
         </CardHeader>
@@ -22,6 +22,7 @@ export function ProfileSettingsCard() {
               size="sm"
               disabled
               className="w-fit cursor-not-allowed opacity-50"
+              style={{ borderRadius: 0 }}
             >
               Change Password
             </Button>
@@ -36,6 +37,7 @@ export function ProfileSettingsCard() {
               size="sm"
               onClick={() => setShowDeactivateDialog(true)}
               className="w-fit border-destructive/50 text-destructive hover:border-destructive hover:bg-destructive/10 hover:text-destructive"
+              style={{ borderRadius: 0 }}
             >
               Deactivate Account
             </Button>

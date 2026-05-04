@@ -395,6 +395,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                         <Badge
                           variant="outline"
                           className="flex items-center gap-1 border-[#7f9db9] bg-[#f4f8ff] text-[11px] text-[#24426c]"
+                          style={{ borderRadius: 0 }}
                         >
                           {selectedGroup.privacy === 'PUBLIC' ? (
                             <>
@@ -553,9 +554,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                   <div
                     className={cn(
                       'scrollbar-hide flex-1 overflow-y-auto',
-                      activeTab === 'members' || activeTab === 'roles'
-                        ? 'p-0'
-                        : 'p-4 md:p-6'
+                      activeTab === 'members' ? 'p-0' : 'p-4 md:p-6'
                     )}
                   >
                     {activeTab === 'members' && (
