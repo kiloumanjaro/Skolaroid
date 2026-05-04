@@ -565,7 +565,7 @@ export function AddMemoryModal({
           ? { privateGroupId: selectedGroupId }
           : {}),
         ...(primaryMediaURL
-          ? { mediaURL: primaryMediaURL, mediaURLs: uploadedMediaURLs }
+          ? { mediaURLs: uploadedMediaURLs }
           : firstCompleted?.file
             ? { mediaFile: firstCompleted.file }
             : {}),

@@ -7,7 +7,6 @@ export type ActivityItemType = 'upload' | 'vote' | 'comment';
 export interface ActivityMemory {
   id: string;
   title: string;
-  mediaURL?: string | null;
   mediaURLs?: string[];
   visibility: string;
   creatorId?: string | null;

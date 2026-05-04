@@ -219,7 +219,7 @@ function PostCard({
         }`}
       >
         <Image
-          src={memory.mediaURL || '/assets/images/temporary_map.png'}
+          src={memory.mediaURLs?.[0] || '/assets/images/temporary_map.png'}
           alt="Post thumbnail"
           fill
           className="object-cover"

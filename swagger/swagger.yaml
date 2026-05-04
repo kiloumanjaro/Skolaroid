@@ -1640,9 +1640,11 @@ components:
         privateGroupId:
           type: string
           format: uuid
-        mediaURL:
-          type: string
-          format: uri
+        mediaURLs:
+          type: array
+          items:
+            type: string
+            format: uri
 
     EditMemoryInput:
       type: object
@@ -1771,9 +1773,10 @@ components:
               format: uuid
             title:
               type: string
-            mediaURL:
-              type: string
-              nullable: true
+            mediaURLs:
+              type: array
+              items:
+                type: string
         resolvedBy:
           type: object
           nullable: true

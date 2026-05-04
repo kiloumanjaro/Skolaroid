@@ -62,8 +62,8 @@ export function GalleryMemoryCard({
     return () => observer.disconnect();
   }, [uploaderName]);
 
-  const photos = memory.mediaURL
-    ? [{ src: memory.mediaURL, alt: memory.title }]
+  const photos = memory.mediaURLs?.[0]
+    ? [{ src: memory.mediaURLs[0], alt: memory.title }]
     : [];
 
   if (photos.length === 0) {
