@@ -68,12 +68,14 @@ export function TagInput({ tags, onTagsChange }: TagInputProps) {
             onBlur={() => setShowSuggestions(false)}
             placeholder="Add a tag and press Enter"
             maxLength={50}
+            style={{ borderRadius: 0 }}
           />
           <Button
             type="button"
             variant="outline"
             onClick={handleAddTag}
             disabled={!tagInput.trim() || tags.length >= MAX_TAGS}
+            style={{ borderRadius: 0 }}
           >
             Add
           </Button>
@@ -99,7 +101,12 @@ export function TagInput({ tags, onTagsChange }: TagInputProps) {
       {tags.length > 0 && (
         <div className="flex flex-wrap gap-1.5 pt-1">
           {tags.map((tag) => (
-            <Badge key={tag} variant="secondary" className="gap-1">
+            <Badge
+              key={tag}
+              variant="secondary"
+              className="gap-1"
+              style={{ borderRadius: 0 }}
+            >
               {tag}
               <button
                 type="button"

@@ -63,7 +63,7 @@ export function EditTagsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md" style={{ borderRadius: 0 }}>
         <DialogHeader>
           <DialogTitle>Edit Tags</DialogTitle>
           <DialogDescription className="truncate">
@@ -84,13 +84,18 @@ export function EditTagsDialog({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            style={{ borderRadius: 0 }}
+          >
             Cancel
           </Button>
           <Button
             onClick={handleSave}
             disabled={isPending}
             className="bg-skolaroid-blue text-white hover:bg-skolaroid-blue/90"
+            style={{ borderRadius: 0 }}
           >
             {isPending ? 'Saving...' : 'Save'}
           </Button>

@@ -28,7 +28,7 @@ export function MemoryCard({ memory, isOwner = false }: MemoryCardProps) {
 
   return (
     <>
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden" style={{ borderRadius: '1rem' }}>
         {memory.mediaURLs?.[0] && (
           <div className="relative h-48 w-full">
             <Image
@@ -42,7 +42,11 @@ export function MemoryCard({ memory, isOwner = false }: MemoryCardProps) {
         <CardHeader>
           <div className="flex items-start justify-between gap-2">
             <CardTitle className="text-lg">{memory.title}</CardTitle>
-            <Badge variant="secondary" className="shrink-0">
+            <Badge
+              variant="secondary"
+              className="shrink-0"
+              style={{ borderRadius: 0 }}
+            >
               {VISIBILITY_LABELS[memory.visibility]}
             </Badge>
           </div>
@@ -60,7 +64,12 @@ export function MemoryCard({ memory, isOwner = false }: MemoryCardProps) {
         <CardFooter className="justify-between text-xs text-muted-foreground">
           <div className="flex flex-wrap items-center gap-1">
             {memory.tags?.map((tag) => (
-              <Badge key={tag.id} variant="outline" className="text-xs">
+              <Badge
+                key={tag.id}
+                variant="outline"
+                className="text-xs"
+                style={{ borderRadius: 0 }}
+              >
                 {tag.name}
               </Badge>
             ))}

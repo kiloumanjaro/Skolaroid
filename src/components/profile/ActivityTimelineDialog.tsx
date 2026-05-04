@@ -9,7 +9,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
-import { WOBBLY_RADIUS } from '@/lib/hand-drawn';
 import {
   useUserActivity,
   type ActivityItem,
@@ -67,7 +66,7 @@ function ActivityRow({
   return (
     <button
       onClick={onClick}
-      style={{ borderRadius: WOBBLY_RADIUS }}
+      style={{ borderRadius: '0.5rem' }}
       className={cn(
         'group flex w-full items-start gap-3 border border-border/40 px-3 py-2',
         'bg-background text-left transition-colors hover:bg-muted',
@@ -130,7 +129,10 @@ export function ActivityTimelineDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="flex max-h-[90vh] max-w-lg flex-col gap-4">
+        <DialogContent
+          className="flex max-h-[90vh] max-w-lg flex-col gap-4"
+          style={{ borderRadius: '1rem' }}
+        >
           <DialogHeader>
             <DialogTitle className="font-kalam text-xl">
               Activity Timeline
@@ -143,7 +145,7 @@ export function ActivityTimelineDialog({
               <button
                 key={value}
                 onClick={() => setActiveFilter(value)}
-                style={{ borderRadius: WOBBLY_RADIUS }}
+                style={{ borderRadius: 0 }}
                 className={cn(
                   'border-2 border-foreground px-3 py-1 font-hand text-xs capitalize',
                   'transition-all',
@@ -158,7 +160,7 @@ export function ActivityTimelineDialog({
           </div>
 
           {/* Activity list */}
-          <div className="flex flex-col gap-2 overflow-y-auto pr-1">
+          <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pr-1">
             {isPending &&
               Array.from({ length: 5 }).map((_, i) => (
                 <div
@@ -196,7 +198,10 @@ export function ActivityTimelineDialog({
 
       {/* Memory unavailable dialog */}
       <Dialog open={unavailableOpen} onOpenChange={setUnavailableOpen}>
-        <DialogContent className="max-w-sm text-center">
+        <DialogContent
+          className="max-w-sm text-center"
+          style={{ borderRadius: '1rem' }}
+        >
           <div className="flex flex-col items-center gap-3 py-4">
             <Frown
               size={48}
