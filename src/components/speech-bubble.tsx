@@ -26,54 +26,84 @@ interface SpeechBubbleProps extends React.HTMLAttributes<HTMLDivElement> {
    * @default true
    */
   visible?: boolean;
+  /**
+   * Position of the tail. Can be 'center', 'right', or a number representing pixel offset from the center
+   * @default 'right'
+   */
+  tailPosition?: 'center' | 'right' | number;
 }
 
 export function SpeechBubble({
   width = 600,
-  height = 300,
   title,
   message,
   visible = true,
+  tailPosition = 'right',
   className,
   style,
   ...props
 }: SpeechBubbleProps) {
+  const calculatedCenter =
+    typeof tailPosition === 'number'
+      ? width / 2 + tailPosition
+      : tailPosition === 'center'
+        ? width / 2
+        : width - 50;
+
+  // Safe bounds: Prevent the tail from drawing outside the bubble's width
+  const tailCenterX = Math.max(35, Math.min(calculatedCenter, width - 35));
+
+  const tailStartX = tailCenterX - 22;
+  const tailEndX = tailCenterX + 20;
+
   return (
     <div
       className={cn(
-        'relative inline-block font-hand transition-all duration-200',
+        'relative flex flex-col items-center justify-end font-hand transition-all duration-200',
         visible ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0',
         className
       )}
-      style={{ width: `${width}px`, height: `${height + 34}px`, ...style }}
+      style={{ width: `${width}px`, ...style }}
       {...props}
     >
+      <div
+        className="relative z-10 flex w-full flex-col items-center justify-center bg-white p-4"
+        style={{
+          border: '2.5px solid #2d2d2d',
+          borderRadius: WOBBLY_RADIUS_MD,
+        }}
+      >
+        <div
+          className="mx-auto space-y-2 text-center"
+          style={{ maxWidth: `${Math.max(width - 72, 160)}px` }}
+        >
+          {title && (
+            <p className="font-kalam text-sm font-semibold leading-none text-foreground">
+              {title}
+            </p>
+          )}
+          {message && (
+            <p className="font-hand text-sm leading-snug text-foreground">
+              {message}
+            </p>
+          )}
+        </div>
+      </div>
+
       <svg
         width={width}
-        height={height + 34}
-        viewBox={`0 0 ${width} ${height + 34}`}
+        height={22}
+        viewBox={`0 0 ${width} 22`}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="block"
+        className="pointer-events-none z-20 mt-[-2.5px] block"
       >
-        {/* Main bubble rectangle with wobbly corners */}
-        <rect
-          x="6"
-          y="6"
-          width={width - 12}
-          height={height - 12}
-          fill="#ffffff"
-          stroke="#2d2d2d"
-          strokeWidth="2.5"
-          style={{ borderRadius: WOBBLY_RADIUS_MD }}
-        />
-
         {/* Tail polygon - draws from inside the bubble outward */}
         <path
           d={`
-            M ${width - 72} ${height - 6}
-            L ${width - 50} ${height + 17}
-            L ${width - 30} ${height - 6}
+            M ${tailStartX} 0
+            L ${tailCenterX} 21
+            L ${tailEndX} 0
             Z
           `}
           fill="#ffffff"
@@ -82,14 +112,14 @@ export function SpeechBubble({
 
         {/* Tail border strokes - two separate lines that connect smoothly */}
         <path
-          d={`M ${width - 72} ${height - 6} L ${width - 50} ${height + 17}`}
+          d={`M ${tailStartX} 0 L ${tailCenterX} 21`}
           stroke="#2d2d2d"
           strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
         <path
-          d={`M ${width - 50} ${height + 17} L ${width - 30} ${height - 6}`}
+          d={`M ${tailCenterX} 21 L ${tailEndX} 0`}
           stroke="#2d2d2d"
           strokeWidth="2.5"
           strokeLinecap="round"
@@ -99,37 +129,15 @@ export function SpeechBubble({
         {/* Rhomboid cover to hide the bottom border where tail connects */}
         <path
           d={`
-            M ${width - 72} ${height - 7.5}
-            L ${width - 30} ${height - 7.5}
-            L ${width - 34} ${height - 4.5}
-            L ${width - 68} ${height - 4.5}
+            M ${tailStartX} -2
+            L ${tailEndX} -2
+            L ${tailEndX - 4} 3
+            L ${tailStartX + 4} 3
             Z
           `}
           fill="#ffffff"
         />
       </svg>
-      {(title || message) && (
-        <div
-          className="absolute left-0 top-0 flex items-center justify-center p-4"
-          style={{ width: `${width}px`, height: `${height}px` }}
-        >
-          <div
-            className="mx-auto space-y-2 text-center"
-            style={{ maxWidth: `${Math.max(width - 72, 160)}px` }}
-          >
-            {title && (
-              <p className="font-kalam text-sm font-semibold leading-none text-foreground">
-                {title}
-              </p>
-            )}
-            {message && (
-              <p className="font-hand text-sm leading-snug text-foreground">
-                {message}
-              </p>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

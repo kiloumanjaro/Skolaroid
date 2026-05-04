@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { User } from 'lucide-react';
 import { PolaroidCluster } from './PolaroidCluster';
@@ -8,7 +8,7 @@ import { SpeechBubble } from '@/components/speech-bubble';
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 
 // DEV TOGGLE: Set to true to use the speech bubble overlay instead of the cinematic vignette
-const USE_SPEECH_BUBBLE = false;
+const USE_SPEECH_BUBBLE = true;
 
 function captionFontSize(text: string): string {
   if (text.length <= 10) return '1.55rem';
@@ -37,6 +37,30 @@ export function GalleryMemoryCard({
   onClick,
 }: GalleryMemoryCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const nameRef = useRef<HTMLSpanElement>(null);
+  const [nameWidth, setNameWidth] = useState(0);
+
+  const uploaderName = memory.creator
+    ? `${memory.creator.firstName} ${memory.creator.lastName}`.trim()
+    : null;
+
+  // Measure the width of the uploaderName text robustly
+  useEffect(() => {
+    if (!nameRef.current) return;
+
+    // Initial measurement
+    setNameWidth(nameRef.current.getBoundingClientRect().width);
+
+    // Watch for font loading or layout shifts
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setNameWidth(entry.contentRect.width);
+      }
+    });
+
+    observer.observe(nameRef.current);
+    return () => observer.disconnect();
+  }, [uploaderName]);
 
   const photos = memory.mediaURL
     ? [{ src: memory.mediaURL, alt: memory.title }]
@@ -47,11 +71,16 @@ export function GalleryMemoryCard({
   }
 
   const captionText = memory.description || memory.title;
-  const uploaderName = memory.creator
-    ? `${memory.creator.firstName} ${memory.creator.lastName}`.trim()
-    : null;
   const uploaderPhoto = memory.creator?.avatarUrl ?? null;
   const dateUploaded = formatDate(memory.createdAt);
+
+  // Calculate where the tail of the bubble should mathematically point:
+  // The bottom avatar/name container uses gap-2 (8px). Avatar is 36px wide.
+  // The entire row width is: 36 (avatar) + 8 (gap) + nameWidth.
+  // Since the flex row is centered, the left edge of the row is at (-TotalWidth / 2) relative to the flex center.
+  // The avatar is at the left edge. Its center is at (-TotalWidth / 2) + 18.
+  const totalRowWidth = 36 + (uploaderName ? 8 + nameWidth : 0);
+  const avatarCenterOffset = -(totalRowWidth / 2) + 18;
 
   return (
     <div className="flex shrink-0 flex-col items-center">
@@ -62,16 +91,20 @@ export function GalleryMemoryCard({
           onPhotoClick={onClick}
         />
 
-        {/* Caption Overlay */}
-        {USE_SPEECH_BUBBLE ? (
+        {/* Bubble Caption Overlay (Hover) -- Now bound to polaroid center, but tail dynamically points to avatar */}
+        {USE_SPEECH_BUBBLE && (
           <SpeechBubble
             width={280}
             height={110}
             message={captionText}
             visible={isHovered}
-            className="pointer-events-none absolute bottom-[-1rem] left-1/2 z-[100] -translate-x-[20%] translate-y-full"
+            tailPosition={avatarCenterOffset}
+            className="pointer-events-none absolute bottom-[-2rem] left-1/2 z-[100] -translate-x-1/2"
           />
-        ) : (
+        )}
+
+        {/* Cinematic Caption Overlay (Hover) */}
+        {!USE_SPEECH_BUBBLE && (
           <div
             className={`pointer-events-none absolute inset-[-10rem] z-10 flex items-center justify-center p-8 transition-opacity duration-300 ${
               isHovered ? 'opacity-100' : 'opacity-0'
@@ -123,7 +156,10 @@ export function GalleryMemoryCard({
             )}
           </div>
           {uploaderName && (
-            <span className="font-hand text-sm font-semibold text-gray-700">
+            <span
+              ref={nameRef}
+              className="font-hand text-sm font-semibold text-gray-700"
+            >
               {uploaderName}
             </span>
           )}
