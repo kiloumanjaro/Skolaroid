@@ -40,6 +40,12 @@ import type {
 import { AddMemoryButton } from './map/AddMemoryButton';
 import { MapAnnouncementStrip } from './announcement-strips/MapAnnouncementStrip';
 import { MapLocationSelector } from './map/MapLocationSelector';
+import { FilterPanel } from './map/FilterPanel';
+import type {
+  MemoryFilters,
+  GroupFilterOption,
+  LocationFilterOption,
+} from './map/filter-memory-types';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
@@ -84,54 +90,16 @@ const MAP_ANNOUNCEMENTS = [
   'Drop a memory and add to the living archive',
 ];
 
-type SortOption =
-  | 'date-newest'
-  | 'date-oldest'
-  | 'upvotes-high'
-  | 'upvotes-low';
-
-type VisibilityFilter =
-  | 'ALL'
-  | 'PUBLIC'
-  | 'BATCH_ONLY'
-  | 'PROGRAM_ONLY'
-  | 'GROUP_ONLY';
-
-interface MemoryFilters {
-  sortBy: SortOption;
-  visibility: VisibilityFilter;
-  selectedTags: string[];
-  selectedYear: number | null;
-  selectedGroupId: string | null;
-  selectedLocationId: string | null;
-  searchQuery: string;
-}
-
-interface GroupFilterOption {
-  id: string;
-  name: string;
-}
-
-interface LocationFilterOption {
-  id: string;
-  name: string;
-}
-
 interface MapComponentProps {
   filters: MemoryFilters;
-  onFilterOptionsChange?: (options: {
-    availableTags: string[];
-    availableYears: number[];
-    availableGroups: GroupFilterOption[];
-    availableLocations: LocationFilterOption[];
-  }) => void;
+  onFiltersChange: (filters: MemoryFilters) => void;
   onMemoryDetailOpenRequest?: () => Promise<void> | void;
   onMemoryDetailOpenStateChange?: (open: boolean) => void;
 }
 
 export function MapComponent({
   filters,
-  onFilterOptionsChange,
+  onFiltersChange,
   onMemoryDetailOpenRequest,
   onMemoryDetailOpenStateChange,
 }: MapComponentProps) {
@@ -147,6 +115,7 @@ export function MapComponent({
   const [addMemoryOpen, setAddMemoryOpen] = useState(false);
   const [addMemoryEra, setAddMemoryEra] = useState<number | null>(null);
   const [groupModalOpen, setGroupModalOpen] = useState(false);
+  const [filterPanelOpen, setFilterPanelOpen] = useState(false);
   const [batchesModalOpen, setBatchesModalOpen] = useState(false);
   const [activeMapEra, setActiveMapEra] = useState(2020);
   const [selectedLandmark, setSelectedLandmark] = useState<Landmark | null>(
@@ -382,21 +351,6 @@ export function MapComponent({
       a.name.localeCompare(b.name)
     );
   }, [eraFilteredMemories, locationsData]);
-
-  useEffect(() => {
-    onFilterOptionsChange?.({
-      availableTags,
-      availableYears,
-      availableGroups,
-      availableLocations,
-    });
-  }, [
-    availableTags,
-    availableYears,
-    availableGroups,
-    availableLocations,
-    onFilterOptionsChange,
-  ]);
 
   // Keep a stable ref for the click handler so detached roots always call the latest version
   const handleClickRef = useRef<(landmark: Landmark) => void>(() => {});
@@ -1095,6 +1049,17 @@ export function MapComponent({
               setGroupModalOpen(isOpen);
               if (isOpen) cancelPendingFlyTo();
             }}
+          />
+
+          <FilterPanel
+            open={filterPanelOpen}
+            onOpenChange={setFilterPanelOpen}
+            filters={filters}
+            onFiltersChange={onFiltersChange}
+            availableTags={availableTags}
+            availableYears={availableYears}
+            availableGroups={availableGroups}
+            availableLocations={availableLocations}
           />
 
           <BatchesModal
