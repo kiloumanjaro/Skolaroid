@@ -14,13 +14,17 @@ export function useMemoriesByLocation(locationId: string | null) {
     queryKey: ['memories', 'by-location', locationId],
     queryFn: async () => {
       const res = await fetch(
-        `/api/prisma/memory/get-by-location?locationId=${encodeURIComponent(locationId!)}`
+        `/api/prisma/memory/get-by-location?locationId=${encodeURIComponent(locationId!)}`,
+        { cache: 'no-store' }
       );
       if (!res.ok) throw new Error('Failed to fetch memories');
       return res.json() as Promise<MemoriesByLocationResponse>;
     },
     enabled: !!locationId,
     staleTime: 5 * 60 * 1000,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: 'always',
+    refetchOnReconnect: 'always',
     retry: 1,
   });
 }

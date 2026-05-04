@@ -186,9 +186,18 @@ export function MapComponent({
 
   // Only show memory pins for the active era (based on batch tag)
   const eraFilteredMemories = useMemo(() => {
-    return memories.filter(
-      (m) => getEraFromBatchTag(m.tags ?? [], m.createdAt) === activeMapEra
-    );
+    return memories.filter((memory) => {
+      if (
+        memory.moderationStatus === 'REJECTED' ||
+        memory.moderationStatus === 'REMOVED'
+      ) {
+        return false;
+      }
+
+      return (
+        getEraFromBatchTag(memory.tags ?? [], memory.createdAt) === activeMapEra
+      );
+    });
   }, [memories, activeMapEra]);
 
   const selectedMemoryIndex = useMemo(
