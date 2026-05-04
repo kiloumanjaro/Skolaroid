@@ -223,14 +223,14 @@ export function BatchesModal({
                       className="cursor-pointer overflow-hidden border-2 border-border bg-card text-left transition-colors hover:bg-secondary/40"
                     >
                       {/* Image */}
-                      {memory.mediaURL ? (
+                      {memory.mediaURLs?.[0] ? (
                         <div className="h-44 w-full overflow-hidden bg-secondary">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={
-                              memory.mediaURL === '/temporary_map.png'
+                              memory.mediaURLs[0] === '/temporary_map.png'
                                 ? '/assets/images/temporary_map.png'
-                                : memory.mediaURL
+                                : memory.mediaURLs[0]
                             }
                             alt={memory.title}
                             className="block h-full w-full object-cover object-center"

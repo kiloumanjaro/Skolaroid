@@ -7,7 +7,7 @@ export interface AdminMemoryItem {
   id: string;
   title: string;
   description: string | null;
-  mediaURL: string | null;
+  mediaURLs: string[];
   moderationStatus: ModerationStatus;
   createdAt: string;
   creator: {

@@ -202,7 +202,7 @@ function PostCard({
       {/* Thumbnail */}
       <div className="relative h-28 w-40 shrink-0 overflow-hidden bg-secondary">
         <Image
-          src={memory.mediaURL || '/assets/images/temporary_map.png'}
+          src={memory.mediaURLs?.[0] || '/assets/images/temporary_map.png'}
           alt="Post thumbnail"
           fill
           className="object-cover"

@@ -29,10 +29,10 @@ export function MemoryCard({ memory, isOwner = false }: MemoryCardProps) {
   return (
     <>
       <Card className="overflow-hidden">
-        {memory.mediaURL && (
+        {memory.mediaURLs?.[0] && (
           <div className="relative h-48 w-full">
             <Image
-              src={memory.mediaURL}
+              src={memory.mediaURLs[0]}
               alt={memory.title}
               fill
               className="object-cover"

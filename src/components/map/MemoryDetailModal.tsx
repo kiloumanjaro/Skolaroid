@@ -227,7 +227,7 @@ const VISIBILITY_META: Record<
 
 type MemoryMediaShape = Pick<
   MemoryWithCoordinates,
-  'id' | 'title' | 'mediaURL' | 'mediaURLs'
+  'id' | 'title' | 'mediaURLs'
 >;
 
 const SWIPE_THRESHOLD_PX = 48;
@@ -237,12 +237,7 @@ function getMemoryMediaURLs(memory: MemoryMediaShape | null): string[] {
 
   return Array.from(
     new Set(
-      [
-        ...(memory.mediaURLs ?? []),
-        ...(memory.mediaURL ? [memory.mediaURL] : []),
-      ]
-        .map((url) => url.trim())
-        .filter(Boolean)
+      [...(memory.mediaURLs ?? [])].map((url) => url.trim()).filter(Boolean)
     )
   );
 }
@@ -1068,9 +1063,9 @@ export function MemoryDetailModal({
         <>
           <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[1px_2px_3px_0px_rgba(0,0,0,0.12)]">
             <div className="relative aspect-[4/3] bg-slate-100">
-              {nextMemory.mediaURL ? (
+              {nextMemory.mediaURLs?.[0] ? (
                 <Image
-                  src={nextMemory.mediaURL}
+                  src={nextMemory.mediaURLs?.[0]}
                   alt={nextMemory.title}
                   fill
                   sizes="320px"

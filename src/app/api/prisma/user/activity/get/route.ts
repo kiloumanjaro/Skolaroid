@@ -48,7 +48,6 @@ export async function GET(request: NextRequest) {
     const memorySelect = {
       id: true,
       title: true,
-      mediaURL: true,
       mediaURLs: true,
       createdAt: true,
       deletedAt: true,
@@ -136,7 +135,6 @@ export async function GET(request: NextRequest) {
       memory: {
         id: string;
         title: string;
-        mediaURL?: string | null;
         mediaURLs?: string[];
         visibility: string;
         creatorId?: string | null;
@@ -155,7 +153,6 @@ export async function GET(request: NextRequest) {
     function shapeMemory(m: {
       id: string;
       title: string;
-      mediaURL?: string | null;
       mediaURLs: string[];
       deletedAt?: Date | null;
       isArchived?: boolean;
@@ -175,7 +172,6 @@ export async function GET(request: NextRequest) {
       return {
         id: m.id,
         title: m.title,
-        mediaURL: m.mediaURL,
         mediaURLs: m.mediaURLs,
         visibility: m.visibility,
         creatorId: m.creatorId,

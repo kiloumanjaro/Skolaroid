@@ -953,7 +953,7 @@ export function MapComponent({
     >();
 
     for (const memory of displayedMemories) {
-      if (!memory.mediaURL) continue;
+      if (!memory.mediaURLs?.length) continue;
       const key = `${memory.location.longitude.toFixed(5)},${memory.location.latitude.toFixed(5)}`;
       if (!groups.has(key)) {
         groups.set(key, {
@@ -974,7 +974,7 @@ export function MapComponent({
         const memory = group.memories[0];
         root.render(
           <MemoryPin
-            src={memory.mediaURL!}
+            src={memory.mediaURLs![0]}
             alt={memory.title}
             isPending={memory.moderationStatus === 'PENDING'}
             onClick={() => handleMemoryClick(memory)}
@@ -984,11 +984,11 @@ export function MapComponent({
         root.render(
           <MemoryPinStack
             memories={group.memories
-              .filter((m) => m.mediaURL)
+              .filter((m) => (m.mediaURLs?.length ?? 0) > 0)
               .map((m) => ({
                 id: m.id,
                 title: m.title,
-                mediaURL: m.mediaURL!,
+                mediaURLs: m.mediaURLs,
                 isPending: m.moderationStatus === 'PENDING',
               }))}
             onClick={(memoryId) => {

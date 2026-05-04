@@ -97,7 +97,7 @@ export async function searchService(
         id: true,
         title: true,
         description: true,
-        mediaURL: true,
+        mediaURLs: true,
         memoryDate: true,
         createdAt: true,
         creator: { select: { firstName: true, lastName: true } },
