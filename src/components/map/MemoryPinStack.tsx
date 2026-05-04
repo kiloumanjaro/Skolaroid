@@ -7,7 +7,7 @@ import { Clock } from 'lucide-react';
 interface StackedMemory {
   id: string;
   title: string;
-  mediaURL: string;
+  mediaSrc: string;
   isPending?: boolean;
 }
 
@@ -91,7 +91,7 @@ export function MemoryPinStack({ memories, onClick }: MemoryPinStackProps) {
         <div className="relative w-[74px] rounded-md border-2 border-black bg-white px-[5px] pb-[20px] pt-[5px]">
           <div className="relative aspect-square w-full overflow-hidden rounded-sm border-[1px] border-black bg-neutral-100">
             <Image
-              src={mem.mediaURL}
+              src={mem.mediaSrc}
               alt={mem.title}
               fill
               className="object-cover"
@@ -132,7 +132,7 @@ export function MemoryPinStack({ memories, onClick }: MemoryPinStackProps) {
           <div className="relative w-[74px] rounded-md border-2 border-black bg-white px-[5px] pb-[20px] pt-[5px]">
             <div className="relative aspect-square w-full overflow-hidden rounded-sm border-[1px] border-black bg-neutral-100">
               <Image
-                src={mem.mediaURL}
+                src={mem.mediaSrc}
                 alt={mem.title}
                 fill
                 className="object-cover"

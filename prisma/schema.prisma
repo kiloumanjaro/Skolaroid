@@ -91,8 +91,6 @@ model Memory {
   id                String                 @id @default(uuid()) @db.Uuid
   title             String                 @db.VarChar(255)
   description       String?
-  mediaURL          String?                @db.VarChar(2048)
-  uploadDate        DateTime               @default(now())
   creatorId         String?                @db.Uuid
   locationId        String                 @db.Uuid
   createdAt         DateTime               @default(now())
@@ -119,7 +117,6 @@ model Memory {
   @@index([creatorId])
   @@index([programBatchId])
   @@index([locationId])
-  @@index([uploadDate])
   @@index([visibility])
   @@index([moderationStatus])
   @@index([isArchived])

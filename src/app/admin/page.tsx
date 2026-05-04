@@ -19,6 +19,7 @@ import {
   CalendarRange,
 } from 'lucide-react';
 import Image from 'next/image';
+import { getPrimaryMemoryMediaURL } from '@/lib/memory-media';
 import {
   useAdminMemories,
   type AdminMemoryItem,
@@ -205,6 +206,7 @@ function PostCard({
       : memory.moderationStatus === 'PENDING'
         ? Clock
         : XCircle;
+  const primaryMediaURL = getPrimaryMemoryMediaURL(memory);
 
   return (
     <div
@@ -219,7 +221,7 @@ function PostCard({
         }`}
       >
         <Image
-          src={memory.mediaURL || '/assets/images/temporary_map.png'}
+          src={primaryMediaURL || '/assets/images/temporary_map.png'}
           alt="Post thumbnail"
           fill
           className="object-cover"

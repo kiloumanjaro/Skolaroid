@@ -16,7 +16,7 @@ export interface AdminReportItem {
   memory: {
     id: string;
     title: string;
-    mediaURL: string | null;
+    mediaURLs: string[];
   };
   resolvedBy: {
     firstName: string;

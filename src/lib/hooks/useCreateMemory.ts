@@ -61,10 +61,7 @@ export function useCreateMemory() {
       const payload: CreateMemoryServerInput = {
         ...data,
         ...(resolvedMediaURLs.length > 0
-          ? {
-              mediaURL: resolvedMediaURLs[0],
-              mediaURLs: resolvedMediaURLs,
-            }
+          ? { mediaURLs: resolvedMediaURLs }
           : {}),
       };
 

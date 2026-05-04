@@ -16,6 +16,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { EditTagsDialog } from '@/components/edit-tags-dialog';
 import { Pencil } from 'lucide-react';
+import { getPrimaryMemoryMediaURL } from '@/lib/memory-media';
 import { VISIBILITY_LABELS, type MemoryWithRelations } from '@/lib/schemas';
 
 interface MemoryCardProps {
@@ -25,14 +26,15 @@ interface MemoryCardProps {
 
 export function MemoryCard({ memory, isOwner = false }: MemoryCardProps) {
   const [editTagsOpen, setEditTagsOpen] = useState(false);
+  const primaryMediaURL = getPrimaryMemoryMediaURL(memory);
 
   return (
     <>
       <Card className="overflow-hidden">
-        {memory.mediaURL && (
+        {primaryMediaURL && (
           <div className="relative h-48 w-full">
             <Image
-              src={memory.mediaURL}
+              src={primaryMediaURL}
               alt={memory.title}
               fill
               className="object-cover"

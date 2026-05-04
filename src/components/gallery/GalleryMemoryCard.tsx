@@ -6,6 +6,7 @@ import { User } from 'lucide-react';
 import { PolaroidCluster } from './PolaroidCluster';
 import { SpeechBubble } from '@/components/speech-bubble';
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
+import { getMemoryMediaURLs } from '@/lib/memory-media';
 
 // DEV TOGGLE: Set to true to use the speech bubble overlay instead of the cinematic vignette
 const USE_SPEECH_BUBBLE = true;
@@ -62,9 +63,10 @@ export function GalleryMemoryCard({
     return () => observer.disconnect();
   }, [uploaderName]);
 
-  const photos = memory.mediaURL
-    ? [{ src: memory.mediaURL, alt: memory.title }]
-    : [];
+  const photos = getMemoryMediaURLs(memory).map((src) => ({
+    src,
+    alt: memory.title,
+  }));
 
   if (photos.length === 0) {
     return null;
