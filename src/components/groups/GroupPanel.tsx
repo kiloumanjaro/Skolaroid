@@ -60,7 +60,6 @@ import { Badge } from '@/components/ui/badge';
 interface GroupPanelProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  leftSlot?: React.ReactNode;
 }
 
 type TabType = 'members' | 'media' | 'settings' | 'about' | 'roles';
@@ -114,7 +113,7 @@ function toGroup(g: GroupResponse): Group {
   };
 }
 
-export function GroupPanel({ open, onOpenChange, leftSlot }: GroupPanelProps) {
+export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
@@ -329,7 +328,6 @@ export function GroupPanel({ open, onOpenChange, leftSlot }: GroupPanelProps) {
           open && 'pointer-events-auto'
         )}
       >
-        {leftSlot}
         <section
           aria-label={selectedGroup?.name ?? 'Groups'}
           className={cn(

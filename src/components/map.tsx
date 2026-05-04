@@ -40,7 +40,6 @@ import type {
 import { AddMemoryButton } from './map/AddMemoryButton';
 import { MapAnnouncementStrip } from './announcement-strips/MapAnnouncementStrip';
 import { MapLocationSelector } from './map/MapLocationSelector';
-import { FilterBookmark } from './map/FilterBookmark';
 import { FilterPanel } from './map/FilterPanel';
 import type {
   MemoryFilters,
@@ -94,12 +93,6 @@ const MAP_ANNOUNCEMENTS = [
 interface MapComponentProps {
   filters: MemoryFilters;
   onFiltersChange: (filters: MemoryFilters) => void;
-  onFilterOptionsChange?: (options: {
-    availableTags: string[];
-    availableYears: number[];
-    availableGroups: GroupFilterOption[];
-    availableLocations: LocationFilterOption[];
-  }) => void;
   onMemoryDetailOpenRequest?: () => Promise<void> | void;
   onMemoryDetailOpenStateChange?: (open: boolean) => void;
 }
@@ -107,7 +100,6 @@ interface MapComponentProps {
 export function MapComponent({
   filters,
   onFiltersChange,
-  onFilterOptionsChange,
   onMemoryDetailOpenRequest,
   onMemoryDetailOpenStateChange,
 }: MapComponentProps) {
@@ -359,21 +351,6 @@ export function MapComponent({
       a.name.localeCompare(b.name)
     );
   }, [eraFilteredMemories, locationsData]);
-
-  useEffect(() => {
-    onFilterOptionsChange?.({
-      availableTags,
-      availableYears,
-      availableGroups,
-      availableLocations,
-    });
-  }, [
-    availableTags,
-    availableYears,
-    availableGroups,
-    availableLocations,
-    onFilterOptionsChange,
-  ]);
 
   // Keep a stable ref for the click handler so detached roots always call the latest version
   const handleClickRef = useRef<(landmark: Landmark) => void>(() => {});
@@ -1072,9 +1049,6 @@ export function MapComponent({
               setGroupModalOpen(isOpen);
               if (isOpen) cancelPendingFlyTo();
             }}
-            leftSlot={
-              <FilterBookmark onClick={() => setFilterPanelOpen(true)} />
-            }
           />
 
           <FilterPanel
