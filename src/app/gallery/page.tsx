@@ -285,6 +285,7 @@ function GalleryPageContent() {
     const container = containerRef.current;
     if (!container) return;
 
+    container.style.scrollBehavior = 'auto';
     container.style.scrollSnapType = 'none';
     setIsDragging(true);
     startX.current = e.clientX;
@@ -404,7 +405,7 @@ function GalleryPageContent() {
                   gap: 'var(--gallery-card-gap)',
                   '--gallery-card-scale':
                     'min(1, calc((100dvh - 2rem) / 640), calc((100vw - 4rem) / 380))',
-                  scrollBehavior: 'smooth',
+                  scrollBehavior: isDragging ? 'auto' : 'smooth',
                   overscrollBehaviorX: 'contain',
                 } as React.CSSProperties
               }
