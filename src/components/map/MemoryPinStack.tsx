@@ -2,11 +2,13 @@
 
 import { useState, useMemo, useCallback } from 'react';
 import Image from 'next/image';
+import { Clock } from 'lucide-react';
 
 interface StackedMemory {
   id: string;
   title: string;
   mediaURL: string;
+  isPending?: boolean;
 }
 
 interface MemoryPinStackProps {
@@ -22,6 +24,8 @@ const MAX_VISIBLE_PINS = 8;
  */
 export function MemoryPinStack({ memories, onClick }: MemoryPinStackProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const pendingBadgeClassName =
+    'absolute -right-2 -top-2 z-20 flex h-5 w-5 items-center justify-center rounded-full border-2 border-black bg-amber-200 text-black shadow-sm';
 
   const visibleMemories = useMemo(
     () => memories.slice(0, MAX_VISIBLE_PINS),
@@ -69,13 +73,21 @@ export function MemoryPinStack({ memories, onClick }: MemoryPinStackProps) {
   // Single memory — just render a normal pin
   if (memories.length === 1) {
     const mem = memories[0];
+    const ariaLabel = mem.isPending
+      ? `${mem.title} (Pending approval)`
+      : mem.title;
     return (
       <button
         type="button"
         onClick={() => onClick(mem.id)}
         className="group relative w-fit cursor-pointer transition-transform duration-200 hover:-translate-y-1"
-        aria-label={mem.title}
+        aria-label={ariaLabel}
       >
+        {mem.isPending && (
+          <span className={pendingBadgeClassName}>
+            <Clock className="h-3 w-3" aria-hidden="true" />
+          </span>
+        )}
         <div className="relative w-[74px] rounded-md border-2 border-black bg-white px-[5px] pb-[20px] pt-[5px]">
           <div className="relative aspect-square w-full overflow-hidden rounded-sm border-[1px] border-black bg-neutral-100">
             <Image
@@ -108,8 +120,15 @@ export function MemoryPinStack({ memories, onClick }: MemoryPinStackProps) {
           }}
           className="absolute left-0 top-0 w-[74px] cursor-pointer transition-transform duration-200 hover:-translate-y-1"
           style={getFanOutStyle(index)}
-          aria-label={mem.title}
+          aria-label={
+            mem.isPending ? `${mem.title} (Pending approval)` : mem.title
+          }
         >
+          {mem.isPending && (
+            <span className={pendingBadgeClassName}>
+              <Clock className="h-3 w-3" aria-hidden="true" />
+            </span>
+          )}
           <div className="relative w-[74px] rounded-md border-2 border-black bg-white px-[5px] pb-[20px] pt-[5px]">
             <div className="relative aspect-square w-full overflow-hidden rounded-sm border-[1px] border-black bg-neutral-100">
               <Image

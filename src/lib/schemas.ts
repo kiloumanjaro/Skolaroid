@@ -327,6 +327,7 @@ export interface MemoryWithRelations {
   mediaURL?: string | null;
   mediaURLs?: string[];
   visibility: MemoryVisibility;
+  moderationStatus?: ModerationStatus;
   creatorId?: string | null;
   privateGroupId?: string | null;
   createdAt?: string;

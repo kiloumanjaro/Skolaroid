@@ -212,11 +212,6 @@ function PostCard({
       {/* Content */}
       <div className="flex min-w-0 flex-1 flex-col gap-2">
         <p className="text-sm font-medium text-foreground">{memory.title}</p>
-        {memory.description && (
-          <p className="text-sm leading-relaxed text-muted-foreground">
-            {memory.description}
-          </p>
-        )}
 
         <div className="flex items-center gap-4">
           {/* Date */}
