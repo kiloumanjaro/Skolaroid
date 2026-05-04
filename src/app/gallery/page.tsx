@@ -132,10 +132,18 @@ function GalleryPageContent() {
 
   const eraFilteredMemories = useMemo(() => {
     const all: MemoryWithCoordinates[] = response?.data || [];
-    return all.filter(
-      (memory) =>
+    return all.filter((memory) => {
+      if (
+        memory.moderationStatus === 'REJECTED' ||
+        memory.moderationStatus === 'REMOVED'
+      ) {
+        return false;
+      }
+
+      return (
         getEraFromBatchTag(memory.tags ?? [], memory.createdAt) === activeEra
-    );
+      );
+    });
   }, [response, activeEra]);
 
   // [last cloneCount real items] [real items] [first cloneCount real items]

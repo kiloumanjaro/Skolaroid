@@ -39,6 +39,7 @@ export async function GET(request: NextRequest) {
       where: {
         locationId,
         deletedAt: null,
+        moderationStatus: { notIn: ['REMOVED', 'REJECTED'] },
         AND: [
           {
             OR: [{ moderationStatus: 'APPROVED' }, { creatorId: user.id }],

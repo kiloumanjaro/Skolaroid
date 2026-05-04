@@ -20,6 +20,7 @@ export async function GET() {
     const memories = await prisma.memory.findMany({
       where: {
         deletedAt: null,
+        moderationStatus: { notIn: ['REMOVED', 'REJECTED'] },
         AND: [
           {
             OR: [{ moderationStatus: 'APPROVED' }, { creatorId: user.id }],

@@ -18,7 +18,8 @@ export function useMemoriesByCreator(userId: string | undefined) {
       }
 
       const res = await fetch(
-        `/api/prisma/memory/get-by-creator?userId=${encodeURIComponent(userId)}`
+        `/api/prisma/memory/get-by-creator?userId=${encodeURIComponent(userId)}`,
+        { cache: 'no-store' }
       );
 
       if (!res.ok) {
@@ -41,6 +42,9 @@ export function useMemoriesByCreator(userId: string | undefined) {
     },
     enabled: !!userId,
     staleTime: 5 * 60 * 1000,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: 'always',
+    refetchOnReconnect: 'always',
     retry: 1,
   });
 }

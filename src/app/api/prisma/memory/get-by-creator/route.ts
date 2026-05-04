@@ -32,6 +32,7 @@ export async function GET(request: NextRequest) {
         creatorId: result.data.userId,
         deletedAt: null,
         isArchived: false,
+        moderationStatus: { notIn: ['REMOVED', 'REJECTED'] },
         // Non-owners can only see approved public memories
         ...(!isOwner && { visibility: 'PUBLIC', moderationStatus: 'APPROVED' }),
       },

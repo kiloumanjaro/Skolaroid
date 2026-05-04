@@ -18,11 +18,14 @@ export function usePublicGalleryMemories(era: number | null) {
         era !== null
           ? `/api/public/memory/gallery?era=${era}`
           : '/api/public/memory/gallery';
-      const res = await fetch(url);
+      const res = await fetch(url, { cache: 'no-store' });
       if (!res.ok) throw new Error('Failed to fetch public gallery');
       return res.json() as Promise<PublicGalleryResponse>;
     },
     staleTime: 5 * 60 * 1000,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: 'always',
+    refetchOnReconnect: 'always',
     retry: 1,
   });
 }
