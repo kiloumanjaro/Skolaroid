@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { cn, getEraFromBatchTag } from '@/lib/utils';
+import { getPrimaryMemoryMediaURL } from '@/lib/memory-media';
 import { X, Search, Plus, MapPin } from 'lucide-react';
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 
@@ -222,27 +223,31 @@ export function BatchesModal({
                       onClick={() => handleMemoryCardClick(memory)}
                       className="cursor-pointer overflow-hidden border-2 border-border bg-card text-left transition-colors hover:bg-secondary/40"
                     >
-                      {/* Image */}
-                      {memory.mediaURLs?.[0] ? (
-                        <div className="h-44 w-full overflow-hidden bg-secondary">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={
-                              memory.mediaURLs[0] === '/temporary_map.png'
-                                ? '/assets/images/temporary_map.png'
-                                : memory.mediaURLs[0]
-                            }
-                            alt={memory.title}
-                            className="block h-full w-full object-cover object-center"
-                          />
-                        </div>
-                      ) : (
-                        <div className="flex h-44 items-center justify-center bg-secondary">
-                          <span className="text-sm text-muted-foreground">
-                            No image
-                          </span>
-                        </div>
-                      )}
+                      {(() => {
+                        const primaryMediaURL =
+                          getPrimaryMemoryMediaURL(memory);
+
+                        return primaryMediaURL ? (
+                          <div className="h-44 w-full overflow-hidden bg-secondary">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={
+                                primaryMediaURL === '/temporary_map.png'
+                                  ? '/assets/images/temporary_map.png'
+                                  : primaryMediaURL
+                              }
+                              alt={memory.title}
+                              className="block h-full w-full object-cover object-center"
+                            />
+                          </div>
+                        ) : (
+                          <div className="flex h-44 items-center justify-center bg-secondary">
+                            <span className="text-sm text-muted-foreground">
+                              No image
+                            </span>
+                          </div>
+                        );
+                      })()}
 
                       {/* Info */}
                       <div className="border-t-2 border-border px-3 py-3">

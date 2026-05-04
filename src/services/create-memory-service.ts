@@ -42,6 +42,8 @@ export async function createMemoryService(
   const normalizedMediaURLs = Array.from(
     new Set((mediaURLs ?? []).map((url) => url.trim()).filter(Boolean))
   );
+  const isPrivateGroupMemory =
+    visibility === 'GROUP_ONLY' || Boolean(privateGroupId);
 
   const prescreeningEnabled = isContentPrescreeningEnabled();
   const moderationResult = prescreeningEnabled
@@ -88,10 +90,11 @@ export async function createMemoryService(
     description,
     mediaURLs: normalizedMediaURLs,
     visibility,
-    ...(prescreeningEnabled && {
-      moderationStatus:
-        moderationResult?.status === 'flag' ? 'PENDING' : 'APPROVED',
-    }),
+    moderationStatus: isPrivateGroupMemory
+      ? 'APPROVED'
+      : prescreeningEnabled && moderationResult?.status === 'flag'
+        ? 'PENDING'
+        : 'APPROVED',
     creator: {
       connect: { id: creatorId },
     },

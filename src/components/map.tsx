@@ -33,6 +33,7 @@ import {
 import { useLocations } from '@/lib/hooks/useLocations';
 import { useUserGroups } from '@/lib/hooks/useUserGroups';
 import { LANDMARKS, type Landmark } from '@/lib/constants/landmarks';
+import { getPrimaryMemoryMediaURL } from '@/lib/memory-media';
 import type {
   LocationSelectionMode,
   MapLocationSelection,
@@ -963,7 +964,8 @@ export function MapComponent({
     >();
 
     for (const memory of displayedMemories) {
-      if (!memory.mediaURLs?.length) continue;
+      const primaryMediaURL = getPrimaryMemoryMediaURL(memory);
+      if (!primaryMediaURL) continue;
       const key = `${memory.location.longitude.toFixed(5)},${memory.location.latitude.toFixed(5)}`;
       if (!groups.has(key)) {
         groups.set(key, {
@@ -982,9 +984,11 @@ export function MapComponent({
 
       if (group.memories.length === 1) {
         const memory = group.memories[0];
+        const primaryMediaURL = getPrimaryMemoryMediaURL(memory);
+        if (!primaryMediaURL) continue;
         root.render(
           <MemoryPin
-            src={memory.mediaURLs![0]}
+            src={primaryMediaURL}
             alt={memory.title}
             isPending={memory.moderationStatus === 'PENDING'}
             onClick={() => handleMemoryClick(memory)}
@@ -993,14 +997,19 @@ export function MapComponent({
       } else {
         root.render(
           <MemoryPinStack
-            memories={group.memories
-              .filter((m) => (m.mediaURLs?.length ?? 0) > 0)
-              .map((m) => ({
-                id: m.id,
-                title: m.title,
-                mediaURLs: m.mediaURLs,
-                isPending: m.moderationStatus === 'PENDING',
-              }))}
+            memories={group.memories.flatMap((memory) => {
+              const primaryMediaURL = getPrimaryMemoryMediaURL(memory);
+              if (!primaryMediaURL) return [];
+
+              return [
+                {
+                  id: memory.id,
+                  title: memory.title,
+                  mediaSrc: primaryMediaURL,
+                  isPending: memory.moderationStatus === 'PENDING',
+                },
+              ];
+            })}
             onClick={(memoryId) => {
               const found = group.memories.find((m) => m.id === memoryId);
               if (found) handleMemoryClick(found);

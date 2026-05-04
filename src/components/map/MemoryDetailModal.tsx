@@ -37,6 +37,10 @@ import { useCreateComment } from '@/lib/hooks/useCreateComment';
 import { useDeleteComment } from '@/lib/hooks/useDeleteComment';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
 import { useUserGroups } from '@/lib/hooks/useUserGroups';
+import {
+  getMemoryMediaURLs,
+  getPrimaryMemoryMediaURL,
+} from '@/lib/memory-media';
 import type { MemoryVisibility } from '@/lib/schemas';
 import Image from 'next/image';
 import {
@@ -229,19 +233,7 @@ type MemoryMediaShape = Pick<
   MemoryWithCoordinates,
   'id' | 'title' | 'mediaURLs'
 >;
-
 const SWIPE_THRESHOLD_PX = 48;
-
-function getMemoryMediaURLs(memory: MemoryMediaShape | null): string[] {
-  if (!memory) return [];
-
-  return Array.from(
-    new Set(
-      [...(memory.mediaURLs ?? [])].map((url) => url.trim()).filter(Boolean)
-    )
-  );
-}
-
 interface PolaroidMediaCarouselProps {
   memory: MemoryMediaShape;
   activeIndex: number;
@@ -1059,13 +1051,15 @@ export function MemoryDetailModal({
 
   const renderMobilePeekPageContent = () => {
     if (mobileNotebookPage === 'comments' && nextMemory && nextDateInfo) {
+      const nextMemoryMediaURL = getPrimaryMemoryMediaURL(nextMemory);
+
       return (
         <>
           <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[1px_2px_3px_0px_rgba(0,0,0,0.12)]">
             <div className="relative aspect-[4/3] bg-slate-100">
-              {nextMemory.mediaURLs?.[0] ? (
+              {nextMemoryMediaURL ? (
                 <Image
-                  src={nextMemory.mediaURLs?.[0]}
+                  src={nextMemoryMediaURL}
                   alt={nextMemory.title}
                   fill
                   sizes="320px"
