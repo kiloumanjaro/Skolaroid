@@ -17,6 +17,29 @@ export async function GET() {
       );
     }
 
+    const dbUser = await prisma.user.findUnique({
+      where: { id: user.id, deletedAt: null },
+      select: {
+        programBatchId: true,
+        groupMemberships: {
+          select: {
+            groupId: true,
+          },
+        },
+      },
+    });
+
+    if (!dbUser) {
+      return NextResponse.json(
+        { success: false, message: 'User not found' },
+        { status: 404 }
+      );
+    }
+
+    const userGroupIds = dbUser.groupMemberships.map(
+      (membership) => membership.groupId
+    );
+
     const memories = await prisma.memory.findMany({
       where: {
         deletedAt: null,
@@ -28,24 +51,18 @@ export async function GET() {
           {
             OR: [
               { visibility: 'PUBLIC' },
-              { creator: { id: user.id } },
+              { creatorId: user.id },
               {
-                AND: [
-                  { visibility: 'PROGRAM_ONLY' },
-                  { programBatch: { students: { some: { id: user.id } } } },
-                ],
+                visibility: 'PROGRAM_ONLY',
+                programBatchId: dbUser.programBatchId,
               },
               {
-                AND: [
-                  { visibility: 'BATCH_ONLY' },
-                  { programBatch: { students: { some: { id: user.id } } } },
-                ],
+                visibility: 'BATCH_ONLY',
+                programBatchId: dbUser.programBatchId,
               },
               {
-                AND: [
-                  { visibility: 'GROUP_ONLY' },
-                  { privateGroup: { members: { some: { id: user.id } } } },
-                ],
+                visibility: 'GROUP_ONLY',
+                privateGroupId: { in: userGroupIds },
               },
             ],
           },

@@ -28,6 +28,7 @@ export async function createGroupMessageService(
       title: content.slice(0, 255),
       description: content,
       visibility: 'GROUP_ONLY',
+      moderationStatus: 'APPROVED',
       creator: { connect: { id: actorId } },
       location: { connect: { id: locationId } },
       programBatch: { connect: { id: programBatchId } },
