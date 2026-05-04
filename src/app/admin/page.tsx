@@ -152,7 +152,7 @@ function AnalyticsSummaryCard({
   bannerColor: string;
 }) {
   return (
-    <article className="overflow-hidden border-2 border-border bg-[#f8f4ec]">
+    <article className="overflow-hidden border-2 border-border bg-white">
       <div
         className="border-b-2 border-border px-4 py-3"
         style={{ backgroundColor: bannerColor }}
@@ -179,12 +179,14 @@ function PostCard({
   onReject,
   onRemove,
   isPending,
+  isPublishedStyle = false,
 }: {
   memory: AdminMemoryItem;
   onApprove?: () => void;
   onReject?: () => void;
   onRemove?: () => void;
   isPending?: boolean;
+  isPublishedStyle?: boolean;
 }) {
   const authorName = memory.creator
     ? `${memory.creator.firstName} ${memory.creator.lastName}`
@@ -196,11 +198,25 @@ function PostCard({
       : memory.moderationStatus === 'PENDING'
         ? 'Awaiting Approval'
         : memory.moderationStatus;
+  const StatusIcon =
+    memory.moderationStatus === 'APPROVED'
+      ? CheckCircle
+      : memory.moderationStatus === 'PENDING'
+        ? Clock
+        : XCircle;
 
   return (
-    <div className="flex items-center gap-4 border-2 border-border bg-card p-4">
+    <div
+      className={`flex gap-4 border-2 border-border bg-card p-4 ${
+        isPublishedStyle ? 'items-center' : 'items-center'
+      }`}
+    >
       {/* Thumbnail */}
-      <div className="relative h-28 w-40 shrink-0 overflow-hidden bg-secondary">
+      <div
+        className={`relative h-28 w-40 shrink-0 overflow-hidden bg-secondary ${
+          isPublishedStyle ? 'border-2 border-black' : ''
+        }`}
+      >
         <Image
           src={memory.mediaURL || '/assets/images/temporary_map.png'}
           alt="Post thumbnail"
@@ -211,80 +227,174 @@ function PostCard({
 
       {/* Content */}
       <div className="flex min-w-0 flex-1 flex-col gap-2">
-        <p className="text-sm font-medium text-foreground">{memory.title}</p>
+        <p
+          className={
+            isPublishedStyle
+              ? 'truncate whitespace-nowrap text-sm font-bold uppercase tracking-[0.04em] text-foreground'
+              : 'truncate whitespace-nowrap text-sm font-medium text-foreground'
+          }
+        >
+          {memory.title}
+        </p>
         {memory.description && (
-          <p className="text-sm leading-relaxed text-muted-foreground">
+          <p
+            className={
+              isPublishedStyle
+                ? 'truncate whitespace-nowrap text-base leading-7 text-foreground'
+                : 'truncate whitespace-nowrap text-sm leading-relaxed text-muted-foreground'
+            }
+          >
             {memory.description}
           </p>
         )}
 
-        <div className="flex items-center gap-4">
-          {/* Date */}
-          <span className="flex items-center gap-1.5 text-xs text-skolaroid-blue">
-            <Clock size={12} />
-            {formatDate(memory.createdAt)}
-          </span>
+        {isPublishedStyle ? (
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-4">
+              <span className="inline-flex items-center gap-1.5 border-2 border-black bg-[#e8e8e8] px-2 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-foreground">
+                <StatusIcon size={12} />
+                {statusLabel}
+              </span>
 
-          {/* Actions */}
-          <div className="flex items-center gap-2">
-            {onApprove && (
-              <button
-                onClick={onApprove}
-                disabled={isPending}
-                className="flex items-center gap-1 text-green-500 transition-colors hover:text-green-700 disabled:opacity-50"
-                title="Approve"
-              >
-                <CheckCircle size={14} />
-                <span className="text-xs">Approve</span>
-              </button>
-            )}
-            {onReject && (
-              <button
-                onClick={onReject}
-                disabled={isPending}
-                className="flex items-center gap-1 text-yellow-500 transition-colors hover:text-yellow-700 disabled:opacity-50"
-                title="Reject"
-              >
-                <XCircle size={14} />
-                <span className="text-xs">Reject</span>
-              </button>
-            )}
-            {onRemove && (
-              <button
-                onClick={onRemove}
-                disabled={isPending}
-                className="flex items-center gap-1 text-red-300 transition-colors hover:text-red-500 disabled:opacity-50"
-                title="Remove"
-              >
-                <Trash2 size={14} />
-                <span className="text-xs">Remove</span>
-              </button>
-            )}
+              {/* Actions */}
+              <div className="flex items-center gap-2">
+                {onApprove && (
+                  <button
+                    onClick={onApprove}
+                    disabled={isPending}
+                    className="flex items-center gap-1 text-green-500 transition-colors hover:text-green-700 disabled:opacity-50"
+                    title="Approve"
+                  >
+                    <CheckCircle size={14} />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.12em]">
+                      Approve
+                    </span>
+                  </button>
+                )}
+                {onReject && (
+                  <button
+                    onClick={onReject}
+                    disabled={isPending}
+                    className="flex items-center gap-1 text-yellow-500 transition-colors hover:text-yellow-700 disabled:opacity-50"
+                    title="Reject"
+                  >
+                    <XCircle size={14} />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.12em]">
+                      Reject
+                    </span>
+                  </button>
+                )}
+                {onRemove && (
+                  <button
+                    onClick={onRemove}
+                    disabled={isPending}
+                    className="flex items-center gap-1 text-red-500 transition-colors hover:text-red-700 disabled:opacity-50"
+                    title="Remove"
+                  >
+                    <Trash2 size={14} />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.12em]">
+                      Remove
+                    </span>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <span className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground">
+              <Clock size={12} />
+              {formatDate(memory.createdAt)}
+            </span>
           </div>
-        </div>
+        ) : (
+          <div className="flex items-center gap-4">
+            {/* Date */}
+            <span className="flex items-center gap-1.5 text-xs text-skolaroid-blue">
+              <Clock size={12} />
+              {formatDate(memory.createdAt)}
+            </span>
+
+            {/* Actions */}
+            <div className="flex items-center gap-2">
+              {onApprove && (
+                <button
+                  onClick={onApprove}
+                  disabled={isPending}
+                  className="flex items-center gap-1 text-green-500 transition-colors hover:text-green-700 disabled:opacity-50"
+                  title="Approve"
+                >
+                  <CheckCircle size={14} />
+                  <span className="text-xs">Approve</span>
+                </button>
+              )}
+              {onReject && (
+                <button
+                  onClick={onReject}
+                  disabled={isPending}
+                  className="flex items-center gap-1 text-yellow-500 transition-colors hover:text-yellow-700 disabled:opacity-50"
+                  title="Reject"
+                >
+                  <XCircle size={14} />
+                  <span className="text-xs">Reject</span>
+                </button>
+              )}
+              {onRemove && (
+                <button
+                  onClick={onRemove}
+                  disabled={isPending}
+                  className="flex items-center gap-1 text-red-300 transition-colors hover:text-red-500 disabled:opacity-50"
+                  title="Remove"
+                >
+                  <Trash2 size={14} />
+                  <span className="text-xs">Remove</span>
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Author Info */}
-      <div className="flex shrink-0 flex-col items-center gap-1.5 pl-4">
+      <div
+        className={`flex shrink-0 flex-col items-center gap-1.5 pl-4 ${
+          isPublishedStyle ? 'w-28 self-center' : 'w-24'
+        }`}
+      >
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-skolaroid-blue text-sm font-medium text-white">
           {authorName.charAt(0)}
         </div>
-        <span className="text-xs font-medium text-foreground">
+        <span
+          className={
+            isPublishedStyle
+              ? 'line-clamp-2 w-full text-center text-[11px] font-bold uppercase leading-tight tracking-[0.08em] text-foreground'
+              : 'line-clamp-2 w-full text-center text-xs font-medium leading-tight text-foreground'
+          }
+        >
           {authorName}
         </span>
         {batchYear && (
-          <span className="text-[10px] text-muted-foreground">
+          <span
+            className={
+              isPublishedStyle
+                ? 'w-full text-center text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground'
+                : 'w-full text-center text-[10px] text-muted-foreground'
+            }
+          >
             Batch {batchYear}
           </span>
         )}
-        <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
-          <Clock size={10} />
-          {statusLabel}
-        </span>
-        {memory._count.reports > 0 && (
-          <span className="text-[10px] text-red-500">
-            {memory._count.reports} report{memory._count.reports > 1 ? 's' : ''}
-          </span>
+        {!isPublishedStyle && (
+          <>
+            <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
+              <Clock size={10} />
+              {statusLabel}
+            </span>
+            {memory._count.reports > 0 && (
+              <span className="text-[10px] text-red-500">
+                {memory._count.reports} report
+                {memory._count.reports > 1 ? 's' : ''}
+              </span>
+            )}
+          </>
         )}
       </div>
     </div>
@@ -436,14 +546,14 @@ function AnalyticsContent({ searchQuery }: { searchQuery: string }) {
                 eyebrow="Total Memories"
                 title={formatCount(analytics.totals.memories)}
                 description="Published and archived memory posts currently tracked across the platform."
-                bannerColor="#c78ae6"
+                bannerColor="#e8e8e8"
               />
 
               <AnalyticsSummaryCard
                 eyebrow={`Active Users (${analytics.windowDays}d)`}
                 title={formatCount(analytics.totals.activeUsers)}
                 description={`${formatPercent(analytics.totals.activeUserRate)} of ${formatCount(analytics.totals.users)} users contributed activity in this range.`}
-                bannerColor="#90a8ee"
+                bannerColor="#e8e8e8"
               />
 
               <AnalyticsSummaryCard
@@ -454,7 +564,7 @@ function AnalyticsContent({ searchQuery }: { searchQuery: string }) {
                     ? `${formatCount(topLocation.memoryCount)} memories, making up ${formatPercent(topLocationShare)} of all uploads.`
                     : 'No uploaded memories yet.'
                 }
-                bannerColor="#f6cb48"
+                bannerColor="#e8e8e8"
               />
 
               <AnalyticsSummaryCard
@@ -469,20 +579,20 @@ function AnalyticsContent({ searchQuery }: { searchQuery: string }) {
                     ? `${topBatch.programName} Batch ${topBatch.batchYear} has the strongest engagement.`
                     : 'No batch activity yet.'
                 }
-                bannerColor="#00c59a"
+                bannerColor="#e8e8e8"
               />
             </div>
 
             <div className="grid gap-4 lg:grid-cols-2">
-              <section className="flex flex-col self-start border-2 border-border bg-[#f7f1e3]">
-                <div className="flex items-center justify-between gap-3 border-b-2 border-border bg-[#f6cb48] px-4 py-3">
+              <section className="flex flex-col self-start border-2 border-border bg-white">
+                <div className="flex items-center justify-between gap-3 border-b-2 border-border bg-[#e8e8e8] px-4 py-3">
                   <div className="flex items-center gap-2">
                     <MapPin size={16} className="text-foreground" />
                     <h2 className="text-sm font-black uppercase tracking-[0.12em] text-foreground">
                       Location Highlights
                     </h2>
                   </div>
-                  <span className="border-2 border-border bg-[#f7f1e3] px-2 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-foreground">
+                  <span className="border-2 border-border bg-white px-2 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-foreground">
                     Top {highlightedLocations.length}
                   </span>
                 </div>
@@ -522,15 +632,15 @@ function AnalyticsContent({ searchQuery }: { searchQuery: string }) {
                 )}
               </section>
 
-              <section className="flex h-full flex-col border-2 border-border bg-[#edf6f2]">
-                <div className="flex items-center justify-between gap-3 border-b-2 border-border bg-[#00c59a] px-4 py-3">
+              <section className="flex h-full flex-col border-2 border-border bg-white">
+                <div className="flex items-center justify-between gap-3 border-b-2 border-border bg-[#e8e8e8] px-4 py-3">
                   <div className="flex items-center gap-2">
                     <Users size={16} className="text-foreground" />
                     <h2 className="text-sm font-black uppercase tracking-[0.12em] text-foreground">
                       Batch Highlights ({analytics.windowDays}d)
                     </h2>
                   </div>
-                  <span className="border-2 border-border bg-[#edf6f2] px-2 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-foreground">
+                  <span className="border-2 border-border bg-white px-2 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-foreground">
                     Top {highlightedBatches.length}
                   </span>
                 </div>
@@ -668,11 +778,12 @@ function PublishedPostsContent({ searchQuery }: { searchQuery: string }) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="grid gap-4 xl:grid-cols-2">
       {filtered.map((memory) => (
         <PostCard
           key={memory.id}
           memory={memory}
+          isPublishedStyle
           onRemove={() =>
             moderateMemory.mutate({ memoryId: memory.id, action: 'REMOVED' })
           }
@@ -710,11 +821,12 @@ function PendingReviewContent({ searchQuery }: { searchQuery: string }) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="grid gap-4 xl:grid-cols-2">
       {filtered.map((memory) => (
         <PostCard
           key={memory.id}
           memory={memory}
+          isPublishedStyle
           onApprove={() =>
             moderateMemory.mutate({ memoryId: memory.id, action: 'APPROVED' })
           }
@@ -922,54 +1034,68 @@ function AuditLogContent({ searchQuery }: { searchQuery: string }) {
   return (
     <div className="space-y-4">
       {/* Filter Bar */}
-      <div className="flex flex-wrap items-center gap-3 border-2 border-border bg-card p-3">
-        {/* Action type filter */}
-        <div className="relative">
-          <select
-            value={actionFilter}
-            onChange={(e) => setActionFilter(e.target.value)}
-            className="appearance-none border-2 border-border bg-background py-1.5 pl-3 pr-8 text-xs focus:border-skolaroid-blue focus:outline-none"
-          >
-            <option value="">All Actions</option>
-            {ALL_ACTIONS.map((action) => (
-              <option key={action} value={action}>
-                {ACTION_LABELS[action]}
-              </option>
-            ))}
-          </select>
-          <ChevronDown
-            size={12}
-            className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-          />
-        </div>
+      <section className="border-2 border-border bg-card px-5 py-4 sm:px-6">
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+          <div>
+            <div className="mb-1 flex items-center gap-2">
+              <ArrowUpDown size={18} className="text-foreground" />
+              <h2 className="text-lg font-semibold text-foreground sm:text-xl">
+                Audit Filters
+              </h2>
+            </div>
+            <p className="text-sm text-muted-foreground sm:text-base">
+              Narrow moderation history by action type, date range, and sort
+              order.
+            </p>
+          </div>
 
-        {/* Date range */}
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <span>From</span>
-          <input
-            type="date"
-            value={dateFrom}
-            onChange={(e) => setDateFrom(e.target.value)}
-            className="border-2 border-border bg-background px-2 py-1.5 text-xs focus:border-skolaroid-blue focus:outline-none"
-          />
-          <span>to</span>
-          <input
-            type="date"
-            value={dateTo}
-            onChange={(e) => setDateTo(e.target.value)}
-            className="border-2 border-border bg-background px-2 py-1.5 text-xs focus:border-skolaroid-blue focus:outline-none"
-          />
-        </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="relative">
+              <select
+                value={actionFilter}
+                onChange={(e) => setActionFilter(e.target.value)}
+                className="h-[36px] appearance-none border-2 border-border bg-background py-1.5 pl-3 pr-8 text-sm focus:border-skolaroid-blue focus:outline-none"
+              >
+                <option value="">All Actions</option>
+                {ALL_ACTIONS.map((action) => (
+                  <option key={action} value={action}>
+                    {ACTION_LABELS[action]}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                size={12}
+                className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+              />
+            </div>
 
-        {/* Sort toggle */}
-        <button
-          onClick={() => setSort((s) => (s === 'desc' ? 'asc' : 'desc'))}
-          className="flex items-center gap-1.5 border-2 border-border px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-secondary"
-        >
-          <ArrowUpDown size={12} />
-          {sort === 'desc' ? 'Newest first' : 'Oldest first'}
-        </button>
-      </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-sm text-muted-foreground">From</span>
+              <input
+                type="date"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="h-[36px] border-2 border-border bg-background px-3 text-sm focus:border-skolaroid-blue focus:outline-none"
+              />
+              <span className="text-sm text-muted-foreground">to</span>
+              <input
+                type="date"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                className="h-[36px] border-2 border-border bg-background px-3 text-sm focus:border-skolaroid-blue focus:outline-none"
+              />
+            </div>
+
+            <button
+              onClick={() => setSort((s) => (s === 'desc' ? 'asc' : 'desc'))}
+              className="flex items-center gap-1.5 border-2 border-black bg-background px-3 py-1.5 text-sm font-medium text-black transition-colors hover:bg-secondary"
+            >
+              <ArrowUpDown size={12} />
+              {sort === 'desc' ? 'Newest first' : 'Oldest first'}
+            </button>
+          </div>
+        </div>
+      </section>
 
       {/* Entries */}
       {filtered.length === 0 ? (
