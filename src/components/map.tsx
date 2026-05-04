@@ -1022,6 +1022,7 @@ export function MapComponent({
           <MemoryPin
             src={memory.mediaURL!}
             alt={memory.title}
+            isPending={memory.moderationStatus === 'PENDING'}
             onClick={() => handleMemoryClick(memory)}
           />
         );
@@ -1034,6 +1035,7 @@ export function MapComponent({
                 id: m.id,
                 title: m.title,
                 mediaURL: m.mediaURL!,
+                isPending: m.moderationStatus === 'PENDING',
               }))}
             onClick={(memoryId) => {
               const found = group.memories.find((m) => m.id === memoryId);
