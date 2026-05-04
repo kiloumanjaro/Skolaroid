@@ -11,7 +11,11 @@ const PUBLIC_ROUTES = [
 ];
 
 /** Routes accessible to authenticated-but-not-onboarded users. */
-const ONBOARDING_ROUTES = ['/onboarding', '/api/prisma/user/create'];
+const ONBOARDING_ROUTES = [
+  '/onboarding',
+  '/api/prisma/user/create',
+  '/api/prisma/user/delete',
+];
 
 function matchesRoute(pathname: string, routes: string[]) {
   return routes.some(

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronRight } from 'lucide-react';
 import { useOnboardUser } from '@/lib/hooks/useOnboardUser';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
+import { useDeleteUser } from '@/lib/hooks/useDeleteUser';
 import { Header } from '@/components/header';
 import { BatchSelectorModal } from '@/components/onboarding/batch-selector-modal';
 import { CourseSelectorModal } from '@/components/onboarding/course-selector-modal';
@@ -32,6 +33,7 @@ function OnboardingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const onboardUser = useOnboardUser();
+  const deleteUser = useDeleteUser();
   const { user } = useUserAuth();
 
   // After onboarding, redirect to the original page (e.g. /invite?token=...)
@@ -200,10 +202,19 @@ function OnboardingContent() {
             </a>
             <div className="flex gap-2">
               <button
-                onClick={() => router.push('/')}
-                className="bg-secondary px-4 py-1.5 text-xs font-medium text-foreground transition hover:bg-secondary/80"
+                disabled={deleteUser.isPending}
+                onClick={async () => {
+                  try {
+                    await deleteUser.mutateAsync();
+                  } catch (err) {
+                    console.error('Failed to delete user:', err);
+                  } finally {
+                    router.push('/');
+                  }
+                }}
+                className="bg-secondary px-4 py-1.5 text-xs font-medium text-foreground transition hover:bg-secondary/80 disabled:opacity-50"
               >
-                Back
+                {deleteUser.isPending ? 'Going back...' : 'Back'}
               </button>
               <button
                 disabled={!allCompleted || onboardUser.isPending}
@@ -226,13 +237,14 @@ function OnboardingContent() {
                       studentId,
                       status,
                     });
-                    router.push(redirectTo);
                   } catch (err) {
                     setOnboardError(
                       err instanceof Error
                         ? err.message
                         : 'Something went wrong'
                     );
+                  } finally {
+                    router.push(redirectTo);
                   }
                 }}
                 className={`px-4 py-1.5 text-xs font-medium text-white transition ${

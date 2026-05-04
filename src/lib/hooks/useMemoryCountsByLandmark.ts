@@ -20,11 +20,16 @@ export function useMemoryCountsByLandmark() {
   return useQuery({
     queryKey: ['memory-counts', 'by-landmark'],
     queryFn: async () => {
-      const res = await fetch('/api/prisma/memory/counts-by-landmark');
+      const res = await fetch('/api/prisma/memory/counts-by-landmark', {
+        cache: 'no-store',
+      });
       if (!res.ok) throw new Error('Failed to fetch memory counts');
       return res.json() as Promise<MemoryCountsResponse>;
     },
     staleTime: 5 * 60 * 1000,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: 'always',
+    refetchOnReconnect: 'always',
     retry: 1,
     placeholderData: {
       success: true,

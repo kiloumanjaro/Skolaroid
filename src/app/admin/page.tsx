@@ -37,6 +37,7 @@ import {
 } from '@/lib/hooks/useAuditLog';
 import { AdminAnnouncementStrip } from '@/components/announcement-strips/AdminAnnouncementStrip';
 import { ShellInlineSidebarToggle } from '@/components/shell-inline-sidebar-toggle';
+import { useAdminToast } from '@/components/groups/GroupToast';
 
 type AdminTab = 'analytics' | 'published' | 'pending' | 'reports' | 'audit';
 type AnalyticsMemoryStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'REMOVED';
@@ -754,6 +755,7 @@ function AnalyticsContent({ searchQuery }: { searchQuery: string }) {
 function PublishedPostsContent({ searchQuery }: { searchQuery: string }) {
   const { data, isLoading, isError, refetch } = useAdminMemories('APPROVED');
   const moderateMemory = useModerateMemory();
+  const { showSuccess, showError, ToastPortal } = useAdminToast();
 
   if (isLoading) return <LoadingState />;
   if (isError) return <ErrorState onRetry={() => refetch()} />;
@@ -778,25 +780,36 @@ function PublishedPostsContent({ searchQuery }: { searchQuery: string }) {
   }
 
   return (
-    <div className="grid gap-4 xl:grid-cols-2">
-      {filtered.map((memory) => (
-        <PostCard
-          key={memory.id}
-          memory={memory}
-          isPublishedStyle
-          onRemove={() =>
-            moderateMemory.mutate({ memoryId: memory.id, action: 'REMOVED' })
-          }
-          isPending={moderateMemory.isPending}
-        />
-      ))}
-    </div>
+    <>
+      <ToastPortal />
+      <div className="grid gap-4 xl:grid-cols-2">
+        {filtered.map((memory) => (
+          <PostCard
+            key={memory.id}
+            memory={memory}
+            isPublishedStyle
+            onRemove={() =>
+              moderateMemory.mutate(
+                { memoryId: memory.id, action: 'REMOVED' },
+                {
+                  onSuccess: () => showSuccess('Memory removed successfully.'),
+                  onError: (err) =>
+                    showError(err.message || 'Failed to remove memory.'),
+                }
+              )
+            }
+            isPending={moderateMemory.isPending}
+          />
+        ))}
+      </div>
+    </>
   );
 }
 
 function PendingReviewContent({ searchQuery }: { searchQuery: string }) {
   const { data, isLoading, isError, refetch } = useAdminMemories('PENDING');
   const moderateMemory = useModerateMemory();
+  const { showSuccess, showError, ToastPortal } = useAdminToast();
 
   if (isLoading) return <LoadingState />;
   if (isError) return <ErrorState onRetry={() => refetch()} />;
@@ -821,28 +834,46 @@ function PendingReviewContent({ searchQuery }: { searchQuery: string }) {
   }
 
   return (
-    <div className="grid gap-4 xl:grid-cols-2">
-      {filtered.map((memory) => (
-        <PostCard
-          key={memory.id}
-          memory={memory}
-          isPublishedStyle
-          onApprove={() =>
-            moderateMemory.mutate({ memoryId: memory.id, action: 'APPROVED' })
-          }
-          onReject={() =>
-            moderateMemory.mutate({ memoryId: memory.id, action: 'REJECTED' })
-          }
-          isPending={moderateMemory.isPending}
-        />
-      ))}
-    </div>
+    <>
+      <ToastPortal />
+      <div className="grid gap-4 xl:grid-cols-2">
+        {filtered.map((memory) => (
+          <PostCard
+            key={memory.id}
+            memory={memory}
+            isPublishedStyle
+            onApprove={() =>
+              moderateMemory.mutate(
+                { memoryId: memory.id, action: 'APPROVED' },
+                {
+                  onSuccess: () => showSuccess('Memory approved successfully.'),
+                  onError: (err) =>
+                    showError(err.message || 'Failed to approve memory.'),
+                }
+              )
+            }
+            onReject={() =>
+              moderateMemory.mutate(
+                { memoryId: memory.id, action: 'REJECTED' },
+                {
+                  onSuccess: () => showSuccess('Memory rejected.'),
+                  onError: (err) =>
+                    showError(err.message || 'Failed to reject memory.'),
+                }
+              )
+            }
+            isPending={moderateMemory.isPending}
+          />
+        ))}
+      </div>
+    </>
   );
 }
 
 function ReportsContent({ searchQuery }: { searchQuery: string }) {
   const { data, isLoading, isError, refetch } = useAdminReports();
   const resolveReport = useResolveReport();
+  const { showSuccess, showError, ToastPortal } = useAdminToast();
 
   if (isLoading) return <LoadingState />;
   if (isError) return <ErrorState onRetry={() => refetch()} />;
@@ -873,77 +904,93 @@ function ReportsContent({ searchQuery }: { searchQuery: string }) {
   };
 
   return (
-    <div className="space-y-4">
-      {filtered.map((report) => (
-        <div
-          key={report.id}
-          className="flex items-start gap-4 border-2 border-border bg-card p-4"
-        >
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-50">
-            {report.state === 'OPEN' ? (
-              <AlertTriangle size={18} className="text-red-500" />
-            ) : (
-              <Flag size={18} className="text-muted-foreground" />
-            )}
-          </div>
-
-          <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-            <p className="text-sm font-medium text-foreground">
-              {report.reason}
-            </p>
-            <div className="flex items-center gap-3 text-xs text-muted-foreground">
-              <span>Memory: {report.memory.title}</span>
-              <span>
-                Reported by {report.reporter.firstName}{' '}
-                {report.reporter.lastName}
-              </span>
-              <span className="flex items-center gap-1">
-                <Clock size={10} />
-                {formatDate(report.createdAt)}
-              </span>
+    <>
+      <ToastPortal />
+      <div className="space-y-4">
+        {filtered.map((report) => (
+          <div
+            key={report.id}
+            className="flex items-start gap-4 border-2 border-border bg-card p-4"
+          >
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-50">
+              {report.state === 'OPEN' ? (
+                <AlertTriangle size={18} className="text-red-500" />
+              ) : (
+                <Flag size={18} className="text-muted-foreground" />
+              )}
             </div>
 
-            {/* Action buttons for open reports */}
-            {report.state === 'OPEN' && (
-              <div className="mt-2 flex items-center gap-2">
-                <button
-                  onClick={() =>
-                    resolveReport.mutate({
-                      reportId: report.id,
-                      action: 'RESOLVED',
-                    })
-                  }
-                  disabled={resolveReport.isPending}
-                  className="flex items-center gap-1 text-xs text-green-600 transition-colors hover:text-green-800 disabled:opacity-50"
-                >
-                  <CheckCircle size={12} />
-                  Resolve
-                </button>
-                <button
-                  onClick={() =>
-                    resolveReport.mutate({
-                      reportId: report.id,
-                      action: 'DISMISSED',
-                    })
-                  }
-                  disabled={resolveReport.isPending}
-                  className="flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground disabled:opacity-50"
-                >
-                  <XCircle size={12} />
-                  Dismiss
-                </button>
+            <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+              <p className="text-sm font-medium text-foreground">
+                {report.reason}
+              </p>
+              <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                <span>Memory: {report.memory.title}</span>
+                <span>
+                  Reported by {report.reporter.firstName}{' '}
+                  {report.reporter.lastName}
+                </span>
+                <span className="flex items-center gap-1">
+                  <Clock size={10} />
+                  {formatDate(report.createdAt)}
+                </span>
               </div>
-            )}
-          </div>
 
-          <span
-            className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium capitalize ${statusStyles[report.state]}`}
-          >
-            {report.state.toLowerCase()}
-          </span>
-        </div>
-      ))}
-    </div>
+              {/* Action buttons for open reports */}
+              {report.state === 'OPEN' && (
+                <div className="mt-2 flex items-center gap-2">
+                  <button
+                    onClick={() =>
+                      resolveReport.mutate(
+                        { reportId: report.id, action: 'RESOLVED' },
+                        {
+                          onSuccess: () =>
+                            showSuccess('Report resolved successfully.'),
+                          onError: (err) =>
+                            showError(
+                              err.message || 'Failed to resolve report.'
+                            ),
+                        }
+                      )
+                    }
+                    disabled={resolveReport.isPending}
+                    className="flex items-center gap-1 text-xs text-green-600 transition-colors hover:text-green-800 disabled:opacity-50"
+                  >
+                    <CheckCircle size={12} />
+                    Resolve
+                  </button>
+                  <button
+                    onClick={() =>
+                      resolveReport.mutate(
+                        { reportId: report.id, action: 'DISMISSED' },
+                        {
+                          onSuccess: () => showSuccess('Report dismissed.'),
+                          onError: (err) =>
+                            showError(
+                              err.message || 'Failed to dismiss report.'
+                            ),
+                        }
+                      )
+                    }
+                    disabled={resolveReport.isPending}
+                    className="flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground disabled:opacity-50"
+                  >
+                    <XCircle size={12} />
+                    Dismiss
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <span
+              className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium capitalize ${statusStyles[report.state]}`}
+            >
+              {report.state.toLowerCase()}
+            </span>
+          </div>
+        ))}
+      </div>
+    </>
   );
 }
 

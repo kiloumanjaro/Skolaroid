@@ -31,6 +31,9 @@ export function useModerateMemory() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-memories'] });
       queryClient.invalidateQueries({ queryKey: ['admin-analytics'] });
+      queryClient.invalidateQueries({ queryKey: ['memories'] });
+      queryClient.invalidateQueries({ queryKey: ['memory-counts'] });
+      queryClient.invalidateQueries({ queryKey: ['public-gallery'] });
     },
   });
 }

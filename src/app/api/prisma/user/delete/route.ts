@@ -5,9 +5,9 @@ import { NextResponse } from 'next/server';
 /**
  * DELETE /api/prisma/user/delete
  *
- * Performs a cascading soft-delete: sets `deletedAt` on the authenticated User
- * and on every Memory record they created, all within a single Prisma
- * transaction to guarantee data consistency.
+ * Handles user deletion:
+ * - If user is not onboarded, just delete the auth user via raw SQL.
+ * - If user is onboarded, delete auth user via raw SQL first, then delete the matching public user via Prisma.
  */
 export async function DELETE() {
   try {
@@ -20,20 +20,24 @@ export async function DELETE() {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
-    const now = new Date();
+    // Check the user_onboarded flag in the auth table (stored in app_metadata)
+    const isOnboarded = authUser.app_metadata?.onboarded === true;
 
-    await prisma.$transaction([
-      // Soft-delete all Memory records owned by this user
-      prisma.memory.updateMany({
-        where: { creatorId: authUser.id, deletedAt: null },
-        data: { deletedAt: now },
-      }),
-      // Soft-delete the User record
-      prisma.user.update({
+    if (!isOnboarded) {
+      // User never finished onboarding, just delete the auth user via raw SQL
+      await prisma.$executeRaw`DELETE FROM auth.users WHERE id = ${authUser.id}::uuid`;
+    } else {
+      // User is fully onboarded, delete auth user via raw SQL first
+      await prisma.$executeRaw`DELETE FROM auth.users WHERE id = ${authUser.id}::uuid`;
+
+      // Then delete the matching public user via Prisma
+      await prisma.user.delete({
         where: { id: authUser.id },
-        data: { deletedAt: now },
-      }),
-    ]);
+      });
+    }
+
+    // Sign out to clear session cookies
+    await supabase.auth.signOut();
 
     return NextResponse.json({
       success: true,
@@ -41,6 +45,7 @@ export async function DELETE() {
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
+    console.error('[user/delete] Error:', message);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
