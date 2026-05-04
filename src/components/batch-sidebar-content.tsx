@@ -77,7 +77,13 @@ export function BatchSidebarContent({
                       className="object-cover object-center transition-opacity duration-300 group-hover:opacity-40"
                     />
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                      <span className="bg-card px-6 py-3 text-2xl font-semibold text-foreground">
+                      <span
+                        className="select-none text-6xl font-black"
+                        style={{
+                          color: '#1a1a1a',
+                          filter: 'drop-shadow(0 0 6px rgba(255,255,255,0.5))',
+                        }}
+                      >
                         {era.label}
                       </span>
                     </div>
