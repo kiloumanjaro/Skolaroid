@@ -60,7 +60,7 @@ export function BatchSidebarContent({
 
               setLoginOpen(true);
             }}
-            className={`relative transform cursor-pointer transition-all hover:z-50 hover:rotate-0 hover:scale-110 ${
+            className={`group relative transform cursor-pointer transition-all hover:z-50 hover:rotate-0 hover:scale-110 ${
               ROTATIONS[index % ROTATIONS.length]
             } ${OFFSETS[index % OFFSETS.length]} w-[calc(100vw-4rem)] max-w-[16rem] sm:w-auto sm:max-w-none`}
             style={{ zIndex: index }}
@@ -69,12 +69,19 @@ export function BatchSidebarContent({
             <div className="w-full border-2 border-border bg-card p-2 pb-12 shadow-[4px_4px_0px_0px_#2d2d2d] sm:w-80">
               <div className="relative aspect-[4/5] overflow-hidden bg-secondary sm:aspect-auto sm:h-[320px]">
                 {era.imageUrl ? (
-                  <Image
-                    src={era.imageUrl}
-                    alt={`${era.label} era photo`}
-                    fill
-                    className="object-cover"
-                  />
+                  <>
+                    <Image
+                      src={era.imageUrl}
+                      alt={`${era.label} era photo`}
+                      fill
+                      className="object-cover object-center transition-opacity duration-300 group-hover:opacity-40"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                      <span className="bg-card px-6 py-3 text-2xl font-semibold text-foreground">
+                        {era.label}
+                      </span>
+                    </div>
+                  </>
                 ) : (
                   <div
                     className={`flex h-full w-full items-center justify-center ${era.color}`}

@@ -321,25 +321,25 @@ const ERAS: Era[] = [
     decade: 2020,
     label: '2020s',
     color: 'bg-sky-100',
-    imageUrl: '',
+    imageUrl: '/assets/images/eras/2020.png',
   },
   {
     decade: 2010,
     label: '2010s',
     color: 'bg-slate-100',
-    imageUrl: '',
+    imageUrl: '/assets/images/eras/2010.png',
   },
   {
     decade: 2000,
     label: '2000s',
     color: 'bg-green-100',
-    imageUrl: '',
+    imageUrl: '/assets/images/eras/2000.png',
   },
   {
     decade: 1990,
     label: '1990s',
     color: 'bg-amber-100',
-    imageUrl: '',
+    imageUrl: '/assets/images/eras/1990.png',
   },
 ];
 
