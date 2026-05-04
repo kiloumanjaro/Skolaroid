@@ -8,38 +8,37 @@ datasource db {
 }
 
 model User {
-  id              String          @id @default(uuid()) @db.Uuid
-  studentId       String          @unique @db.VarChar(50)
-  email           String          @unique @db.VarChar(255)
-  firstName       String          @db.VarChar(100)
-  lastName        String          @db.VarChar(100)
-  status          Status          @default(STUDENT)
-  role            UserRole        @default(USER)
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  deletedAt       DateTime?
-  // Deactivation: separate from deletedAt; tracks 30-day grace period
-  accountStatus   AccountStatus   @default(ACTIVE)
-  deactivatedAt   DateTime?
-  bio             String?         @db.VarChar(500)
-  phone           String?         @db.VarChar(50)
-  linkedinUrl     String?         @db.VarChar(255)
-  facebookUrl     String?         @db.VarChar(255)
-  contactOther    String?         @db.VarChar(255)
-  avatarUrl       String?         @db.VarChar(500)
-  programBatchId  String          @db.Uuid
-  sentInvitations Invitation[]    @relation("SentInvitations")
-  memories        Memory[]
-  comments        MemoryComment[]
-  votes           MemoryVote[]
-  createdGroups   PrivateGroup[]  @relation("GroupCreator")
-  groupMemberships GroupMembership[]
-  submittedReports Report[]        @relation("ReportReporter")
-  resolvedReports  Report[]        @relation("ReportResolver")
+  id                String                @id @default(uuid()) @db.Uuid
+  studentId         String                @unique @db.VarChar(50)
+  email             String                @unique @db.VarChar(255)
+  firstName         String                @db.VarChar(100)
+  lastName          String                @db.VarChar(100)
+  status            Status                @default(STUDENT)
+  role              UserRole              @default(USER)
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+  deletedAt         DateTime?
+  programBatchId    String                @db.Uuid
+  avatarUrl         String?               @db.VarChar(500)
+  bio               String?               @db.VarChar(500)
+  contactOther      String?               @db.VarChar(255)
+  facebookUrl       String?               @db.VarChar(255)
+  linkedinUrl       String?               @db.VarChar(255)
+  phone             String?               @db.VarChar(50)
+  accountStatus     AccountStatus         @default(ACTIVE)
+  deactivatedAt     DateTime?
+  groupMemberships  GroupMembership[]
+  sentInvitations   Invitation[]          @relation("SentInvitations")
+  memories          Memory[]
+  comments          MemoryComment[]
+  votes             MemoryVote[]
   moderationActions ModerationActionLog[] @relation("ModerationActionsByAdmin")
-  notifications    Notification[]
-  programBatch    ProgramBatch    @relation(fields: [programBatchId], references: [id])
-  groups          PrivateGroup[]  @relation("GroupMembers")
+  notifications     Notification[]
+  createdGroups     PrivateGroup[]        @relation("GroupCreator")
+  submittedReports  Report[]              @relation("ReportReporter")
+  resolvedReports   Report[]              @relation("ReportResolver")
+  programBatch      ProgramBatch          @relation(fields: [programBatchId], references: [id])
+  groups            PrivateGroup[]        @relation("GroupMembers")
 
   @@index([email])
   @@index([studentId])
@@ -89,33 +88,33 @@ model ProgramBatch {
 }
 
 model Memory {
-  id             String           @id @default(uuid()) @db.Uuid
-  title          String           @db.VarChar(255)
-  description    String?
-  mediaURL       String?          @db.VarChar(2048)
-  mediaURLs      String[]         @default([])
-  uploadDate     DateTime         @default(now())
-  creatorId      String?          @db.Uuid
-  locationId     String           @db.Uuid
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  deletedAt      DateTime?
-  isArchived     Boolean          @default(false)
-  visibility     MemoryVisibility @default(PUBLIC)
-  moderationStatus MemoryModerationStatus @default(PENDING)
-  programBatchId String           @db.Uuid
-  privateGroupId String?          @db.Uuid
-  memoryDate     DateTime?
-  creator        User?            @relation(fields: [creatorId], references: [id])
-  location       Location         @relation(fields: [locationId], references: [id])
-  privateGroup   PrivateGroup?    @relation(fields: [privateGroupId], references: [id], onDelete: Restrict)
-  programBatch   ProgramBatch     @relation(fields: [programBatchId], references: [id])
-  comments       MemoryComment[]
-  votes          MemoryVote[]
-  tags           Tag[]            @relation("MemoryTags")
-  reports        Report[]
-  moderationActions ModerationActionLog[] @relation("MemoryModerationActions")
-  notifications  Notification[] @relation("NotificationMemory")
+  id                String                 @id @default(uuid()) @db.Uuid
+  title             String                 @db.VarChar(255)
+  description       String?
+  mediaURL          String?                @db.VarChar(2048)
+  uploadDate        DateTime               @default(now())
+  creatorId         String?                @db.Uuid
+  locationId        String                 @db.Uuid
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+  deletedAt         DateTime?
+  isArchived        Boolean                @default(false)
+  visibility        MemoryVisibility       @default(PUBLIC)
+  programBatchId    String                 @db.Uuid
+  privateGroupId    String?                @db.Uuid
+  memoryDate        DateTime?
+  moderationStatus  MemoryModerationStatus @default(PENDING)
+  mediaURLs         String[]               @default([])
+  creator           User?                  @relation(fields: [creatorId], references: [id])
+  location          Location               @relation(fields: [locationId], references: [id])
+  privateGroup      PrivateGroup?          @relation(fields: [privateGroupId], references: [id], onDelete: Restrict)
+  programBatch      ProgramBatch           @relation(fields: [programBatchId], references: [id])
+  comments          MemoryComment[]
+  votes             MemoryVote[]
+  moderationActions ModerationActionLog[]  @relation("MemoryModerationActions")
+  notifications     Notification[]         @relation("NotificationMemory")
+  reports           Report[]
+  tags              Tag[]                  @relation("MemoryTags")
 
   @@index([creatorId])
   @@index([programBatchId])
@@ -161,21 +160,21 @@ model MemoryVote {
 }
 
 model Report {
-  id               String     @id @default(uuid()) @db.Uuid
-  state            ReportState @default(OPEN)
-  reason           String
-  reporterId       String     @db.Uuid
-  memoryId         String     @db.Uuid
-  resolvedById     String?    @db.Uuid
-  resolutionNote   String?
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
-  resolvedAt       DateTime?
-  reporter         User       @relation("ReportReporter", fields: [reporterId], references: [id], onDelete: Cascade)
-  memory           Memory     @relation(fields: [memoryId], references: [id], onDelete: Cascade)
-  resolvedBy       User?      @relation("ReportResolver", fields: [resolvedById], references: [id], onDelete: SetNull)
+  id                String                @id @default(uuid()) @db.Uuid
+  state             ReportState           @default(OPEN)
+  reason            String
+  reporterId        String                @db.Uuid
+  memoryId          String                @db.Uuid
+  resolvedById      String?               @db.Uuid
+  resolutionNote    String?
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+  resolvedAt        DateTime?
   moderationActions ModerationActionLog[] @relation("ReportModerationActions")
-  notifications    Notification[] @relation("NotificationReport")
+  notifications     Notification[]        @relation("NotificationReport")
+  memory            Memory                @relation(fields: [memoryId], references: [id], onDelete: Cascade)
+  reporter          User                  @relation("ReportReporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  resolvedBy        User?                 @relation("ReportResolver", fields: [resolvedById], references: [id])
 
   @@index([state])
   @@index([reporterId])
@@ -193,9 +192,9 @@ model ModerationActionLog {
   targetReportId String?              @db.Uuid
   reason         String?
   createdAt      DateTime             @default(now())
-  admin          User                 @relation("ModerationActionsByAdmin", fields: [adminId], references: [id], onDelete: Restrict)
-  targetMemory   Memory?              @relation("MemoryModerationActions", fields: [targetMemoryId], references: [id], onDelete: SetNull)
-  targetReport   Report?              @relation("ReportModerationActions", fields: [targetReportId], references: [id], onDelete: SetNull)
+  admin          User                 @relation("ModerationActionsByAdmin", fields: [adminId], references: [id])
+  targetMemory   Memory?              @relation("MemoryModerationActions", fields: [targetMemoryId], references: [id])
+  targetReport   Report?              @relation("ReportModerationActions", fields: [targetReportId], references: [id])
 
   @@index([adminId])
   @@index([action])
@@ -232,20 +231,20 @@ model Tag {
 }
 
 model PrivateGroup {
-  id          String       @id @default(uuid()) @db.Uuid
-  name        String       @unique @db.VarChar(50)
-  description String?
-  message     String?      @db.VarChar(300)
-  rolePrivileges Json?
-  creatorId   String?      @db.Uuid
-  deletedAt   DateTime?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  invitations Invitation[]
-  memories    Memory[]
-  creator     User?        @relation("GroupCreator", fields: [creatorId], references: [id])
-  members     User[]       @relation("GroupMembers")
+  id               String            @id @default(uuid()) @db.Uuid
+  name             String            @unique @db.VarChar(50)
+  description      String?
+  creatorId        String?           @db.Uuid
+  deletedAt        DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  rolePrivileges   Json?
+  message          String?           @db.VarChar(300)
   groupMemberships GroupMembership[]
+  invitations      Invitation[]
+  memories         Memory[]
+  creator          User?             @relation("GroupCreator", fields: [creatorId], references: [id])
+  members          User[]            @relation("GroupMembers")
 
   @@index([name])
   @@index([creatorId])
@@ -275,17 +274,46 @@ model Invitation {
   invitedBy String       @db.Uuid
   email     String?      @db.VarChar(255)
   token     String       @unique @db.VarChar(64)
-  isForAll  Boolean      @default(false)
-  maxUses   Int          @default(1)
   expiresAt DateTime
   createdAt DateTime     @default(now())
+  isForAll  Boolean      @default(false)
+  maxUses   Int          @default(1)
   group     PrivateGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  inviter   User         @relation("SentInvitations", fields: [invitedBy], references: [id])
+  inviter   User         @relation("SentInvitations", fields: [invitedBy], references: [id], onDelete: Cascade)
 
   @@index([token])
   @@index([groupId])
   @@index([email])
   @@index([expiresAt])
+}
+
+model Notification {
+  id             String           @id @default(uuid()) @db.Uuid
+  userId         String           @db.Uuid
+  type           NotificationType
+  title          String           @db.VarChar(255)
+  message        String
+  targetMemoryId String?          @db.Uuid
+  targetReportId String?          @db.Uuid
+  reason         String?
+  read           Boolean          @default(false)
+  createdAt      DateTime         @default(now())
+  targetMemory   Memory?          @relation("NotificationMemory", fields: [targetMemoryId], references: [id])
+  targetReport   Report?          @relation("NotificationReport", fields: [targetReportId], references: [id])
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read])
+  @@index([userId, createdAt])
+  @@index([targetMemoryId])
+  @@index([targetReportId])
+}
+
+model UploadRateLimit {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
 }
 
 enum Status {
@@ -340,7 +368,6 @@ enum ModerationTargetType {
   REPORT
 }
 
-// Tracks whether an account is active or in the 30-day deactivation grace period
 enum AccountStatus {
   ACTIVE
   DEACTIVATED
@@ -352,34 +379,4 @@ enum NotificationType {
   MEMORY_REMOVED
   REPORT_RESOLVED
   REPORT_DISMISSED
-}
-
-model Notification {
-  id             String           @id @default(uuid()) @db.Uuid
-  userId         String           @db.Uuid
-  type           NotificationType
-  title          String           @db.VarChar(255)
-  message        String
-  targetMemoryId String?          @db.Uuid
-  targetReportId String?          @db.Uuid
-  reason         String?
-  read           Boolean          @default(false)
-  createdAt      DateTime         @default(now())
-
-  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  targetMemory Memory? @relation("NotificationMemory", fields: [targetMemoryId], references: [id], onDelete: SetNull)
-  targetReport Report? @relation("NotificationReport", fields: [targetReportId], references: [id], onDelete: SetNull)
-
-  @@index([userId, read])
-  @@index([userId, createdAt])
-  @@index([targetMemoryId])
-  @@index([targetReportId])
-}
-
-model UploadRateLimit {
-  id        String   @id @default(uuid()) @db.Uuid
-  userId    String   @db.Uuid
-  createdAt DateTime @default(now())
-
-  @@index([userId, createdAt])
 }
