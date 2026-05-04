@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { WOBBLY_RADIUS } from '@/lib/hand-drawn';
 import { useUpdateProfile } from '@/lib/hooks/useUpdateProfile';
 import { updateProfileSchema } from '@/lib/schemas';
 import type { CurrentUserProfile } from '@/lib/hooks/useCurrentUser';
@@ -92,6 +91,7 @@ export function EditProfileModal({
       <DialogContent
         className="flex max-h-[90vh] max-w-lg flex-col gap-0 overflow-hidden p-0"
         showCloseButton={false}
+        style={{ borderRadius: 0 }}
       >
         <DialogTitle className="sr-only">Edit Profile</DialogTitle>
 
@@ -136,7 +136,7 @@ export function EditProfileModal({
                   errors.bio &&
                     'border-destructive focus-visible:ring-destructive/20'
                 )}
-                style={{ borderRadius: WOBBLY_RADIUS }}
+                style={{ borderRadius: 0 }}
               />
               <div className="flex items-center justify-between">
                 {errors.bio ? (
@@ -176,6 +176,7 @@ export function EditProfileModal({
                   errors.phone &&
                     'border-destructive focus-visible:ring-destructive/20'
                 )}
+                style={{ borderRadius: 0 }}
               />
               {errors.phone && (
                 <p className="font-hand text-xs text-destructive">
@@ -199,6 +200,7 @@ export function EditProfileModal({
                   errors.linkedinUrl &&
                     'border-destructive focus-visible:ring-destructive/20'
                 )}
+                style={{ borderRadius: 0 }}
               />
               {errors.linkedinUrl && (
                 <p className="font-hand text-xs text-destructive">
@@ -222,6 +224,7 @@ export function EditProfileModal({
                   errors.facebookUrl &&
                     'border-destructive focus-visible:ring-destructive/20'
                 )}
+                style={{ borderRadius: 0 }}
               />
               {errors.facebookUrl && (
                 <p className="font-hand text-xs text-destructive">
@@ -245,6 +248,7 @@ export function EditProfileModal({
                   errors.contactOther &&
                     'border-destructive focus-visible:ring-destructive/20'
                 )}
+                style={{ borderRadius: 0 }}
               />
               {errors.contactOther && (
                 <p className="font-hand text-xs text-destructive">
@@ -271,6 +275,7 @@ export function EditProfileModal({
               type="button"
               disabled={isPending}
               onClick={() => onOpenChange(false)}
+              style={{ borderRadius: 0 }}
             >
               Cancel
             </Button>
@@ -280,6 +285,7 @@ export function EditProfileModal({
               type="button"
               disabled={isPending}
               onClick={handleSubmit}
+              style={{ borderRadius: 0 }}
             >
               {isPending ? 'Saving…' : 'Save'}
             </Button>
