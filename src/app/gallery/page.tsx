@@ -17,8 +17,6 @@ import { GalleryMemoryCard } from '@/components/gallery/GalleryMemoryCard';
 import { useAllMemoriesWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 import { getEraFromBatchTag } from '@/lib/utils';
 
-// handleCopyLink is defined inside GalleryPageContent to access activeEra
-
 const CLONE_COUNT = 3;
 const GALLERY_ANNOUNCEMENTS = [
   'Flip through campus memories one era at a time',
@@ -128,6 +126,7 @@ function GalleryPageContent() {
   const scrollLeftRef = useRef(0);
   const snapChildRefs = useRef<(HTMLDivElement | null)[]>([]);
   const isTeleporting = useRef(false);
+  const wheelDebounceRef = useRef(false);
 
   const { data: response, isLoading, error } = useAllMemoriesWithCoordinates();
 
@@ -153,6 +152,33 @@ function GalleryPageContent() {
   // scrollLeft that centers a given snap child in the viewport
   const snapScrollLeft = (container: HTMLDivElement, child: HTMLDivElement) =>
     child.offsetLeft + child.offsetWidth / 2 - container.clientWidth / 2;
+
+  const getClosestCardIndex = (): number => {
+    const container = containerRef.current;
+    if (!container) return 0;
+    const center = container.scrollLeft + container.clientWidth / 2;
+    let closest = 0;
+    let minDist = Infinity;
+    snapChildRefs.current.forEach((el, i) => {
+      if (!el) return;
+      const dist = Math.abs(el.offsetLeft + el.offsetWidth / 2 - center);
+      if (dist < minDist) {
+        minDist = dist;
+        closest = i;
+      }
+    });
+    return closest;
+  };
+
+  const scrollToCard = (index: number) => {
+    const container = containerRef.current;
+    const child = snapChildRefs.current[index];
+    if (!container || !child) return;
+    container.scrollTo({
+      left: snapScrollLeft(container, child),
+      behavior: 'smooth',
+    });
+  };
 
   // Scroll to the first real item (index cloneCount) after data/era changes
   useLayoutEffect(() => {
@@ -259,6 +285,7 @@ function GalleryPageContent() {
     const container = containerRef.current;
     if (!container) return;
 
+    container.style.scrollSnapType = 'none';
     setIsDragging(true);
     startX.current = e.clientX;
     scrollLeftRef.current = container.scrollLeft;
@@ -274,21 +301,25 @@ function GalleryPageContent() {
     container.scrollLeft = scrollLeftRef.current - walk;
   };
 
-  const handleMouseUp = () => {
+  const finishDrag = () => {
+    const container = containerRef.current;
     setIsDragging(false);
+    if (!container) return;
+    container.style.scrollSnapType = '';
+    scrollToCard(getClosestCardIndex());
   };
 
+  const handleMouseUp = () => finishDrag();
+
   const scrollGallery = (direction: 'left' | 'right') => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const scrollAmount = 400;
-    const targetScroll =
+    const total = snapChildRefs.current.length;
+    if (total === 0) return;
+    const currentIdx = getClosestCardIndex();
+    const nextIdx =
       direction === 'left'
-        ? container.scrollLeft - scrollAmount
-        : container.scrollLeft + scrollAmount;
-
-    container.scrollTo({ left: targetScroll, behavior: 'smooth' });
+        ? (currentIdx - 1 + total) % total
+        : (currentIdx + 1) % total;
+    scrollToCard(nextIdx);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -302,13 +333,25 @@ function GalleryPageContent() {
   };
 
   const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-    const container = e.currentTarget;
-    if (!container) return;
+    e.preventDefault();
+    if (wheelDebounceRef.current) return;
 
     const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
     if (delta === 0) return;
-    e.preventDefault();
-    container.scrollLeft += delta;
+
+    wheelDebounceRef.current = true;
+    scrollGallery(delta > 0 ? 'right' : 'left');
+
+    const container = containerRef.current;
+    const unlock = () => {
+      wheelDebounceRef.current = false;
+    };
+    if (container) {
+      container.addEventListener('scrollend', unlock, { once: true });
+      setTimeout(unlock, 400);
+    } else {
+      setTimeout(unlock, 400);
+    }
   };
 
   return (
