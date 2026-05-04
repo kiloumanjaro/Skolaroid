@@ -3,17 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import {
-  Suspense,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type MouseEvent as ReactMouseEvent,
-  type ReactNode,
-  type TouchEvent as ReactTouchEvent,
-} from 'react';
+import { Suspense, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { LoginForm } from '@/components/login-form';
 import {
   MainShellChromeProvider,
@@ -69,23 +59,22 @@ const navItems = [
     ),
   },
   {
-    href: '/admin',
-    label: 'Admin',
+    href: '/profile',
+    label: 'Profile',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
-        <path
-          d="M12 3.75 18.5 6.5v5.25c0 4.12-2.63 7.92-6.5 9-3.87-1.08-6.5-4.88-6.5-9V6.5L12 3.75Z"
+        <circle
+          cx="12"
+          cy="8"
+          r="3.25"
           stroke="currentColor"
           strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
         />
         <path
-          d="M9.75 12.25 11.25 13.75 14.5 10.5"
+          d="M5.75 18.25c1.58-2.62 4.02-3.93 6.25-3.93s4.67 1.31 6.25 3.93"
           stroke="currentColor"
           strokeWidth="1.8"
           strokeLinecap="round"
-          strokeLinejoin="round"
         />
       </svg>
     ),
@@ -112,6 +101,28 @@ const navItems = [
       </svg>
     ),
   },
+  {
+    href: '/admin',
+    label: 'Admin',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+        <path
+          d="M12 3.75 18.5 6.5v5.25c0 4.12-2.63 7.92-6.5 9-3.87-1.08-6.5-4.88-6.5-9V6.5L12 3.75Z"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M9.75 12.25 11.25 13.75 14.5 10.5"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+  },
 ];
 
 function isShellRoute(pathname: string) {
@@ -120,199 +131,37 @@ function isShellRoute(pathname: string) {
   );
 }
 
-function SwipeLogoutAction({
+function ProfileLogoutAction({
   isOpen,
   onLogout,
+  profileHref,
   avatarUrl,
   avatarAlt,
+  batchLabel,
 }: {
   isOpen: boolean;
   onLogout: () => void;
+  profileHref: string;
   avatarUrl?: string | null;
   avatarAlt: string;
+  batchLabel?: string | null;
 }) {
-  const trackRef = useRef<HTMLDivElement | null>(null);
-  const offsetRef = useRef(0);
-  const dragStartXRef = useRef(0);
-  const dragStartOffsetRef = useRef(0);
-  const [dragging, setDragging] = useState(false);
-  const [offset, setOffset] = useState(0);
-  const [trackWidth, setTrackWidth] = useState(0);
-  const [hasCompleted, setHasCompleted] = useState(false);
-  const handleSize = 48;
-  const maxOffset = Math.max(trackWidth - handleSize, 0);
-  const completionThreshold = Math.max(maxOffset - 20, maxOffset * 0.72);
-
-  const resetSwipe = useCallback(() => {
-    dragStartXRef.current = 0;
-    dragStartOffsetRef.current = 0;
-    offsetRef.current = 0;
-    setDragging(false);
-    setOffset(0);
-  }, []);
-
-  const updateOffset = useCallback(
-    (nextOffset: number) => {
-      const clampedOffset = Math.min(Math.max(nextOffset, 0), maxOffset);
-      offsetRef.current = clampedOffset;
-      setOffset(clampedOffset);
-    },
-    [maxOffset]
-  );
-
-  const finishDrag = useCallback(() => {
-    setDragging(false);
-
-    if (maxOffset > 0 && offsetRef.current >= completionThreshold) {
-      setHasCompleted(true);
-      updateOffset(maxOffset);
-      onLogout();
-      return;
-    }
-
-    resetSwipe();
-  }, [completionThreshold, maxOffset, onLogout, resetSwipe, updateOffset]);
-
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) {
-      return;
-    }
-
-    const updateWidth = () => {
-      setTrackWidth(track.offsetWidth);
-    };
-
-    updateWidth();
-
-    const resizeObserver = new ResizeObserver(() => {
-      updateWidth();
-    });
-
-    resizeObserver.observe(track);
-
-    return () => resizeObserver.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!isOpen) {
-      resetSwipe();
-      return;
-    }
-
-    const frameId = window.requestAnimationFrame(() => {
-      setTrackWidth(trackRef.current?.offsetWidth ?? 0);
-    });
-
-    return () => window.cancelAnimationFrame(frameId);
-  }, [isOpen, resetSwipe]);
-
-  useEffect(() => {
-    if (!dragging) {
-      return;
-    }
-
-    const handleMouseMove = (event: MouseEvent) => {
-      const deltaX = event.clientX - dragStartXRef.current;
-      updateOffset(dragStartOffsetRef.current + deltaX);
-    };
-
-    const handleTouchMove = (event: TouchEvent) => {
-      const touch = event.touches[0];
-      if (!touch) {
-        return;
-      }
-
-      updateOffset(
-        dragStartOffsetRef.current + (touch.clientX - dragStartXRef.current)
-      );
-    };
-
-    const handleRelease = () => {
-      finishDrag();
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleRelease);
-    window.addEventListener('touchmove', handleTouchMove, { passive: true });
-    window.addEventListener('touchend', handleRelease);
-    window.addEventListener('touchcancel', handleRelease);
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleRelease);
-      window.removeEventListener('touchmove', handleTouchMove);
-      window.removeEventListener('touchend', handleRelease);
-      window.removeEventListener('touchcancel', handleRelease);
-    };
-  }, [dragging, finishDrag, updateOffset]);
-
-  const startDrag = (clientX: number) => {
-    if (hasCompleted || maxOffset <= 0) {
-      return;
-    }
-
-    dragStartXRef.current = clientX;
-    dragStartOffsetRef.current = offsetRef.current;
-    setDragging(true);
-  };
-
-  const handleMouseDown = (event: ReactMouseEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    startDrag(event.clientX);
-  };
-
-  const handleTouchStart = (event: ReactTouchEvent<HTMLDivElement>) => {
-    const touch = event.touches[0];
-    if (!touch) {
-      return;
-    }
-
-    startDrag(touch.clientX);
-  };
-
-  useEffect(() => {
-    offsetRef.current = offset;
-  }, [offset]);
-
   return (
-    <div className="w-full">
-      <div
-        ref={trackRef}
-        className="relative flex h-12 w-full items-center overflow-hidden border-2 border-black bg-white"
+    <div className="flex items-center gap-2">
+      <Link
+        href={profileHref}
+        className="group flex min-w-0 flex-1 items-center gap-3 overflow-hidden rounded-none px-1 py-1 text-left text-foreground"
+        aria-label="Go to profile"
       >
-        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-16 pr-4">
-          <span
-            className={cn(
-              'overflow-hidden whitespace-nowrap text-sm font-semibold uppercase tracking-[0.18em] text-foreground transition-all duration-300 ease-in-out',
-              isOpen ? 'max-w-[160px] opacity-100' : 'max-w-0 opacity-0'
-            )}
-          >
-            {hasCompleted ? 'Logging out...' : 'Swipe to logout'}
-          </span>
-        </div>
-
-        <div
-          role="button"
-          tabIndex={-1}
-          onMouseDown={handleMouseDown}
-          onTouchStart={handleTouchStart}
-          className={cn(
-            'absolute left-0 top-0 flex h-12 w-12 touch-none select-none items-center justify-center overflow-hidden border-r-2 border-black bg-[#539fff] text-black transition-transform duration-200 ease-out',
-            offset > 0 ? 'border-l-2' : 'border-l-0',
-            dragging ? 'cursor-grabbing' : 'cursor-grab'
-          )}
-          style={{ transform: `translateX(${offset}px)` }}
-          aria-label="Swipe to logout"
-        >
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden bg-[#539fff] text-black">
           {avatarUrl ? (
             <Image
               src={avatarUrl}
               alt={avatarAlt}
-              width={48}
-              height={48}
+              width={40}
+              height={40}
               draggable={false}
-              className="pointer-events-none h-full w-full object-cover"
+              className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
             />
           ) : (
             <span className="text-sm font-black uppercase tracking-[0.12em]">
@@ -320,7 +169,51 @@ function SwipeLogoutAction({
             </span>
           )}
         </div>
-      </div>
+        <div
+          className={`min-w-0 overflow-hidden transition-all duration-300 ease-in-out ${
+            isOpen ? 'max-w-[140px] opacity-100' : 'max-w-0 opacity-0'
+          }`}
+        >
+          <p className="truncate text-sm font-semibold text-foreground">
+            {avatarAlt}
+          </p>
+          {batchLabel && (
+            <p className="truncate text-xs text-muted-foreground">
+              {batchLabel}
+            </p>
+          )}
+        </div>
+      </Link>
+
+      <button
+        type="button"
+        onClick={onLogout}
+        className="flex h-10 w-10 shrink-0 items-center justify-center text-foreground/80 transition-colors hover:text-foreground"
+        aria-label="Log out"
+      >
+        <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+          <path
+            d="M9 5.75H6.75A1.75 1.75 0 0 0 5 7.5v9A1.75 1.75 0 0 0 6.75 18.25H9"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M13 8.5 18 12l-5 3.5"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M18 12H9"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+          />
+        </svg>
+      </button>
     </div>
   );
 }
@@ -332,6 +225,7 @@ function ShellSidebar({
   leadingAction,
   userAvatar,
   userName,
+  userBatchLabel,
   onPrimaryAction,
   onLeadingAction,
   onNavigate,
@@ -342,6 +236,7 @@ function ShellSidebar({
   leadingAction: MainShellSidebarAction | null;
   userAvatar?: string | null;
   userName: string;
+  userBatchLabel?: string | null;
   onPrimaryAction: () => void;
   onLeadingAction: (action: MainShellSidebarAction) => void;
   onNavigate: (href: string) => void;
@@ -350,6 +245,10 @@ function ShellSidebar({
   const visibleNavItems = isAdmin
     ? navItems
     : navItems.filter((item) => item.href !== '/admin');
+  const adminNavItem = visibleNavItems.find((item) => item.href === '/admin');
+  const primaryNavItems = visibleNavItems.filter(
+    (item) => item.href !== '/admin'
+  );
 
   return (
     <aside
@@ -370,26 +269,7 @@ function ShellSidebar({
       </div>
 
       <nav className="flex flex-col gap-2 px-2">
-        {leadingAction && (
-          <Suspense
-            fallback={
-              <LeadingActionButton
-                action={leadingAction}
-                isOpen={isOpen}
-                isActive={false}
-                onClick={() => onLeadingAction(leadingAction)}
-              />
-            }
-          >
-            <SearchAwareLeadingActionButton
-              action={leadingAction}
-              isOpen={isOpen}
-              onClick={() => onLeadingAction(leadingAction)}
-            />
-          </Suspense>
-        )}
-
-        {visibleNavItems.map((item) => {
+        {primaryNavItems.map((item) => {
           const isActive =
             pathname === item.href || pathname.startsWith(`${item.href}/`);
 
@@ -425,15 +305,75 @@ function ShellSidebar({
             </Link>
           );
         })}
+
+        {leadingAction && (
+          <Suspense
+            fallback={
+              <LeadingActionButton
+                action={leadingAction}
+                isOpen={isOpen}
+                isActive={false}
+                onClick={() => onLeadingAction(leadingAction)}
+              />
+            }
+          >
+            <SearchAwareLeadingActionButton
+              action={leadingAction}
+              isOpen={isOpen}
+              onClick={() => onLeadingAction(leadingAction)}
+            />
+          </Suspense>
+        )}
+
+        {adminNavItem &&
+          (() => {
+            const isActive =
+              pathname === adminNavItem.href ||
+              pathname.startsWith(`${adminNavItem.href}/`);
+
+            return (
+              <Link
+                key={adminNavItem.href}
+                href={adminNavItem.href}
+                onClick={(event) => {
+                  event.preventDefault();
+                  onNavigate(adminNavItem.href);
+                }}
+                className={`group relative flex h-12 items-center gap-3 overflow-hidden px-3 transition-all duration-300 ease-in-out ${
+                  isActive
+                    ? 'rounded-none border-2 border-black bg-white'
+                    : 'rounded-none text-foreground/80 hover:bg-foreground/5 hover:text-foreground'
+                }`}
+              >
+                {isActive && <div className="absolute inset-0 bg-white" />}
+                <span
+                  className={`relative flex h-6 w-6 shrink-0 items-center justify-center ${
+                    isActive ? 'text-foreground' : ''
+                  }`}
+                >
+                  {adminNavItem.icon}
+                </span>
+                <span
+                  className={`relative overflow-hidden whitespace-nowrap text-sm font-medium transition-all duration-300 ease-in-out ${
+                    isOpen ? 'max-w-[120px] opacity-100' : 'max-w-0 opacity-0'
+                  } ${isActive ? 'text-foreground' : ''}`}
+                >
+                  {adminNavItem.label}
+                </span>
+              </Link>
+            );
+          })()}
       </nav>
 
       <div className="mt-auto px-2 pb-3 pt-6">
         {isAuthenticated ? (
-          <SwipeLogoutAction
+          <ProfileLogoutAction
             isOpen={isOpen}
             onLogout={onPrimaryAction}
+            profileHref="/profile"
             avatarUrl={userAvatar}
             avatarAlt={userName}
+            batchLabel={userBatchLabel}
           />
         ) : (
           <button
@@ -562,10 +502,15 @@ export function MainShell({ children }: { children: ReactNode }) {
   const userAvatar =
     user?.user_metadata?.avatar_url ?? user?.user_metadata?.picture ?? null;
   const userName =
-    user?.user_metadata?.full_name ??
-    user?.user_metadata?.name ??
-    user?.email ??
-    'User';
+    currentUserData?.data != null
+      ? `${currentUserData.data.firstName} ${currentUserData.data.lastName}`
+      : (user?.user_metadata?.full_name ??
+        user?.user_metadata?.name ??
+        user?.email ??
+        'User');
+  const userBatchLabel = currentUserData?.data?.programBatch?.batch?.year
+    ? `Batch ${currentUserData.data.programBatch.batch.year}`
+    : null;
   const isAdmin = currentUserData?.data?.role === 'ADMIN';
 
   useEffect(() => {
@@ -621,6 +566,7 @@ export function MainShell({ children }: { children: ReactNode }) {
               leadingAction={sidebarAction}
               userAvatar={userAvatar}
               userName={userName}
+              userBatchLabel={userBatchLabel}
               onLeadingAction={(action) => {
                 action.onClick();
                 setSidebarOpen(false);
