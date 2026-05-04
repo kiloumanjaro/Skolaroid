@@ -39,6 +39,7 @@ import type {
   MapLocationSelection,
 } from '@/lib/types/map';
 import { AddMemoryButton } from './map/AddMemoryButton';
+import { EraSelector } from './map/EraSelector';
 import { MapAnnouncementStrip } from './announcement-strips/MapAnnouncementStrip';
 import { MapLocationSelector } from './map/MapLocationSelector';
 import { FilterPanel } from './map/FilterPanel';
@@ -1061,6 +1062,10 @@ export function MapComponent({
         <div className="relative min-h-0 flex-1 overflow-hidden">
           <div ref={mapContainerRef} className="h-full w-full" />
 
+          <EraSelector
+            activeEra={activeMapEra}
+            onEraSelect={(era) => setActiveMapEra(era)}
+          />
           <AddMemoryButton onClick={() => setAddMemoryOpen(true)} />
 
           <GroupPanel

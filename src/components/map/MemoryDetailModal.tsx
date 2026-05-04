@@ -234,7 +234,6 @@ type MemoryMediaShape = Pick<
   'id' | 'title' | 'mediaURLs'
 >;
 const SWIPE_THRESHOLD_PX = 48;
-
 interface PolaroidMediaCarouselProps {
   memory: MemoryMediaShape;
   activeIndex: number;

@@ -280,11 +280,11 @@ export function MemoryDetailModal({
       {/* Polaroid-style photo */}
       <div className="flex h-96 items-center justify-center">
         <div className={`${polaroidWidth}`}>
-          {mem.mediaURL ? (
+          {mem.mediaURLs?.[0] ? (
             <div className="bg-white p-2 pb-8 shadow-[0px_2px_8px_2px_rgba(0,0,0,0.15)]">
               <div className="relative h-72 w-full overflow-hidden bg-gray-50">
                 <Image
-                  src={mem.mediaURL}
+                  src={mem.mediaURLs[0]}
                   alt={mem.title}
                   fill
                   className="object-cover"

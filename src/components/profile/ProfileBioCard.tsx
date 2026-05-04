@@ -8,7 +8,7 @@ interface ProfileBioCardProps {
 
 export function ProfileBioCard({ bio }: ProfileBioCardProps) {
   return (
-    <Card>
+    <Card style={{ borderRadius: '1rem' }}>
       <CardHeader>
         <CardTitle className="text-base">About Me</CardTitle>
       </CardHeader>

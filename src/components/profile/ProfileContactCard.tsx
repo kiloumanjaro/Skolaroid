@@ -29,7 +29,7 @@ export function ProfileContactCard({
   ];
 
   return (
-    <Card>
+    <Card style={{ borderRadius: '1rem' }}>
       <CardHeader>
         <CardTitle className="text-base">Contact Information</CardTitle>
       </CardHeader>

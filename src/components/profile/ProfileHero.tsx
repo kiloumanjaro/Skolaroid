@@ -51,7 +51,12 @@ export function ProfileHero({ user, dbUser, onEditClick }: ProfileHeroProps) {
         )}
       </div>
       <div className="shrink-0">
-        <Button variant="outline" size="sm" onClick={onEditClick}>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onEditClick}
+          style={{ borderRadius: 0 }}
+        >
           Edit Profile
         </Button>
       </div>

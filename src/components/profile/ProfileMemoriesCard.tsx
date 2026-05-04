@@ -22,7 +22,7 @@ export function ProfileMemoriesCard({ userId }: ProfileMemoriesCardProps) {
         : undefined;
 
   return (
-    <Card className="md:col-span-2">
+    <Card className="md:col-span-2" style={{ borderRadius: '1rem' }}>
       <CardHeader>
         <CardTitle className="text-base">
           My Memories
