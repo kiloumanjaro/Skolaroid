@@ -16,7 +16,6 @@ interface CreateMemoryInput {
   programBatchId: string;
   memoryDate?: Date;
   tags?: string[];
-  mediaURL?: string;
   mediaURLs?: string[];
   creatorId: string;
   privateGroupId?: string;
@@ -35,20 +34,14 @@ export async function createMemoryService(
     programBatchId,
     memoryDate,
     tags: userTags = [],
-    mediaURL,
     mediaURLs,
     creatorId,
     privateGroupId,
   } = input;
 
   const normalizedMediaURLs = Array.from(
-    new Set(
-      [...(mediaURLs ?? []), ...(mediaURL ? [mediaURL] : [])]
-        .map((url) => url.trim())
-        .filter(Boolean)
-    )
+    new Set((mediaURLs ?? []).map((url) => url.trim()).filter(Boolean))
   );
-  const primaryMediaURL = normalizedMediaURLs[0] ?? mediaURL;
 
   const prescreeningEnabled = isContentPrescreeningEnabled();
   const moderationResult = prescreeningEnabled
@@ -93,7 +86,6 @@ export async function createMemoryService(
   const data: any = {
     title,
     description,
-    mediaURL: primaryMediaURL,
     mediaURLs: normalizedMediaURLs,
     visibility,
     ...(prescreeningEnabled && {

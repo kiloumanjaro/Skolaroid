@@ -62,7 +62,6 @@ export function useCreateMemory() {
         ...data,
         ...(resolvedMediaURLs.length > 0
           ? {
-              mediaURL: resolvedMediaURLs[0],
               mediaURLs: resolvedMediaURLs,
             }
           : {}),

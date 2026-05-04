@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
           select: { firstName: true, lastName: true },
         },
         memory: {
-          select: { id: true, title: true, mediaURL: true },
+          select: { id: true, title: true, mediaURLs: true },
         },
         resolvedBy: {
           select: { firstName: true, lastName: true },

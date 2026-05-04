@@ -454,7 +454,6 @@ const MEMORIES = [
     title: 'Freshman Welcome at Oblation Square',
     description:
       'The first day of classes — batch 2024 gathered at the Oblation for the traditional photo.',
-    mediaURL: null,
     visibility: 'PUBLIC' as const,
     locationId: '10000000-0000-4000-8000-000000000027',
     programBatchId: PROGRAM_BATCH_ID,
@@ -465,7 +464,6 @@ const MEMORIES = [
     title: 'Oblation Run 2024',
     description:
       'Annual tradition — the brave ones sprint across the plaza at dawn.',
-    mediaURL: null,
     visibility: 'PUBLIC' as const,
     locationId: '10000000-0000-4000-8000-000000000027',
     programBatchId: PROGRAM_BATCH_ID,
@@ -475,7 +473,6 @@ const MEMORIES = [
     id: '60000000-0000-4000-8000-000000000003',
     title: 'Sunset at the Oblation',
     description: null,
-    mediaURL: null,
     visibility: 'PROGRAM_ONLY' as const,
     locationId: '10000000-0000-4000-8000-000000000027',
     programBatchId: PROGRAM_BATCH_ID,
@@ -487,7 +484,6 @@ const MEMORIES = [
     title: 'Finals Week Study Session',
     description:
       'The library was packed during finals — every table claimed by 7 AM.',
-    mediaURL: null,
     visibility: 'PUBLIC' as const,
     locationId: '10000000-0000-4000-8000-000000000006',
     programBatchId: PROGRAM_BATCH_ID,
@@ -497,7 +493,6 @@ const MEMORIES = [
     id: '60000000-0000-4000-8000-000000000005',
     title: 'Library Book Fair',
     description: 'Annual book fair hosted in the library lobby.',
-    mediaURL: null,
     visibility: 'PUBLIC' as const,
     locationId: '10000000-0000-4000-8000-000000000006',
     programBatchId: PROGRAM_BATCH_ID,
@@ -509,7 +504,6 @@ const MEMORIES = [
     title: 'Acoustic Night at the AS Bldg.',
     description:
       'Student bands played until midnight — one of the best nights on campus.',
-    mediaURL: null,
     visibility: 'PUBLIC' as const,
     locationId: '10000000-0000-4000-8000-000000000020',
     programBatchId: PROGRAM_BATCH_ID,
@@ -519,7 +513,6 @@ const MEMORIES = [
     id: '60000000-0000-4000-8000-000000000007',
     title: 'Protest Rally for Academic Freedom',
     description: 'Students gathered at the AS Bldg. for a peaceful rally.',
-    mediaURL: null,
     visibility: 'BATCH_ONLY' as const,
     locationId: '10000000-0000-4000-8000-000000000020',
     programBatchId: PROGRAM_BATCH_ID,
@@ -531,7 +524,6 @@ const MEMORIES = [
     title: 'Lantern Parade 2024',
     description:
       'The entire garden lit up with handmade lanterns — a beautiful sight every December.',
-    mediaURL: null,
     visibility: 'PUBLIC' as const,
     locationId: '10000000-0000-4000-8000-000000000035',
     programBatchId: PROGRAM_BATCH_ID,
