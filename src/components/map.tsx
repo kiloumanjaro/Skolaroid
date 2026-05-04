@@ -40,6 +40,11 @@ import type {
 import { AddMemoryButton } from './map/AddMemoryButton';
 import { MapAnnouncementStrip } from './announcement-strips/MapAnnouncementStrip';
 import { MapLocationSelector } from './map/MapLocationSelector';
+import type {
+  MemoryFilters,
+  GroupFilterOption,
+  LocationFilterOption,
+} from './map/filter-memory-types';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
@@ -83,39 +88,6 @@ const MAP_ANNOUNCEMENTS = [
   'Switch eras to explore memories across batches',
   'Drop a memory and add to the living archive',
 ];
-
-type SortOption =
-  | 'date-newest'
-  | 'date-oldest'
-  | 'upvotes-high'
-  | 'upvotes-low';
-
-type VisibilityFilter =
-  | 'ALL'
-  | 'PUBLIC'
-  | 'BATCH_ONLY'
-  | 'PROGRAM_ONLY'
-  | 'GROUP_ONLY';
-
-interface MemoryFilters {
-  sortBy: SortOption;
-  visibility: VisibilityFilter;
-  selectedTags: string[];
-  selectedYear: number | null;
-  selectedGroupId: string | null;
-  selectedLocationId: string | null;
-  searchQuery: string;
-}
-
-interface GroupFilterOption {
-  id: string;
-  name: string;
-}
-
-interface LocationFilterOption {
-  id: string;
-  name: string;
-}
 
 interface MapComponentProps {
   filters: MemoryFilters;
