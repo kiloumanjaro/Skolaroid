@@ -803,7 +803,7 @@ export function MemoryDetailModal({
             </DropdownMenuItem>
           )}
           <DropdownMenuItem
-            className="min-h-8 rounded-none border border-transparent px-2 py-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-black focus:border-[#2d2d2d] focus:bg-[#ffd36b] focus:text-black"
+            className="min-h-8 rounded-none border border-transparent px-2 py-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-black focus:border-red-600 focus:bg-red-600 focus:text-white"
             onClick={() => setReportModalOpen(true)}
           >
             <Flag className="mr-1.5 h-3.5 w-3.5" />

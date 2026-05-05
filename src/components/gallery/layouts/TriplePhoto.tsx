@@ -5,12 +5,14 @@ import { GalleryPolaroid } from '../GalleryPolaroid';
 interface TriplePhotoProps {
   photos: { src: string; alt: string }[];
   startIndex?: number;
+  interactive?: boolean;
   onPhotoClick?: (index: number) => void;
 }
 
 export function TriplePhoto({
   photos,
   startIndex = 0,
+  interactive = true,
   onPhotoClick,
 }: TriplePhotoProps) {
   if (photos.length !== 3) {
@@ -44,6 +46,7 @@ export function TriplePhoto({
           offsetX="0px"
           offsetY="40px"
           zIndex={1}
+          interactive={interactive}
           onClick={() => onPhotoClick?.(0)}
         />
         <GalleryPolaroid
@@ -53,6 +56,7 @@ export function TriplePhoto({
           offsetX="310px"
           offsetY="0px"
           zIndex={2}
+          interactive={interactive}
           onClick={() => onPhotoClick?.(1)}
         />
         <GalleryPolaroid
@@ -62,6 +66,7 @@ export function TriplePhoto({
           offsetX="345px"
           offsetY="30px"
           zIndex={3}
+          interactive={interactive}
           onClick={() => onPhotoClick?.(2)}
         />
       </div>
