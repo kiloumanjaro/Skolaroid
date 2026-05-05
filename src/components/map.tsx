@@ -125,6 +125,7 @@ export function MapComponent({
   );
   const [selectedMemory, setSelectedMemory] =
     useState<MemoryWithCoordinates | null>(null);
+  const [selectedMemoryImageIndex, setSelectedMemoryImageIndex] = useState(0);
   const [memoryDetailOpen, setMemoryDetailOpen] = useState(false);
   const [showLandmarks, setShowLandmarks] = useState(false);
   const [showMemoryPins, setShowMemoryPins] = useState(true);
@@ -376,9 +377,10 @@ export function MapComponent({
   }, []);
 
   const openMemoryDetail = useCallback(
-    async (memory: MemoryWithCoordinates) => {
+    async (memory: MemoryWithCoordinates, imageIndex = 0) => {
       const sequenceId = ++memoryOpenSequenceRef.current;
 
+      setSelectedMemoryImageIndex(Math.max(0, imageIndex));
       setSelectedMemory(memory);
       await Promise.resolve(onMemoryDetailOpenRequest?.());
 
@@ -409,6 +411,7 @@ export function MapComponent({
     setMemoryDetailOpen(false);
     onMemoryDetailOpenStateChange?.(false);
     setSelectedMemory(null);
+    setSelectedMemoryImageIndex(0);
     setSelectedLandmark(null);
 
     // Return to the default overview camera after leaving notebook mode.
@@ -768,6 +771,14 @@ export function MapComponent({
 
     const params = new URLSearchParams(window.location.search);
     const memoryIdParam = params.get('memoryId');
+    const imageIndexParam = params.get('imageIndex');
+    const parsedImageIndex = imageIndexParam
+      ? Number.parseInt(imageIndexParam, 10)
+      : 0;
+    const initialImageIndex =
+      Number.isFinite(parsedImageIndex) && parsedImageIndex >= 0
+        ? parsedImageIndex
+        : 0;
 
     if (!memoryIdParam) return;
     if (processedMemoryParamRef.current === memoryIdParam) return;
@@ -781,7 +792,7 @@ export function MapComponent({
     }
 
     processedMemoryParamRef.current = memoryIdParam;
-    void openMemoryDetail(targetMemory);
+    void openMemoryDetail(targetMemory, initialImageIndex);
   }, [memories, memoriesLoading, openMemoryDetail]);
 
   // Phase 2: once map is ready, align era and camera for the selected memory
@@ -866,8 +877,14 @@ export function MapComponent({
 
     if (memoryDetailOpen && selectedMemory?.id) {
       params.set('memoryId', selectedMemory.id);
+      if (selectedMemoryImageIndex > 0) {
+        params.set('imageIndex', String(selectedMemoryImageIndex));
+      } else {
+        params.delete('imageIndex');
+      }
     } else if (!hasPendingIncomingMemoryId) {
       params.delete('memoryId');
+      params.delete('imageIndex');
 
       // Reset processed refs when leaving notebook mode so reopening via URL works
       // for the same memory ID in a later navigation.
@@ -888,6 +905,7 @@ export function MapComponent({
     memoryDetailOpen,
     selectedMemory,
     selectedMemory?.id,
+    selectedMemoryImageIndex,
     router,
   ]);
 
@@ -1139,6 +1157,7 @@ export function MapComponent({
             memory={selectedMemory}
             previousMemory={previousSelectedMemory}
             nextMemory={nextSelectedMemory}
+            initialImageIndex={selectedMemoryImageIndex}
             open={memoryDetailOpen}
             onOpenChange={(isOpen) => {
               if (!isOpen) {
@@ -1149,6 +1168,11 @@ export function MapComponent({
               onMemoryDetailOpenStateChange?.(true);
             }}
             onMemoryDeleted={() => setSelectedMemory(null)}
+            onActiveImageIndexChange={(memoryId, nextIndex) => {
+              if (memoryId === selectedMemory?.id) {
+                setSelectedMemoryImageIndex(nextIndex);
+              }
+            }}
             hasPrevious={selectedMemoryIndex > 0}
             hasNext={
               selectedMemoryIndex >= 0 &&
@@ -1156,12 +1180,14 @@ export function MapComponent({
             }
             onPrevious={() => {
               if (previousSelectedMemory) {
+                setSelectedMemoryImageIndex(0);
                 setSelectedMemory(previousSelectedMemory);
                 flyToMemoryWithSequence(previousSelectedMemory);
               }
             }}
             onNext={() => {
               if (nextSelectedMemory) {
+                setSelectedMemoryImageIndex(0);
                 setSelectedMemory(nextSelectedMemory);
                 flyToMemoryWithSequence(nextSelectedMemory);
               }

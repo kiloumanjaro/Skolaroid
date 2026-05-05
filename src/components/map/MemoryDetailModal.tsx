@@ -67,6 +67,7 @@ interface MemoryDetailModalProps {
   memory: MemoryWithCoordinates | null;
   previousMemory?: MemoryWithCoordinates | null;
   nextMemory?: MemoryWithCoordinates | null;
+  initialImageIndex?: number;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onPrevious?: () => void;
@@ -74,6 +75,7 @@ interface MemoryDetailModalProps {
   hasPrevious?: boolean;
   hasNext?: boolean;
   onMemoryDeleted?: () => void;
+  onActiveImageIndexChange?: (memoryId: string, nextIndex: number) => void;
 }
 
 type AnimationPhase = 'closed' | 'opening' | 'open' | 'closing';
@@ -338,6 +340,7 @@ export function MemoryDetailModal({
   memory,
   previousMemory = null,
   nextMemory = null,
+  initialImageIndex = 0,
   open,
   onOpenChange,
   onPrevious,
@@ -345,6 +348,7 @@ export function MemoryDetailModal({
   hasPrevious = false,
   hasNext = false,
   onMemoryDeleted,
+  onActiveImageIndexChange,
 }: MemoryDetailModalProps) {
   const { user: authUser } = useUserAuth();
   const deleteMemory = useDeleteMemory();
@@ -399,9 +403,19 @@ export function MemoryDetailModal({
         if (prev[memoryId] === nextIndex) return prev;
         return { ...prev, [memoryId]: nextIndex };
       });
+      onActiveImageIndexChange?.(memoryId, nextIndex);
     },
-    []
+    [onActiveImageIndexChange]
   );
+
+  useEffect(() => {
+    if (!memory || !open) return;
+
+    setActiveImageIndexByMemoryId((prev) => {
+      if (prev[memory.id] === initialImageIndex) return prev;
+      return { ...prev, [memory.id]: initialImageIndex };
+    });
+  }, [initialImageIndex, memory, open]);
   useEffect(() => {
     if (open) {
       setAnimationPhase('opening');

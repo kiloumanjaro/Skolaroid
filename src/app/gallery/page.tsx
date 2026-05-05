@@ -299,9 +299,9 @@ function GalleryPageContent() {
     };
   }, [teleportIfOnClone, HORIZON_TILE_PX]);
 
-  const handleMemoryClick = (memoryId: string) => {
+  const handleMemoryClick = (memoryId: string, imageIndex = 0) => {
     router.push(
-      `/map?memoryId=${encodeURIComponent(memoryId)}&era=${activeEra}`
+      `/map?memoryId=${encodeURIComponent(memoryId)}&era=${activeEra}&imageIndex=${imageIndex}`
     );
   };
 
@@ -491,7 +491,9 @@ function GalleryPageContent() {
                       <GalleryMemoryCard
                         memory={memory}
                         index={realIndex}
-                        onClick={() => handleMemoryClick(memory.id)}
+                        onClick={(imageIndex) =>
+                          handleMemoryClick(memory.id, imageIndex ?? 0)
+                        }
                       />
                     </div>
                   );

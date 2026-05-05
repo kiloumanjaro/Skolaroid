@@ -21,7 +21,22 @@ export async function GET(req: NextRequest) {
         visibility: 'PUBLIC',
         moderationStatus: 'APPROVED',
       },
-      include: {
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        creatorId: true,
+        locationId: true,
+        createdAt: true,
+        updatedAt: true,
+        deletedAt: true,
+        isArchived: true,
+        visibility: true,
+        programBatchId: true,
+        privateGroupId: true,
+        memoryDate: true,
+        moderationStatus: true,
+        mediaURLs: true,
         location: {
           select: {
             buildingName: true,

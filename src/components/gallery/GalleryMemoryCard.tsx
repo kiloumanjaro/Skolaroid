@@ -29,7 +29,7 @@ function formatDate(dateStr?: string): string {
 interface GalleryMemoryCardProps {
   memory: MemoryWithCoordinates;
   index?: number;
-  onClick: () => void;
+  onClick: (photoIndex?: number) => void;
 }
 
 export function GalleryMemoryCard({
@@ -90,7 +90,7 @@ export function GalleryMemoryCard({
         <PolaroidCluster
           photos={photos}
           startIndex={index}
-          onPhotoClick={onClick}
+          onPhotoClick={(photoIndex) => onClick(photoIndex)}
         />
 
         {/* Bubble Caption Overlay (Hover) -- Now bound to polaroid center, but tail dynamically points to avatar */}
