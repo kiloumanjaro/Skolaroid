@@ -373,9 +373,9 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
           </div>
 
           <div className="flex min-h-0 flex-1 flex-col">
-            <div className="border-b-2 border-black px-3 py-3">
-              <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                <div className="flex min-w-0 flex-1 flex-col gap-3 md:flex-row md:items-start">
+            <div className="border-b-2 border-black px-2 py-2 sm:px-3 sm:py-3">
+              <div className="flex flex-col gap-2 sm:gap-3 md:flex-row md:items-start md:justify-between">
+                <div className="flex min-w-0 flex-1 flex-col gap-2 sm:gap-3 md:flex-row md:items-start">
                   <div className="w-full shrink-0 md:w-64">
                     <GroupSwitcher
                       groups={groups}
@@ -530,7 +530,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                             key={tab.id}
                             onClick={tab.onClick}
                             className={cn(
-                              'flex shrink-0 appearance-none items-center gap-2 whitespace-nowrap border-0 px-4 py-3 text-left text-sm font-medium transition-colors md:w-full',
+                              'flex shrink-0 appearance-none items-center gap-1 whitespace-nowrap border-0 px-2 py-2 text-left text-xs font-medium transition-colors sm:gap-2 sm:px-4 sm:py-3 sm:text-sm md:w-full',
                               isActive
                                 ? `${activeTabBorderClassName} bg-[#f6cb48] text-black md:border-b-2 md:border-t-2 md:border-black`
                                 : 'bg-transparent text-muted-foreground hover:bg-secondary hover:text-foreground'
@@ -541,7 +541,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                                 : undefined
                             }
                           >
-                            <Icon className="h-4 w-4" />
+                            <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                             <span>{tab.label}</span>
                           </button>
                         );
