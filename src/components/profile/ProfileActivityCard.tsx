@@ -1,9 +1,10 @@
 'use client';
 
 import { Heart, ImageIcon, MessageSquare } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
-import { WOBBLY_RADIUS } from '@/lib/hand-drawn';
+import {
+  ProfilePanel,
+  ProfileSkeletonBlock,
+} from '@/components/profile/profile-shell';
 import {
   useUserActivity,
   type ActivityItem,
@@ -47,19 +48,17 @@ function PreviewRow({ item }: { item: ActivityItem }) {
         : 'Left a comment';
 
   return (
-    <div className="flex items-start gap-2 font-hand text-xs text-foreground">
-      <Icon
-        size={13}
-        className="mt-0.5 shrink-0 text-muted-foreground"
-        aria-hidden
-      />
+    <div className="flex items-start gap-3 border-2 border-border bg-[#fffdf5] px-3 py-3">
+      <div className="border-2 border-border bg-white p-2 text-foreground">
+        <Icon size={14} aria-hidden />
+      </div>
       <div className="min-w-0 flex-1">
-        <span>{label}</span>
-        <span className="block truncate italic text-muted-foreground">
+        <span className="block font-hand text-sm text-foreground">{label}</span>
+        <span className="mt-1 block truncate font-hand text-xs italic text-muted-foreground">
           {item.memory.title}
         </span>
       </div>
-      <span className="shrink-0 text-muted-foreground">
+      <span className="shrink-0 text-xs font-semibold uppercase tracking-[0.14em] text-foreground/55">
         {relativeTime(item.createdAt)}
       </span>
     </div>
@@ -74,45 +73,53 @@ export function ProfileActivityCard({
   const items = data?.data.slice(0, 3) ?? [];
 
   return (
-    <Card style={{ borderRadius: '1rem' }}>
-      <CardHeader className="pb-2">
-        <CardTitle className="font-kalam text-base">Recent Activity</CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-2">
-        {isPending &&
-          Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-8 animate-pulse rounded-md bg-muted" />
-          ))}
+    <ProfilePanel
+      eyebrow="Timeline"
+      title="Recent Activity"
+      description="A quick pulse on the latest things you have done around the archive."
+      accentClassName="bg-[#c0f7fe]"
+      contentClassName="space-y-3"
+    >
+      {isPending &&
+        Array.from({ length: 3 }).map((_, index) => (
+          <div
+            key={index}
+            className="space-y-2 border-2 border-border bg-[#fffdf5] p-3"
+          >
+            <ProfileSkeletonBlock className="h-4 w-2/3 border-0" />
+            <ProfileSkeletonBlock className="h-3 w-1/2 border-0" />
+          </div>
+        ))}
 
-        {isError && (
-          <p className="font-hand text-xs italic text-muted-foreground">
-            Could not load activity.
+      {isError && (
+        <div className="border-2 border-border bg-[#fff8fb] px-4 py-5">
+          <p className="font-hand text-sm text-muted-foreground">
+            Could not load activity right now.
           </p>
-        )}
+        </div>
+      )}
 
-        {!isPending && !isError && items.length === 0 && (
-          <p className="font-hand text-xs italic text-muted-foreground">
+      {!isPending && !isError && items.length === 0 && (
+        <div className="border-2 border-dashed border-border bg-[#fffdf5] px-4 py-5">
+          <p className="font-hand text-sm italic text-muted-foreground">
             No activity yet.
           </p>
-        )}
+        </div>
+      )}
 
-        {!isPending &&
-          !isError &&
-          items.map((item) => (
-            <PreviewRow key={`${item.type}-${item.id}`} item={item} />
-          ))}
+      {!isPending &&
+        !isError &&
+        items.map((item) => (
+          <PreviewRow key={`${item.type}-${item.id}`} item={item} />
+        ))}
 
-        <button
-          onClick={onShowMore}
-          style={{ borderRadius: WOBBLY_RADIUS }}
-          className={cn(
-            'mt-1 w-full py-1 text-center font-hand text-xs text-primary',
-            'underline underline-offset-2 transition-colors hover:text-primary/70'
-          )}
-        >
-          Show more →
-        </button>
-      </CardContent>
-    </Card>
+      <button
+        type="button"
+        onClick={onShowMore}
+        className="w-full border-2 border-border bg-[#fff4a8] px-4 py-3 text-center font-hand text-sm font-semibold text-foreground transition-colors hover:bg-[#ffe978]"
+      >
+        Open Full Timeline
+      </button>
+    </ProfilePanel>
   );
 }

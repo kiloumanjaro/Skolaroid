@@ -12,6 +12,7 @@ import { ProfileSettingsCard } from '@/components/profile/ProfileSettingsCard';
 import { ProfileMemoriesCard } from '@/components/profile/ProfileMemoriesCard';
 import { EditProfileModal } from '@/components/profile/EditProfileModal';
 import { ActivityTimelineDialog } from '@/components/profile/ActivityTimelineDialog';
+import { ProfilePageSkeleton } from '@/components/profile/ProfilePageSkeleton';
 import { MemoryDetailModal } from '@/components/map/MemoryDetailModal';
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 
@@ -25,48 +26,43 @@ export default function ProfilePage() {
   const [memoryDetailOpen, setMemoryDetailOpen] = useState(false);
 
   if (loading || dbUserLoading) {
-    return (
-      <div className="flex w-full flex-1 flex-col gap-6">
-        <div className="h-32 animate-pulse rounded-xl bg-muted" />
-        <div className="grid gap-6 md:grid-cols-2">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="h-40 animate-pulse rounded-xl bg-muted" />
-          ))}
-        </div>
-      </div>
-    );
+    return <ProfilePageSkeleton />;
   }
 
   const dbUser = currentUserData?.data ?? null;
 
   return (
     <>
-      <div className="flex w-full flex-1 flex-col gap-6">
+      <div className="flex w-full flex-1 flex-col gap-6 pb-10">
         <ProfileHero
           user={user}
           dbUser={dbUser}
           onEditClick={() => setEditOpen(true)}
         />
-        <div className="grid gap-6 md:grid-cols-2">
-          <ProfileBioCard bio={dbUser?.bio} />
-          <ProfileContactCard
-            phone={dbUser?.phone}
-            linkedinUrl={dbUser?.linkedinUrl}
-            facebookUrl={dbUser?.facebookUrl}
-            contactOther={dbUser?.contactOther}
-          />
-          <ProfileAcademicCard
-            studentId={dbUser?.studentId}
-            program={dbUser?.programBatch.program.name}
-            batch={dbUser?.programBatch.batch.year}
-            status={dbUser?.status}
-          />
-          <ProfileActivityCard
-            userId={dbUser?.id}
-            onShowMore={() => setActivityOpen(true)}
-          />
-          <ProfileMemoriesCard userId={dbUser?.id} />
-          <ProfileSettingsCard />
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.3fr)_minmax(18rem,0.9fr)]">
+          <div className="grid gap-6">
+            <ProfileBioCard bio={dbUser?.bio} />
+            <ProfileMemoriesCard userId={dbUser?.id} />
+          </div>
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-1">
+            <ProfileContactCard
+              phone={dbUser?.phone}
+              linkedinUrl={dbUser?.linkedinUrl}
+              facebookUrl={dbUser?.facebookUrl}
+              contactOther={dbUser?.contactOther}
+            />
+            <ProfileAcademicCard
+              studentId={dbUser?.studentId}
+              program={dbUser?.programBatch.program.name}
+              batch={dbUser?.programBatch.batch.year}
+              status={dbUser?.status}
+            />
+            <ProfileActivityCard
+              userId={dbUser?.id}
+              onShowMore={() => setActivityOpen(true)}
+            />
+            <ProfileSettingsCard />
+          </div>
         </div>
       </div>
       <EditProfileModal

@@ -1,6 +1,9 @@
 'use client';
 
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import {
+  ProfilePanel,
+  ProfileStatTile,
+} from '@/components/profile/profile-shell';
 
 interface ProfileAcademicCardProps {
   studentId?: string | null;
@@ -15,34 +18,40 @@ export function ProfileAcademicCard({
   batch,
   status,
 }: ProfileAcademicCardProps) {
-  const rows = [
-    { label: 'Student ID', value: studentId ?? '—' },
-    { label: 'Program', value: program ?? '—' },
-    { label: 'Batch', value: batch != null ? String(batch) : '—' },
-    {
-      label: 'Status',
-      value:
-        status === 'ALUMNI' ? 'Alumni' : status === 'STUDENT' ? 'Student' : '—',
-    },
-  ];
-
   return (
-    <Card style={{ borderRadius: '1rem' }}>
-      <CardHeader>
-        <CardTitle className="text-base">Academic Details</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <ul className="space-y-3">
-          {rows.map(({ label, value }) => (
-            <li key={label} className="flex items-center justify-between gap-4">
-              <span className="text-sm font-medium text-foreground/70">
-                {label}
-              </span>
-              <span className="text-sm text-muted-foreground">{value}</span>
-            </li>
-          ))}
-        </ul>
-      </CardContent>
-    </Card>
+    <ProfilePanel
+      eyebrow="Campus"
+      title="Academic Details"
+      description="A tidy snapshot of the details tied to your archive account."
+      accentClassName="bg-[#d9ddff]"
+      contentClassName="grid gap-3 sm:grid-cols-2 xl:grid-cols-1"
+    >
+      <ProfileStatTile
+        label="Student ID"
+        value={studentId ?? 'Pending'}
+        className="bg-white"
+      />
+      <ProfileStatTile
+        label="Program"
+        value={program ?? 'Pending'}
+        className="bg-[#fffaf0]"
+      />
+      <ProfileStatTile
+        label="Batch"
+        value={batch != null ? `Batch ${batch}` : 'Pending'}
+        className="bg-[#f2fbff]"
+      />
+      <ProfileStatTile
+        label="Status"
+        value={
+          status === 'ALUMNI'
+            ? 'Alumni'
+            : status === 'STUDENT'
+              ? 'Student'
+              : 'Pending'
+        }
+        className="bg-[#fff8fb]"
+      />
+    </ProfilePanel>
   );
 }
