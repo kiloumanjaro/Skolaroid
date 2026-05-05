@@ -6,7 +6,6 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 import { Flag, Loader2, CheckCircle2, AlertCircle, Info } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useReportMemory } from '@/lib/hooks/useReportMemory';
@@ -136,7 +135,7 @@ export function ReportMemoryModal({
   return (
     <Dialog open={open} onOpenChange={(val) => !val && handleClose()}>
       <DialogContent
-        className="flex max-w-md gap-0 overflow-hidden p-0"
+        className="flex max-w-md gap-0 overflow-hidden border-2 border-[#2d2d2d] p-0 shadow-none"
         showCloseButton={false}
         style={{ borderRadius: 0 }}
       >
@@ -147,17 +146,28 @@ export function ReportMemoryModal({
         </DialogDescription>
 
         <div className="flex w-full flex-col">
-          {/* Header */}
-          <div className="px-6 pb-0 pt-6">
-            <div className="flex items-center gap-2">
-              <Flag size={20} className="shrink-0 text-amber-500" />
-              <h2 className="text-lg font-semibold text-gray-900">
-                Report Memory
-              </h2>
-            </div>
-            <p className="mt-2 text-sm text-muted-foreground">
+          {/* Header band */}
+          <div className="flex items-center gap-2.5 border-b-2 border-[#2d2d2d] bg-[#F04248] px-4 py-2">
+            <Flag size={13} className="shrink-0 fill-white text-white" />
+            <h2 className="flex-1 text-xs font-bold uppercase tracking-[0.14em] text-white">
+              Report Memory
+            </h2>
+            <button
+              onClick={handleClose}
+              disabled={reportMemory.isPending}
+              aria-label="Close"
+              className="flex h-6 w-6 shrink-0 items-center justify-center border border-[#2d2d2d] bg-[#fde8e8] text-[#7f1d1d] transition-colors hover:bg-[#fca5a5] disabled:cursor-not-allowed disabled:opacity-50"
+              style={{ borderRadius: 0 }}
+            >
+              <span className="text-xs font-bold leading-none">✕</span>
+            </button>
+          </div>
+
+          {/* Subtitle */}
+          <div className="border-b-2 border-[#2d2d2d] bg-[#fdfbf7] px-5 py-3">
+            <p className="text-sm text-muted-foreground">
               Flag{' '}
-              <strong className="font-semibold text-gray-900">
+              <strong className="font-semibold text-[#2d2d2d]">
                 &ldquo;{memoryTitle}&rdquo;
               </strong>{' '}
               for review. Please describe why you believe this memory violates
@@ -165,16 +175,17 @@ export function ReportMemoryModal({
             </p>
           </div>
 
-          {/* Feedback banner */}
-          {feedback && (
-            <div className="px-6 pt-4">
+          {/* Body */}
+          <div className="bg-[#fdfbf7] px-5 pt-4">
+            {/* Feedback banner */}
+            {feedback && (
               <div
-                className={`flex items-start gap-2 border p-3 text-sm ${
+                className={`mb-4 flex items-start gap-2 border-2 p-3 text-sm ${
                   feedback.type === 'success'
-                    ? 'border-green-200 bg-green-50 text-green-800'
+                    ? 'border-[#2d2d2d] bg-green-50 text-green-800'
                     : feedback.type === 'info'
-                      ? 'border-blue-200 bg-blue-50 text-blue-800'
-                      : 'border-red-200 bg-red-50 text-red-800'
+                      ? 'border-[#2d2d2d] bg-blue-50 text-blue-800'
+                      : 'border-[#2d2d2d] bg-red-50 text-red-800'
                 }`}
                 role="status"
                 aria-live="polite"
@@ -182,85 +193,86 @@ export function ReportMemoryModal({
                 {feedback.type === 'success' ? (
                   <CheckCircle2
                     size={16}
-                    className="mt-0.5 shrink-0 text-green-500"
+                    className="mt-0.5 shrink-0 text-green-600"
                   />
                 ) : feedback.type === 'info' ? (
-                  <Info size={16} className="mt-0.5 shrink-0 text-blue-500" />
+                  <Info size={16} className="mt-0.5 shrink-0 text-blue-600" />
                 ) : (
                   <AlertCircle
                     size={16}
-                    className="mt-0.5 shrink-0 text-red-500"
+                    className="mt-0.5 shrink-0 text-red-600"
                   />
                 )}
                 <span>{feedback.message}</span>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Form (hidden after success/info) */}
-          {showForm && (
-            <div className="px-6 pt-4">
-              <label
-                htmlFor="report-reason"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
-              >
-                Reason for report
-              </label>
-              <textarea
-                ref={textareaRef}
-                id="report-reason"
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                placeholder="Describe the issue..."
-                rows={4}
-                maxLength={MAX_REPORT_REASON_LENGTH + 100}
-                disabled={reportMemory.isPending}
-                className="w-full resize-none border-2 border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/20 disabled:opacity-50"
-                style={{ borderRadius: 0 }}
-              />
-              <div className="mt-1 flex items-center justify-between">
-                {isReasonTooLong && (
-                  <span className="text-xs text-red-500">
-                    Reason must be {MAX_REPORT_REASON_LENGTH} characters or less
-                  </span>
-                )}
-                <span
-                  className={`ml-auto text-xs ${
-                    isReasonTooLong ? 'text-red-500' : 'text-muted-foreground'
-                  }`}
+            {/* Form */}
+            {showForm && (
+              <div>
+                <label
+                  htmlFor="report-reason"
+                  className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.08em] text-[#2d2d2d]"
                 >
-                  {trimmedReason.length}/{MAX_REPORT_REASON_LENGTH}
-                </span>
+                  Reason for report
+                </label>
+                <textarea
+                  ref={textareaRef}
+                  id="report-reason"
+                  value={reason}
+                  onChange={(e) => setReason(e.target.value)}
+                  placeholder="Describe the issue..."
+                  rows={4}
+                  maxLength={MAX_REPORT_REASON_LENGTH + 100}
+                  disabled={reportMemory.isPending}
+                  className="w-full resize-none border-2 border-[#2d2d2d] bg-white px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#2d2d2d]/20 disabled:opacity-50"
+                  style={{ borderRadius: 0 }}
+                />
+                <div className="mt-1 flex items-center justify-between pb-4">
+                  {isReasonTooLong && (
+                    <span className="text-xs text-red-600">
+                      Reason must be {MAX_REPORT_REASON_LENGTH} characters or
+                      less
+                    </span>
+                  )}
+                  <span
+                    className={`ml-auto text-xs ${
+                      isReasonTooLong ? 'text-red-600' : 'text-muted-foreground'
+                    }`}
+                  >
+                    {trimmedReason.length}/{MAX_REPORT_REASON_LENGTH}
+                  </span>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
           {/* Footer */}
-          <div className="mt-4 flex justify-end gap-3 border-t bg-white px-6 py-4">
-            <Button
-              variant="outline"
+          <div className="flex justify-end gap-2 border-t-2 border-[#2d2d2d] bg-[#fdfbf7] px-4 py-3">
+            <button
               onClick={handleClose}
               disabled={reportMemory.isPending}
+              className="border border-[#2d2d2d] bg-transparent px-3 py-1.5 text-xs font-semibold text-[#2d2d2d] transition-colors hover:bg-[#e5e0d8] disabled:cursor-not-allowed disabled:opacity-50"
               style={{ borderRadius: 0 }}
             >
               {showForm ? 'Cancel' : 'Close'}
-            </Button>
+            </button>
             {showForm && (
-              <Button
+              <button
                 onClick={handleSubmit}
                 disabled={isInvalid || reportMemory.isPending}
-                className="bg-amber-500 text-white hover:bg-amber-600"
+                className="border border-[#2d2d2d] bg-[#F04248] px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-[#d6333a] disabled:cursor-not-allowed disabled:opacity-50"
                 style={{ borderRadius: 0 }}
               >
                 {reportMemory.isPending ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <span className="flex items-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
                     Submitting...
-                  </>
+                  </span>
                 ) : (
                   'Submit Report'
                 )}
-              </Button>
+              </button>
             )}
           </div>
         </div>
