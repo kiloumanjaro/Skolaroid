@@ -74,7 +74,7 @@ export function FilterPanel({
       <section
         aria-label="Memory filters"
         className={cn(
-          'pointer-events-auto relative flex max-h-[calc(100dvh-11.5rem)] w-[calc(100vw-1rem)] max-w-none flex-col border-2 border-[#1f1f1f] bg-background p-0 shadow-none transition-transform duration-300 ease-out sm:max-h-[calc(100vh-4rem)] md:max-h-[85vh] md:w-[70vw]',
+          'pointer-events-auto relative flex max-h-[calc(100dvh-11.5rem)] w-[calc(100vw-2.5rem)] max-w-none flex-col border-2 border-[#1f1f1f] bg-background p-0 shadow-none transition-transform duration-300 ease-out sm:max-h-[calc(100vh-4rem)] md:max-h-[85vh] md:w-[70vw]',
           open ? 'translate-y-0' : 'translate-y-full'
         )}
       >

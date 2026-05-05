@@ -254,11 +254,24 @@ function ShellSidebar({
     <aside
       className={`absolute left-0 top-0 z-40 flex h-full flex-col overflow-hidden bg-[#fcfaf8] text-foreground transition-all duration-300 ease-in-out sm:relative sm:z-auto ${
         isOpen
-          ? 'w-52 shadow-[4px_0_12px_rgba(0,0,0,0.12)] sm:w-64 sm:shadow-none'
+          ? 'w-52 border-r-[3px] border-r-black sm:w-64 sm:border-r-0'
           : 'w-0'
       }`}
     >
-      <div className="px-4 pb-6 pt-6">
+      <div className="flex items-center gap-3 px-4 pb-6 pt-6">
+        <button
+          type="button"
+          onClick={() => onNavigate(pathname)}
+          aria-label="Close sidebar"
+          className="group relative h-10 w-10 shrink-0 overflow-hidden border-2 border-border sm:hidden"
+        >
+          <div className="absolute inset-0 bg-card transition-all group-hover:bg-[#f6cb48] group-active:bg-[#f6cb48]" />
+          <span className="relative flex h-full w-full flex-col items-center justify-center gap-1.5 text-foreground">
+            <span className="block h-0.5 w-5 rounded-full bg-current" />
+            <span className="block h-0.5 w-5 rounded-full bg-current" />
+            <span className="block h-0.5 w-5 rounded-full bg-current" />
+          </span>
+        </button>
         <div
           className={`flex justify-center overflow-hidden transition-all duration-300 ease-in-out ${
             isOpen ? 'max-w-[220px] opacity-100' : 'max-w-0 opacity-0'
