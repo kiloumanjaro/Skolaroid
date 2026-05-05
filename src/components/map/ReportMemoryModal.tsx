@@ -147,19 +147,19 @@ export function ReportMemoryModal({
 
         <div className="flex w-full flex-col">
           {/* Header band */}
-          <div className="flex items-center gap-3 bg-[#c0392b] px-5 py-4">
-            <Flag size={18} className="shrink-0 fill-white text-white" />
-            <h2 className="flex-1 font-hand text-xl font-bold tracking-wide text-white">
+          <div className="flex items-center gap-2.5 border-b-2 border-[#2d2d2d] bg-[#F04248] px-4 py-2">
+            <Flag size={13} className="shrink-0 fill-white text-white" />
+            <h2 className="flex-1 text-xs font-bold uppercase tracking-[0.14em] text-white">
               Report Memory
             </h2>
             <button
               onClick={handleClose}
               disabled={reportMemory.isPending}
               aria-label="Close"
-              className="flex h-8 w-8 shrink-0 items-center justify-center border-2 border-[#2d2d2d] bg-[#fde8e8] text-[#7f1d1d] transition-colors hover:bg-[#fca5a5] disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex h-6 w-6 shrink-0 items-center justify-center border border-[#2d2d2d] bg-[#fde8e8] text-[#7f1d1d] transition-colors hover:bg-[#fca5a5] disabled:cursor-not-allowed disabled:opacity-50"
               style={{ borderRadius: 0 }}
             >
-              <span className="text-base font-bold leading-none">✕</span>
+              <span className="text-xs font-bold leading-none">✕</span>
             </button>
           </div>
 
@@ -248,11 +248,11 @@ export function ReportMemoryModal({
           </div>
 
           {/* Footer */}
-          <div className="flex justify-end gap-2 border-t-2 border-[#2d2d2d] bg-[#fdfbf7] px-5 py-4">
+          <div className="flex justify-end gap-2 border-t-2 border-[#2d2d2d] bg-[#fdfbf7] px-4 py-3">
             <button
               onClick={handleClose}
               disabled={reportMemory.isPending}
-              className="border-2 border-[#2d2d2d] bg-transparent px-4 py-1.5 text-sm font-semibold text-[#2d2d2d] transition-colors hover:bg-[#e5e0d8] disabled:cursor-not-allowed disabled:opacity-50"
+              className="border border-[#2d2d2d] bg-transparent px-3 py-1.5 text-xs font-semibold text-[#2d2d2d] transition-colors hover:bg-[#e5e0d8] disabled:cursor-not-allowed disabled:opacity-50"
               style={{ borderRadius: 0 }}
             >
               {showForm ? 'Cancel' : 'Close'}
@@ -261,7 +261,7 @@ export function ReportMemoryModal({
               <button
                 onClick={handleSubmit}
                 disabled={isInvalid || reportMemory.isPending}
-                className="border-2 border-[#2d2d2d] bg-[#c0392b] px-4 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-[#a93226] disabled:cursor-not-allowed disabled:opacity-50"
+                className="border border-[#2d2d2d] bg-[#F04248] px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-[#d6333a] disabled:cursor-not-allowed disabled:opacity-50"
                 style={{ borderRadius: 0 }}
               >
                 {reportMemory.isPending ? (
