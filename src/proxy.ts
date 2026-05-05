@@ -6,6 +6,7 @@ const PUBLIC_ROUTES = [
   '/',
   '/auth/callback',
   '/invite',
+  '/share',
   '/swagger',
   '/api/swagger',
 ];

@@ -5,12 +5,14 @@ import { GalleryPolaroid } from '../GalleryPolaroid';
 interface QuadPhotoProps {
   photos: { src: string; alt: string }[];
   startIndex?: number;
+  interactive?: boolean;
   onPhotoClick?: (index: number) => void;
 }
 
 export function QuadPhoto({
   photos,
   startIndex = 0,
+  interactive = true,
   onPhotoClick,
 }: QuadPhotoProps) {
   if (photos.length !== 4) {
@@ -44,6 +46,7 @@ export function QuadPhoto({
           offsetX="0px"
           offsetY="30px"
           zIndex={1}
+          interactive={interactive}
           onClick={() => onPhotoClick?.(0)}
         />
         <GalleryPolaroid
@@ -53,6 +56,7 @@ export function QuadPhoto({
           offsetX="460px"
           offsetY="0px"
           zIndex={2}
+          interactive={interactive}
           onClick={() => onPhotoClick?.(1)}
         />
         <GalleryPolaroid
@@ -62,6 +66,7 @@ export function QuadPhoto({
           offsetX="20px"
           offsetY="140px"
           zIndex={3}
+          interactive={interactive}
           onClick={() => onPhotoClick?.(2)}
         />
         <GalleryPolaroid
@@ -71,6 +76,7 @@ export function QuadPhoto({
           offsetX="480px"
           offsetY="110px"
           zIndex={4}
+          interactive={interactive}
           onClick={() => onPhotoClick?.(3)}
         />
       </div>

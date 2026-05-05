@@ -13,6 +13,7 @@ interface GalleryPolaroidProps {
   offsetX?: string;
   offsetY?: string;
   zIndex?: number;
+  interactive?: boolean;
   onClick?: () => void;
 }
 
@@ -23,6 +24,7 @@ export function GalleryPolaroid({
   offsetX = '0px',
   offsetY = '0px',
   zIndex = 1,
+  interactive = true,
   onClick,
 }: GalleryPolaroidProps) {
   const tilt = useMemo(
@@ -32,7 +34,9 @@ export function GalleryPolaroid({
 
   return (
     <motion.div
-      className="absolute cursor-pointer"
+      className={
+        interactive ? 'absolute cursor-pointer' : 'absolute cursor-default'
+      }
       style={{
         rotate: tilt,
         x: offsetX,
