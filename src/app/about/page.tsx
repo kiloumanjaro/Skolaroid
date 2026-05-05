@@ -39,23 +39,23 @@ const pillars: AboutWorkflowCardProps[] = [
 const teamMembers = [
   {
     name: 'Kint Louise Borbano',
-    role: 'Creative Direction',
+    role: 'Project Manager, UI/UX, Frontend Engineer',
   },
   {
     name: 'Larissa Soronio',
-    role: 'Community Storytelling',
+    role: 'UI/UX, Frontend Engineer',
   },
   {
     name: 'Norman Jazul',
-    role: 'Experience Design',
+    role: 'Fullstack Engineer',
   },
   {
     name: 'Christian James Bayadog',
-    role: 'Product Development',
+    role: 'Fullstack Engineer',
   },
   {
     name: 'Jhon Carlo Sandro',
-    role: 'Platform Engineering',
+    role: 'Fullstack Engineer',
   },
 ];
 
@@ -172,8 +172,11 @@ export default async function AboutPage() {
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-foreground/70">
                 The people behind Skolaroid
               </p>
-              <h2 className="mt-3 text-3xl leading-tight text-foreground sm:text-4xl">
-                meet our team.
+              <h2 className="mt-5 flex items-center text-3xl font-bold text-foreground sm:text-4xl sm:leading-[1.4]">
+                meet{' '}
+                <span className="mx-4 inline-block rounded-lg border-2 border-[#2d2d2d] bg-[#f6cb48] px-2 py-0.5 text-base uppercase tracking-wider text-[#2d2d2d] shadow-[3px_3px_0_0_#2d2d2d] sm:text-lg">
+                  team goat
+                </span>
               </h2>
               <p className="mt-4 max-w-2xl text-base leading-relaxed text-foreground/75 sm:text-lg">
                 A small team shaping a softer, place-based archive for campus
@@ -188,9 +191,15 @@ export default async function AboutPage() {
                   className="flex min-h-[220px] flex-col justify-between rounded-[2rem] border-2 border-[#2d2d2d] bg-[#fcf5ef] p-6 shadow-[0_10px_0_0_#2d2d2d]"
                 >
                   <div className="space-y-4">
-                    <span className="inline-flex rounded-full border-2 border-[#2d2d2d] bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-foreground/70">
-                      Team member
-                    </span>
+                    {member.name === 'Kint Louise Borbano' ? (
+                      <span className="inline-flex rounded-full border-2 border-[#2d2d2d] bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-foreground/70">
+                        Team Leader
+                      </span>
+                    ) : (
+                      <span className="inline-flex rounded-full border-2 border-[#2d2d2d] bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-foreground/70">
+                        Team member
+                      </span>
+                    )}
                     <div>
                       <h3 className="text-2xl leading-tight text-foreground">
                         {member.name}
@@ -211,15 +220,51 @@ export default async function AboutPage() {
         <footer className="w-full pb-0">
           <AboutCreatorsMarquee creators={creators} />
 
-          <div className="flex min-h-[200px] items-center justify-center bg-white px-6 py-10 text-center">
-            <p className="max-w-5xl text-base leading-relaxed text-black sm:text-lg">
-              Studio Folly would like to acknowledge the Traditional Aboriginal
-              Owners and Custodians of the stolen land on which the team live
-              and work, and pay our respects to their elders past, present and
-              emerging. As Studio Folly is founded in Naarm, we want to
-              specifically acknowledge the Wurundjeri People of the Kulin
-              Nation. Sovereignty was never ceded. Always was, always will be.
-            </p>
+          <div className="relative flex flex-col items-center justify-center overflow-hidden border-t-2 border-[#2d2d2d] bg-[#fcf5ef] px-6 py-16 text-center">
+            {/* Subtle background pattern */}
+            <div
+              className="absolute inset-0 opacity-[0.04]"
+              style={{
+                backgroundImage:
+                  "url(\"data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%232d2d2d' fill-opacity='1' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='1'/%3E%3C/g%3E%3C/svg%3E\")",
+              }}
+            />
+
+            <div className="relative z-10 mx-auto max-w-4xl space-y-8">
+              <div className="flex items-center justify-center gap-4">
+                <div className="h-[2px] w-12 bg-[#2d2d2d]/10 sm:w-24" />
+                <span className="rounded-full border-2 border-[#2d2d2d] bg-white px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-[#2d2d2d] shadow-[0_2px_0_0_#2d2d2d]">
+                  © 2026 Skolaroid
+                </span>
+                <div className="h-[2px] w-12 bg-[#2d2d2d]/10 sm:w-24" />
+              </div>
+
+              <p className="text-balance text-lg font-medium leading-relaxed text-[#2d2d2d]/80 sm:text-xl sm:leading-loose">
+                This platform is a dedicated project developed by{' '}
+                <span className="font-bold uppercase tracking-wider text-[#2d2d2d] underline decoration-[#f6cb48] decoration-2 underline-offset-4">
+                  Team GOAT
+                </span>
+                , a group of students from the{' '}
+                <span className="font-bold text-[#2d2d2d] underline decoration-[#00c59a] decoration-2 underline-offset-4">
+                  University of the Philippines
+                </span>{' '}
+                to preserve campus legacies.
+              </p>
+
+              <div className="mx-auto h-[2px] w-16 bg-[#2d2d2d]/10" />
+
+              <div className="mx-auto max-w-3xl space-y-3">
+                <p className="text-xs font-semibold uppercase leading-relaxed tracking-widest text-[#2d2d2d]/50">
+                  All rights reserved. No part of this digital archive or its
+                  unique place-based storytelling framework may be reproduced
+                  without explicit permission from the creators.
+                </p>
+                <p className="text-xs font-bold uppercase leading-relaxed tracking-widest text-[#2d2d2d]/60">
+                  Disclaimer: We are not associated with, nor is this an
+                  official UP Cebu website.
+                </p>
+              </div>
+            </div>
           </div>
         </footer>
       </div>
