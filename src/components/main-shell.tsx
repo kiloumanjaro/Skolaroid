@@ -252,8 +252,10 @@ function ShellSidebar({
 
   return (
     <aside
-      className={`flex h-full flex-col overflow-hidden bg-[#fcfaf8] text-foreground transition-all duration-300 ease-in-out ${
-        isOpen ? 'w-64' : 'w-0'
+      className={`absolute left-0 top-0 z-40 flex h-full flex-col overflow-hidden bg-[#fcfaf8] text-foreground transition-all duration-300 ease-in-out sm:relative sm:z-auto ${
+        isOpen
+          ? 'w-52 shadow-[4px_0_12px_rgba(0,0,0,0.12)] sm:w-64 sm:shadow-none'
+          : 'w-0'
       }`}
     >
       <div className="px-4 pb-6 pt-6">
@@ -262,7 +264,7 @@ function ShellSidebar({
             isOpen ? 'max-w-[220px] opacity-100' : 'max-w-0 opacity-0'
           }`}
         >
-          <p className="whitespace-nowrap font-dancing text-4xl font-bold leading-none text-skolaroid-blue">
+          <p className="whitespace-nowrap font-dancing text-3xl font-bold leading-none text-skolaroid-blue sm:text-4xl">
             Skolaroid
           </p>
         </div>
