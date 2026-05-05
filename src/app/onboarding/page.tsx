@@ -226,7 +226,6 @@ function OnboardingContent() {
                   )
                     return;
                   setOnboardError(null);
-                  window.location.href = redirectTo;
                   try {
                     await onboardUser.mutateAsync({
                       firstName,
@@ -236,6 +235,7 @@ function OnboardingContent() {
                       studentId,
                       status,
                     });
+                    window.location.href = redirectTo;
                   } catch (err) {
                     setOnboardError(
                       err instanceof Error
