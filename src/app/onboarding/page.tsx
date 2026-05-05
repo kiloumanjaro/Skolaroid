@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { ChevronRight } from 'lucide-react';
 import { useOnboardUser } from '@/lib/hooks/useOnboardUser';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
@@ -30,7 +30,6 @@ export default function OnboardingPage() {
 }
 
 function OnboardingContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const onboardUser = useOnboardUser();
   const deleteUser = useDeleteUser();
@@ -206,10 +205,9 @@ function OnboardingContent() {
                 onClick={async () => {
                   try {
                     await deleteUser.mutateAsync();
+                    window.location.href = '/';
                   } catch (err) {
                     console.error('Failed to delete user:', err);
-                  } finally {
-                    router.push('/');
                   }
                 }}
                 className="bg-secondary px-4 py-1.5 text-xs font-medium text-foreground transition hover:bg-secondary/80 disabled:opacity-50"
@@ -228,6 +226,7 @@ function OnboardingContent() {
                   )
                     return;
                   setOnboardError(null);
+                  window.location.href = redirectTo;
                   try {
                     await onboardUser.mutateAsync({
                       firstName,
@@ -243,8 +242,6 @@ function OnboardingContent() {
                         ? err.message
                         : 'Something went wrong'
                     );
-                  } finally {
-                    router.push(redirectTo);
                   }
                 }}
                 className={`px-4 py-1.5 text-xs font-medium text-white transition ${
