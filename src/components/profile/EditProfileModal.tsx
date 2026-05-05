@@ -12,6 +12,7 @@ import { useUpdateProfile } from '@/lib/hooks/useUpdateProfile';
 import { updateProfileSchema } from '@/lib/schemas';
 import type { CurrentUserProfile } from '@/lib/hooks/useCurrentUser';
 import type { User } from '@supabase/supabase-js';
+import { profileFlatButtonClass } from '@/components/profile/profile-shell';
 
 interface EditProfileModalProps {
   open: boolean;
@@ -89,7 +90,7 @@ export function EditProfileModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="flex max-h-[90vh] max-w-lg flex-col gap-0 overflow-hidden p-0"
+        className="flex max-h-[90vh] max-w-lg flex-col gap-0 overflow-hidden rounded-none border-2 border-border p-0 shadow-none"
         showCloseButton={false}
         style={{ borderRadius: 0 }}
       >
@@ -106,10 +107,10 @@ export function EditProfileModal({
                   alt="Profile photo"
                   width={96}
                   height={96}
-                  className="h-24 w-24 rounded-full object-cover shadow-[3px_3px_0px_0px_rgba(45,45,45,0.3)]"
+                  className="h-24 w-24 rounded-full border-2 border-border object-cover"
                 />
               ) : (
-                <div className="flex h-24 w-24 items-center justify-center rounded-full border-[3px] border-foreground bg-card text-foreground shadow-[3px_3px_0px_0px_rgba(45,45,45,0.3)]">
+                <div className="flex h-24 w-24 items-center justify-center rounded-full border-[3px] border-foreground bg-card text-foreground">
                   <UserIcon className="h-10 w-10" />
                 </div>
               )}
@@ -275,6 +276,7 @@ export function EditProfileModal({
               type="button"
               disabled={isPending}
               onClick={() => onOpenChange(false)}
+              className={profileFlatButtonClass}
               style={{ borderRadius: 0 }}
             >
               Cancel
@@ -285,6 +287,7 @@ export function EditProfileModal({
               type="button"
               disabled={isPending}
               onClick={handleSubmit}
+              className={profileFlatButtonClass}
               style={{ borderRadius: 0 }}
             >
               {isPending ? 'Saving…' : 'Save'}

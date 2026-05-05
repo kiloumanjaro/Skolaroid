@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { createClient } from '@/lib/supabase/client';
+import { profileFlatButtonClass } from '@/components/profile/profile-shell';
 
 const REDIRECT_DELAY_SECONDS = 4;
 
@@ -81,8 +82,9 @@ export function DeactivateAccountDialog({
     return (
       <Dialog open onOpenChange={() => {}}>
         <DialogContent
-          className="max-w-sm gap-0 overflow-hidden p-0"
+          className="max-w-sm gap-0 overflow-hidden rounded-none border-2 border-border p-0 shadow-none"
           showCloseButton={false}
+          style={{ borderRadius: 0 }}
         >
           <DialogTitle className="sr-only">Account Deactivated</DialogTitle>
 
@@ -111,7 +113,8 @@ export function DeactivateAccountDialog({
             <Button
               variant="outline"
               onClick={signOutAndRedirect}
-              className="mt-4 w-full"
+              className={`${profileFlatButtonClass} mt-4 w-full`}
+              style={{ borderRadius: 0 }}
             >
               Go to Home Now
             </Button>
@@ -125,8 +128,9 @@ export function DeactivateAccountDialog({
   return (
     <Dialog open={open} onOpenChange={(val) => !val && handleClose()}>
       <DialogContent
-        className="max-w-sm gap-0 overflow-hidden p-0"
+        className="max-w-sm gap-0 overflow-hidden rounded-none border-2 border-border p-0 shadow-none"
         showCloseButton={false}
+        style={{ borderRadius: 0 }}
       >
         <DialogTitle className="sr-only">Deactivate Account</DialogTitle>
 
@@ -177,7 +181,8 @@ export function DeactivateAccountDialog({
               variant="outline"
               onClick={handleClose}
               disabled={isDeactivating}
-              className="flex-1"
+              className={`${profileFlatButtonClass} flex-1`}
+              style={{ borderRadius: 0 }}
             >
               Cancel
             </Button>
@@ -186,7 +191,8 @@ export function DeactivateAccountDialog({
               variant="destructive"
               onClick={handleDeactivate}
               disabled={!understood || isDeactivating}
-              className="flex-1"
+              className={`${profileFlatButtonClass} flex-1`}
+              style={{ borderRadius: 0 }}
             >
               {isDeactivating ? (
                 <>

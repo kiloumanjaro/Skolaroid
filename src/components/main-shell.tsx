@@ -15,7 +15,7 @@ import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
 import { cn } from '@/lib/utils';
 
-const shellRoutes = ['/map', '/gallery', '/admin', '/about'];
+const shellRoutes = ['/map', '/gallery', '/profile', '/admin', '/about'];
 
 const navItems = [
   {

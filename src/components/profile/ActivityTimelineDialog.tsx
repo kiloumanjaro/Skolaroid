@@ -66,10 +66,9 @@ function ActivityRow({
   return (
     <button
       onClick={onClick}
-      style={{ borderRadius: '0.5rem' }}
       className={cn(
-        'group flex w-full items-start gap-3 border border-border/40 px-3 py-2',
-        'bg-background text-left transition-colors hover:bg-muted',
+        'group flex w-full items-start gap-3 border-2 border-border px-3 py-3',
+        'bg-background text-left transition-colors hover:bg-[#fffdf5]',
         !item.memoryAvailable && 'opacity-60'
       )}
     >
@@ -130,8 +129,8 @@ export function ActivityTimelineDialog({
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent
-          className="flex max-h-[90vh] max-w-lg flex-col gap-4"
-          style={{ borderRadius: '1rem' }}
+          className="flex max-h-[90vh] max-w-lg flex-col gap-4 rounded-none border-2 border-border shadow-none"
+          style={{ borderRadius: 0 }}
         >
           <DialogHeader>
             <DialogTitle className="font-kalam text-xl">
@@ -147,11 +146,11 @@ export function ActivityTimelineDialog({
                 onClick={() => setActiveFilter(value)}
                 style={{ borderRadius: 0 }}
                 className={cn(
-                  'border-2 border-foreground px-3 py-1 font-hand text-xs capitalize',
-                  'transition-all',
+                  'border-2 border-foreground px-3 py-1 font-hand text-xs uppercase tracking-[0.14em]',
+                  'transition-colors',
                   activeFilter === value
-                    ? 'bg-primary text-primary-foreground shadow-[2px_2px_0px_0px_#2d2d2d]'
-                    : 'bg-background text-foreground shadow-[3px_3px_0px_0px_#2d2d2d] hover:bg-muted'
+                    ? 'bg-[#fff4a8] text-foreground'
+                    : 'bg-background text-foreground hover:bg-[#fffdf5]'
                 )}
               >
                 {label}
@@ -165,7 +164,7 @@ export function ActivityTimelineDialog({
               Array.from({ length: 5 }).map((_, i) => (
                 <div
                   key={i}
-                  className="h-12 animate-pulse rounded-md bg-muted"
+                  className="h-12 animate-pulse border-2 border-border bg-muted/60"
                 />
               ))}
 
@@ -199,8 +198,8 @@ export function ActivityTimelineDialog({
       {/* Memory unavailable dialog */}
       <Dialog open={unavailableOpen} onOpenChange={setUnavailableOpen}>
         <DialogContent
-          className="max-w-sm text-center"
-          style={{ borderRadius: '1rem' }}
+          className="max-w-sm rounded-none border-2 border-border text-center shadow-none"
+          style={{ borderRadius: 0 }}
         >
           <div className="flex flex-col items-center gap-3 py-4">
             <Frown

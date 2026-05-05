@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { ProfilePanel } from '@/components/profile/profile-shell';
 
 interface ProfileBioCardProps {
   bio?: string | null;
@@ -8,23 +8,26 @@ interface ProfileBioCardProps {
 
 export function ProfileBioCard({ bio }: ProfileBioCardProps) {
   return (
-    <Card style={{ borderRadius: '1rem' }}>
-      <CardHeader>
-        <CardTitle className="text-base">About Me</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {bio ? (
-          <p className="whitespace-pre-wrap font-hand text-sm leading-relaxed text-foreground/80">
+    <ProfilePanel
+      eyebrow="Story"
+      title="About Me"
+      description="A quick sketch classmates will see before they open your memories."
+      accentClassName="bg-[#ffd7e5]"
+    >
+      {bio ? (
+        <div className="border-2 border-border bg-[#fffaf0] p-5">
+          <p className="whitespace-pre-wrap font-hand text-base leading-8 text-foreground/85">
             {bio}
           </p>
-        ) : (
-          <div className="rounded-md border border-dashed bg-muted/40 px-4 py-6 text-center">
-            <p className="text-sm italic text-muted-foreground">
-              No bio added yet.
-            </p>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+        </div>
+      ) : (
+        <div className="border-2 border-dashed border-border bg-[#fffaf0] px-5 py-8 text-center">
+          <p className="font-hand text-sm italic text-muted-foreground">
+            No bio added yet. Add a short intro so people can recognize your
+            story.
+          </p>
+        </div>
+      )}
+    </ProfilePanel>
   );
 }
