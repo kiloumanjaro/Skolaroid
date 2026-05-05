@@ -5,12 +5,14 @@ import { GalleryPolaroid } from '../GalleryPolaroid';
 interface DualPhotoProps {
   photos: { src: string; alt: string }[];
   startIndex?: number;
+  interactive?: boolean;
   onPhotoClick?: (index: number) => void;
 }
 
 export function DualPhoto({
   photos,
   startIndex = 0,
+  interactive = true,
   onPhotoClick,
 }: DualPhotoProps) {
   if (photos.length !== 2) {
@@ -44,6 +46,7 @@ export function DualPhoto({
           offsetX="-20px"
           offsetY="20px"
           zIndex={1}
+          interactive={interactive}
           onClick={() => onPhotoClick?.(0)}
         />
         <GalleryPolaroid
@@ -53,6 +56,7 @@ export function DualPhoto({
           offsetX="310px"
           offsetY="0px"
           zIndex={2}
+          interactive={interactive}
           onClick={() => onPhotoClick?.(1)}
         />
       </div>

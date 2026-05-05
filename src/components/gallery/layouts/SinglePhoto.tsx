@@ -5,12 +5,14 @@ import { GalleryPolaroid } from '../GalleryPolaroid';
 interface SinglePhotoProps {
   photo: { src: string; alt: string };
   startIndex?: number;
+  interactive?: boolean;
   onPhotoClick?: () => void;
 }
 
 export function SinglePhoto({
   photo,
   startIndex = 0,
+  interactive = true,
   onPhotoClick,
 }: SinglePhotoProps) {
   return (
@@ -26,6 +28,7 @@ export function SinglePhoto({
         alt={photo.alt}
         index={startIndex}
         zIndex={1}
+        interactive={interactive}
         onClick={onPhotoClick}
       />
     </div>
