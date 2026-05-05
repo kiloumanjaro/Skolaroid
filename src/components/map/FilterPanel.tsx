@@ -23,9 +23,6 @@ interface FilterPanelProps {
   availableLocations: LocationFilterOption[];
 }
 
-/** Distance from the bottom of the viewport when the panel is open. */
-const OPEN_BOTTOM_GAP = '3rem';
-
 /** Max options shown in the Year, Group, and Location dropdowns. */
 const MAX_DROPDOWN_OPTIONS = 5;
 
@@ -70,14 +67,14 @@ export function FilterPanel({
     <div
       className={cn(
         'pointer-events-none absolute left-1/2 z-20 flex w-fit -translate-x-1/2 justify-center transition-[bottom,transform] duration-300 ease-out',
-        open && 'pointer-events-auto'
+        open && 'pointer-events-auto',
+        open ? 'bottom-[5.5rem] sm:bottom-12' : 'bottom-0'
       )}
-      style={{ bottom: open ? OPEN_BOTTOM_GAP : 0 }}
     >
       <section
         aria-label="Memory filters"
         className={cn(
-          'pointer-events-auto relative flex max-h-[calc(100vh-4rem)] w-[calc(100vw-1rem)] max-w-none flex-col border-2 border-[#1f1f1f] bg-background p-0 shadow-none transition-transform duration-300 ease-out md:max-h-[85vh] md:w-[70vw]',
+          'pointer-events-auto relative flex max-h-[calc(100dvh-11.5rem)] w-[calc(100vw-2.5rem)] max-w-none flex-col border-2 border-[#1f1f1f] bg-background p-0 shadow-none transition-transform duration-300 ease-out sm:max-h-[calc(100vh-4rem)] md:max-h-[85vh] md:w-[70vw]',
           open ? 'translate-y-0' : 'translate-y-full'
         )}
       >
@@ -85,7 +82,10 @@ export function FilterPanel({
           type="button"
           aria-label={open ? 'Close filters' : 'Open filters'}
           onClick={() => onOpenChange(!open)}
-          className="pointer-events-auto absolute -top-[4.5rem] left-4 flex h-[4.5rem] w-10 flex-col items-center justify-start gap-1 border-2 border-b-0 border-[#1f1f1f] bg-[#f6cb48] pt-2 text-black transition-transform duration-200 ease-out"
+          className={cn(
+            'pointer-events-auto absolute -top-[4.5rem] left-4 h-[4.5rem] w-10 flex-col items-center justify-start gap-1 border-2 border-b-0 border-[#1f1f1f] bg-[#f6cb48] pt-2 text-black transition-transform duration-200 ease-out',
+            open ? 'hidden sm:flex' : 'flex'
+          )}
         >
           <Filter className="h-3 w-3 stroke-[2.5]" aria-hidden />
         </button>
@@ -119,7 +119,7 @@ export function FilterPanel({
           </div>
         </div>
 
-        <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto px-4 py-4">
+        <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 py-3 sm:gap-5 sm:py-4">
           <FilterSection label="Search">
             <div className="flex gap-2">
               <Input

@@ -252,17 +252,17 @@ function ShellSidebar({
 
   return (
     <aside
-      className={`flex h-full flex-col overflow-hidden bg-[#fcfaf8] text-foreground transition-all duration-300 ease-in-out ${
-        isOpen ? 'w-64' : 'w-0'
+      className={`relative z-40 flex h-full flex-col overflow-hidden bg-white text-foreground transition-all duration-300 ease-in-out ${
+        isOpen ? 'w-52 sm:w-64' : 'w-0'
       }`}
     >
-      <div className="px-4 pb-6 pt-6">
+      <div className="flex items-center px-4 pb-6 pt-6">
         <div
           className={`flex justify-center overflow-hidden transition-all duration-300 ease-in-out ${
             isOpen ? 'max-w-[220px] opacity-100' : 'max-w-0 opacity-0'
           }`}
         >
-          <p className="whitespace-nowrap font-dancing text-4xl font-bold leading-none text-skolaroid-blue">
+          <p className="whitespace-nowrap font-dancing text-3xl font-bold leading-none text-skolaroid-blue sm:text-4xl">
             Skolaroid
           </p>
         </div>
@@ -582,23 +582,33 @@ export function MainShell({ children }: { children: ReactNode }) {
               }}
             />
 
-            <div className="flex min-w-0 flex-1 flex-col p-3">
-              <div className="relative min-h-0 min-w-0 flex-1 overflow-hidden border-[3px] border-[#fcfaf8] bg-[#fcfaf8]">
+            <div
+              className={`flex min-w-0 flex-1 flex-col p-3 transition-[padding] duration-300 ease-in-out ${
+                sidebarOpen ? 'pl-0' : 'pl-3'
+              }`}
+            >
+              <div
+                className={`relative min-h-0 min-w-0 flex-1 overflow-hidden bg-[#fcfaf8] ${
+                  sidebarOpen
+                    ? 'border-b-[3px] border-r-[3px] border-t-[3px] border-[#fcfaf8]'
+                    : 'border-[3px] border-[#fcfaf8]'
+                }`}
+              >
                 <div className="relative h-full w-full overflow-hidden border-[3px] border-black bg-white">
                   {pathname !== '/about' && pathname !== '/admin' && (
                     <button
                       type="button"
                       onClick={() => setSidebarOpen((prev) => !prev)}
-                      className="group absolute left-4 top-12 z-30 h-14 w-14 overflow-hidden border-[3px] border-border transition-colors sm:left-6 sm:top-14"
+                      className="group absolute left-4 top-12 z-30 h-10 w-10 overflow-hidden border-2 border-border transition-colors sm:left-6 sm:top-14 sm:h-14 sm:w-14 sm:border-[3px]"
                       aria-label={
                         sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'
                       }
                     >
                       <div className="absolute inset-0 bg-card transition-all group-hover:bg-[#f6cb48] group-active:bg-[#f6cb48]" />
                       <span className="relative flex h-full w-full flex-col items-center justify-center gap-1.5 text-foreground">
-                        <span className="block h-0.5 w-6 rounded-full bg-current" />
-                        <span className="block h-0.5 w-6 rounded-full bg-current" />
-                        <span className="block h-0.5 w-6 rounded-full bg-current" />
+                        <span className="block h-0.5 w-5 rounded-full bg-current sm:w-6" />
+                        <span className="block h-0.5 w-5 rounded-full bg-current sm:w-6" />
+                        <span className="block h-0.5 w-5 rounded-full bg-current sm:w-6" />
                       </span>
                     </button>
                   )}

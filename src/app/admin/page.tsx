@@ -1252,7 +1252,7 @@ export default function AdminPage() {
           <div className="absolute left-4 top-12 z-20 sm:left-6 sm:top-14">
             <div className="flex items-center gap-6">
               <ShellInlineSidebarToggle />
-              <div className="font-dancing text-5xl text-black">
+              <div className="truncate font-dancing text-3xl text-black sm:text-4xl md:text-5xl">
                 Admin Dashboard
               </div>
             </div>
@@ -1262,15 +1262,15 @@ export default function AdminPage() {
 
           <div className="px-8 pb-8 pt-24">
             {/* Top Bar */}
-            <div className="mb-6 flex items-center justify-between gap-4">
+            <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+              {/* Tabs — scrollable on mobile so nothing is clipped */}
               <div className="flex items-center gap-6">
-                {/* Tabs */}
-                <div className="flex flex-wrap gap-4 sm:gap-6">
+                <div className="scrollbar-hide flex gap-4 overflow-x-auto sm:flex-wrap sm:gap-6">
                   {tabs.map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setCurrentTab(tab)}
-                      className={`text-sm font-medium transition-colors ${
+                      className={`shrink-0 text-sm font-medium transition-colors ${
                         currentTab === tab
                           ? 'text-foreground'
                           : 'text-muted-foreground hover:text-foreground'
@@ -1282,9 +1282,9 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Search & Filter */}
-              <div className="flex flex-wrap items-center justify-end gap-3">
-                <div className="relative">
+              {/* Search & Filter — full width on mobile */}
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="relative flex-1 sm:flex-none">
                   <Search
                     size={16}
                     className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
@@ -1294,7 +1294,7 @@ export default function AdminPage() {
                     placeholder={searchPlaceholder}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-72 border-2 border-border bg-card py-2 pl-9 pr-4 text-sm placeholder-muted-foreground focus:border-skolaroid-blue focus:outline-none sm:w-80"
+                    className="w-full border-2 border-border bg-card py-2 pl-9 pr-4 text-sm placeholder-muted-foreground focus:border-skolaroid-blue focus:outline-none sm:w-72 md:w-80"
                   />
                 </div>
                 {showPostFilter && (
