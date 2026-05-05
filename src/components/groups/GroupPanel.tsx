@@ -324,14 +324,16 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
       <div
         className={cn(
           'pointer-events-none absolute left-1/2 z-20 flex w-[calc(100%-1.5rem)] -translate-x-1/2 justify-center transition-[top,bottom,transform] duration-300 ease-out sm:w-[calc(100%-2.5rem)]',
-          open ? 'top-[47%] -translate-y-1/2' : 'bottom-0',
+          open
+            ? 'bottom-[5.5rem] sm:bottom-auto sm:top-[47%] sm:-translate-y-1/2'
+            : 'bottom-0',
           open && 'pointer-events-auto'
         )}
       >
         <section
           aria-label={selectedGroup?.name ?? 'Groups'}
           className={cn(
-            'pointer-events-auto flex h-[calc(100vh-1rem)] w-[calc(100vw-1rem)] max-w-none flex-col overflow-hidden rounded-none border-2 border-[#1f1f1f] bg-background p-0 shadow-none transition-transform duration-300 ease-out md:h-[85vh] md:w-[70vw]',
+            'pointer-events-auto flex h-[calc(100vh-1rem)] max-h-[calc(100dvh-11.5rem)] w-[calc(100vw-1rem)] max-w-none flex-col overflow-hidden rounded-none border-2 border-[#1f1f1f] bg-background p-0 shadow-none transition-transform duration-300 ease-out sm:max-h-none md:h-[85vh] md:w-[70vw]',
             open ? 'translate-y-0' : 'translate-y-[calc(100%-2.75rem)]'
           )}
         >

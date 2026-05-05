@@ -25,13 +25,13 @@ export function EraSelector({ activeEra, onEraSelect }: EraSelectorProps) {
   const label = activeEra ? `${activeEra}s` : '2020s';
 
   return (
-    <div className="absolute bottom-10 right-[5.5rem] z-30 sm:bottom-14 sm:right-24">
+    <div className="absolute bottom-10 right-[4.5rem] z-30 sm:bottom-14 sm:right-24">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
             type="button"
             aria-label={`Current era: ${label}. Click to change.`}
-            className="group relative flex h-14 items-center gap-1.5 overflow-hidden border-[3px] border-border px-3 transition-all hover:translate-x-[2px] hover:translate-y-[2px] active:translate-x-[4px] active:translate-y-[4px]"
+            className="group relative flex h-10 items-center gap-1 overflow-hidden border-2 border-border px-2 transition-all hover:translate-x-[2px] hover:translate-y-[2px] active:translate-x-[4px] active:translate-y-[4px] sm:h-14 sm:gap-1.5 sm:border-[3px] sm:px-3"
           >
             <div className="absolute inset-0 bg-card transition-all group-hover:bg-[#f6cb48] group-active:bg-[#f6cb48] group-data-[state=open]:bg-[#f6cb48]" />
             <span className="relative flex items-center gap-1.5">
@@ -40,12 +40,12 @@ export function EraSelector({ activeEra, onEraSelect }: EraSelectorProps) {
                 src="/oblation_icon.svg"
                 alt=""
                 aria-hidden="true"
-                className="h-6 w-auto shrink-0"
+                className="h-4 w-auto shrink-0 sm:h-6"
               />
-              <span className="font-hand text-sm font-semibold text-foreground">
+              <span className="font-hand text-xs font-semibold text-foreground sm:text-sm">
                 {label}
               </span>
-              <ChevronDown className="h-4 w-4 shrink-0 text-foreground" />
+              <ChevronDown className="h-3 w-3 shrink-0 text-foreground sm:h-4 sm:w-4" />
             </span>
           </button>
         </DropdownMenuTrigger>
