@@ -59,6 +59,20 @@
 }
 
 @layer utilities {
+  @keyframes announcement-marquee {
+    from {
+      transform: translateX(-50%);
+    }
+    to {
+      transform: translateX(0%);
+    }
+  }
+
+  .announcement-marquee {
+    animation: announcement-marquee 18s linear infinite;
+    will-change: transform;
+  }
+
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }

@@ -1,7 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
-import { motion, useAnimationControls } from 'framer-motion';
 import { useAnyPanelOpen } from '@/components/main-shell-sidebar-action';
 
 interface AdminAnnouncementStripProps {
@@ -11,31 +9,13 @@ interface AdminAnnouncementStripProps {
 export function AdminAnnouncementStrip({
   announcements,
 }: AdminAnnouncementStripProps) {
-  const controls = useAnimationControls();
   const paused = useAnyPanelOpen();
-
-  useEffect(() => {
-    if (paused) {
-      controls.stop();
-      return;
-    }
-
-    void controls.start({
-      x: ['-50%', '0%'],
-      transition: {
-        duration: 18,
-        ease: 'linear',
-        repeat: Infinity,
-        repeatType: 'loop',
-      },
-    });
-  }, [controls, paused]);
 
   return (
     <div className="overflow-hidden border-b-2 border-black bg-[#ffd9b8]">
-      <motion.div
-        className="flex w-max"
-        animate={controls}
+      <div
+        className="announcement-marquee flex w-max"
+        style={{ animationPlayState: paused ? 'paused' : 'running' }}
         aria-label="Admin announcements"
       >
         {[0, 1].map((group) => (
@@ -55,7 +35,7 @@ export function AdminAnnouncementStrip({
             ))}
           </div>
         ))}
-      </motion.div>
+      </div>
     </div>
   );
 }
