@@ -33,7 +33,6 @@ interface MembersTabProps {
   onMembersChanged?: (
     action: 'removed' | 'role-updated' | 'ownership-transferred'
   ) => void;
-  onRequestModalOpen?: () => void;
 }
 
 type RoleFilterType = 'ALL' | GroupMemberRole;
@@ -45,7 +44,6 @@ export function MembersTab({
   currentUserId,
   groupId,
   onMembersChanged,
-  onRequestModalOpen,
 }: MembersTabProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState<RoleFilterType>('ALL');
@@ -194,7 +192,7 @@ export function MembersTab({
     <>
       <div className="flex flex-col bg-[#f8f4ea]">
         {/* Search and Filter Controls */}
-        <div className="bg-[#fffdf8] px-3 pt-3">
+        <div className="bg-[#fffdf8] px-2 pt-2 sm:px-3 sm:pt-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <input
@@ -215,7 +213,7 @@ export function MembersTab({
             )}
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 py-3">
+          <div className="flex flex-wrap items-center gap-2 py-2 sm:py-3">
             <div className="flex flex-wrap gap-2">
               {(['ALL', 'OWNER', 'ADMIN', 'MEMBER'] as const).map((role) => (
                 <button
@@ -238,21 +236,21 @@ export function MembersTab({
         </div>
 
         {/* Members Table */}
-        <div className="flex-1 overflow-x-auto bg-[#fffdf8] px-3 pt-1">
+        <div className="flex-1 overflow-x-auto bg-[#fffdf8] px-2 pt-1 sm:px-3">
           {filteredMembers.length > 0 ? (
-            <table className="w-full border-2 border-black">
+            <table className="w-full table-fixed border-2 border-black sm:table-auto">
               <thead>
                 <tr className="border-b-2 border-black bg-[#4384dc] text-left">
-                  <th className="px-5 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-white">
+                  <th className="w-1/2 px-2 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white sm:w-auto sm:px-5 sm:py-3">
                     Member
                   </th>
-                  <th className="px-3 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-white">
+                  <th className="w-[28%] px-2 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white sm:w-auto sm:px-3 sm:py-3">
                     Role
                   </th>
                   <th className="hidden px-3 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-white md:table-cell">
                     Joined
                   </th>
-                  <th className="px-3 py-3 text-right text-xs font-semibold uppercase tracking-[0.12em] text-white">
+                  <th className="w-[22%] px-2 py-2 text-right text-xs font-semibold uppercase tracking-[0.12em] text-white sm:w-auto sm:px-3 sm:py-3">
                     Actions
                   </th>
                 </tr>
@@ -276,9 +274,9 @@ export function MembersTab({
                       className="border-b-2 border-black transition-colors hover:bg-[#fff1bf]"
                     >
                       {/* Member info */}
-                      <td className="px-5 py-3">
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-8 w-8 border-2 border-black bg-white">
+                      <td className="px-2 py-2 sm:px-5 sm:py-3">
+                        <div className="flex items-center gap-1.5 sm:gap-3">
+                          <Avatar className="h-7 w-7 shrink-0 border-2 border-black bg-white sm:h-8 sm:w-8">
                             {member.avatarUrl ? (
                               <AvatarImage
                                 src={member.avatarUrl}
@@ -306,7 +304,7 @@ export function MembersTab({
                       </td>
 
                       {/* Role */}
-                      <td className="space-y-1 px-3 py-3">
+                      <td className="space-y-1 px-2 py-2 sm:px-3 sm:py-3">
                         {getRoleBadge(member.role)}
                         {canEditRole && (
                           <div className="flex items-center gap-1">
@@ -362,18 +360,15 @@ export function MembersTab({
                       </td>
 
                       {/* Actions */}
-                      <td className="px-3 py-3 text-right">
+                      <td className="px-2 py-2 text-right sm:px-3 sm:py-3">
                         <div className="flex items-center justify-end gap-1">
                           {canTransferOwnership && (
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8 border-2 border-black bg-white hover:bg-[#f6cb48]"
+                              className="h-7 w-7 border-2 border-black bg-white hover:bg-[#f6cb48] sm:h-8 sm:w-8"
                               disabled={transferOwnership.isPending}
-                              onClick={() => {
-                                onRequestModalOpen?.();
-                                setMemberToTransfer(member);
-                              }}
+                              onClick={() => setMemberToTransfer(member)}
                               title="Transfer ownership"
                             >
                               <Crown className="h-3.5 w-3.5 text-black" />
@@ -382,11 +377,8 @@ export function MembersTab({
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 border-2 border-black bg-white hover:bg-[#dbe8ff]"
-                            onClick={() => {
-                              onRequestModalOpen?.();
-                              setMemberToView(member);
-                            }}
+                            className="h-7 w-7 border-2 border-black bg-white hover:bg-[#dbe8ff] sm:h-8 sm:w-8"
+                            onClick={() => setMemberToView(member)}
                             title="View details"
                           >
                             <Eye className="h-3.5 w-3.5 text-black" />
@@ -395,11 +387,8 @@ export function MembersTab({
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8 border-2 border-black bg-white text-[#7a1111] hover:bg-[#f7d6d5] hover:text-[#7a1111]"
-                              onClick={() => {
-                                onRequestModalOpen?.();
-                                setMemberToRemove(member);
-                              }}
+                              className="h-7 w-7 border-2 border-black bg-white text-[#7a1111] hover:bg-[#f7d6d5] hover:text-[#7a1111] sm:h-8 sm:w-8"
+                              onClick={() => setMemberToRemove(member)}
                               title="Remove member"
                             >
                               <UserMinus className="h-3.5 w-3.5" />

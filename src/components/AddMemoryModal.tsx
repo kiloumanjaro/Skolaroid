@@ -1377,7 +1377,7 @@ export function AddMemoryModal({
                         type="button"
                         onClick={() => handleTabClick(tab)}
                         disabled={!isAccessible}
-                        className={`flex shrink-0 appearance-none items-center gap-2 whitespace-nowrap border-0 px-4 py-3 text-left text-sm font-medium transition-colors md:w-full ${
+                        className={`flex shrink-0 appearance-none items-center gap-1 border-0 px-2 py-2 text-left text-xs font-medium transition-colors sm:gap-2 sm:px-4 sm:py-3 sm:text-sm md:w-full ${
                           isActive
                             ? `${activeTabBorderClassName} bg-[#f6cb48] text-black md:border-b-2 md:border-t-2 md:border-black`
                             : isAccessible
@@ -1390,7 +1390,7 @@ export function AddMemoryModal({
                             : undefined
                         }
                       >
-                        <Icon className="h-4 w-4" />
+                        <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                         {meta.label}
                       </button>
                     );

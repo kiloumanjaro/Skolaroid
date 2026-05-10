@@ -17,7 +17,8 @@ export function AboutHero({ users, memoryUploads }: AboutHeroProps) {
             memories
           </h1>
 
-          <div className="grid grid-cols-[1fr_auto_1fr] items-start gap-4 self-center text-left">
+          {/* Desktop stats — hidden on mobile, shown lg+ in original position */}
+          <div className="hidden grid-cols-[1fr_auto_1fr] items-start gap-4 self-center text-left lg:grid">
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-foreground/60">
                 Users
@@ -48,6 +49,31 @@ export function AboutHero({ users, memoryUploads }: AboutHeroProps) {
             Polaroids
           </span>
         </p>
+
+        {/* Mobile stats — shown below "in digital Polaroids" on mobile, hidden lg+ */}
+        <div className="mt-14 grid grid-cols-[1fr_auto_1fr] items-start gap-4 self-center text-left lg:hidden">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-foreground/60">
+              Users
+            </p>
+            <p className="mt-3 text-3xl font-semibold leading-none text-foreground sm:text-4xl">
+              {users.toLocaleString()}
+            </p>
+          </div>
+
+          <div className="self-center text-2xl leading-none text-foreground/40">
+            |
+          </div>
+
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-foreground/60">
+              Uploads
+            </p>
+            <p className="mt-3 text-3xl font-semibold leading-none text-foreground sm:text-4xl">
+              {memoryUploads.toLocaleString()}
+            </p>
+          </div>
+        </div>
       </div>
 
       <Link
