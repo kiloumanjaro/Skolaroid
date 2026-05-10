@@ -15,13 +15,14 @@ import {
 } from '@/lib/schemas';
 import { LANDMARKS, type Landmark } from '@/lib/constants/landmarks';
 import {
-  LANDMARK_TYPE_COLORS,
   LANDMARK_TYPE_LABELS,
+  LANDMARK_TYPE_TEXT_COLORS,
 } from '@/lib/constants/landmarks';
 import type { MapLocationSelection } from '@/lib/types/map';
 import {
   ArrowLeft,
   ArrowRight,
+  Building2,
   Check,
   CheckCircle,
   Eye,
@@ -36,6 +37,7 @@ import {
   MapPinned,
   Search,
   Shield,
+  Trees,
   Type,
   Upload,
   Users,
@@ -126,6 +128,12 @@ const VISIBILITY_OPTIONS: {
     requiresGroup: true,
   },
 ];
+
+const LANDMARK_TYPE_ICONS = {
+  buildings: Building2,
+  activity: Trees,
+  security: Shield,
+} as const;
 
 // =============================================================================
 // HELPERS
@@ -685,11 +693,11 @@ export function AddMemoryModal({
       </div>
 
       {/* Landmark list */}
-      <div className="flex flex-col gap-1">
+      <div className="flex min-h-0 flex-1 flex-col gap-1">
         <div className="flex items-center justify-between">
           <p className="text-xs font-medium text-muted-foreground"></p>
         </div>
-        <div className="-mr-2 max-h-44 overflow-y-auto pr-2">
+        <div className="-mr-2 flex-1 overflow-y-auto pr-2">
           {filteredLandmarks.length === 0 ? (
             <p className="py-4 text-center text-sm text-muted-foreground">
               No landmarks found
@@ -708,9 +716,14 @@ export function AddMemoryModal({
                       : 'text-foreground hover:bg-secondary'
                   }`}
                 >
-                  <span
-                    className={`h-2 w-2 shrink-0 rounded-full ${LANDMARK_TYPE_COLORS[landmark.type]}`}
-                  />
+                  {(() => {
+                    const Icon = LANDMARK_TYPE_ICONS[landmark.type];
+                    return (
+                      <Icon
+                        className={`h-3.5 w-3.5 shrink-0 ${LANDMARK_TYPE_TEXT_COLORS[landmark.type]}`}
+                      />
+                    );
+                  })()}
                   <span className="flex-1 truncate">{landmark.name}</span>
                   <span className="text-xs text-muted-foreground">
                     {LANDMARK_TYPE_LABELS[landmark.type]}
