@@ -840,6 +840,15 @@ export function AddMemoryModal({
         }}
       />
 
+      {/* Empty-state label — removed entirely once files are uploaded */}
+      {completedFiles.length === 0 && (
+        <div className="flex flex-1 items-center justify-center">
+          <p className="text-sm font-medium text-muted-foreground/60">
+            Uploaded memories will appear here
+          </p>
+        </div>
+      )}
+
       {/* Upload progress for files currently uploading */}
       {uploadingFiles.some((f) => f.status === 'uploading') && (
         <div className="space-y-2">
