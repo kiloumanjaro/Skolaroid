@@ -29,6 +29,7 @@ import {
   FileText,
   Globe,
   Grid3X3,
+  Languages,
   Info,
   List,
   Loader2,
@@ -1115,11 +1116,10 @@ export function AddMemoryModal({
         {/* Live */}
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-3">
-            <FileText className="mt-0.5 h-5 w-5 text-foreground" />
+            <FileText className="mt-0.5 h-5 w-5 text-muted-foreground" />
             <div>
-              <p className="text-sm font-semibold text-foreground">Live</p>
-              <p className="text-xs text-muted-foreground">
-                2 Months Ago by user
+              <p className="text-sm font-semibold text-muted-foreground">
+                Not uploaded yet
               </p>
             </div>
           </div>
@@ -1134,39 +1134,29 @@ export function AddMemoryModal({
                 Moderation
               </p>
               <p className="text-xs text-muted-foreground">
-                Approved 7 days ago by Kint Borbano
+                {visibility === 'PUBLIC'
+                  ? 'Needs approval'
+                  : 'Does not need approval'}
               </p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={() => {
-              // TODO: Implement view details
-              console.log('[AddMemoryModal] view details clicked');
-            }}
-            className="text-sm font-medium text-skolaroid-blue hover:underline"
-          >
-            View Details
-          </button>
         </div>
 
         {/* English */}
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-3">
-            <Globe className="mt-0.5 h-5 w-5 text-foreground" />
+            <Languages className="mt-0.5 h-5 w-5 text-foreground" />
             <div>
               <p className="text-sm font-semibold text-foreground">English</p>
             </div>
           </div>
           <button
+            // TODO: Implement switch language functionality
             type="button"
-            onClick={() => {
-              // TODO: Implement switch locales
-              console.log('[AddMemoryModal] switch locales clicked');
-            }}
-            className="text-sm font-medium text-skolaroid-blue hover:underline"
+            disabled
+            className="cursor-not-allowed text-sm font-medium text-muted-foreground opacity-50"
           >
-            Switch locales
+            Switch languages
           </button>
         </div>
 
