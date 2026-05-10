@@ -16,7 +16,7 @@ import {
 } from '@/lib/hooks/useUserActivity';
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 
-interface ActivityTimelineDialogProps {
+interface ActivityTimelineModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   userId: string | undefined;
@@ -100,12 +100,12 @@ function ActivityRow({
   );
 }
 
-export function ActivityTimelineDialog({
+export function ActivityTimelineModal({
   open,
   onOpenChange,
   userId,
   onMemorySelect,
-}: ActivityTimelineDialogProps) {
+}: ActivityTimelineModalProps) {
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
   const [unavailableOpen, setUnavailableOpen] = useState(false);
 

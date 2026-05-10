@@ -7,10 +7,10 @@ import { useOnboardUser } from '@/lib/hooks/useOnboardUser';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
 import { useDeleteUser } from '@/lib/hooks/useDeleteUser';
 import { Header } from '@/components/header';
-import { BatchSelectorModal } from '@/components/onboarding/batch-selector-modal';
-import { CourseSelectorModal } from '@/components/onboarding/course-selector-modal';
-import { NameInputModal } from '@/components/onboarding/name-input-modal';
-import { StudentInfoModal } from '@/components/onboarding/student-info-modal';
+import { BatchSelectorModal } from '@/components/onboarding/BatchSelectorModal';
+import { CourseSelectorModal } from '@/components/onboarding/CourseSelectorModal';
+import { NameInputModal } from '@/components/onboarding/NameInputModal';
+import { StudentInfoModal } from '@/components/onboarding/StudentInfoModal';
 
 interface OnboardingStep {
   id: string;

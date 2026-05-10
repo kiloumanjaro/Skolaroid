@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { UserMinus } from 'lucide-react';
 
-interface RemoveMemberDialogProps {
+interface RemoveMemberModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   memberName: string;
@@ -12,13 +12,13 @@ interface RemoveMemberDialogProps {
   onConfirm: () => void;
 }
 
-export function RemoveMemberDialog({
+export function RemoveMemberModal({
   open,
   onOpenChange,
   memberName,
   isLoading,
   onConfirm,
-}: RemoveMemberDialogProps) {
+}: RemoveMemberModalProps) {
   const handleClose = () => {
     if (!isLoading) onOpenChange(false);
   };

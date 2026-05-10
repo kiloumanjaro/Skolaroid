@@ -11,7 +11,7 @@ import { ProfileActivityCard } from '@/components/profile/ProfileActivityCard';
 import { ProfileSettingsCard } from '@/components/profile/ProfileSettingsCard';
 import { ProfileMemoriesCard } from '@/components/profile/ProfileMemoriesCard';
 import { EditProfileModal } from '@/components/profile/EditProfileModal';
-import { ActivityTimelineDialog } from '@/components/profile/ActivityTimelineDialog';
+import { ActivityTimelineModal } from '@/components/profile/ActivityTimelineModal';
 import { ProfilePageSkeleton } from '@/components/profile/ProfilePageSkeleton';
 import { MemoryDetailModal } from '@/components/map/MemoryDetailModal';
 import { ProfileAnnouncementStrip } from '@/components/announcement-strips/ProfileAnnouncementStrip';
@@ -87,7 +87,7 @@ export default function ProfilePage() {
         dbUser={dbUser}
         authUser={user}
       />
-      <ActivityTimelineDialog
+      <ActivityTimelineModal
         open={activityOpen}
         onOpenChange={setActivityOpen}
         userId={dbUser?.id}

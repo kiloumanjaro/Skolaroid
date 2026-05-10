@@ -8,5 +8,5 @@ export * from './DeleteGroupModal';
 export * from './InviteMembersModal';
 export * from './ShareGroupModal';
 export * from './LeaveGroupModal';
-export * from './RemoveMemberDialog';
+export * from './RemoveMemberModal';
 export * from './GroupToast';

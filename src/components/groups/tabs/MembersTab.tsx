@@ -5,7 +5,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { RemoveMemberDialog } from '@/components/groups/RemoveMemberDialog';
+import { RemoveMemberModal } from '@/components/groups/RemoveMemberModal';
 import {
   useRemoveGroupMember,
   useTransferGroupOwnership,
@@ -33,6 +33,7 @@ interface MembersTabProps {
   onMembersChanged?: (
     action: 'removed' | 'role-updated' | 'ownership-transferred'
   ) => void;
+  onRequestModalOpen?: () => void;
 }
 
 type RoleFilterType = 'ALL' | GroupMemberRole;
@@ -44,6 +45,7 @@ export function MembersTab({
   currentUserId,
   groupId,
   onMembersChanged,
+  onRequestModalOpen,
 }: MembersTabProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState<RoleFilterType>('ALL');
@@ -368,7 +370,10 @@ export function MembersTab({
                               size="icon"
                               className="h-8 w-8 border-2 border-black bg-white hover:bg-[#f6cb48]"
                               disabled={transferOwnership.isPending}
-                              onClick={() => setMemberToTransfer(member)}
+                              onClick={() => {
+                                onRequestModalOpen?.();
+                                setMemberToTransfer(member);
+                              }}
                               title="Transfer ownership"
                             >
                               <Crown className="h-3.5 w-3.5 text-black" />
@@ -378,7 +383,10 @@ export function MembersTab({
                             variant="ghost"
                             size="icon"
                             className="h-8 w-8 border-2 border-black bg-white hover:bg-[#dbe8ff]"
-                            onClick={() => setMemberToView(member)}
+                            onClick={() => {
+                              onRequestModalOpen?.();
+                              setMemberToView(member);
+                            }}
                             title="View details"
                           >
                             <Eye className="h-3.5 w-3.5 text-black" />
@@ -388,7 +396,10 @@ export function MembersTab({
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8 border-2 border-black bg-white text-[#7a1111] hover:bg-[#f7d6d5] hover:text-[#7a1111]"
-                              onClick={() => setMemberToRemove(member)}
+                              onClick={() => {
+                                onRequestModalOpen?.();
+                                setMemberToRemove(member);
+                              }}
                               title="Remove member"
                             >
                               <UserMinus className="h-3.5 w-3.5" />
@@ -420,7 +431,7 @@ export function MembersTab({
       </div>
 
       {/* Remove Member Confirmation */}
-      <RemoveMemberDialog
+      <RemoveMemberModal
         open={!!memberToRemove}
         onOpenChange={(open) => {
           if (!open) setMemberToRemove(null);
@@ -507,7 +518,10 @@ export function MembersTab({
                         variant="secondary"
                         className="w-full border-2 border-black bg-[#f6cb48] font-semibold text-black hover:bg-[#e5ba2d]"
                         disabled={transferOwnership.isPending}
-                        onClick={() => setMemberToTransfer(memberToView)}
+                        onClick={() => {
+                          setMemberToView(null);
+                          setMemberToTransfer(memberToView);
+                        }}
                       >
                         <Crown className="mr-2 h-4 w-4" />
                         Transfer Ownership

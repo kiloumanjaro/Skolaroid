@@ -12,7 +12,14 @@ import {
   Trash2,
   XCircle,
 } from 'lucide-react';
-import { Suspense, useEffect, useMemo, useState, type ReactNode } from 'react';
+import {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react';
 import { LoginForm } from '@/components/login-form';
 import {
   MainShellChromeProvider,
@@ -686,16 +693,40 @@ export function MainShell({ children }: { children: ReactNode }) {
   const [sidebarAction, setSidebarAction] =
     useState<MainShellSidebarAction | null>(null);
   const [loginOpen, setLoginOpen] = useState(false);
+  const [openPanelCount, setOpenPanelCount] = useState(0);
   const [pendingNavigation, setPendingNavigation] = useState<string | null>(
     null
   );
   const sidebarActionContextValue = useMemo(() => ({ setSidebarAction }), []);
+  const toggleSidebar = useCallback(() => {
+    setSidebarOpen((prev) => !prev);
+  }, []);
+  const closeSidebar = useCallback(() => {
+    setSidebarOpen(false);
+  }, []);
+  const registerOpenPanel = useCallback(() => {
+    setOpenPanelCount((count) => count + 1);
+  }, []);
+  const unregisterOpenPanel = useCallback(() => {
+    setOpenPanelCount((count) => Math.max(0, count - 1));
+  }, []);
   const shellChromeContextValue = useMemo(
     () => ({
       sidebarOpen,
-      toggleSidebar: () => setSidebarOpen((prev) => !prev),
+      toggleSidebar,
+      closeSidebar,
+      openPanelCount,
+      registerOpenPanel,
+      unregisterOpenPanel,
     }),
-    [sidebarOpen]
+    [
+      closeSidebar,
+      openPanelCount,
+      registerOpenPanel,
+      sidebarOpen,
+      toggleSidebar,
+      unregisterOpenPanel,
+    ]
   );
   const userAvatar =
     user?.user_metadata?.avatar_url ?? user?.user_metadata?.picture ?? null;

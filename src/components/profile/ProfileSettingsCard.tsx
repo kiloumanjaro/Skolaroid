@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { DeleteAccountDialog } from '@/components/profile/DeleteAccountDialog';
-import { DeactivateAccountDialog } from '@/components/profile/DeactivateAccountDialog';
+import { DeleteAccountModal } from '@/components/profile/DeleteAccountModal';
+import { DeactivateAccountModal } from '@/components/profile/DeactivateAccountModal';
 import {
   ProfilePanel,
   profileFlatButtonClass,
@@ -86,11 +86,11 @@ export function ProfileSettingsCard() {
         </div>
       </ProfilePanel>
 
-      <DeactivateAccountDialog
+      <DeactivateAccountModal
         open={showDeactivateDialog}
         onOpenChange={setShowDeactivateDialog}
       />
-      <DeleteAccountDialog
+      <DeleteAccountModal
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
       />

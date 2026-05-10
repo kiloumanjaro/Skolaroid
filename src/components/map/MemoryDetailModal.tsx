@@ -356,6 +356,7 @@ export function MemoryDetailModal({
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const childModalOpen = deleteModalOpen || reportModalOpen || editModalOpen;
 
   const [animationPhase, setAnimationPhase] =
     useState<AnimationPhase>('closed');
@@ -1728,7 +1729,7 @@ export function MemoryDetailModal({
 
   return (
     <>
-      <Dialog open={open} onOpenChange={onOpenChange}>
+      <Dialog open={open && !childModalOpen} onOpenChange={onOpenChange}>
         <AnimatePresence>
           {open && (
             <DialogPrimitive.Portal forceMount>

@@ -1,6 +1,8 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useEffect } from 'react';
+import { motion, useAnimationControls } from 'framer-motion';
+import { useAnyPanelOpen } from '@/components/main-shell-sidebar-action';
 
 interface AboutAnnouncementStripProps {
   announcements: string[];
@@ -9,17 +11,31 @@ interface AboutAnnouncementStripProps {
 export function AboutAnnouncementStrip({
   announcements,
 }: AboutAnnouncementStripProps) {
+  const controls = useAnimationControls();
+  const paused = useAnyPanelOpen();
+
+  useEffect(() => {
+    if (paused) {
+      controls.stop();
+      return;
+    }
+
+    void controls.start({
+      x: ['-50%', '0%'],
+      transition: {
+        duration: 18,
+        ease: 'linear',
+        repeat: Infinity,
+        repeatType: 'loop',
+      },
+    });
+  }, [controls, paused]);
+
   return (
     <div className="overflow-hidden border-b-2 border-border bg-[#fff1c7]">
       <motion.div
         className="flex w-max"
-        animate={{ x: ['-50%', '0%'] }}
-        transition={{
-          duration: 18,
-          ease: 'linear',
-          repeat: Infinity,
-          repeatType: 'loop',
-        }}
+        animate={controls}
         aria-label="About page announcements"
       >
         {[0, 1].map((group) => (

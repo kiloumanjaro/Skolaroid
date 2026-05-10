@@ -4,15 +4,16 @@ import { useState } from 'react';
 import { Plus, ImageIcon, Loader2, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { MemoryCard } from '@/components/memory-card';
-import { AddMemoryModal } from '@/components/add-memory-modal';
+import { AddMemoryModal } from '@/components/AddMemoryModal';
 import { useGroupMemories } from '@/lib/hooks/useGroupMemories';
 import { Group } from '@/lib/types/group';
 
 interface MediaTabProps {
   group: Group;
+  onRequestModalOpen?: () => void;
 }
 
-export function MediaTab({ group }: MediaTabProps) {
+export function MediaTab({ group, onRequestModalOpen }: MediaTabProps) {
   const [addMemoryOpen, setAddMemoryOpen] = useState(false);
   const {
     data: memories,
@@ -55,7 +56,10 @@ export function MediaTab({ group }: MediaTabProps) {
           {group.postCount} {group.postCount === 1 ? 'Post' : 'Posts'}
         </h3>
         <Button
-          onClick={() => setAddMemoryOpen(true)}
+          onClick={() => {
+            onRequestModalOpen?.();
+            setAddMemoryOpen(true);
+          }}
           style={{ borderRadius: 0 }}
         >
           <Plus className="mr-2 h-4 w-4" />
@@ -74,7 +78,13 @@ export function MediaTab({ group }: MediaTabProps) {
         <div className="flex h-64 flex-col items-center justify-center gap-2">
           <ImageIcon className="h-12 w-12 text-muted-foreground" />
           <p className="text-sm text-muted-foreground">No posts yet</p>
-          <Button variant="outline" onClick={() => setAddMemoryOpen(true)}>
+          <Button
+            variant="outline"
+            onClick={() => {
+              onRequestModalOpen?.();
+              setAddMemoryOpen(true);
+            }}
+          >
             Create First Post
           </Button>
         </div>
