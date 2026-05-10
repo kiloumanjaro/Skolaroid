@@ -11,17 +11,16 @@ import {
 } from 'react';
 import { Link2 } from 'lucide-react';
 import { GalleryAnnouncementStrip } from '@/components/announcement-strips/GalleryAnnouncementStrip';
+import {
+  GALLERY_ANNOUNCEMENTS,
+  type AnnouncementItem,
+} from '@/components/announcement-strips/announcement-config';
 import { GalleryMemoryCard } from '@/components/gallery/GalleryMemoryCard';
 import { ShellBatchesSidebarAction } from '@/components/shell-batches-sidebar-action';
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 import { cn, getEraFromBatchTag } from '@/lib/utils';
 
 const CLONE_COUNT = 3;
-const DEFAULT_ANNOUNCEMENTS = [
-  'Flip through campus memories one era at a time',
-  'Every card is a moment pinned to a shared history',
-  'Open any photo to jump straight back into the map',
-];
 
 interface GalleryExperienceProps {
   activeEra: number;
@@ -32,7 +31,7 @@ interface GalleryExperienceProps {
   sharePath?: string;
   emptyMessage?: string;
   isPublicView?: boolean;
-  announcements?: string[];
+  announcements?: AnnouncementItem[];
   showPublicBadge?: boolean;
 }
 
@@ -45,7 +44,7 @@ export function GalleryExperience({
   sharePath = '/share/gallery',
   emptyMessage = 'No memories found for this era',
   isPublicView = false,
-  announcements = DEFAULT_ANNOUNCEMENTS,
+  announcements = GALLERY_ANNOUNCEMENTS,
   showPublicBadge = false,
 }: GalleryExperienceProps) {
   const [isDragging, setIsDragging] = useState(false);

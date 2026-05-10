@@ -31,6 +31,7 @@ import {
   type AdminReportItem,
 } from '@/lib/hooks/useAdminReports';
 import { useResolveReport } from '@/lib/hooks/useResolveReport';
+import { ADMIN_ANNOUNCEMENTS } from '@/components/announcement-strips/announcement-config';
 import {
   useAuditLog,
   type AuditLogFilters,
@@ -78,11 +79,6 @@ const statusBadgeStyles: Record<
 };
 
 const numberFormatter = new Intl.NumberFormat('en-US');
-const adminAnnouncements = [
-  'Review pending memories before they go live',
-  'Track reports, moderation actions, and audit history',
-  'Keep the archive safe, accurate, and community-ready',
-];
 
 function formatCount(value: number): string {
   return numberFormatter.format(value);
@@ -1258,7 +1254,7 @@ export default function AdminPage() {
             </div>
           </div>
 
-          <AdminAnnouncementStrip announcements={adminAnnouncements} />
+          <AdminAnnouncementStrip announcements={ADMIN_ANNOUNCEMENTS} />
 
           <div className="px-8 pb-8 pt-24">
             {/* Top Bar */}

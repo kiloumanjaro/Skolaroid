@@ -15,7 +15,7 @@ import { ActivityTimelineModal } from '@/components/profile/ActivityTimelineModa
 import { ProfilePageSkeleton } from '@/components/profile/ProfilePageSkeleton';
 import { MemoryDetailModal } from '@/components/map/MemoryDetailModal';
 import { ProfileAnnouncementStrip } from '@/components/announcement-strips/ProfileAnnouncementStrip';
-import { PROFILE_ANNOUNCEMENTS } from '@/components/profile/profile-announcements';
+import { PROFILE_ANNOUNCEMENTS } from '@/components/announcement-strips/announcement-config';
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 
 export default function ProfilePage() {
