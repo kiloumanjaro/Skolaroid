@@ -11,15 +11,15 @@ import { profileFlatButtonClass } from '@/components/profile/profile-shell';
 
 const REDIRECT_DELAY_SECONDS = 4;
 
-interface DeactivateAccountDialogProps {
+interface DeactivateAccountModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export function DeactivateAccountDialog({
+export function DeactivateAccountModal({
   open,
   onOpenChange,
-}: DeactivateAccountDialogProps) {
+}: DeactivateAccountModalProps) {
   const router = useRouter();
   const [understood, setUnderstood] = useState(false);
   const [isDeactivating, setIsDeactivating] = useState(false);

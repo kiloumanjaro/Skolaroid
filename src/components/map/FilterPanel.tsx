@@ -3,6 +3,7 @@
 import { X, RotateCcw, Filter } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
+import { usePanelOpenEffects } from '@/components/main-shell-sidebar-action';
 import {
   type MemoryFilters,
   type SortOption,
@@ -51,6 +52,8 @@ export function FilterPanel({
   availableGroups,
   availableLocations,
 }: FilterPanelProps) {
+  usePanelOpenEffects(open);
+
   const update = <K extends keyof MemoryFilters>(
     key: K,
     value: MemoryFilters[K]

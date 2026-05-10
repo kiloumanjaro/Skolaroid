@@ -5,7 +5,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { RemoveMemberDialog } from '@/components/groups/RemoveMemberDialog';
+import { RemoveMemberModal } from '@/components/groups/RemoveMemberModal';
 import {
   useRemoveGroupMember,
   useTransferGroupOwnership,
@@ -420,7 +420,7 @@ export function MembersTab({
       </div>
 
       {/* Remove Member Confirmation */}
-      <RemoveMemberDialog
+      <RemoveMemberModal
         open={!!memberToRemove}
         onOpenChange={(open) => {
           if (!open) setMemberToRemove(null);
@@ -507,7 +507,10 @@ export function MembersTab({
                         variant="secondary"
                         className="w-full border-2 border-black bg-[#f6cb48] font-semibold text-black hover:bg-[#e5ba2d]"
                         disabled={transferOwnership.isPending}
-                        onClick={() => setMemberToTransfer(memberToView)}
+                        onClick={() => {
+                          setMemberToView(null);
+                          setMemberToTransfer(memberToView);
+                        }}
                       >
                         <Crown className="mr-2 h-4 w-4" />
                         Transfer Ownership

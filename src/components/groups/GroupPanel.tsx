@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { GroupSwitcher, useGroupToast } from '@/components/groups';
+import { usePanelOpenEffects } from '@/components/main-shell-sidebar-action';
 import { CreateGroupModal } from '@/components/groups/CreateGroupModal';
 import { InviteMembersModal } from '@/components/groups/InviteMembersModal';
 import { ShareGroupModal } from '@/components/groups/ShareGroupModal';
@@ -123,6 +124,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
   const [editGroupModalOpen, setEditGroupModalOpen] = useState(false);
   const [editMessageModalOpen, setEditMessageModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('members');
+  usePanelOpenEffects(open);
 
   const { showSuccess, showError, ToastPortal } = useGroupToast();
   const { user } = useUserAuth();
@@ -282,6 +284,14 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
     showSuccess('Group message updated.');
   }, [refetchGroupDetail, showSuccess]);
 
+  const openNestedModal = useCallback(
+    (setOpen: (open: boolean) => void) => {
+      onOpenChange(false);
+      setOpen(true);
+    },
+    [onOpenChange]
+  );
+
   const visibleTabs = [
     {
       id: 'members' as const,
@@ -321,6 +331,14 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
 
   return (
     <>
+      {open && (
+        <div
+          data-state="open"
+          className="fixed inset-0 z-50 bg-[#2d2d2d]/40 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+          onClick={() => onOpenChange(false)}
+          aria-hidden="true"
+        />
+      )}
       <div
         className={cn(
           'pointer-events-none absolute left-1/2 z-20 flex w-[calc(100%-1.5rem)] -translate-x-1/2 justify-center transition-[top,bottom,transform] duration-300 ease-out sm:w-[calc(100%-2.5rem)]',
@@ -385,8 +403,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                         if (!open) onOpenChange(true);
                       }}
                       onCreateGroup={() => {
-                        onOpenChange(true);
-                        setCreateModalOpen(true);
+                        openNestedModal(setCreateModalOpen);
                       }}
                     />
                   </div>
@@ -427,7 +444,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                       aria-label="Share group"
                       onClick={() => {
                         if (!selectedGroup) return;
-                        setShareModalOpen(true);
+                        openNestedModal(setShareModalOpen);
                       }}
                       className="grid h-7 w-7 shrink-0 place-items-center border-2 border-black bg-white text-black"
                     >
@@ -438,7 +455,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                       aria-label="Leave group"
                       onClick={() => {
                         if (!selectedGroup) return;
-                        setLeaveModalOpen(true);
+                        openNestedModal(setLeaveModalOpen);
                       }}
                       className="grid h-7 w-7 shrink-0 place-items-center border-2 border-black bg-white text-black"
                     >
@@ -462,7 +479,9 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                           {isOwner && (
                             <>
                               <DropdownMenuItem
-                                onClick={() => setEditGroupModalOpen(true)}
+                                onClick={() =>
+                                  openNestedModal(setEditGroupModalOpen)
+                                }
                               >
                                 <Pencil className="mr-2 h-4 w-4" />
                                 Edit Group
@@ -473,7 +492,9 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                           {canSendInvitations && (
                             <>
                               <DropdownMenuItem
-                                onClick={() => setInviteModalOpen(true)}
+                                onClick={() =>
+                                  openNestedModal(setInviteModalOpen)
+                                }
                               >
                                 <UserPlus className="mr-2 h-4 w-4" />
                                 Invite Members
@@ -484,7 +505,9 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                           {canEditMessage && (
                             <>
                               <DropdownMenuItem
-                                onClick={() => setEditMessageModalOpen(true)}
+                                onClick={() =>
+                                  openNestedModal(setEditMessageModalOpen)
+                                }
                               >
                                 <MessageSquare className="mr-2 h-4 w-4" />
                                 Edit Message
@@ -494,7 +517,9 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                           )}
                           {isOwner && (
                             <DropdownMenuItem
-                              onClick={() => setDeleteModalOpen(true)}
+                              onClick={() =>
+                                openNestedModal(setDeleteModalOpen)
+                              }
                               className="text-red-600 focus:text-red-600"
                             >
                               <Trash2 className="mr-2 h-4 w-4" />
@@ -570,7 +595,10 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                       />
                     )}
                     {activeTab === 'media' && (
-                      <MediaTab group={selectedGroup} />
+                      <MediaTab
+                        group={selectedGroup}
+                        onRequestModalOpen={() => onOpenChange(false)}
+                      />
                     )}
                     {activeTab === 'settings' && isOwner && (
                       <SettingsTab

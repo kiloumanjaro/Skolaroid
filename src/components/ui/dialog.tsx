@@ -7,10 +7,13 @@ import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { WOBBLY_RADIUS_MD } from '@/lib/hand-drawn';
+import { usePanelOpenEffects } from '@/components/main-shell-sidebar-action';
 
 function Dialog({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Root>) {
+  usePanelOpenEffects(props.open === true);
+
   return <DialogPrimitive.Root data-slot="dialog" {...props} />;
 }
 

@@ -13,9 +13,9 @@ import {
 import { getEraFromBatchTag } from '@/lib/utils';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createRoot, type Root } from 'react-dom/client';
-import { AddMemoryModal } from './add-memory-modal';
+import { AddMemoryModal } from './AddMemoryModal';
 import { GroupPanel } from './groups/GroupPanel';
-import { BatchesModal } from './batches-modal';
+import { BatchesModal } from './BatchesModal';
 import { useMainShellSidebarAction } from './main-shell-sidebar-action';
 import { LandmarkMarker } from './map/LandmarkMarker';
 import { LandmarkMemoriesPanel } from './map/LandmarkMemoriesPanel';
@@ -380,6 +380,11 @@ export function MapComponent({
     async (memory: MemoryWithCoordinates, imageIndex = 0) => {
       const sequenceId = ++memoryOpenSequenceRef.current;
 
+      setAddMemoryOpen(false);
+      setGroupModalOpen(false);
+      setFilterPanelOpen(false);
+      setBatchesModalOpen(false);
+      setSelectedLandmark(null);
       setSelectedMemoryImageIndex(Math.max(0, imageIndex));
       setSelectedMemory(memory);
       await Promise.resolve(onMemoryDetailOpenRequest?.());
@@ -568,10 +573,31 @@ export function MapComponent({
     pendingMemoryRef.current = null;
   }, []);
 
+  const openAddMemoryModal = useCallback(
+    (era: number | null = activeMapEra) => {
+      cancelPendingFlyTo();
+      setGroupModalOpen(false);
+      setFilterPanelOpen(false);
+      setBatchesModalOpen(false);
+      setSelectedLandmark(null);
+      setMemoryDetailOpen(false);
+      onMemoryDetailOpenStateChange?.(false);
+      setAddMemoryEra(era);
+      setAddMemoryOpen(true);
+    },
+    [activeMapEra, cancelPendingFlyTo, onMemoryDetailOpenStateChange]
+  );
+
   const openBatchesModal = useCallback(() => {
     cancelPendingFlyTo();
+    setAddMemoryOpen(false);
+    setGroupModalOpen(false);
+    setFilterPanelOpen(false);
+    setSelectedLandmark(null);
+    setMemoryDetailOpen(false);
+    onMemoryDetailOpenStateChange?.(false);
     setBatchesModalOpen(true);
-  }, [cancelPendingFlyTo]);
+  }, [cancelPendingFlyTo, onMemoryDetailOpenStateChange]);
 
   const batchesSidebarAction = useMemo(
     () => ({
@@ -589,8 +615,14 @@ export function MapComponent({
     const shouldOpenBatches = searchParams.get('openBatches') === '1';
     if (!shouldOpenBatches || batchesModalOpen) return;
 
+    setAddMemoryOpen(false);
+    setGroupModalOpen(false);
+    setFilterPanelOpen(false);
+    setSelectedLandmark(null);
+    setMemoryDetailOpen(false);
+    onMemoryDetailOpenStateChange?.(false);
     setBatchesModalOpen(true);
-  }, [batchesModalOpen, searchParams]);
+  }, [batchesModalOpen, onMemoryDetailOpenStateChange, searchParams]);
 
   useEffect(() => {
     if (batchesModalOpen || searchParams.get('openBatches') !== '1') return;
@@ -640,9 +672,19 @@ export function MapComponent({
         });
         return;
       }
+      setAddMemoryOpen(false);
+      setGroupModalOpen(false);
+      setFilterPanelOpen(false);
+      setBatchesModalOpen(false);
+      setMemoryDetailOpen(false);
+      onMemoryDetailOpenStateChange?.(false);
       setSelectedLandmark(landmark);
     };
-  }, [locationSelectionMode, handleLocationSelected]);
+  }, [
+    locationSelectionMode,
+    handleLocationSelected,
+    onMemoryDetailOpenStateChange,
+  ]);
 
   const handleRequestMapSelection = useCallback(
     (
@@ -1084,11 +1126,19 @@ export function MapComponent({
             activeEra={activeMapEra}
             onEraSelect={(era) => setActiveMapEra(era)}
           />
-          <AddMemoryButton onClick={() => setAddMemoryOpen(true)} />
+          <AddMemoryButton onClick={() => openAddMemoryModal()} />
 
           <GroupPanel
             open={groupModalOpen}
             onOpenChange={(isOpen) => {
+              if (isOpen) {
+                setAddMemoryOpen(false);
+                setFilterPanelOpen(false);
+                setBatchesModalOpen(false);
+                setSelectedLandmark(null);
+                setMemoryDetailOpen(false);
+                onMemoryDetailOpenStateChange?.(false);
+              }
               setGroupModalOpen(isOpen);
               if (isOpen) cancelPendingFlyTo();
             }}
@@ -1096,7 +1146,18 @@ export function MapComponent({
 
           <FilterPanel
             open={filterPanelOpen}
-            onOpenChange={setFilterPanelOpen}
+            onOpenChange={(isOpen) => {
+              if (isOpen) {
+                cancelPendingFlyTo();
+                setAddMemoryOpen(false);
+                setGroupModalOpen(false);
+                setBatchesModalOpen(false);
+                setSelectedLandmark(null);
+                setMemoryDetailOpen(false);
+                onMemoryDetailOpenStateChange?.(false);
+              }
+              setFilterPanelOpen(isOpen);
+            }}
             filters={filters}
             onFiltersChange={onFiltersChange}
             availableTags={availableTags}
@@ -1112,8 +1173,7 @@ export function MapComponent({
             memories={memories}
             onAddMemory={(era) => {
               setBatchesModalOpen(false);
-              setAddMemoryEra(era ?? activeMapEra);
-              setAddMemoryOpen(true);
+              openAddMemoryModal(era ?? activeMapEra);
             }}
             onMemorySelected={handleBatchesMemorySelected}
           />
@@ -1150,7 +1210,7 @@ export function MapComponent({
           />
 
           {showFirstMemoryPrompt && (
-            <MapFirstMemoryPrompt onAddMemory={() => setAddMemoryOpen(true)} />
+            <MapFirstMemoryPrompt onAddMemory={() => openAddMemoryModal()} />
           )}
 
           <MemoryDetailModal

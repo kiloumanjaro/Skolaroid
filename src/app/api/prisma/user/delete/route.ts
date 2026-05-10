@@ -2,12 +2,15 @@ import { prisma } from '@/lib/prisma';
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 
+async function hardDeleteUser(userId: string) {
+  return await prisma.user.delete({ where: { id: userId } });
+}
+
 /**
  * DELETE /api/prisma/user/delete
  *
- * Handles user deletion:
- * - If user is not onboarded, just delete the auth user via raw SQL.
- * - If user is onboarded, delete auth user via raw SQL first, then delete the matching public user via Prisma.
+ * Permanently deletes the authenticated user's Prisma User row.
+ * Only admins may use this endpoint.
  */
 export async function DELETE() {
   try {
@@ -20,24 +23,16 @@ export async function DELETE() {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
-    // Check the user_onboarded flag in the auth table (stored in app_metadata)
-    const isOnboarded = authUser.app_metadata?.onboarded === true;
+    const dbUser = await prisma.user.findUnique({
+      where: { id: authUser.id },
+      select: { role: true },
+    });
 
-    if (!isOnboarded) {
-      // User never finished onboarding, just delete the auth user via raw SQL
-      await prisma.$executeRaw`DELETE FROM auth.users WHERE id = ${authUser.id}::uuid`;
-    } else {
-      // User is fully onboarded, delete auth user via raw SQL first
-      await prisma.$executeRaw`DELETE FROM auth.users WHERE id = ${authUser.id}::uuid`;
-
-      // Then delete the matching public user via Prisma
-      await prisma.user.delete({
-        where: { id: authUser.id },
-      });
+    if (dbUser?.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    // Sign out to clear session cookies
-    await supabase.auth.signOut();
+    await hardDeleteUser(authUser.id);
 
     return NextResponse.json({
       success: true,

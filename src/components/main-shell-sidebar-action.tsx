@@ -16,6 +16,10 @@ interface MainShellSidebarActionContextValue {
 interface MainShellChromeContextValue {
   sidebarOpen: boolean;
   toggleSidebar: () => void;
+  closeSidebar: () => void;
+  openPanelCount: number;
+  registerOpenPanel: () => void;
+  unregisterOpenPanel: () => void;
 }
 
 const MainShellSidebarActionContext =
@@ -69,4 +73,28 @@ export function useMainShellSidebarAction(
 
 export function useMainShellChrome() {
   return useContext(MainShellChromeContext);
+}
+
+export function usePanelOpenEffects(open: boolean) {
+  const context = useMainShellChrome();
+  const closeSidebar = context?.closeSidebar;
+  const registerOpenPanel = context?.registerOpenPanel;
+  const unregisterOpenPanel = context?.unregisterOpenPanel;
+
+  useEffect(() => {
+    if (!open || !closeSidebar || !registerOpenPanel || !unregisterOpenPanel) {
+      return;
+    }
+
+    closeSidebar();
+    registerOpenPanel();
+
+    return () => {
+      unregisterOpenPanel();
+    };
+  }, [closeSidebar, open, registerOpenPanel, unregisterOpenPanel]);
+}
+
+export function useAnyPanelOpen() {
+  return (useMainShellChrome()?.openPanelCount ?? 0) > 0;
 }

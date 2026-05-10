@@ -3,7 +3,23 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Suspense, useEffect, useMemo, useState, type ReactNode } from 'react';
+import {
+  Bell,
+  CheckCircle,
+  FileCheck,
+  FileMinus,
+  Loader2,
+  Trash2,
+  XCircle,
+} from 'lucide-react';
+import {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react';
 import { LoginForm } from '@/components/login-form';
 import {
   MainShellChromeProvider,
@@ -11,7 +27,19 @@ import {
   type MainShellSidebarAction,
 } from '@/components/main-shell-sidebar-action';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
+import {
+  useMarkNotificationsRead,
+  useNotifications,
+  useUnreadNotificationCount,
+} from '@/lib/hooks/useNotifications';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
 import { cn } from '@/lib/utils';
 
@@ -128,6 +156,181 @@ const navItems = [
 function isShellRoute(pathname: string) {
   return shellRoutes.some(
     (route) => pathname === route || pathname.startsWith(`${route}/`)
+  );
+}
+
+function getNotificationIcon(type: string) {
+  switch (type) {
+    case 'MEMORY_APPROVED':
+      return <CheckCircle className="h-4 w-4 text-green-500" />;
+    case 'MEMORY_REJECTED':
+      return <XCircle className="h-4 w-4 text-red-500" />;
+    case 'MEMORY_REMOVED':
+      return <Trash2 className="h-4 w-4 text-red-600" />;
+    case 'REPORT_RESOLVED':
+      return <FileCheck className="h-4 w-4 text-blue-500" />;
+    case 'REPORT_DISMISSED':
+      return <FileMinus className="h-4 w-4 text-gray-500" />;
+    default:
+      return <Bell className="h-4 w-4 text-gray-500" />;
+  }
+}
+
+function formatNotificationTime(dateStr: string): string {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60_000);
+  const diffHours = Math.floor(diffMs / 3_600_000);
+  const diffDays = Math.floor(diffMs / 86_400_000);
+
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays < 7) return `${diffDays}d ago`;
+  return date.toLocaleDateString();
+}
+
+function FloatingNotificationsButton() {
+  const [open, setOpen] = useState(false);
+  const { data: unreadCount = 0, refetch: refetchUnreadCount } =
+    useUnreadNotificationCount();
+  const {
+    data,
+    isLoading,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+    refetch: refetchNotifications,
+  } = useNotifications({ enabled: open });
+  const markRead = useMarkNotificationsRead();
+
+  const notifications = data?.pages.flatMap((page) => page.data.items) ?? [];
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    setOpen(nextOpen);
+
+    if (nextOpen) {
+      void refetchUnreadCount();
+      void refetchNotifications();
+    }
+  };
+
+  const handleMarkAllRead = () => {
+    const unreadIds = notifications.filter((n) => !n.read).map((n) => n.id);
+    if (unreadIds.length > 0) {
+      markRead.mutate(unreadIds);
+    }
+  };
+
+  return (
+    <DropdownMenu open={open} onOpenChange={handleOpenChange}>
+      <DropdownMenuTrigger asChild>
+        <button
+          type="button"
+          className="group absolute left-4 top-[6.25rem] z-30 h-10 w-10 overflow-hidden border-2 border-border transition-colors sm:left-6 sm:top-32 sm:h-14 sm:w-14 sm:border-[3px]"
+          aria-label="Notifications"
+        >
+          <div className="absolute inset-0 bg-card transition-all group-hover:bg-[#f6cb48] group-active:bg-[#f6cb48]" />
+          <span className="relative flex h-full w-full items-center justify-center text-foreground">
+            <Bell className="h-5 w-5 sm:h-6 sm:w-6" />
+          </span>
+          {unreadCount > 0 && (
+            <span className="absolute right-0.5 top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-semibold leading-none text-white sm:right-1 sm:top-1 sm:h-5 sm:min-w-5 sm:text-[10px]">
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
+          )}
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="start"
+        sideOffset={8}
+        className="z-50 w-80 max-w-[calc(100vw-2rem)] rounded-none border-2 border-[#2d2d2d] bg-[#fcfaf8] p-1 text-black shadow-none"
+      >
+        <div className="flex items-center justify-between border border-transparent px-2 py-1.5">
+          <h3 className="text-[11px] font-black uppercase tracking-[0.1em] text-black">
+            Notifications
+          </h3>
+          {unreadCount > 0 && (
+            <button
+              type="button"
+              onClick={handleMarkAllRead}
+              className="min-h-8 rounded-none border border-transparent px-2 py-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-black transition-colors hover:border-[#2d2d2d] hover:bg-[#fff4fb] focus:border-[#2d2d2d] focus:bg-[#fff4fb] focus:text-black"
+            >
+              Mark all read
+            </button>
+          )}
+        </div>
+        <DropdownMenuSeparator className="my-1 bg-[#2d2d2d]" />
+        <div className="max-h-96 overflow-y-auto overflow-x-hidden">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-5 w-5 animate-spin text-black" />
+            </div>
+          ) : notifications.length > 0 ? (
+            <>
+              {notifications.map((notification) => (
+                <div key={notification.id}>
+                  <DropdownMenuItem
+                    className="min-h-8 w-full cursor-pointer rounded-none border border-transparent bg-transparent px-2 py-2 text-black hover:bg-[#fff4fb] focus:border-[#2d2d2d] focus:bg-[#fff4fb] focus:text-black data-[highlighted]:border-[#2d2d2d] data-[highlighted]:bg-[#fff4fb] data-[highlighted]:text-black"
+                    onSelect={(event) => {
+                      event.preventDefault();
+                      if (!notification.read) {
+                        markRead.mutate([notification.id]);
+                      }
+                    }}
+                  >
+                    <div className="flex w-full gap-3">
+                      <div className="mt-1 flex-shrink-0">
+                        {getNotificationIcon(notification.type)}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p
+                          className={`break-words text-sm ${
+                            notification.read
+                              ? 'text-black/65'
+                              : 'font-semibold text-black'
+                          }`}
+                        >
+                          {notification.message}
+                        </p>
+                        {notification.reason && (
+                          <p className="mt-0.5 break-words text-xs italic text-black/60">
+                            Reason: {notification.reason}
+                          </p>
+                        )}
+                        <p className="mt-1 text-xs font-semibold uppercase tracking-[0.08em] text-black/55">
+                          {formatNotificationTime(notification.createdAt)}
+                        </p>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+                </div>
+              ))}
+              {hasNextPage && (
+                <DropdownMenuItem
+                  className="min-h-8 cursor-pointer justify-center rounded-none border border-transparent px-2 py-1.5 text-center text-[11px] font-semibold uppercase tracking-[0.1em] text-black focus:border-[#2d2d2d] focus:bg-[#fff4fb] focus:text-black data-[highlighted]:border-[#2d2d2d] data-[highlighted]:bg-[#fff4fb] data-[highlighted]:text-black"
+                  onSelect={(event) => {
+                    event.preventDefault();
+                    fetchNextPage();
+                  }}
+                >
+                  {isFetchingNextPage ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    'Load more'
+                  )}
+                </DropdownMenuItem>
+              )}
+            </>
+          ) : (
+            <div className="py-8 text-center text-[11px] font-semibold uppercase tracking-[0.1em] text-black/60">
+              No notifications yet
+            </div>
+          )}
+        </div>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
@@ -488,16 +691,40 @@ export function MainShell({ children }: { children: ReactNode }) {
   const [sidebarAction, setSidebarAction] =
     useState<MainShellSidebarAction | null>(null);
   const [loginOpen, setLoginOpen] = useState(false);
+  const [openPanelCount, setOpenPanelCount] = useState(0);
   const [pendingNavigation, setPendingNavigation] = useState<string | null>(
     null
   );
   const sidebarActionContextValue = useMemo(() => ({ setSidebarAction }), []);
+  const toggleSidebar = useCallback(() => {
+    setSidebarOpen((prev) => !prev);
+  }, []);
+  const closeSidebar = useCallback(() => {
+    setSidebarOpen(false);
+  }, []);
+  const registerOpenPanel = useCallback(() => {
+    setOpenPanelCount((count) => count + 1);
+  }, []);
+  const unregisterOpenPanel = useCallback(() => {
+    setOpenPanelCount((count) => Math.max(0, count - 1));
+  }, []);
   const shellChromeContextValue = useMemo(
     () => ({
       sidebarOpen,
-      toggleSidebar: () => setSidebarOpen((prev) => !prev),
+      toggleSidebar,
+      closeSidebar,
+      openPanelCount,
+      registerOpenPanel,
+      unregisterOpenPanel,
     }),
-    [sidebarOpen]
+    [
+      closeSidebar,
+      openPanelCount,
+      registerOpenPanel,
+      sidebarOpen,
+      toggleSidebar,
+      unregisterOpenPanel,
+    ]
   );
   const userAvatar =
     user?.user_metadata?.avatar_url ?? user?.user_metadata?.picture ?? null;
@@ -596,21 +823,24 @@ export function MainShell({ children }: { children: ReactNode }) {
               >
                 <div className="relative h-full w-full overflow-hidden border-[3px] border-black bg-white">
                   {pathname !== '/about' && pathname !== '/admin' && (
-                    <button
-                      type="button"
-                      onClick={() => setSidebarOpen((prev) => !prev)}
-                      className="group absolute left-4 top-12 z-30 h-10 w-10 overflow-hidden border-2 border-border transition-colors sm:left-6 sm:top-14 sm:h-14 sm:w-14 sm:border-[3px]"
-                      aria-label={
-                        sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'
-                      }
-                    >
-                      <div className="absolute inset-0 bg-card transition-all group-hover:bg-[#f6cb48] group-active:bg-[#f6cb48]" />
-                      <span className="relative flex h-full w-full flex-col items-center justify-center gap-1.5 text-foreground">
-                        <span className="block h-0.5 w-5 rounded-full bg-current sm:w-6" />
-                        <span className="block h-0.5 w-5 rounded-full bg-current sm:w-6" />
-                        <span className="block h-0.5 w-5 rounded-full bg-current sm:w-6" />
-                      </span>
-                    </button>
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setSidebarOpen((prev) => !prev)}
+                        className="group absolute left-4 top-12 z-30 h-10 w-10 overflow-hidden border-2 border-border transition-colors sm:left-6 sm:top-14 sm:h-14 sm:w-14 sm:border-[3px]"
+                        aria-label={
+                          sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'
+                        }
+                      >
+                        <div className="absolute inset-0 bg-card transition-all group-hover:bg-[#f6cb48] group-active:bg-[#f6cb48]" />
+                        <span className="relative flex h-full w-full flex-col items-center justify-center gap-1.5 text-foreground">
+                          <span className="block h-0.5 w-5 rounded-full bg-current sm:w-6" />
+                          <span className="block h-0.5 w-5 rounded-full bg-current sm:w-6" />
+                          <span className="block h-0.5 w-5 rounded-full bg-current sm:w-6" />
+                        </span>
+                      </button>
+                      {isAuthenticated && <FloatingNotificationsButton />}
+                    </>
                   )}
 
                   {children}

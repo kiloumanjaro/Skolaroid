@@ -14,7 +14,7 @@ import { TagInput } from '@/components/tag-input';
 import { useUpdateMemoryTags } from '@/lib/hooks/useUpdateMemoryTags';
 import { MAX_TAGS } from '@/lib/schemas';
 
-interface EditTagsDialogProps {
+interface EditTagsModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   memory: {
@@ -24,11 +24,11 @@ interface EditTagsDialogProps {
   };
 }
 
-export function EditTagsDialog({
+export function EditTagsModal({
   open,
   onOpenChange,
   memory,
-}: EditTagsDialogProps) {
+}: EditTagsModalProps) {
   const [tags, setTags] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
 

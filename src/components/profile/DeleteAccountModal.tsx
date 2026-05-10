@@ -11,15 +11,15 @@ import { createClient } from '@/lib/supabase/client';
 const CHALLENGE_PHRASE = 'delete-my-account';
 const REDIRECT_DELAY_SECONDS = 4;
 
-interface DeleteAccountDialogProps {
+interface DeleteAccountModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export function DeleteAccountDialog({
+export function DeleteAccountModal({
   open,
   onOpenChange,
-}: DeleteAccountDialogProps) {
+}: DeleteAccountModalProps) {
   const router = useRouter();
   const [confirmation, setConfirmation] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
