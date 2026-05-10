@@ -944,7 +944,7 @@ export function AddMemoryModal({
               {completedFiles.map((f) => (
                 <div
                   key={f.id}
-                  className="group relative aspect-square overflow-hidden rounded-md"
+                  className="group relative aspect-square overflow-hidden rounded-md border-2 border-[#1f1f1f]"
                 >
                   <Image
                     src={f.previewUrl}
@@ -973,7 +973,7 @@ export function AddMemoryModal({
               {completedFiles.map((f) => (
                 <div
                   key={f.id}
-                  className="flex items-center gap-3 rounded-md border-2 border-black p-2"
+                  className="flex items-center gap-3 rounded-md border-2 border-[#1f1f1f] p-2"
                 >
                   <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded">
                     <Image
