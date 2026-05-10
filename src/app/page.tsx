@@ -709,7 +709,7 @@ function HomeContent() {
 
       {drawerOpen && (
         <div
-          className="fixed inset-0 z-30 bg-[#2d2d2d]/20 transition-opacity duration-300"
+          className="fixed inset-0 z-[130] bg-[#2d2d2d]/20 transition-opacity duration-300"
           onClick={() => setDrawerOpen(false)}
           aria-label="Close drawer overlay"
         />
