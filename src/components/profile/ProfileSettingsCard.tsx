@@ -2,14 +2,19 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { DeleteAccountDialog } from '@/components/profile/DeleteAccountDialog';
 import { DeactivateAccountDialog } from '@/components/profile/DeactivateAccountDialog';
 import {
   ProfilePanel,
   profileFlatButtonClass,
 } from '@/components/profile/profile-shell';
+import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
 
 export function ProfileSettingsCard() {
   const [showDeactivateDialog, setShowDeactivateDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const { data: currentUserData } = useCurrentUser();
+  const isAdmin = currentUserData?.data?.role === 'ADMIN';
 
   return (
     <>
@@ -46,22 +51,37 @@ export function ProfileSettingsCard() {
           <div className="flex flex-col gap-3">
             <div>
               <p className="font-kalam text-lg font-bold text-foreground">
-                Deactivate Account
+                Delete Account
               </p>
               <p className="mt-1 text-sm leading-6 text-foreground/75">
-                You have 30 days to reactivate before permanent deletion.
+                Delete your account, or permanently remove it if you are an
+                admin.
               </p>
             </div>
-            <Button
-              id="deactivate-account-trigger"
-              variant="outline"
-              size="sm"
-              onClick={() => setShowDeactivateDialog(true)}
-              className={`${profileFlatButtonClass} w-fit border-destructive text-destructive hover:bg-destructive/10 hover:text-destructive`}
-              style={{ borderRadius: 0 }}
-            >
-              Deactivate Account
-            </Button>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Button
+                id="delete-account-trigger"
+                variant="outline"
+                size="sm"
+                onClick={() => setShowDeactivateDialog(true)}
+                className={`${profileFlatButtonClass} w-fit border-destructive text-destructive hover:bg-destructive/10 hover:text-destructive`}
+                style={{ borderRadius: 0 }}
+              >
+                Delete Account
+              </Button>
+              {isAdmin && (
+                <Button
+                  id="permanently-delete-account-trigger"
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => setShowDeleteDialog(true)}
+                  className={`${profileFlatButtonClass} w-fit`}
+                  style={{ borderRadius: 0 }}
+                >
+                  Permanently Delete
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </ProfilePanel>
@@ -69,6 +89,10 @@ export function ProfileSettingsCard() {
       <DeactivateAccountDialog
         open={showDeactivateDialog}
         onOpenChange={setShowDeactivateDialog}
+      />
+      <DeleteAccountDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
       />
     </>
   );

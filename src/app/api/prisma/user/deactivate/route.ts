@@ -2,13 +2,18 @@ import { prisma } from '@/lib/prisma';
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 
+async function softDeleteUser(userId: string) {
+  return await prisma.user.update({
+    where: { id: userId },
+    data: { deletedAt: new Date(), accountStatus: 'DEACTIVATED' },
+  });
+}
+
 /**
  * POST /api/prisma/user/deactivate
  *
  * Soft-deactivates the authenticated user's account:
- *   - Sets accountStatus = DEACTIVATED and deactivatedAt = now() on the User row
- *   - Sets deletedAt = now() on all their Memory rows (hides them immediately)
- *   - Does NOT hard-delete any rows — the nightly cleanup job handles that after 30 days
+ *   - Sets deletedAt = now() and accountStatus = DEACTIVATED on the User row
  *
  * The client is responsible for calling supabase.auth.signOut() after receiving 200.
  */
@@ -23,19 +28,7 @@ export async function POST() {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
-    const now = new Date();
-
-    // Soft-delete memories then mark account deactivated, all in one transaction
-    await prisma.$transaction([
-      prisma.memory.updateMany({
-        where: { creatorId: authUser.id, deletedAt: null },
-        data: { deletedAt: now },
-      }),
-      prisma.user.update({
-        where: { id: authUser.id },
-        data: { accountStatus: 'DEACTIVATED', deactivatedAt: now },
-      }),
-    ]);
+    await softDeleteUser(authUser.id);
 
     return NextResponse.json({
       success: true,
