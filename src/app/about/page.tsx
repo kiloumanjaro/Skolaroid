@@ -4,6 +4,7 @@ import {
 } from '@/components/about/about-workflow-card';
 import { AboutHero } from '@/components/about/about-hero';
 import { AboutAnnouncementStrip } from '@/components/announcement-strips/AboutAnnouncementStrip';
+import { ABOUT_ANNOUNCEMENTS } from '@/components/announcement-strips/announcement-config';
 import { AboutCreatorsMarquee } from '@/components/about-creators-marquee';
 import { ShellInlineSidebarToggle } from '@/components/shell-inline-sidebar-toggle';
 import { ShellBatchesSidebarAction } from '@/components/shell-batches-sidebar-action';
@@ -61,12 +62,6 @@ const teamMembers = [
 
 const creators = teamMembers.map((member) => member.name);
 
-const aboutAnnouncements = [
-  'Pinned memories built around real campus places',
-  'Photos, tags, and eras woven into one shared archive',
-  'A softer space for stories that should not disappear',
-];
-
 export default async function AboutPage() {
   const users = await prisma.user.count({
     where: {
@@ -89,7 +84,7 @@ export default async function AboutPage() {
           <ShellInlineSidebarToggle />
         </div>
 
-        <AboutAnnouncementStrip announcements={aboutAnnouncements} />
+        <AboutAnnouncementStrip announcements={ABOUT_ANNOUNCEMENTS} />
 
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute left-[-8rem] top-10 h-64 w-64 rounded-full bg-sky-200/35 blur-3xl" />

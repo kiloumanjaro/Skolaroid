@@ -1,6 +1,6 @@
 import { ProfileAnnouncementStrip } from '@/components/announcement-strips/ProfileAnnouncementStrip';
 import { ProfilePageSkeleton } from '@/components/profile/ProfilePageSkeleton';
-import { PROFILE_ANNOUNCEMENTS } from '@/components/profile/profile-announcements';
+import { PROFILE_ANNOUNCEMENTS } from '@/components/announcement-strips/announcement-config';
 
 export default function ProfileLoading() {
   return (

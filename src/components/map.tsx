@@ -41,6 +41,7 @@ import type {
 import { AddMemoryButton } from './map/AddMemoryButton';
 import { EraSelector } from './map/EraSelector';
 import { MapAnnouncementStrip } from './announcement-strips/MapAnnouncementStrip';
+import { MAP_ANNOUNCEMENTS } from './announcement-strips/announcement-config';
 import { MapLocationSelector } from './map/MapLocationSelector';
 import { FilterPanel } from './map/FilterPanel';
 import type {
@@ -86,11 +87,6 @@ const CAMERA_ANIMATION = {
 const DEFAULT_MAP_CENTER: [number, number] = [123.8986, 10.3224];
 const DEFAULT_MAP_ZOOM = 17;
 const EMPTY_USER_GROUPS: { id: string; name: string }[] = [];
-const MAP_ANNOUNCEMENTS = [
-  'Campus stories pinned where they happened',
-  'Switch eras to explore memories across batches',
-  'Drop a memory and add to the living archive',
-];
 
 interface MapComponentProps {
   filters: MemoryFilters;
