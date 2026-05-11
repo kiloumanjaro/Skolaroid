@@ -20,8 +20,6 @@ import { ShellBatchesSidebarAction } from '@/components/shell-batches-sidebar-ac
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 import { cn, getEraFromBatchTag } from '@/lib/utils';
 
-const CLONE_COUNT = 3;
-
 interface GalleryExperienceProps {
   activeEra: number;
   memories: MemoryWithCoordinates[];
@@ -49,6 +47,10 @@ export function GalleryExperience({
 }: GalleryExperienceProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [edgeSpacerWidths, setEdgeSpacerWidths] = useState({
+    left: 0,
+    right: 0,
+  });
 
   const handleCopyLink = useCallback(async () => {
     const base =
@@ -154,8 +156,6 @@ export function GalleryExperience({
   const startX = useRef(0);
   const scrollLeftRef = useRef(0);
   const snapChildRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const isTeleporting = useRef(false);
-  const wheelTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const eraFilteredMemories = useMemo(
     () =>
@@ -165,18 +165,6 @@ export function GalleryExperience({
       ),
     [activeEra, memories]
   );
-
-  const [extendedMemories, cloneCount] = useMemo(() => {
-    const items = eraFilteredMemories;
-    if (items.length === 0) return [[], 0] as [MemoryWithCoordinates[], number];
-    const n = Math.min(CLONE_COUNT, items.length);
-    return [[...items.slice(-n), ...items, ...items.slice(0, n)], n] as [
-      MemoryWithCoordinates[],
-      number,
-    ];
-  }, [eraFilteredMemories]);
-
-  const totalReal = eraFilteredMemories.length;
 
   const snapScrollLeft = (container: HTMLDivElement, child: HTMLDivElement) =>
     child.offsetLeft + child.offsetWidth / 2 - container.clientWidth / 2;
@@ -210,65 +198,67 @@ export function GalleryExperience({
 
   useLayoutEffect(() => {
     const container = containerRef.current;
-    if (!container || totalReal === 0) return;
-    const firstReal = snapChildRefs.current[cloneCount];
-    if (!firstReal) return;
+    if (!container) return;
+
+    const firstCard = snapChildRefs.current[0];
+    if (!firstCard || eraFilteredMemories.length === 0) return;
+
     const prev = container.style.scrollBehavior;
     container.style.scrollBehavior = 'auto';
-    container.scrollLeft = snapScrollLeft(container, firstReal);
+    container.scrollLeft = snapScrollLeft(container, firstCard);
     container.style.scrollBehavior = prev;
+
     if (bgRef.current) {
       bgRef.current.style.backgroundPositionX = `${-(container.scrollLeft % HORIZON_TILE_PX)}px`;
     }
-  }, [cloneCount, totalReal, HORIZON_TILE_PX]);
+  }, [activeEra, eraFilteredMemories.length, HORIZON_TILE_PX]);
 
-  const teleportIfOnClone = useCallback(() => {
+  useLayoutEffect(() => {
     const container = containerRef.current;
-    if (!container || totalReal === 0 || isTeleporting.current) return;
+    const firstCard = snapChildRefs.current[0];
+    const lastCard = snapChildRefs.current[eraFilteredMemories.length - 1];
 
-    const firstReal = snapChildRefs.current[cloneCount];
-    const firstPostClone = snapChildRefs.current[cloneCount + totalReal];
-    if (!firstReal || !firstPostClone) return;
-
-    const viewportCenter = container.scrollLeft + container.clientWidth / 2;
-    let closestIndex = -1;
-    let closestDist = Infinity;
-    for (let i = 0; i < snapChildRefs.current.length; i++) {
-      const ref = snapChildRefs.current[i];
-      if (!ref) continue;
-      const dist = Math.abs(
-        ref.offsetLeft + ref.offsetWidth / 2 - viewportCenter
-      );
-      if (dist < closestDist) {
-        closestDist = dist;
-        closestIndex = i;
-      }
-    }
-
-    if (closestIndex < 0) return;
-    if (closestIndex >= cloneCount && closestIndex < cloneCount + totalReal) {
+    if (
+      !container ||
+      eraFilteredMemories.length <= 1 ||
+      !firstCard ||
+      !lastCard
+    ) {
+      setEdgeSpacerWidths({ left: 0, right: 0 });
       return;
     }
 
-    const stride = firstPostClone.offsetLeft - firstReal.offsetLeft;
-    const delta = closestIndex < cloneCount ? stride : -stride;
+    const syncSpacerWidths = () => {
+      const nextLeft = Math.max(
+        0,
+        (container.clientWidth - firstCard.offsetWidth) / 2
+      );
+      const nextRight = Math.max(
+        0,
+        (container.clientWidth - lastCard.offsetWidth) / 2
+      );
 
-    isTeleporting.current = true;
-    const prev = container.style.scrollBehavior;
-    container.style.scrollBehavior = 'auto';
-    container.scrollLeft += delta;
-    container.style.scrollBehavior = prev;
-    requestAnimationFrame(() => {
-      isTeleporting.current = false;
-    });
-  }, [cloneCount, totalReal]);
+      setEdgeSpacerWidths((current) =>
+        current.left === nextLeft && current.right === nextRight
+          ? current
+          : { left: nextLeft, right: nextRight }
+      );
+    };
+
+    syncSpacerWidths();
+
+    const observer = new ResizeObserver(syncSpacerWidths);
+    observer.observe(container);
+    observer.observe(firstCard);
+    observer.observe(lastCard);
+
+    return () => observer.disconnect();
+  }, [eraFilteredMemories]);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    let idleTimer: ReturnType<typeof setTimeout> | null = null;
-    const SETTLE_MS = 120;
     let rafId: number | null = null;
 
     const syncBg = () => {
@@ -281,24 +271,14 @@ export function GalleryExperience({
 
     const onScroll = () => {
       if (rafId === null) rafId = requestAnimationFrame(syncBg);
-      if (idleTimer) clearTimeout(idleTimer);
-      idleTimer = setTimeout(teleportIfOnClone, SETTLE_MS);
-    };
-
-    const onScrollEnd = () => {
-      if (idleTimer) clearTimeout(idleTimer);
-      teleportIfOnClone();
     };
 
     container.addEventListener('scroll', onScroll, { passive: true });
-    container.addEventListener('scrollend', onScrollEnd);
     return () => {
-      if (idleTimer) clearTimeout(idleTimer);
       if (rafId !== null) cancelAnimationFrame(rafId);
       container.removeEventListener('scroll', onScroll);
-      container.removeEventListener('scrollend', onScrollEnd);
     };
-  }, [teleportIfOnClone, HORIZON_TILE_PX]);
+  }, [HORIZON_TILE_PX]);
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.button !== 0) return;
@@ -331,13 +311,14 @@ export function GalleryExperience({
   };
 
   const scrollGallery = (direction: 'left' | 'right') => {
-    const total = snapChildRefs.current.length;
+    const total = eraFilteredMemories.length;
     if (total === 0) return;
     const currentIdx = getClosestCardIndex();
     const nextIdx =
       direction === 'left'
-        ? (currentIdx - 1 + total) % total
-        : (currentIdx + 1) % total;
+        ? Math.max(currentIdx - 1, 0)
+        : Math.min(currentIdx + 1, total - 1);
+    if (nextIdx === currentIdx) return;
     scrollToCard(nextIdx);
   };
 
@@ -351,18 +332,7 @@ export function GalleryExperience({
     }
   };
 
-  const handleWheel = () => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    container.style.scrollSnapType = 'none';
-
-    if (wheelTimeoutRef.current) clearTimeout(wheelTimeoutRef.current);
-    wheelTimeoutRef.current = setTimeout(() => {
-      container.style.scrollSnapType = '';
-      scrollToCard(getClosestCardIndex());
-    }, 150);
-  };
+  const hasSingleMemory = eraFilteredMemories.length <= 1;
 
   return (
     <>
@@ -386,45 +356,56 @@ export function GalleryExperience({
         }}
       />
 
-      <div className="flex h-full flex-col">
+      <div className="relative flex h-full flex-col">
         <GalleryAnnouncementStrip announcements={announcements} />
 
-        <div className="relative flex min-w-0 flex-1">
-          <div className="pointer-events-none absolute right-4 top-4 z-10 flex flex-col items-end gap-2 sm:right-6 sm:top-6">
+        <div
+          className={cn(
+            'pointer-events-none absolute z-30 flex flex-col gap-2',
+            isPublicView
+              ? 'right-4 top-4 items-end sm:right-6 sm:top-6'
+              : 'left-4 top-[6.25rem] items-start sm:left-6 sm:top-32'
+          )}
+        >
+          <div
+            className={cn(
+              'pointer-events-auto relative',
+              isPublicView ? '' : 'mt-0'
+            )}
+          >
             {showPublicBadge && (
               <span className="pointer-events-auto border-2 border-black bg-[#fff4a8] px-3 py-1 font-hand text-xs uppercase tracking-[0.14em] text-foreground shadow-[2px_2px_0px_0px_#2d2d2d]">
                 Public Museum
               </span>
             )}
 
-            <div className="pointer-events-auto relative">
-              <button
-                onClick={handleCopyLink}
-                aria-label="Copy shareable link"
+            <button
+              onClick={handleCopyLink}
+              aria-label="Copy shareable link"
+              type="button"
+              className="group relative h-10 w-10 overflow-hidden border-2 border-black bg-card transition-colors sm:h-14 sm:w-14 sm:border-[3px]"
+            >
+              <div className="absolute inset-0 bg-card transition-all group-hover:bg-[#f6cb48] group-active:bg-[#f6cb48]" />
+              <span className="relative flex h-full w-full items-center justify-center text-foreground">
+                <Link2 className="h-5 w-5 sm:h-6 sm:w-6" />
+              </span>
+            </button>
+
+            {copiedLink && (
+              <span
+                aria-live="polite"
                 className={cn(
-                  'flex aspect-square items-center justify-center gap-2 border-2 border-black bg-white p-1.5 font-hand text-sm transition-[box-shadow,transform] duration-75 sm:aspect-auto sm:px-4 sm:py-1.5',
-                  'shadow-[4px_4px_0px_0px_#2d2d2d]',
-                  'hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#2d2d2d]',
-                  'active:translate-x-[4px] active:translate-y-[4px] active:shadow-none'
+                  'absolute -bottom-8 whitespace-nowrap border-2 border-black bg-white px-2 py-0.5 font-hand text-xs shadow-[2px_2px_0px_0px_#2d2d2d]',
+                  isPublicView ? 'right-0' : 'left-0'
                 )}
               >
-                <span className="hidden sm:inline">
-                  {copiedLink ? 'Copied!' : 'Copy Link'}
-                </span>
-                <Link2 className="h-4 w-4" />
-              </button>
-
-              {copiedLink && (
-                <span
-                  aria-live="polite"
-                  className="absolute -bottom-8 right-0 whitespace-nowrap border-2 border-black bg-white px-2 py-0.5 font-hand text-xs shadow-[2px_2px_0px_0px_#2d2d2d]"
-                >
-                  Link copied!
-                </span>
-              )}
-            </div>
+                Copied!
+              </span>
+            )}
           </div>
+        </div>
 
+        <div className="relative flex min-w-0 flex-1">
           {isLoading && (
             <div className="flex flex-1 items-center justify-center">
               <p className="text-lg text-gray-600">Loading memories...</p>
@@ -443,7 +424,7 @@ export function GalleryExperience({
             <div
               ref={containerRef}
               tabIndex={0}
-              className={`gallery-scroll-container scrollbar-hide flex min-w-0 flex-1 select-none flex-row items-center overflow-x-auto overflow-y-hidden py-8 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+              className={`gallery-scroll-container scrollbar-hide flex min-w-0 flex-1 select-none flex-row items-center overflow-x-auto overflow-y-hidden py-4 sm:py-6 ${hasSingleMemory ? 'justify-center' : ''} ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
               style={
                 {
                   gap: 'var(--gallery-card-gap)',
@@ -453,7 +434,6 @@ export function GalleryExperience({
                   overscrollBehaviorX: 'contain',
                 } as CSSProperties
               }
-              onWheel={handleWheel}
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseUp={finishDrag}
@@ -472,35 +452,43 @@ export function GalleryExperience({
                   )}
                 </div>
               ) : (
-                extendedMemories.map((memory, i) => {
-                  const isPreClone = i < cloneCount;
-                  const isPostClone = i >= cloneCount + totalReal;
-                  const realIndex = isPreClone
-                    ? totalReal - cloneCount + i
-                    : isPostClone
-                      ? i - cloneCount - totalReal
-                      : i - cloneCount;
-
-                  return (
+                <>
+                  {!hasSingleMemory && (
                     <div
-                      key={`${i}-${memory.id}`}
-                      ref={(el) => {
-                        snapChildRefs.current[i] = el;
-                      }}
+                      aria-hidden
                       className="shrink-0"
-                      style={{ scrollSnapAlign: 'center' }}
-                    >
-                      <GalleryMemoryCard
-                        memory={memory}
-                        index={realIndex}
-                        interactive={Boolean(onMemoryOpen)}
-                        onClick={(imageIndex) =>
-                          onMemoryOpen?.(memory.id, imageIndex ?? 0)
-                        }
-                      />
-                    </div>
-                  );
-                })
+                      style={{ width: edgeSpacerWidths.left }}
+                    />
+                  )}
+                  {eraFilteredMemories.map((memory, i) => {
+                    return (
+                      <div
+                        key={`${i}-${memory.id}`}
+                        ref={(el) => {
+                          snapChildRefs.current[i] = el;
+                        }}
+                        className="shrink-0"
+                        style={{ scrollSnapAlign: 'center' }}
+                      >
+                        <GalleryMemoryCard
+                          memory={memory}
+                          index={i}
+                          interactive={Boolean(onMemoryOpen)}
+                          onClick={(imageIndex) =>
+                            onMemoryOpen?.(memory.id, imageIndex ?? 0)
+                          }
+                        />
+                      </div>
+                    );
+                  })}
+                  {!hasSingleMemory && (
+                    <div
+                      aria-hidden
+                      className="shrink-0"
+                      style={{ width: edgeSpacerWidths.right }}
+                    />
+                  )}
+                </>
               )}
             </div>
           )}

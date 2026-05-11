@@ -1,6 +1,10 @@
 'use client';
 
 import { GalleryPolaroid } from '../GalleryPolaroid';
+import {
+  getGalleryLayoutFrameStyle,
+  getGalleryLayoutInnerStyle,
+} from './layout-frame';
 
 interface DualPhotoProps {
   photos: { src: string; alt: string }[];
@@ -21,30 +25,15 @@ export function DualPhoto({
   }
 
   return (
-    <div
-      style={{
-        ['--gallery-layout-scale' as string]:
-          'min(var(--gallery-card-scale, 1), calc((100vw - 3rem) / 620))',
-        width: 'calc(620px * var(--gallery-layout-scale))',
-        height: 'calc(580px * var(--gallery-layout-scale))',
-        maxWidth: '100%',
-      }}
-    >
-      <div
-        className="relative"
-        style={{
-          width: 620,
-          height: 580,
-          transform: 'scale(var(--gallery-layout-scale))',
-          transformOrigin: 'left top',
-        }}
-      >
+    <div style={getGalleryLayoutFrameStyle(620)}>
+      <div className="relative" style={getGalleryLayoutInnerStyle(620)}>
         <GalleryPolaroid
           src={photos[0].src}
           alt={photos[0].alt}
           index={startIndex}
-          offsetX="-20px"
-          offsetY="20px"
+          offsetX="36px"
+          offsetY="42px"
+          hoverDelay={0.16}
           zIndex={1}
           interactive={interactive}
           onClick={() => onPhotoClick?.(0)}
@@ -53,8 +42,9 @@ export function DualPhoto({
           src={photos[1].src}
           alt={photos[1].alt}
           index={startIndex + 1}
-          offsetX="310px"
-          offsetY="0px"
+          offsetX="228px"
+          offsetY="12px"
+          hoverDelay={0.16}
           zIndex={2}
           interactive={interactive}
           onClick={() => onPhotoClick?.(1)}

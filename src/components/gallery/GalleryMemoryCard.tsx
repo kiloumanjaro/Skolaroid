@@ -135,8 +135,8 @@ export function GalleryMemoryCard({
       <div
         className="flex flex-col items-center text-center"
         style={{
-          marginTop: '3rem',
-          gap: '0.4rem',
+          marginTop: '1.5rem',
+          gap: '0.3rem',
         }}
       >
         {/* Avatar + uploader name */}

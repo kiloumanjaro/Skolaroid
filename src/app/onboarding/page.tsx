@@ -6,7 +6,6 @@ import { ChevronRight } from 'lucide-react';
 import { useOnboardUser } from '@/lib/hooks/useOnboardUser';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
 import { useDeleteUser } from '@/lib/hooks/useDeleteUser';
-import { Header } from '@/components/header';
 import { BatchSelectorModal } from '@/components/onboarding/BatchSelectorModal';
 import { CourseSelectorModal } from '@/components/onboarding/CourseSelectorModal';
 import { NameInputModal } from '@/components/onboarding/NameInputModal';
@@ -122,7 +121,6 @@ function OnboardingContent() {
 
   return (
     <div className="flex h-screen w-screen items-center justify-center overflow-hidden bg-gradient-to-br from-background to-secondary">
-      <Header />
       <div className="flex max-h-[90vh] w-full max-w-2xl flex-col px-6 py-8 pt-20">
         {/* Header */}
         <div className="flex flex-shrink-0 items-start justify-between">

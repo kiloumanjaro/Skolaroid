@@ -1,6 +1,10 @@
 'use client';
 
 import { GalleryPolaroid } from '../GalleryPolaroid';
+import {
+  getGalleryLayoutFrameStyle,
+  getGalleryLayoutInnerStyle,
+} from './layout-frame';
 
 interface QuadPhotoProps {
   photos: { src: string; alt: string }[];
@@ -21,30 +25,15 @@ export function QuadPhoto({
   }
 
   return (
-    <div
-      style={{
-        ['--gallery-layout-scale' as string]:
-          'min(var(--gallery-card-scale, 1), calc((100vw - 3rem) / 820))',
-        width: 'calc(820px * var(--gallery-layout-scale))',
-        height: 'calc(640px * var(--gallery-layout-scale))',
-        maxWidth: '100%',
-      }}
-    >
-      <div
-        className="relative"
-        style={{
-          width: 820,
-          height: 640,
-          transform: 'scale(var(--gallery-layout-scale))',
-          transformOrigin: 'left top',
-        }}
-      >
+    <div style={getGalleryLayoutFrameStyle(820)}>
+      <div className="relative" style={getGalleryLayoutInnerStyle(820)}>
         <GalleryPolaroid
           src={photos[0].src}
           alt={photos[0].alt}
           index={startIndex}
-          offsetX="0px"
-          offsetY="30px"
+          offsetX="20px"
+          offsetY="8px"
+          hoverDelay={0.16}
           zIndex={1}
           interactive={interactive}
           onClick={() => onPhotoClick?.(0)}
@@ -53,8 +42,9 @@ export function QuadPhoto({
           src={photos[1].src}
           alt={photos[1].alt}
           index={startIndex + 1}
-          offsetX="460px"
+          offsetX="284px"
           offsetY="0px"
+          hoverDelay={0.16}
           zIndex={2}
           interactive={interactive}
           onClick={() => onPhotoClick?.(1)}
@@ -63,8 +53,9 @@ export function QuadPhoto({
           src={photos[2].src}
           alt={photos[2].alt}
           index={startIndex + 2}
-          offsetX="20px"
-          offsetY="140px"
+          offsetX="116px"
+          offsetY="56px"
+          hoverDelay={0.16}
           zIndex={3}
           interactive={interactive}
           onClick={() => onPhotoClick?.(2)}
@@ -73,8 +64,9 @@ export function QuadPhoto({
           src={photos[3].src}
           alt={photos[3].alt}
           index={startIndex + 3}
-          offsetX="480px"
-          offsetY="110px"
+          offsetX="372px"
+          offsetY="48px"
+          hoverDelay={0.16}
           zIndex={4}
           interactive={interactive}
           onClick={() => onPhotoClick?.(3)}

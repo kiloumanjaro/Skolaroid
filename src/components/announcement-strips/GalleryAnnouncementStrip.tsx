@@ -11,7 +11,7 @@ export function GalleryAnnouncementStrip({
   announcements,
 }: GalleryAnnouncementStripProps) {
   return (
-    <div className="overflow-hidden border-b-2 border-black bg-[#d6efff]">
+    <div className="relative z-20 shrink-0 overflow-hidden border-b-2 border-black bg-[#f6cb48]">
       <AnnouncementMarqueeTrack
         announcements={announcements}
         ariaLabel="Gallery announcements"

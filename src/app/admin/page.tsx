@@ -1248,8 +1248,8 @@ export default function AdminPage() {
           <div className="absolute left-4 top-12 z-20 sm:left-6 sm:top-14">
             <div className="flex items-center gap-6">
               <ShellInlineSidebarToggle />
-              <div className="truncate font-dancing text-3xl text-black sm:text-4xl md:text-5xl">
-                Admin Dashboard
+              <div className="truncate text-3xl text-black sm:text-4xl md:text-5xl">
+                Admin Center
               </div>
             </div>
           </div>

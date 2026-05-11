@@ -1,13 +1,41 @@
 'use client';
 
 import type { CSSProperties } from 'react';
+import {
+  HandGrabbingIcon,
+  HandPointingIcon,
+  HandPeaceIcon,
+  HandPalmIcon,
+  HandFistIcon,
+  HandIcon,
+} from '@phosphor-icons/react';
 import { useAnyPanelOpen } from '@/components/main-shell-sidebar-action';
 import {
-  ANNOUNCEMENT_SEPARATOR,
   ANNOUNCEMENT_SET_COPIES,
   ANNOUNCEMENT_SPEED_PER_ITEM_SECONDS,
   type AnnouncementItem,
 } from './announcement-config';
+
+const HAND_SEPARATORS = [
+  HandFistIcon,
+  HandPointingIcon,
+  HandPalmIcon,
+  HandPeaceIcon,
+  HandGrabbingIcon,
+  HandIcon,
+];
+
+const AnnouncementSeparator = ({ index }: { index: number }) => {
+  const Icon = HAND_SEPARATORS[index % HAND_SEPARATORS.length];
+  return (
+    <Icon
+      size={20}
+      weight="duotone"
+      className="announcement-hand-icon"
+      style={{ flexShrink: 0 }}
+    />
+  );
+};
 
 interface AnnouncementMarqueeTrackProps {
   announcements: AnnouncementItem[];
@@ -56,7 +84,7 @@ export function AnnouncementMarqueeTrack({
             >
               <span>{announcement.text}</span>
               <span className={separatorClassName}>
-                {ANNOUNCEMENT_SEPARATOR}
+                <AnnouncementSeparator index={index} />
               </span>
             </div>
           ))}

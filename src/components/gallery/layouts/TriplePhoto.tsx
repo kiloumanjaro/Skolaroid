@@ -1,6 +1,10 @@
 'use client';
 
 import { GalleryPolaroid } from '../GalleryPolaroid';
+import {
+  getGalleryLayoutFrameStyle,
+  getGalleryLayoutInnerStyle,
+} from './layout-frame';
 
 interface TriplePhotoProps {
   photos: { src: string; alt: string }[];
@@ -21,30 +25,15 @@ export function TriplePhoto({
   }
 
   return (
-    <div
-      style={{
-        ['--gallery-layout-scale' as string]:
-          'min(var(--gallery-card-scale, 1), calc((100vw - 3rem) / 680))',
-        width: 'calc(680px * var(--gallery-layout-scale))',
-        height: 'calc(600px * var(--gallery-layout-scale))',
-        maxWidth: '100%',
-      }}
-    >
-      <div
-        className="relative"
-        style={{
-          width: 680,
-          height: 600,
-          transform: 'scale(var(--gallery-layout-scale))',
-          transformOrigin: 'left top',
-        }}
-      >
+    <div style={getGalleryLayoutFrameStyle(680)}>
+      <div className="relative" style={getGalleryLayoutInnerStyle(680)}>
         <GalleryPolaroid
           src={photos[0].src}
           alt={photos[0].alt}
           index={startIndex}
-          offsetX="0px"
-          offsetY="40px"
+          offsetX="24px"
+          offsetY="48px"
+          hoverDelay={0.16}
           zIndex={1}
           interactive={interactive}
           onClick={() => onPhotoClick?.(0)}
@@ -53,8 +42,9 @@ export function TriplePhoto({
           src={photos[1].src}
           alt={photos[1].alt}
           index={startIndex + 1}
-          offsetX="310px"
-          offsetY="0px"
+          offsetX="188px"
+          offsetY="4px"
+          hoverDelay={0.16}
           zIndex={2}
           interactive={interactive}
           onClick={() => onPhotoClick?.(1)}
@@ -63,8 +53,9 @@ export function TriplePhoto({
           src={photos[2].src}
           alt={photos[2].alt}
           index={startIndex + 2}
-          offsetX="345px"
-          offsetY="30px"
+          offsetX="328px"
+          offsetY="34px"
+          hoverDelay={0.16}
           zIndex={3}
           interactive={interactive}
           onClick={() => onPhotoClick?.(2)}

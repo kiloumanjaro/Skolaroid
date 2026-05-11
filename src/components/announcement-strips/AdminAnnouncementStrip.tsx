@@ -11,7 +11,7 @@ export function AdminAnnouncementStrip({
   announcements,
 }: AdminAnnouncementStripProps) {
   return (
-    <div className="overflow-hidden border-b-2 border-black bg-[#ffd9b8]">
+    <div className="overflow-hidden border-b-2 border-black bg-[#f6cb48]">
       <AnnouncementMarqueeTrack
         announcements={announcements}
         ariaLabel="Admin announcements"
