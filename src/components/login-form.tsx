@@ -42,9 +42,9 @@ export function LoginForm({
       {...props}
     >
       <div className="space-y-1">
-        <h1 className="text-4xl font-normal tracking-tight text-foreground">
+        <h1 className="whitespace-nowrap text-[clamp(1.625rem,5vw,2.25rem)] font-normal tracking-tight text-foreground">
           <span>Welcome to </span>
-          <span className="font-dancing text-5xl font-medium text-skolaroid-blue">
+          <span className="font-dancing text-[clamp(2rem,6vw,3rem)] font-medium text-skolaroid-blue">
             Skolaroid
           </span>
         </h1>
