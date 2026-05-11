@@ -48,6 +48,7 @@ export function DualPhoto({
           zIndex={1}
           interactive={interactive}
           onClick={() => onPhotoClick?.(0)}
+          disableTilt={true}
         />
         <GalleryPolaroid
           src={photos[1].src}
@@ -58,6 +59,7 @@ export function DualPhoto({
           zIndex={2}
           interactive={interactive}
           onClick={() => onPhotoClick?.(1)}
+          disableTilt={true}
         />
       </div>
     </div>

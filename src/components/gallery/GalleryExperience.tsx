@@ -351,9 +351,14 @@ export function GalleryExperience({
     }
   };
 
-  const handleWheel = () => {
+  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     const container = containerRef.current;
     if (!container) return;
+
+    e.preventDefault();
+
+    // Convert vertical scroll to horizontal scroll
+    container.scrollLeft += e.deltaY > 0 ? 50 : -50;
 
     container.style.scrollSnapType = 'none';
 
@@ -454,7 +459,7 @@ export function GalleryExperience({
             <div
               ref={containerRef}
               tabIndex={0}
-              className={`gallery-scroll-container scrollbar-hide flex min-w-0 flex-1 select-none flex-row items-center overflow-x-auto overflow-y-hidden py-8 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+              className={`gallery-scroll-container scrollbar-hide flex min-w-0 flex-1 select-none flex-row items-center overflow-x-auto overflow-y-hidden py-4 sm:py-6 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
               style={
                 {
                   gap: 'var(--gallery-card-gap)',

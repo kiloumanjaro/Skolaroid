@@ -48,6 +48,7 @@ export function TriplePhoto({
           zIndex={1}
           interactive={interactive}
           onClick={() => onPhotoClick?.(0)}
+          disableTilt={true}
         />
         <GalleryPolaroid
           src={photos[1].src}
@@ -58,6 +59,7 @@ export function TriplePhoto({
           zIndex={2}
           interactive={interactive}
           onClick={() => onPhotoClick?.(1)}
+          disableTilt={true}
         />
         <GalleryPolaroid
           src={photos[2].src}
@@ -68,6 +70,7 @@ export function TriplePhoto({
           zIndex={3}
           interactive={interactive}
           onClick={() => onPhotoClick?.(2)}
+          disableTilt={true}
         />
       </div>
     </div>

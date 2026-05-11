@@ -15,6 +15,7 @@ interface GalleryPolaroidProps {
   zIndex?: number;
   interactive?: boolean;
   onClick?: () => void;
+  disableTilt?: boolean;
 }
 
 export function GalleryPolaroid({
@@ -26,10 +27,12 @@ export function GalleryPolaroid({
   zIndex = 1,
   interactive = true,
   onClick,
+  disableTilt = false,
 }: GalleryPolaroidProps) {
   const tilt = useMemo(
-    () => `${TILT_TABLE[index % TILT_TABLE.length]}deg`,
-    [index]
+    () =>
+      disableTilt ? '0deg' : `${TILT_TABLE[index % TILT_TABLE.length]}deg`,
+    [index, disableTilt]
   );
 
   return (
