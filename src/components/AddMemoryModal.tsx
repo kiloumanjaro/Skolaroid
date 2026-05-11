@@ -15,19 +15,21 @@ import {
 } from '@/lib/schemas';
 import { LANDMARKS, type Landmark } from '@/lib/constants/landmarks';
 import {
-  LANDMARK_TYPE_COLORS,
   LANDMARK_TYPE_LABELS,
+  LANDMARK_TYPE_TEXT_COLORS,
 } from '@/lib/constants/landmarks';
 import type { MapLocationSelection } from '@/lib/types/map';
 import {
   ArrowLeft,
   ArrowRight,
+  Building2,
   Check,
   CheckCircle,
   Eye,
   FileText,
   Globe,
   Grid3X3,
+  Languages,
   Info,
   List,
   Loader2,
@@ -36,6 +38,7 @@ import {
   MapPinned,
   Search,
   Shield,
+  Trees,
   Type,
   Upload,
   Users,
@@ -126,6 +129,12 @@ const VISIBILITY_OPTIONS: {
     requiresGroup: true,
   },
 ];
+
+const LANDMARK_TYPE_ICONS = {
+  buildings: Building2,
+  activity: Trees,
+  security: Shield,
+} as const;
 
 // =============================================================================
 // HELPERS
@@ -685,11 +694,11 @@ export function AddMemoryModal({
       </div>
 
       {/* Landmark list */}
-      <div className="flex flex-col gap-1">
+      <div className="flex min-h-0 flex-1 flex-col gap-1">
         <div className="flex items-center justify-between">
           <p className="text-xs font-medium text-muted-foreground"></p>
         </div>
-        <div className="-mr-2 max-h-44 overflow-y-auto pr-2">
+        <div className="-mr-2 flex-1 overflow-y-auto pr-2">
           {filteredLandmarks.length === 0 ? (
             <p className="py-4 text-center text-sm text-muted-foreground">
               No landmarks found
@@ -708,9 +717,14 @@ export function AddMemoryModal({
                       : 'text-foreground hover:bg-secondary'
                   }`}
                 >
-                  <span
-                    className={`h-2 w-2 shrink-0 rounded-full ${LANDMARK_TYPE_COLORS[landmark.type]}`}
-                  />
+                  {(() => {
+                    const Icon = LANDMARK_TYPE_ICONS[landmark.type];
+                    return (
+                      <Icon
+                        className={`h-3.5 w-3.5 shrink-0 ${LANDMARK_TYPE_TEXT_COLORS[landmark.type]}`}
+                      />
+                    );
+                  })()}
                   <span className="flex-1 truncate">{landmark.name}</span>
                   <span className="text-xs text-muted-foreground">
                     {LANDMARK_TYPE_LABELS[landmark.type]}
@@ -840,6 +854,15 @@ export function AddMemoryModal({
         }}
       />
 
+      {/* Empty-state label — removed entirely once files are uploaded */}
+      {completedFiles.length === 0 && (
+        <div className="flex flex-1 items-center justify-center">
+          <p className="text-sm font-medium text-muted-foreground/60">
+            Uploaded memories will appear here
+          </p>
+        </div>
+      )}
+
       {/* Upload progress for files currently uploading */}
       {uploadingFiles.some((f) => f.status === 'uploading') && (
         <div className="space-y-2">
@@ -935,7 +958,7 @@ export function AddMemoryModal({
               {completedFiles.map((f) => (
                 <div
                   key={f.id}
-                  className="group relative aspect-square overflow-hidden rounded-md"
+                  className="group relative aspect-square overflow-hidden rounded-md border-2 border-[#1f1f1f]"
                 >
                   <Image
                     src={f.previewUrl}
@@ -964,7 +987,7 @@ export function AddMemoryModal({
               {completedFiles.map((f) => (
                 <div
                   key={f.id}
-                  className="flex items-center gap-3 rounded-md border-2 border-black p-2"
+                  className="flex items-center gap-3 rounded-md border-2 border-[#1f1f1f] p-2"
                 >
                   <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded">
                     <Image
@@ -1093,11 +1116,10 @@ export function AddMemoryModal({
         {/* Live */}
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-3">
-            <FileText className="mt-0.5 h-5 w-5 text-foreground" />
+            <FileText className="mt-0.5 h-5 w-5 text-muted-foreground" />
             <div>
-              <p className="text-sm font-semibold text-foreground">Live</p>
-              <p className="text-xs text-muted-foreground">
-                2 Months Ago by user
+              <p className="text-sm font-semibold text-muted-foreground">
+                Not uploaded yet
               </p>
             </div>
           </div>
@@ -1112,39 +1134,29 @@ export function AddMemoryModal({
                 Moderation
               </p>
               <p className="text-xs text-muted-foreground">
-                Approved 7 days ago by Kint Borbano
+                {visibility === 'PUBLIC'
+                  ? 'Needs approval'
+                  : 'Does not need approval'}
               </p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={() => {
-              // TODO: Implement view details
-              console.log('[AddMemoryModal] view details clicked');
-            }}
-            className="text-sm font-medium text-skolaroid-blue hover:underline"
-          >
-            View Details
-          </button>
         </div>
 
         {/* English */}
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-3">
-            <Globe className="mt-0.5 h-5 w-5 text-foreground" />
+            <Languages className="mt-0.5 h-5 w-5 text-foreground" />
             <div>
               <p className="text-sm font-semibold text-foreground">English</p>
             </div>
           </div>
           <button
+            // TODO: Implement switch language functionality
             type="button"
-            onClick={() => {
-              // TODO: Implement switch locales
-              console.log('[AddMemoryModal] switch locales clicked');
-            }}
-            className="text-sm font-medium text-skolaroid-blue hover:underline"
+            disabled
+            className="cursor-not-allowed text-sm font-medium text-muted-foreground opacity-50"
           >
-            Switch locales
+            Switch languages
           </button>
         </div>
 

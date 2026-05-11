@@ -324,6 +324,13 @@ export const LANDMARK_TYPE_COLORS: Record<LandmarkType, string> = {
   security: 'bg-amber-600',
 };
 
+/** Tailwind text classes per landmark type */
+export const LANDMARK_TYPE_TEXT_COLORS: Record<LandmarkType, string> = {
+  buildings: 'text-blue-600',
+  activity: 'text-emerald-600',
+  security: 'text-amber-600',
+};
+
 /** Tailwind hover background classes per landmark type */
 export const LANDMARK_TYPE_HOVER_COLORS: Record<LandmarkType, string> = {
   buildings: 'group-hover:bg-blue-500',
