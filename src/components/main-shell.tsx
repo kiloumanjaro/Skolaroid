@@ -839,7 +839,9 @@ export function MainShell({ children }: { children: ReactNode }) {
                           <span className="block h-0.5 w-5 rounded-full bg-current sm:w-6" />
                         </span>
                       </button>
-                      {isAuthenticated && <FloatingNotificationsButton />}
+                      {isAuthenticated && pathname === '/map' && (
+                        <FloatingNotificationsButton />
+                      )}
                     </>
                   )}
 

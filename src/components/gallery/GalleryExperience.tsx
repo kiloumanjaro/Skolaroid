@@ -386,45 +386,56 @@ export function GalleryExperience({
         }}
       />
 
-      <div className="flex h-full flex-col">
+      <div className="relative flex h-full flex-col">
         <GalleryAnnouncementStrip announcements={announcements} />
 
-        <div className="relative flex min-w-0 flex-1">
-          <div className="pointer-events-none absolute right-4 top-4 z-10 flex flex-col items-end gap-2 sm:right-6 sm:top-6">
+        <div
+          className={cn(
+            'pointer-events-none absolute z-30 flex flex-col gap-2',
+            isPublicView
+              ? 'right-4 top-4 items-end sm:right-6 sm:top-6'
+              : 'left-4 top-[6.25rem] items-start sm:left-6 sm:top-32'
+          )}
+        >
+          <div
+            className={cn(
+              'pointer-events-auto relative',
+              isPublicView ? '' : 'mt-0'
+            )}
+          >
             {showPublicBadge && (
               <span className="pointer-events-auto border-2 border-black bg-[#fff4a8] px-3 py-1 font-hand text-xs uppercase tracking-[0.14em] text-foreground shadow-[2px_2px_0px_0px_#2d2d2d]">
                 Public Museum
               </span>
             )}
 
-            <div className="pointer-events-auto relative">
-              <button
-                onClick={handleCopyLink}
-                aria-label="Copy shareable link"
+            <button
+              onClick={handleCopyLink}
+              aria-label="Copy shareable link"
+              type="button"
+              className="group relative h-10 w-10 overflow-hidden border-2 border-black bg-card transition-colors sm:h-14 sm:w-14 sm:border-[3px]"
+            >
+              <div className="absolute inset-0 bg-card transition-all group-hover:bg-[#f6cb48] group-active:bg-[#f6cb48]" />
+              <span className="relative flex h-full w-full items-center justify-center text-foreground">
+                <Link2 className="h-5 w-5 sm:h-6 sm:w-6" />
+              </span>
+            </button>
+
+            {copiedLink && (
+              <span
+                aria-live="polite"
                 className={cn(
-                  'flex aspect-square items-center justify-center gap-2 border-2 border-black bg-white p-1.5 font-hand text-sm transition-[box-shadow,transform] duration-75 sm:aspect-auto sm:px-4 sm:py-1.5',
-                  'shadow-[4px_4px_0px_0px_#2d2d2d]',
-                  'hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#2d2d2d]',
-                  'active:translate-x-[4px] active:translate-y-[4px] active:shadow-none'
+                  'absolute -bottom-8 whitespace-nowrap border-2 border-black bg-white px-2 py-0.5 font-hand text-xs shadow-[2px_2px_0px_0px_#2d2d2d]',
+                  isPublicView ? 'right-0' : 'left-0'
                 )}
               >
-                <span className="hidden sm:inline">
-                  {copiedLink ? 'Copied!' : 'Copy Link'}
-                </span>
-                <Link2 className="h-4 w-4" />
-              </button>
-
-              {copiedLink && (
-                <span
-                  aria-live="polite"
-                  className="absolute -bottom-8 right-0 whitespace-nowrap border-2 border-black bg-white px-2 py-0.5 font-hand text-xs shadow-[2px_2px_0px_0px_#2d2d2d]"
-                >
-                  Link copied!
-                </span>
-              )}
-            </div>
+                Copied!
+              </span>
+            )}
           </div>
+        </div>
 
+        <div className="relative flex min-w-0 flex-1">
           {isLoading && (
             <div className="flex flex-1 items-center justify-center">
               <p className="text-lg text-gray-600">Loading memories...</p>
