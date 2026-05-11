@@ -647,6 +647,11 @@ function HomeContent() {
     startCanvasDrag(touch.clientX, touch.clientY);
   };
 
+  const openLoginModal = () => {
+    setDrawerOpen(false);
+    setLoginOpen(true);
+  };
+
   return (
     <main className="relative flex min-h-screen w-full items-center justify-center overflow-hidden">
       {/* ── Auth error banner ── */}
@@ -683,7 +688,7 @@ function HomeContent() {
         ) : isAuthenticated ? (
           <AccountMenu />
         ) : (
-          <Button onClick={() => setLoginOpen(true)} size="sm">
+          <Button onClick={openLoginModal} size="sm">
             Sign in
           </Button>
         )}
@@ -701,7 +706,7 @@ function HomeContent() {
         setDrawerOpen={setDrawerOpen}
         isDragging={isSidebarDragging}
         isAuthenticated={isAuthenticated}
-        setLoginOpen={setLoginOpen}
+        setLoginOpen={openLoginModal}
         eras={ERAS}
         onMouseDown={handleSidebarMouseDown}
         drawerContentRef={drawerContentRef}
