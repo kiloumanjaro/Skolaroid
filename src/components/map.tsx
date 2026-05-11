@@ -49,6 +49,11 @@ import type {
   GroupFilterOption,
   LocationFilterOption,
 } from './map/filter-memory-types';
+import {
+  applyMemoryFilters,
+  filterMemoriesByEra,
+  sortMemories,
+} from '@/lib/memory-view-filters';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
@@ -89,6 +94,7 @@ const DEFAULT_MAP_ZOOM = 17;
 const EMPTY_USER_GROUPS: { id: string; name: string }[] = [];
 
 interface MapComponentProps {
+  activeEraFromUrl: number;
   filters: MemoryFilters;
   onFiltersChange: (filters: MemoryFilters) => void;
   onMemoryDetailOpenRequest?: () => Promise<void> | void;
@@ -96,6 +102,7 @@ interface MapComponentProps {
 }
 
 export function MapComponent({
+  activeEraFromUrl,
   filters,
   onFiltersChange,
   onMemoryDetailOpenRequest,
@@ -115,7 +122,7 @@ export function MapComponent({
   const [groupModalOpen, setGroupModalOpen] = useState(false);
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
   const [batchesModalOpen, setBatchesModalOpen] = useState(false);
-  const [activeMapEra, setActiveMapEra] = useState(2020);
+  const [activeMapEra, setActiveMapEra] = useState(activeEraFromUrl);
   const [selectedLandmark, setSelectedLandmark] = useState<Landmark | null>(
     null
   );
@@ -143,18 +150,11 @@ export function MapComponent({
   // Pending memory for the flyTo → open detail flow
   const pendingMemoryRef = useRef<MemoryWithCoordinates | null>(null);
 
-  // Read era URL parameter on mount (for homepage → map navigation)
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const eraParam = params.get('era');
-
-    if (eraParam) {
-      const eraValue = parseInt(eraParam, 10);
-      if (!isNaN(eraValue)) {
-        setActiveMapEra(eraValue);
-      }
+    if (activeMapEra !== activeEraFromUrl) {
+      setActiveMapEra(activeEraFromUrl);
     }
-  }, []); // Empty deps - only run on mount
+  }, [activeEraFromUrl, activeMapEra]);
 
   const { data: countsData } = useMemoryCountsByLandmark();
   const memoryCounts = useMemo(() => countsData?.data ?? {}, [countsData]);
@@ -183,21 +183,10 @@ export function MapComponent({
     [userGroups]
   );
 
-  // Only show memory pins for the active era (based on batch tag)
-  const eraFilteredMemories = useMemo(() => {
-    return memories.filter((memory) => {
-      if (
-        memory.moderationStatus === 'REJECTED' ||
-        memory.moderationStatus === 'REMOVED'
-      ) {
-        return false;
-      }
-
-      return (
-        getEraFromBatchTag(memory.tags ?? [], memory.createdAt) === activeMapEra
-      );
-    });
-  }, [memories, activeMapEra]);
+  const eraFilteredMemories = useMemo(
+    () => filterMemoriesByEra(memories, activeMapEra),
+    [memories, activeMapEra]
+  );
 
   const selectedMemoryIndex = useMemo(
     () =>
@@ -213,84 +202,15 @@ export function MapComponent({
       ? memories[selectedMemoryIndex + 1]
       : null;
 
-  const tagFilteredMemories = useMemo(() => {
-    return eraFilteredMemories.filter((memory) => {
-      // ── SEARCH FILTER (live, applied first) ────────────────────────────────
-      if (filters.searchQuery && filters.searchQuery.trim()) {
-        const q = filters.searchQuery.toLowerCase().trim();
-        const inTitle = (memory.title ?? '').toLowerCase().includes(q);
-        const inDesc = (memory.description ?? '').toLowerCase().includes(q);
-        const inLocation = (
-          (memory.location as { buildingName?: string } | undefined)
-            ?.buildingName ?? ''
-        )
-          .toLowerCase()
-          .includes(q);
-        const inTags = (memory.tags ?? []).some((t) =>
-          t.name.toLowerCase().includes(q)
-        );
-        if (!inTitle && !inDesc && !inLocation && !inTags) return false;
-      }
+  const tagFilteredMemories = useMemo(
+    () => applyMemoryFilters(eraFilteredMemories, filters),
+    [eraFilteredMemories, filters]
+  );
 
-      // ── TAG FILTER (unchanged) ─────────────────────────────────────────────
-      if (filters.selectedTags.length > 0) {
-        const memoryTagNames = memory.tags?.map((t) => t.name) ?? [];
-        const hasAllTags = filters.selectedTags.every((tag) =>
-          memoryTagNames.includes(tag)
-        );
-        if (!hasAllTags) return false;
-      }
-
-      // ── YEAR FILTER (unchanged) ────────────────────────────────────────────
-      if (filters.selectedYear) {
-        const memoryDateValue = (memory as { memoryDate?: string }).memoryDate;
-        const memoryYear = memoryDateValue
-          ? new Date(memoryDateValue).getFullYear()
-          : new Date(memory.createdAt ?? Date.now()).getFullYear();
-        if (memoryYear !== filters.selectedYear) return false;
-      }
-
-      // ── VISIBILITY FILTER (unchanged) ─────────────────────────────────────
-      if (filters.visibility !== 'ALL') {
-        if (memory.visibility !== filters.visibility) return false;
-      }
-
-      // ── GROUP FILTER (unchanged) ───────────────────────────────────────────
-      if (filters.selectedGroupId) {
-        if (memory.privateGroupId !== filters.selectedGroupId) return false;
-      }
-
-      // ── LOCATION FILTER (unchanged) ───────────────────────────────────────
-      if (filters.selectedLocationId) {
-        const locationId = (memory.location as { id?: string } | undefined)?.id;
-        if (locationId !== filters.selectedLocationId) return false;
-      }
-
-      return true;
-    });
-  }, [eraFilteredMemories, filters]);
-
-  const sortedMemories = useMemo(() => {
-    const sorted = [...tagFilteredMemories];
-    switch (filters.sortBy) {
-      case 'date-newest':
-        return sorted.sort((a, b) => {
-          const aDate = new Date(a.createdAt ?? Date.now()).getTime();
-          const bDate = new Date(b.createdAt ?? Date.now()).getTime();
-          return bDate - aDate;
-        });
-      case 'date-oldest':
-        return sorted.sort((a, b) => {
-          const aDate = new Date(a.createdAt ?? Date.now()).getTime();
-          const bDate = new Date(b.createdAt ?? Date.now()).getTime();
-          return aDate - bDate;
-        });
-      case 'upvotes-high':
-      case 'upvotes-low':
-      default:
-        return sorted;
-    }
-  }, [tagFilteredMemories, filters.sortBy]);
+  const sortedMemories = useMemo(
+    () => sortMemories(tagFilteredMemories, filters.sortBy),
+    [tagFilteredMemories, filters.sortBy]
+  );
 
   const displayedMemories = sortedMemories;
 

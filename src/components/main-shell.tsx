@@ -41,6 +41,7 @@ import {
   useUnreadNotificationCount,
 } from '@/lib/hooks/useNotifications';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
+import { copyMemoryViewSearchParams } from '@/lib/memory-view-filters';
 import { cn } from '@/lib/utils';
 
 const shellRoutes = ['/map', '/gallery', '/profile', '/admin', '/about'];
@@ -445,12 +446,25 @@ function ShellSidebar({
   onNavigate: (href: string) => void;
 }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const visibleNavItems = isAdmin
     ? navItems
     : navItems.filter((item) => item.href !== '/admin');
   const adminNavItem = visibleNavItems.find((item) => item.href === '/admin');
   const primaryNavItems = visibleNavItems.filter(
     (item) => item.href !== '/admin'
+  );
+  const resolveNavHref = useCallback(
+    (href: string) => {
+      if (href !== '/map' && href !== '/gallery') {
+        return href;
+      }
+
+      const nextParams = copyMemoryViewSearchParams(searchParams);
+      const nextSearch = nextParams.toString();
+      return nextSearch ? `${href}?${nextSearch}` : href;
+    },
+    [searchParams]
   );
 
   return (
@@ -475,14 +489,15 @@ function ShellSidebar({
         {primaryNavItems.map((item) => {
           const isActive =
             pathname === item.href || pathname.startsWith(`${item.href}/`);
+          const resolvedHref = resolveNavHref(item.href);
 
           return (
             <Link
               key={item.href}
-              href={item.href}
+              href={resolvedHref}
               onClick={(event) => {
                 event.preventDefault();
-                onNavigate(item.href);
+                onNavigate(resolvedHref);
               }}
               className={`group relative flex h-12 items-center gap-3 overflow-hidden px-3 transition-all duration-300 ease-in-out ${
                 isActive
@@ -533,14 +548,15 @@ function ShellSidebar({
             const isActive =
               pathname === adminNavItem.href ||
               pathname.startsWith(`${adminNavItem.href}/`);
+            const resolvedHref = resolveNavHref(adminNavItem.href);
 
             return (
               <Link
                 key={adminNavItem.href}
-                href={adminNavItem.href}
+                href={resolvedHref}
                 onClick={(event) => {
                   event.preventDefault();
-                  onNavigate(adminNavItem.href);
+                  onNavigate(resolvedHref);
                 }}
                 className={`group relative flex h-12 items-center gap-3 overflow-hidden px-3 transition-all duration-300 ease-in-out ${
                   isActive
