@@ -155,7 +155,6 @@ export function GalleryExperience({
   const scrollLeftRef = useRef(0);
   const snapChildRefs = useRef<(HTMLDivElement | null)[]>([]);
   const isTeleporting = useRef(false);
-  const wheelTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const eraFilteredMemories = useMemo(
     () =>
@@ -351,24 +350,6 @@ export function GalleryExperience({
     }
   };
 
-  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    e.preventDefault();
-
-    // Convert vertical scroll to horizontal scroll
-    container.scrollLeft += e.deltaY > 0 ? 50 : -50;
-
-    container.style.scrollSnapType = 'none';
-
-    if (wheelTimeoutRef.current) clearTimeout(wheelTimeoutRef.current);
-    wheelTimeoutRef.current = setTimeout(() => {
-      container.style.scrollSnapType = '';
-      scrollToCard(getClosestCardIndex());
-    }, 150);
-  };
-
   return (
     <>
       {!isPublicView && <ShellBatchesSidebarAction era={activeEra} />}
@@ -469,7 +450,6 @@ export function GalleryExperience({
                   overscrollBehaviorX: 'contain',
                 } as CSSProperties
               }
-              onWheel={handleWheel}
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseUp={finishDrag}

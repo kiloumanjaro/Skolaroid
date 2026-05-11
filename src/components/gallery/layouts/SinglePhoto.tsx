@@ -1,6 +1,10 @@
 'use client';
 
 import { GalleryPolaroid } from '../GalleryPolaroid';
+import {
+  SINGLE_STACK_FRAME_HEIGHT,
+  SINGLE_STACK_FRAME_OFFSET_Y,
+} from './layout-frame';
 
 interface SinglePhotoProps {
   photo: { src: string; alt: string };
@@ -20,13 +24,15 @@ export function SinglePhoto({
       style={{
         position: 'relative',
         width: 'var(--polaroid-base)',
-        height: 'calc(var(--polaroid-base) * 1.6)',
+        height: SINGLE_STACK_FRAME_HEIGHT,
       }}
     >
       <GalleryPolaroid
         src={photo.src}
         alt={photo.alt}
         index={startIndex}
+        offsetY={SINGLE_STACK_FRAME_OFFSET_Y}
+        hoverDelay={0.08}
         zIndex={1}
         interactive={interactive}
         onClick={onPhotoClick}

@@ -16,6 +16,7 @@ interface GalleryPolaroidProps {
   interactive?: boolean;
   onClick?: () => void;
   disableTilt?: boolean;
+  hoverDelay?: number;
 }
 
 export function GalleryPolaroid({
@@ -28,6 +29,7 @@ export function GalleryPolaroid({
   interactive = true,
   onClick,
   disableTilt = false,
+  hoverDelay = 0.08,
 }: GalleryPolaroidProps) {
   const tilt = useMemo(
     () =>
@@ -47,11 +49,19 @@ export function GalleryPolaroid({
         zIndex,
         width: 'var(--polaroid-base)',
       }}
+      transition={{
+        duration: 0.2,
+        ease: [0.4, 0, 0.2, 1],
+      }}
       whileHover={{
         scale: 1.08,
         rotate: '0deg',
         zIndex: 50,
-        transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
+        transition: {
+          delay: hoverDelay,
+          duration: 0.28,
+          ease: [0.4, 0, 0.2, 1],
+        },
       }}
       whileTap={{
         scale: 1.05,
