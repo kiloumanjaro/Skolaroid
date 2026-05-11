@@ -74,6 +74,16 @@
     will-change: transform;
   }
 
+  .announcement-hand-icon path:first-child {
+    fill: white;
+    opacity: 1;
+  }
+
+  .announcement-hand-icon path:last-child {
+    stroke: black;
+    stroke-width: 1.5;
+  }
+
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
