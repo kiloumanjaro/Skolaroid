@@ -688,7 +688,12 @@ function HomeContent() {
         ) : isAuthenticated ? (
           <AccountMenu />
         ) : (
-          <Button onClick={openLoginModal} size="sm">
+          <Button
+            onClick={openLoginModal}
+            size="sm"
+            className="hover:bg-primary active:bg-primary"
+            style={{ WebkitTapHighlightColor: 'transparent' }}
+          >
             Sign in
           </Button>
         )}
