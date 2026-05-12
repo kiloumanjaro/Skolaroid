@@ -10,9 +10,12 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  title: 'Skolaroid - Turn Your Memories Into Skolaroids',
+  title: 'Skolaroid',
   description:
     'A living memory platform for University of the Philippines Cebu. Preserve, celebrate, and explore achievements and shared experiences of every batch.',
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 const kalam = Kalam({
