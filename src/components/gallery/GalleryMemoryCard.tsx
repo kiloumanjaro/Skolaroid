@@ -128,7 +128,6 @@ export function GalleryMemoryCard({
   const captionText = memory.description || memory.title;
   const uploaderPhoto = memory.creator?.avatarUrl ?? null;
   const dateUploaded = formatDate(memory.createdAt);
-  const bubbleText = isCaptionRevealed ? captionText : '...';
 
   const handleProfileTap = () => {
     setIsHovered(true);
@@ -223,13 +222,26 @@ export function GalleryMemoryCard({
             </div>
             {isCentered && (
               <div className="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2">
-                <SpeechBubble
-                  width={isCaptionRevealed ? 220 : 72}
-                  message={bubbleText}
-                  visible
-                  tailPosition="center"
-                  className="drop-shadow-sm [&>div]:p-2 [&_p]:text-xs [&_p]:leading-none [&_svg]:h-3"
-                />
+                <div className="relative">
+                  <SpeechBubble
+                    width={isCaptionRevealed ? 220 : 60}
+                    message={isCaptionRevealed ? captionText : ' '}
+                    visible
+                    tailPosition="center"
+                    className={`drop-shadow-sm [&_p]:text-xs [&_p]:leading-none [&_svg]:h-3 ${
+                      isCaptionRevealed
+                        ? '[&>div]:p-2'
+                        : '[&>div]:px-2 [&>div]:py-4'
+                    }`}
+                  />
+                  {!isCaptionRevealed && (
+                    <div className="absolute inset-x-0 top-[calc(50%-5px)] flex items-center justify-center gap-1">
+                      <span className="typing-dot typing-dot-1" />
+                      <span className="typing-dot typing-dot-2" />
+                      <span className="typing-dot typing-dot-3" />
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -249,6 +261,41 @@ export function GalleryMemoryCard({
           </span>
         )}
       </div>
+      <style jsx>{`
+        .typing-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 9999px;
+          background: rgb(156 163 175);
+          animation: gallery-bounce-dot 0.9s ease-in-out infinite;
+        }
+
+        .typing-dot-2 {
+          animation-delay: 0.15s;
+        }
+
+        .typing-dot-3 {
+          animation-delay: 0.3s;
+        }
+
+        @keyframes gallery-bounce-dot {
+          0% {
+            transform: translateY(0);
+          }
+
+          30% {
+            transform: translateY(-5px);
+          }
+
+          60% {
+            transform: translateY(0);
+          }
+
+          100% {
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </div>
   );
 }
