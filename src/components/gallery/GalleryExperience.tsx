@@ -9,7 +9,8 @@ import {
   useState,
   type CSSProperties,
 } from 'react';
-import { Link2 } from 'lucide-react';
+import Link from 'next/link';
+import { House, Link2 } from 'lucide-react';
 import { GalleryAnnouncementStrip } from '@/components/announcement-strips/GalleryAnnouncementStrip';
 import {
   GALLERY_ANNOUNCEMENTS,
@@ -401,12 +402,23 @@ export function GalleryExperience({
       <div className="relative flex h-full flex-col">
         <GalleryAnnouncementStrip announcements={announcements} />
 
+        {isPublicView && (
+          <Link
+            href="/"
+            aria-label="Go to landing page"
+            className="group absolute left-4 top-12 z-30 h-10 w-10 overflow-hidden border-2 border-border transition-colors sm:left-6 sm:top-14 sm:h-14 sm:w-14 sm:border-[3px]"
+          >
+            <div className="absolute inset-0 bg-card transition-all group-hover:bg-[#f6cb48] group-active:bg-[#f6cb48]" />
+            <span className="relative flex h-full w-full items-center justify-center text-foreground">
+              <House className="h-5 w-5 sm:h-6 sm:w-6" />
+            </span>
+          </Link>
+        )}
+
         <div
           className={cn(
-            'pointer-events-none absolute z-30 flex flex-col gap-2',
-            isPublicView
-              ? 'right-4 top-4 items-end sm:right-6 sm:top-6'
-              : 'left-4 top-[6.25rem] items-start sm:left-6 sm:top-32'
+            'pointer-events-none absolute left-4 top-[6.25rem] z-30 flex flex-col items-start gap-2 sm:left-6 sm:top-32',
+            isPublicView && 'hidden'
           )}
         >
           <div
