@@ -2,6 +2,8 @@
 
 import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+
+export const dynamic = 'force-dynamic';
 import { GalleryExperience } from '@/components/gallery/GalleryExperience';
 import { usePublicGalleryMemories } from '@/lib/hooks/usePublicGalleryMemories';
 

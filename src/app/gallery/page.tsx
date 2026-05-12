@@ -2,6 +2,8 @@
 
 import { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+
+export const dynamic = 'force-dynamic';
 import { useMemo } from 'react';
 import { GalleryExperience } from '@/components/gallery/GalleryExperience';
 import { useAllMemoriesWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
