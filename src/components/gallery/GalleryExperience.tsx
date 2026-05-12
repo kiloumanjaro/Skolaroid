@@ -476,16 +476,16 @@ export function GalleryExperience({
                     >
                       <div className="mx-auto flex flex-col items-center justify-center text-center leading-none text-foreground">
                         <p
-                          className="text-2xl font-semibold lowercase tracking-[0.08em] sm:text-3xl"
+                          className="text-3xl font-semibold lowercase tracking-[0.06em] sm:text-4xl lg:text-5xl"
                           style={{ fontFamily: '"Patrick Hand", cursive' }}
                         >
-                          welcome to skolaroid
+                          welcome to {activeEra}s
                         </p>
                         <p
-                          className="mt-2 text-5xl font-normal lowercase sm:text-6xl lg:text-7xl"
+                          className="mt-3 text-7xl font-normal text-primary sm:text-8xl lg:text-[8.5rem]"
                           style={{ fontFamily: '"Grape Nuts", cursive' }}
                         >
-                          gallery
+                          Gallery!
                         </p>
                       </div>
                     </div>
