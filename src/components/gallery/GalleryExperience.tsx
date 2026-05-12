@@ -169,6 +169,25 @@ export function GalleryExperience({
   const snapScrollLeft = (container: HTMLDivElement, child: HTMLDivElement) =>
     child.offsetLeft + child.offsetWidth / 2 - container.clientWidth / 2;
 
+  const snapScrollLeftToAvatar = useCallback(
+    (container: HTMLDivElement, child: HTMLDivElement) => {
+      const avatar = child.querySelector('[data-gallery-avatar]');
+      if (!(avatar instanceof HTMLElement)) {
+        return snapScrollLeft(container, child);
+      }
+
+      const childRect = child.getBoundingClientRect();
+      const avatarRect = avatar.getBoundingClientRect();
+      const avatarCenterWithinChild =
+        avatarRect.left - childRect.left + avatarRect.width / 2;
+
+      return (
+        child.offsetLeft + avatarCenterWithinChild - container.clientWidth / 2
+      );
+    },
+    []
+  );
+
   const getClosestCardIndex = useCallback((): number => {
     const container = containerRef.current;
     if (!container) return 0;
@@ -195,6 +214,19 @@ export function GalleryExperience({
       behavior: 'smooth',
     });
   }, []);
+
+  const scrollToCardAvatar = useCallback(
+    (index: number) => {
+      const container = containerRef.current;
+      const child = snapChildRefs.current[index];
+      if (!container || !child) return;
+      container.scrollTo({
+        left: snapScrollLeftToAvatar(container, child),
+        behavior: 'smooth',
+      });
+    },
+    [snapScrollLeftToAvatar]
+  );
 
   const hasSingleMemory = eraFilteredMemories.length <= 1;
   const hasWelcomePromo = !hasSingleMemory;
@@ -508,6 +540,7 @@ export function GalleryExperience({
                           onClick={(imageIndex) =>
                             onMemoryOpen?.(memory.id, imageIndex ?? 0)
                           }
+                          onProfileClick={() => scrollToCardAvatar(snapIndex)}
                         />
                       </div>
                     );

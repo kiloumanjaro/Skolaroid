@@ -2,7 +2,8 @@
 
 import { GalleryPolaroid } from '../GalleryPolaroid';
 import {
-  SINGLE_STACK_FRAME_HEIGHT,
+  getGalleryLayoutFrameStyle,
+  getGalleryLayoutInnerStyle,
   SINGLE_STACK_FRAME_OFFSET_Y,
 } from './layout-frame';
 
@@ -20,23 +21,19 @@ export function SinglePhoto({
   onPhotoClick,
 }: SinglePhotoProps) {
   return (
-    <div
-      style={{
-        position: 'relative',
-        width: 'var(--polaroid-base)',
-        height: SINGLE_STACK_FRAME_HEIGHT,
-      }}
-    >
-      <GalleryPolaroid
-        src={photo.src}
-        alt={photo.alt}
-        index={startIndex}
-        offsetY={SINGLE_STACK_FRAME_OFFSET_Y}
-        hoverDelay={0.08}
-        zIndex={1}
-        interactive={interactive}
-        onClick={onPhotoClick}
-      />
+    <div style={getGalleryLayoutFrameStyle(280)}>
+      <div className="relative" style={getGalleryLayoutInnerStyle(280)}>
+        <GalleryPolaroid
+          src={photo.src}
+          alt={photo.alt}
+          index={startIndex}
+          offsetY={SINGLE_STACK_FRAME_OFFSET_Y}
+          hoverDelay={0.08}
+          zIndex={1}
+          interactive={interactive}
+          onClick={onPhotoClick}
+        />
+      </div>
     </div>
   );
 }
