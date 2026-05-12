@@ -1246,7 +1246,7 @@ export default function AdminPage() {
       <main className="flex-1 overflow-y-auto bg-background">
         <div className="relative overflow-hidden">
           <div className="absolute left-4 top-12 z-20 sm:left-6 sm:top-14">
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3 sm:gap-4">
               <ShellInlineSidebarToggle />
               <div className="truncate text-3xl text-black sm:text-4xl md:text-5xl">
                 Admin Center
