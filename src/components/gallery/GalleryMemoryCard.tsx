@@ -40,6 +40,9 @@ export function GalleryMemoryCard({
   onClick,
 }: GalleryMemoryCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isCentered, setIsCentered] = useState(false);
+  const [isCaptionRevealed, setIsCaptionRevealed] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLSpanElement>(null);
   const [nameWidth, setNameWidth] = useState(0);
 
@@ -65,6 +68,54 @@ export function GalleryMemoryCard({
     return () => observer.disconnect();
   }, [uploaderName]);
 
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!card || typeof window === 'undefined') return;
+
+    const getScrollParent = (node: HTMLElement): HTMLElement | null => {
+      let current = node.parentElement;
+      while (current) {
+        const styles = window.getComputedStyle(current);
+        if (
+          styles.overflowX === 'auto' ||
+          styles.overflowX === 'scroll' ||
+          styles.overflowX === 'overlay'
+        ) {
+          return current;
+        }
+        current = current.parentElement;
+      }
+      return null;
+    };
+
+    const scrollParent = getScrollParent(card);
+    if (!scrollParent) return;
+
+    const updateCenteredState = () => {
+      const cardRect = card.getBoundingClientRect();
+      const parentRect = scrollParent.getBoundingClientRect();
+      const cardCenter = cardRect.left + cardRect.width / 2;
+      const parentCenter = parentRect.left + parentRect.width / 2;
+      const nextIsCentered = Math.abs(cardCenter - parentCenter) <= 12;
+
+      setIsCentered(nextIsCentered);
+      if (!nextIsCentered) {
+        setIsCaptionRevealed(false);
+      }
+    };
+
+    updateCenteredState();
+    scrollParent.addEventListener('scroll', updateCenteredState, {
+      passive: true,
+    });
+    window.addEventListener('resize', updateCenteredState);
+
+    return () => {
+      scrollParent.removeEventListener('scroll', updateCenteredState);
+      window.removeEventListener('resize', updateCenteredState);
+    };
+  }, []);
+
   const photos = getMemoryMediaURLs(memory).map((src) => ({
     src,
     alt: memory.title,
@@ -77,6 +128,14 @@ export function GalleryMemoryCard({
   const captionText = memory.description || memory.title;
   const uploaderPhoto = memory.creator?.avatarUrl ?? null;
   const dateUploaded = formatDate(memory.createdAt);
+  const bubbleText = isCaptionRevealed ? captionText : '...';
+
+  const handleProfileTap = () => {
+    setIsHovered(true);
+    if (isCentered) {
+      setIsCaptionRevealed(true);
+    }
+  };
 
   // Calculate where the tail of the bubble should mathematically point:
   // The bottom avatar/name container uses gap-2 (8px). Avatar is 36px wide.
@@ -87,7 +146,7 @@ export function GalleryMemoryCard({
   const avatarCenterOffset = -(totalRowWidth / 2) + 18;
 
   return (
-    <div className="flex shrink-0 flex-col items-center">
+    <div ref={cardRef} className="flex shrink-0 flex-col items-center">
       <div className="relative">
         <PolaroidCluster
           photos={photos}
@@ -146,18 +205,32 @@ export function GalleryMemoryCard({
           onMouseLeave={() => setIsHovered(false)}
           onFocus={() => setIsHovered(true)}
           onBlur={() => setIsHovered(false)}
+          onClick={handleProfileTap}
         >
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-border bg-secondary">
-            {uploaderPhoto ? (
-              <Image
-                src={uploaderPhoto}
-                alt={uploaderName ?? 'User avatar'}
-                width={36}
-                height={36}
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <User className="h-4 w-4 text-gray-500" />
+          <div className="relative flex items-center">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-secondary">
+              {uploaderPhoto ? (
+                <Image
+                  src={uploaderPhoto}
+                  alt={uploaderName ?? 'User avatar'}
+                  width={36}
+                  height={36}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <User className="h-4 w-4 text-gray-500" />
+              )}
+            </div>
+            {isCentered && (
+              <div className="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2">
+                <SpeechBubble
+                  width={isCaptionRevealed ? 220 : 72}
+                  message={bubbleText}
+                  visible
+                  tailPosition="center"
+                  className="drop-shadow-sm [&>div]:p-2 [&_p]:text-xs [&_p]:leading-none [&_svg]:h-3"
+                />
+              </div>
             )}
           </div>
           {uploaderName && (
