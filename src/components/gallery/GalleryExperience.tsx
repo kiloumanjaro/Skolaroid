@@ -169,6 +169,25 @@ export function GalleryExperience({
   const snapScrollLeft = (container: HTMLDivElement, child: HTMLDivElement) =>
     child.offsetLeft + child.offsetWidth / 2 - container.clientWidth / 2;
 
+  const snapScrollLeftToAvatar = useCallback(
+    (container: HTMLDivElement, child: HTMLDivElement) => {
+      const avatar = child.querySelector('[data-gallery-avatar]');
+      if (!(avatar instanceof HTMLElement)) {
+        return snapScrollLeft(container, child);
+      }
+
+      const childRect = child.getBoundingClientRect();
+      const avatarRect = avatar.getBoundingClientRect();
+      const avatarCenterWithinChild =
+        avatarRect.left - childRect.left + avatarRect.width / 2;
+
+      return (
+        child.offsetLeft + avatarCenterWithinChild - container.clientWidth / 2
+      );
+    },
+    []
+  );
+
   const getClosestCardIndex = useCallback((): number => {
     const container = containerRef.current;
     if (!container) return 0;
@@ -196,11 +215,28 @@ export function GalleryExperience({
     });
   }, []);
 
+  const scrollToCardAvatar = useCallback(
+    (index: number) => {
+      const container = containerRef.current;
+      const child = snapChildRefs.current[index];
+      if (!container || !child) return;
+      container.scrollTo({
+        left: snapScrollLeftToAvatar(container, child),
+        behavior: 'smooth',
+      });
+    },
+    [snapScrollLeftToAvatar]
+  );
+
+  const hasSingleMemory = eraFilteredMemories.length <= 1;
+  const hasWelcomePromo = !hasSingleMemory;
+  const firstCardSnapIndex = hasWelcomePromo ? 1 : 0;
+
   useLayoutEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const firstCard = snapChildRefs.current[0];
+    const firstCard = snapChildRefs.current[firstCardSnapIndex];
     if (!firstCard || eraFilteredMemories.length === 0) return;
 
     const prev = container.style.scrollBehavior;
@@ -211,12 +247,20 @@ export function GalleryExperience({
     if (bgRef.current) {
       bgRef.current.style.backgroundPositionX = `${-(container.scrollLeft % HORIZON_TILE_PX)}px`;
     }
-  }, [activeEra, eraFilteredMemories.length, HORIZON_TILE_PX]);
+  }, [
+    activeEra,
+    eraFilteredMemories.length,
+    HORIZON_TILE_PX,
+    firstCardSnapIndex,
+  ]);
 
   useLayoutEffect(() => {
     const container = containerRef.current;
-    const firstCard = snapChildRefs.current[0];
-    const lastCard = snapChildRefs.current[eraFilteredMemories.length - 1];
+    const firstCard = snapChildRefs.current[firstCardSnapIndex];
+    const lastCard =
+      snapChildRefs.current[
+        eraFilteredMemories.length - 1 + firstCardSnapIndex
+      ];
 
     if (
       !container ||
@@ -230,8 +274,8 @@ export function GalleryExperience({
 
     const syncSpacerWidths = () => {
       const nextLeft = Math.max(
-        0,
-        (container.clientWidth - firstCard.offsetWidth) / 2
+        firstCard.offsetWidth,
+        container.clientWidth * 0.42
       );
       const nextRight = Math.max(
         0,
@@ -253,7 +297,7 @@ export function GalleryExperience({
     observer.observe(lastCard);
 
     return () => observer.disconnect();
-  }, [eraFilteredMemories]);
+  }, [eraFilteredMemories, firstCardSnapIndex]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -311,7 +355,7 @@ export function GalleryExperience({
   };
 
   const scrollGallery = (direction: 'left' | 'right') => {
-    const total = eraFilteredMemories.length;
+    const total = eraFilteredMemories.length + (hasWelcomePromo ? 1 : 0);
     if (total === 0) return;
     const currentIdx = getClosestCardIndex();
     const nextIdx =
@@ -331,8 +375,6 @@ export function GalleryExperience({
       scrollGallery('right');
     }
   };
-
-  const hasSingleMemory = eraFilteredMemories.length <= 1;
 
   return (
     <>
@@ -453,19 +495,40 @@ export function GalleryExperience({
                 </div>
               ) : (
                 <>
-                  {!hasSingleMemory && (
+                  {hasWelcomePromo && (
                     <div
-                      aria-hidden
-                      className="shrink-0"
-                      style={{ width: edgeSpacerWidths.left }}
-                    />
+                      className="flex shrink-0 items-center justify-center"
+                      ref={(el) => {
+                        snapChildRefs.current[0] = el;
+                      }}
+                      style={{
+                        width: edgeSpacerWidths.left,
+                        scrollSnapAlign: 'center',
+                      }}
+                    >
+                      <div className="mx-auto flex flex-col items-center justify-center text-center leading-none text-foreground">
+                        <p
+                          className="text-3xl font-semibold lowercase tracking-[0.06em] sm:text-4xl lg:text-5xl"
+                          style={{ fontFamily: '"Patrick Hand", cursive' }}
+                        >
+                          welcome to {activeEra}s
+                        </p>
+                        <p
+                          className="mt-3 text-7xl font-normal text-primary sm:text-8xl lg:text-[8.5rem]"
+                          style={{ fontFamily: '"Grape Nuts", cursive' }}
+                        >
+                          Gallery!
+                        </p>
+                      </div>
+                    </div>
                   )}
                   {eraFilteredMemories.map((memory, i) => {
+                    const snapIndex = i + firstCardSnapIndex;
                     return (
                       <div
                         key={`${i}-${memory.id}`}
                         ref={(el) => {
-                          snapChildRefs.current[i] = el;
+                          snapChildRefs.current[snapIndex] = el;
                         }}
                         className="shrink-0"
                         style={{ scrollSnapAlign: 'center' }}
@@ -477,6 +540,7 @@ export function GalleryExperience({
                           onClick={(imageIndex) =>
                             onMemoryOpen?.(memory.id, imageIndex ?? 0)
                           }
+                          onProfileClick={() => scrollToCardAvatar(snapIndex)}
                         />
                       </div>
                     );

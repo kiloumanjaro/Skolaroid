@@ -725,6 +725,23 @@ function HomeContent() {
         />
       )}
 
+      {drawerOpen && (
+        <button
+          type="button"
+          onClick={() => setDrawerOpen(false)}
+          className="fixed left-1/2 top-1/2 z-[135] h-16 w-40 -translate-x-1/2 overflow-hidden border-2 border-border shadow-[4px_4px_0px_0px_#2d2d2d] transition-colors hover:border-skolaroid-blue active:border-skolaroid-blue"
+          style={{
+            marginTop: `${EXPLORE_BUTTON_Y}px`,
+          }}
+          aria-label="Close Skolaroid explorer"
+        >
+          <div className="absolute left-0 top-0 h-16 w-40 bg-card transition-all hover:bg-skolaroid-blue active:bg-skolaroid-blue" />
+          <div className="relative flex h-16 w-40 items-center justify-center text-center text-lg font-medium text-foreground transition-colors hover:text-white active:text-white">
+            Close
+          </div>
+        </button>
+      )}
+
       <div
         className="fixed inset-0 z-10 transition-all duration-300 ease-in-out"
         style={{
