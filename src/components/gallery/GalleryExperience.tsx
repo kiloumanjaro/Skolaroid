@@ -40,7 +40,7 @@ export function GalleryExperience({
   error,
   onMemoryOpen,
   sharePath = '/share/gallery',
-  emptyMessage = 'No memories found for this era',
+  emptyMessage = 'No memories found',
   isPublicView = false,
   announcements = GALLERY_ANNOUNCEMENTS,
   showPublicBadge = false,
@@ -442,7 +442,7 @@ export function GalleryExperience({
             >
               {eraFilteredMemories.length === 0 ? (
                 <div className="mx-auto max-w-md px-6 text-center">
-                  <p className="font-dancing text-3xl italic text-gray-500">
+                  <p className="whitespace-pre-line font-dancing text-3xl italic text-gray-500">
                     {emptyMessage}
                   </p>
                   {isPublicView && (
