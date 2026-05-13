@@ -447,6 +447,70 @@ function ShellSidebar({
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  return (
+    <ShellSidebarLayout
+      isOpen={isOpen}
+      isAuthenticated={isAuthenticated}
+      isAdmin={isAdmin}
+      leadingAction={leadingAction}
+      userAvatar={userAvatar}
+      userName={userName}
+      userBatchLabel={userBatchLabel}
+      onPrimaryAction={onPrimaryAction}
+      onLeadingAction={onLeadingAction}
+      onNavigate={onNavigate}
+      pathname={pathname}
+      searchParams={searchParams}
+    />
+  );
+}
+
+function ShellSidebarFallback(props: {
+  isOpen: boolean;
+  isAuthenticated: boolean;
+  isAdmin: boolean;
+  leadingAction: MainShellSidebarAction | null;
+  userAvatar?: string | null;
+  userName: string;
+  userBatchLabel?: string | null;
+  onPrimaryAction: () => void;
+  onLeadingAction: (action: MainShellSidebarAction) => void;
+  onNavigate: (href: string) => void;
+}) {
+  const pathname = usePathname();
+
+  return (
+    <ShellSidebarLayout {...props} pathname={pathname} searchParams={null} />
+  );
+}
+
+function ShellSidebarLayout({
+  isOpen,
+  isAuthenticated,
+  isAdmin,
+  leadingAction,
+  userAvatar,
+  userName,
+  userBatchLabel,
+  onPrimaryAction,
+  onLeadingAction,
+  onNavigate,
+  pathname,
+  searchParams,
+}: {
+  isOpen: boolean;
+  isAuthenticated: boolean;
+  isAdmin: boolean;
+  leadingAction: MainShellSidebarAction | null;
+  userAvatar?: string | null;
+  userName: string;
+  userBatchLabel?: string | null;
+  onPrimaryAction: () => void;
+  onLeadingAction: (action: MainShellSidebarAction) => void;
+  onNavigate: (href: string) => void;
+  pathname: string;
+  searchParams: ReturnType<typeof useSearchParams> | null;
+}) {
   const visibleNavItems = isAdmin
     ? navItems
     : navItems.filter((item) => item.href !== '/admin');
@@ -457,6 +521,10 @@ function ShellSidebar({
   const resolveNavHref = useCallback(
     (href: string) => {
       if (href !== '/map' && href !== '/gallery') {
+        return href;
+      }
+
+      if (searchParams == null) {
         return href;
       }
 
@@ -802,28 +870,55 @@ export function MainShell({ children }: { children: ReactNode }) {
       <MainShellChromeProvider value={shellChromeContextValue}>
         <div className="h-dvh overflow-hidden bg-[#fcfaf8]">
           <div className="relative flex h-full w-full overflow-hidden">
-            <ShellSidebar
-              isOpen={sidebarOpen}
-              isAuthenticated={isAuthenticated}
-              isAdmin={isAdmin}
-              leadingAction={sidebarAction}
-              userAvatar={userAvatar}
-              userName={userName}
-              userBatchLabel={userBatchLabel}
-              onLeadingAction={(action) => {
-                action.onClick();
-                setSidebarOpen(false);
-              }}
-              onNavigate={handleSidebarNavigation}
-              onPrimaryAction={() => {
-                if (isAuthenticated) {
-                  void handleLogout();
-                  return;
-                }
+            <Suspense
+              fallback={
+                <ShellSidebarFallback
+                  isOpen={sidebarOpen}
+                  isAuthenticated={isAuthenticated}
+                  isAdmin={isAdmin}
+                  leadingAction={sidebarAction}
+                  userAvatar={userAvatar}
+                  userName={userName}
+                  userBatchLabel={userBatchLabel}
+                  onLeadingAction={(action) => {
+                    action.onClick();
+                    setSidebarOpen(false);
+                  }}
+                  onNavigate={handleSidebarNavigation}
+                  onPrimaryAction={() => {
+                    if (isAuthenticated) {
+                      void handleLogout();
+                      return;
+                    }
 
-                setLoginOpen(true);
-              }}
-            />
+                    setLoginOpen(true);
+                  }}
+                />
+              }
+            >
+              <ShellSidebar
+                isOpen={sidebarOpen}
+                isAuthenticated={isAuthenticated}
+                isAdmin={isAdmin}
+                leadingAction={sidebarAction}
+                userAvatar={userAvatar}
+                userName={userName}
+                userBatchLabel={userBatchLabel}
+                onLeadingAction={(action) => {
+                  action.onClick();
+                  setSidebarOpen(false);
+                }}
+                onNavigate={handleSidebarNavigation}
+                onPrimaryAction={() => {
+                  if (isAuthenticated) {
+                    void handleLogout();
+                    return;
+                  }
+
+                  setLoginOpen(true);
+                }}
+              />
+            </Suspense>
 
             <div
               className={`flex min-w-0 flex-1 flex-col p-3 transition-[padding] duration-300 ease-in-out ${
