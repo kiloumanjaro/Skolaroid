@@ -10,10 +10,10 @@ export function AddMemoryButton({ onClick }: AddMemoryButtonProps) {
       <button
         type="button"
         onClick={onClick}
-        className="group relative h-10 w-10 overflow-hidden border-2 border-border transition-all hover:translate-x-[2px] hover:translate-y-[2px] active:translate-x-[4px] active:translate-y-[4px] sm:h-14 sm:w-14 sm:border-[3px]"
+        className="group relative h-10 w-10 overflow-hidden border-2 border-border transition-colors sm:h-14 sm:w-14 sm:border-[3px]"
         aria-label="Add memory"
       >
-        <div className="absolute inset-0 bg-card transition-all group-hover:bg-[#f6cb48] group-active:bg-[#f6cb48]" />
+        <div className="absolute inset-0 bg-card transition-colors group-hover:bg-[#f6cb48] group-active:bg-[#f6cb48]" />
         <span className="relative flex h-full w-full items-center justify-center text-foreground">
           <span className="relative block h-4 w-4 sm:h-5 sm:w-5">
             <span className="absolute left-1/2 top-0 h-full w-[2px] -translate-x-1/2 bg-current" />
