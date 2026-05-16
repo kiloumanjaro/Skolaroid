@@ -8,7 +8,6 @@ import {
   Lock,
   ChevronLeft,
   ChevronRight,
-  MessageSquare,
   X,
   Trash2,
   Flag,
@@ -1286,7 +1285,7 @@ export function MemoryDetailModal({
       <motion.button
         onClick={handlePrevious}
         disabled={!hasPrevious || isFlipping}
-        className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-border bg-card text-black shadow-[3px_3px_0px_0px_#2d2d2d] transition-colors hover:shadow-[4px_4px_0px_0px_#2d2d2d] disabled:cursor-not-allowed disabled:opacity-30"
+        className="flex h-12 w-12 items-center justify-center border-2 border-border bg-card text-black transition-colors active:translate-x-[2px] active:translate-y-[2px] disabled:cursor-not-allowed disabled:opacity-30"
         variants={chevronVariants}
         initial="idle"
         whileHover={hasPrevious ? 'hover' : 'disabled'}
@@ -1466,7 +1465,7 @@ export function MemoryDetailModal({
       <motion.button
         onClick={handleNext}
         disabled={!hasNext || isFlipping}
-        className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-border bg-card text-black shadow-[3px_3px_0px_0px_#2d2d2d] transition-colors hover:shadow-[4px_4px_0px_0px_#2d2d2d] disabled:cursor-not-allowed disabled:opacity-30"
+        className="flex h-12 w-12 items-center justify-center border-2 border-border bg-card text-black transition-colors active:translate-x-[2px] active:translate-y-[2px] disabled:cursor-not-allowed disabled:opacity-30"
         variants={chevronVariants}
         initial="idle"
         whileHover={hasNext ? 'hover' : 'disabled'}
@@ -1704,7 +1703,7 @@ export function MemoryDetailModal({
           type="button"
           onClick={handleMobileLeftChevron}
           disabled={mobileLeftChevronDisabled}
-          className="z-30 flex h-10 w-10 items-center justify-center rounded-full border-2 border-border bg-card text-black shadow-[3px_3px_0px_0px_#2d2d2d] transition-colors hover:shadow-[4px_4px_0px_0px_#2d2d2d] disabled:cursor-not-allowed disabled:opacity-30"
+          className="z-30 flex h-10 w-10 items-center justify-center border-2 border-border bg-card text-black transition-colors active:translate-x-[2px] active:translate-y-[2px] disabled:cursor-not-allowed disabled:opacity-30"
           aria-label={mobileLeftChevronLabel}
         >
           <ChevronLeft className="h-5 w-5" />
@@ -1714,11 +1713,11 @@ export function MemoryDetailModal({
           type="button"
           onClick={handleMobileRightChevron}
           disabled={mobileRightChevronDisabled}
-          className="z-30 flex h-10 w-10 items-center justify-center rounded-full border-2 border-border bg-card text-black shadow-[3px_3px_0px_0px_#2d2d2d] transition-colors hover:shadow-[4px_4px_0px_0px_#2d2d2d] disabled:cursor-not-allowed disabled:opacity-30"
+          className="z-30 flex h-10 w-10 items-center justify-center border-2 border-border bg-card text-black transition-colors active:translate-x-[2px] active:translate-y-[2px] disabled:cursor-not-allowed disabled:opacity-30"
           aria-label={mobileRightChevronLabel}
         >
           {mobileRightShowsComments ? (
-            <MessageSquare className="h-5 w-5" />
+            <MoreHorizontal className="h-5 w-5" />
           ) : (
             <ChevronRight className="h-5 w-5" />
           )}
