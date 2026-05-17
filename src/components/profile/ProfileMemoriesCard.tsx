@@ -132,7 +132,7 @@ export function ProfileMemoriesCard({ userId }: ProfileMemoriesCardProps) {
 
   return (
     <ProfilePanel
-      eyebrow="Archive"
+      eyebrow=""
       title="My Memories"
       description="A flat, pinboard-like view of the stories you have already added."
       accentClassName="bg-[#ffe3b3]"

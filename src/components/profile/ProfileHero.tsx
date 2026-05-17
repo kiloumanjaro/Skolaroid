@@ -2,19 +2,10 @@
 
 import type { User } from '@supabase/supabase-js';
 import Image from 'next/image';
-import {
-  GraduationCap,
-  Mail,
-  ShieldCheck,
-  SquarePen,
-  User as UserIcon,
-} from 'lucide-react';
+import { Mail, SquarePen, User as UserIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { CurrentUserProfile } from '@/lib/hooks/useCurrentUser';
-import {
-  ProfileStatTile,
-  profileFlatButtonClass,
-} from '@/components/profile/profile-shell';
+import { profileFlatButtonClass } from '@/components/profile/profile-shell';
 
 interface ProfileHeroProps {
   user: User | null;
@@ -42,7 +33,6 @@ export function ProfileHero({ user, dbUser, onEditClick }: ProfileHeroProps) {
       : dbUser?.status === 'STUDENT'
         ? 'Student'
         : 'Profile setup';
-  const roleLabel = dbUser?.role === 'ADMIN' ? 'Admin access' : 'Member';
 
   return (
     <section className="overflow-hidden border-2 border-border bg-card shadow-none">
@@ -71,49 +61,13 @@ export function ProfileHero({ user, dbUser, onEditClick }: ProfileHeroProps) {
               </div>
             )}
           </div>
-          <div className="space-y-1">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-foreground/65">
-              Archived Identity
-            </p>
-            <p className="font-kalam text-lg font-bold text-foreground">
-              {memberStatus}
-            </p>
-          </div>
         </div>
 
         <div className="flex flex-col p-6">
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-foreground/60">
-                Student Profile
-              </p>
-              <h1 className="mt-2 break-words font-kalam text-3xl font-bold leading-none text-foreground sm:text-4xl">
-                {displayName}
-              </h1>
-              {email && (
-                <div className="mt-4 flex items-center gap-2 text-sm text-foreground/75">
-                  <Mail className="h-4 w-4 shrink-0" />
-                  <span className="truncate">{email}</span>
-                </div>
-              )}
-              <div className="mt-4 flex flex-wrap gap-2">
-                <div className="border-2 border-border bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
-                  {memberStatus}
-                </div>
-                <div className="border-2 border-border bg-[#ffe3b3] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
-                  {batchLabel}
-                </div>
-                <div className="border-2 border-border bg-[#d6f5df] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
-                  {programName}
-                </div>
-                {dbUser?.role === 'ADMIN' ? (
-                  <div className="border-2 border-border bg-[#ffd7e5] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
-                    Moderator
-                  </div>
-                ) : null}
-              </div>
-            </div>
-
+          <div className="flex items-start justify-between gap-4">
+            <h1 className="mt-2 break-words font-kalam text-3xl font-bold leading-none text-foreground sm:text-4xl">
+              {displayName}
+            </h1>
             <Button
               variant="outline"
               size="sm"
@@ -125,34 +79,32 @@ export function ProfileHero({ user, dbUser, onEditClick }: ProfileHeroProps) {
               Edit Profile
             </Button>
           </div>
-
-          <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            <ProfileStatTile label="Program" value={programName} />
-            <ProfileStatTile
-              label="Batch"
-              value={batchLabel}
-              className="bg-[#fffaf0]"
-            />
-            <ProfileStatTile
-              label="Status"
-              value={
-                <span className="inline-flex items-center gap-2">
-                  <GraduationCap className="h-4 w-4" />
-                  {memberStatus}
-                </span>
-              }
-              className="bg-[#f7fff6]"
-            />
-            <ProfileStatTile
-              label="Access"
-              value={
-                <span className="inline-flex items-center gap-2">
-                  <ShieldCheck className="h-4 w-4" />
-                  {roleLabel}
-                </span>
-              }
-              className="bg-[#fff8fb]"
-            />
+          {email && (
+            <div className="mt-4 flex items-center gap-2 text-sm text-foreground/75">
+              <Mail className="h-4 w-4 shrink-0" />
+              <span className="truncate">{email}</span>
+            </div>
+          )}
+          <div className="mt-4 flex flex-wrap gap-2">
+            <div className="border-2 border-border bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
+              {memberStatus}
+            </div>
+            <div className="border-2 border-border bg-[#ffe3b3] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
+              {batchLabel}
+            </div>
+            <div className="border-2 border-border bg-[#d6f5df] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
+              {programName}
+            </div>
+            {dbUser?.role === 'ADMIN' ? (
+              <div className="border-2 border-border bg-[#ffd7e5] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
+                Moderator
+              </div>
+            ) : null}
+            {dbUser?.studentId ? (
+              <div className="border-2 border-border bg-[#e8e0ff] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
+                {dbUser.studentId}
+              </div>
+            ) : null}
           </div>
         </div>
       </div>

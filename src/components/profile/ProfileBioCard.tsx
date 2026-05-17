@@ -9,7 +9,7 @@ interface ProfileBioCardProps {
 export function ProfileBioCard({ bio }: ProfileBioCardProps) {
   return (
     <ProfilePanel
-      eyebrow="Story"
+      eyebrow=""
       title="About Me"
       description="A quick sketch classmates will see before they open your memories."
       accentClassName="bg-[#ffd7e5]"

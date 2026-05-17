@@ -50,7 +50,7 @@ export function ProfileContactCard({
 
   return (
     <ProfilePanel
-      eyebrow="Connections"
+      eyebrow=""
       title="Contact Deck"
       description="Keep your links handy so batchmates know where to reach you."
       accentClassName="bg-[#d6f5df]"

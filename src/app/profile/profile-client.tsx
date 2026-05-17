@@ -6,7 +6,6 @@ import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
 import { ProfileHero } from '@/components/profile/ProfileHero';
 import { ProfileBioCard } from '@/components/profile/ProfileBioCard';
 import { ProfileContactCard } from '@/components/profile/ProfileContactCard';
-import { ProfileAcademicCard } from '@/components/profile/ProfileAcademicCard';
 import { ProfileActivityCard } from '@/components/profile/ProfileActivityCard';
 import { ProfileSettingsCard } from '@/components/profile/ProfileSettingsCard';
 import { ProfileMemoriesCard } from '@/components/profile/ProfileMemoriesCard';
@@ -86,12 +85,6 @@ export function ProfilePageClient() {
                     linkedinUrl={dbUser?.linkedinUrl}
                     facebookUrl={dbUser?.facebookUrl}
                     contactOther={dbUser?.contactOther}
-                  />
-                  <ProfileAcademicCard
-                    studentId={dbUser?.studentId}
-                    program={dbUser?.programBatch.program.name}
-                    batch={dbUser?.programBatch.batch.year}
-                    status={dbUser?.status}
                   />
                   <ProfileActivityCard
                     userId={dbUser?.id}
