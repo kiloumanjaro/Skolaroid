@@ -334,14 +334,14 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
       {open && (
         <div
           data-state="open"
-          className="fixed inset-0 z-50 bg-[#2d2d2d]/40 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+          className="fixed inset-0 z-40 bg-[#2d2d2d]/40 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
           onClick={() => onOpenChange(false)}
           aria-hidden="true"
         />
       )}
       <div
         className={cn(
-          'pointer-events-none absolute left-1/2 z-20 flex w-[calc(100%-1.5rem)] -translate-x-1/2 justify-center transition-[top,bottom,transform] duration-300 ease-out sm:w-[calc(100%-2.5rem)]',
+          'pointer-events-none absolute left-1/2 z-[60] flex w-[calc(100%-1.5rem)] -translate-x-1/2 justify-center transition-[top,bottom,transform] duration-300 ease-out sm:w-[calc(100%-2.5rem)]',
           open
             ? 'bottom-[5.5rem] sm:bottom-auto sm:top-[47%] sm:-translate-y-1/2'
             : 'bottom-0',
