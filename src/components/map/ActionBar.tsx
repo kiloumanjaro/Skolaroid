@@ -2,21 +2,27 @@
 
 import { Copy, Heart, Share } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import type { MemoryWithRelations } from '@/lib/schemas';
 import { useVoteStatus } from '@/lib/hooks/useVoteStatus';
 import { useToggleVote } from '@/lib/hooks/useToggleVote';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
 import { formatVoteCount } from '@/lib/utils';
+import { useCallback } from 'react';
 
 interface ActionBarProps {
   memory: MemoryWithRelations;
   showReadMore?: boolean;
+  readMoreLabel?: string;
+  isReadMoreDisabled?: boolean;
   onReadMore?: () => void;
 }
 
 export function ActionBar({
   memory,
   showReadMore = false,
+  readMoreLabel = 'Read more',
+  isReadMoreDisabled = false,
   onReadMore,
 }: ActionBarProps) {
   const { isAuthenticated } = useUserAuth();
@@ -40,16 +46,48 @@ export function ActionBar({
     toggleVote.mutate(
       { memoryId: memory.id },
       {
+        onSuccess: () => {
+          toast.success(
+            hasVoted ? 'Removed like from memory' : 'Like a memory'
+          );
+        },
         onError: (err) => {
           const status = (err as Error & { status?: number }).status;
           if (status === 403) {
             setShowOnboardPrompt(true);
             setTimeout(() => setShowOnboardPrompt(false), 3000);
+          } else {
+            toast.error('Failed to update favorite');
           }
         },
       }
     );
   };
+
+  const handleCopyCaption = useCallback(async () => {
+    if (!memory.description) {
+      toast.error('No caption to copy');
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(memory.description);
+      toast.success('Caption copied');
+    } catch (err) {
+      console.error('Failed to copy caption:', err);
+      toast.error('Failed to copy caption');
+    }
+  }, [memory.description]);
+
+  const handleShare = useCallback(async () => {
+    try {
+      const url = `${window.location.origin}/memories/${memory.id}`;
+      await navigator.clipboard.writeText(url);
+      toast.success('Link copied');
+    } catch (err) {
+      console.error('Failed to copy link:', err);
+      toast.error('Failed to copy link');
+    }
+  }, [memory.id]);
 
   const actionButtonBaseClass =
     'flex h-10 w-10 items-center justify-center border-2 border-black bg-white text-black transition-colors disabled:opacity-50';
@@ -61,31 +99,36 @@ export function ActionBar({
       <button
         onClick={handleLike}
         disabled={!isAuthenticated || toggleVote.isPending}
-        className={`flex h-10 min-w-[4.5rem] items-center justify-center gap-2 border-2 border-black px-3 transition-colors disabled:opacity-50 ${
-          !isAuthenticated
-            ? 'cursor-default bg-white text-black'
-            : hasVoted
-              ? 'bg-[#f7d6d5] text-black hover:bg-[#efc1bf]'
-              : 'bg-white text-black hover:bg-[#fff3bf]'
+        className={`flex h-10 min-w-[4.5rem] items-center justify-center gap-2 border-2 border-black bg-white px-3 text-black transition-colors disabled:opacity-50 ${
+          !isAuthenticated ? 'cursor-default' : ''
         }`}
         aria-label={hasVoted ? 'Unlike' : 'Like'}
         aria-pressed={hasVoted}
       >
         <Heart
-          className={`h-5 w-5 transition-all ${hasVoted ? 'fill-current' : ''}`}
+          className="h-5 w-5 transition-all"
+          style={{
+            color: hasVoted ? '#d83b36' : 'currentColor',
+            fill: hasVoted ? '#d83b36' : 'none',
+          }}
         />
         <span className="text-sm font-medium">
           {formatVoteCount(voteCount)}
         </span>
       </button>
 
-      <button className={actionButtonBaseClass} aria-label="Copy">
+      <button
+        onClick={handleCopyCaption}
+        className={actionButtonBaseClass}
+        aria-label="Copy caption"
+      >
         <Copy className="h-5 w-5" />
       </button>
 
       <button
-        className={`${actionButtonBaseClass} text-black hover:bg-[#fff3bf]`}
-        aria-label="Share"
+        onClick={handleShare}
+        className={actionButtonBaseClass}
+        aria-label="Share memory"
       >
         <Share className="h-5 w-5" />
       </button>
@@ -94,10 +137,13 @@ export function ActionBar({
         <button
           type="button"
           onClick={onReadMore}
-          className={`${textActionButtonBaseClass} hover:bg-[#fff3bf]`}
+          disabled={isReadMoreDisabled}
+          className={`${textActionButtonBaseClass} ${
+            isReadMoreDisabled ? 'cursor-default' : 'hover:bg-[#fff3bf]'
+          }`}
           aria-label="Read more caption"
         >
-          Read more
+          {readMoreLabel}
         </button>
       )}
 

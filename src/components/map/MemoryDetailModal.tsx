@@ -52,6 +52,7 @@ import {
   useCallback,
 } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 import {
   coverLeftVariants,
   coverRightVariants,
@@ -91,10 +92,10 @@ interface MemoryDateInfo {
 }
 
 const PAGE_BASE_STYLES =
-  'flex flex-col gap-4 overflow-hidden bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,#fdfbf7_100%)] p-6 px-10 shadow-[inset_0_0_0_2px_rgba(18,18,18,0.85),inset_0_18px_30px_rgba(255,255,255,0.6)]';
+  'flex flex-col gap-3.5 overflow-hidden bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,#fdfbf7_100%)] p-6 px-10 shadow-[inset_0_0_0_2px_rgba(18,18,18,0.85),inset_0_18px_30px_rgba(255,255,255,0.6)]';
 
 const PAGE_FACE_STYLES =
-  'absolute top-0 left-0 flex h-full w-full flex-col gap-4 overflow-hidden bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,#fdfbf7_100%)] p-6 px-10 shadow-[inset_0_0_0_2px_rgba(18,18,18,0.85),inset_0_18px_30px_rgba(255,255,255,0.6)]';
+  'absolute top-0 left-0 flex h-full w-full flex-col gap-3.5 overflow-hidden bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,#fdfbf7_100%)] p-6 px-10 shadow-[inset_0_0_0_2px_rgba(18,18,18,0.85),inset_0_18px_30px_rgba(255,255,255,0.6)]';
 
 const BOOK_WIDTH = 968;
 const BOOK_HEIGHT = 650;
@@ -674,12 +675,32 @@ export function MemoryDetailModal({
   };
 
   function handleCommentSubmit(content: string) {
-    createComment.mutate({ memoryId: memory!.id, content });
-    setCommentText('');
+    createComment.mutate(
+      { memoryId: memory!.id, content },
+      {
+        onSuccess: () => {
+          toast.success('Comment posted');
+          setCommentText('');
+        },
+        onError: () => {
+          toast.error('Failed to post comment');
+        },
+      }
+    );
   }
 
   function handleCommentDelete(commentId: string) {
-    deleteComment.mutate({ commentId, memoryId: memory!.id });
+    deleteComment.mutate(
+      { commentId, memoryId: memory!.id },
+      {
+        onSuccess: () => {
+          toast.success('Comment deleted');
+        },
+        onError: () => {
+          toast.error('Failed to delete comment');
+        },
+      }
+    );
   }
 
   const showCovers = animationPhase !== 'open';
@@ -849,7 +870,7 @@ export function MemoryDetailModal({
                 style={{ borderRadius: 0 }}
                 className={
                   isAutoTag(tag.name)
-                    ? 'border-black bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-black'
+                    ? 'border-black bg-white px-3 py-1 text-[11px] font-semibold tracking-[0.08em] text-black'
                     : 'border-black bg-[#f6cb48] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-black'
                 }
               >
@@ -955,7 +976,7 @@ export function MemoryDetailModal({
 
       {renderAuthorHeader(pageMemory)}
 
-      <div className="relative px-8 py-7">
+      <div className="relative px-8 py-6">
         <div
           className="pointer-events-none absolute inset-[10px] border-2 border-black"
           aria-hidden="true"
@@ -995,8 +1016,10 @@ export function MemoryDetailModal({
       <div className="flex flex-1 flex-col gap-4">
         <ActionBar
           memory={pageMemory}
-          showReadMore={!isCaptionExpanded && isCaptionTruncated}
-          onReadMore={() => setIsCaptionExpanded(true)}
+          showReadMore
+          readMoreLabel={isCaptionExpanded ? 'Read less' : 'Read more'}
+          isReadMoreDisabled={!isCaptionExpanded && !isCaptionTruncated}
+          onReadMore={() => setIsCaptionExpanded((prev) => !prev)}
         />
 
         <CommentSection
