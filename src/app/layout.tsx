@@ -65,7 +65,9 @@ export default function RootLayout({
               borderRadius: '0',
               padding: '16px',
             },
-            classNameToast: 'font-bold text-sm',
+            classNames: {
+              toast: 'font-bold text-sm',
+            },
           }}
         />
       </body>
