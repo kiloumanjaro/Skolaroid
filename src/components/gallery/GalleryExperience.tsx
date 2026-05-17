@@ -20,6 +20,7 @@ import { GalleryMemoryCard } from '@/components/gallery/GalleryMemoryCard';
 import { ShellBatchesSidebarAction } from '@/components/shared/shell/shell-batches-sidebar-action';
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 import { cn, getEraFromBatchTag } from '@/lib/utils';
+import { MemoryLoadingIndicator } from '@/components/shared/MemoryLoadingIndicator';
 
 interface GalleryExperienceProps {
   activeEra: number;
@@ -460,11 +461,7 @@ export function GalleryExperience({
         </div>
 
         <div className="relative flex min-w-0 flex-1">
-          {isLoading && (
-            <div className="flex flex-1 items-center justify-center">
-              <p className="text-lg text-gray-600">Loading memories...</p>
-            </div>
-          )}
+          {isLoading && <MemoryLoadingIndicator />}
 
           {error && (
             <div className="flex flex-1 items-center justify-center">
