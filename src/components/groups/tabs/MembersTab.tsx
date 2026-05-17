@@ -190,7 +190,7 @@ export function MembersTab({
 
   return (
     <>
-      <div className="flex flex-col bg-[#f8f4ea]">
+      <div className="flex h-full min-h-full flex-col bg-[#f8f4ea]">
         {/* Search and Filter Controls */}
         <div className="bg-[#fffdf8] px-2 pt-2 sm:px-3 sm:pt-3">
           <div className="relative">
@@ -236,7 +236,7 @@ export function MembersTab({
         </div>
 
         {/* Members Table */}
-        <div className="flex-1 overflow-x-auto bg-[#fffdf8] px-2 pt-1 sm:px-3">
+        <div className="flex min-h-0 flex-1 flex-col overflow-x-auto bg-[#fffdf8] px-2 pt-1 sm:px-3">
           {filteredMembers.length > 0 ? (
             <table className="w-full table-fixed border-2 border-black sm:table-auto">
               <thead>
@@ -402,7 +402,7 @@ export function MembersTab({
               </tbody>
             </table>
           ) : (
-            <div className="flex flex-col items-center justify-center px-6 py-12">
+            <div className="flex flex-1 -translate-y-8 flex-col items-center justify-center px-6 py-12">
               <div className="border-2 border-black bg-[#fff1bf] p-4">
                 <Search className="h-6 w-6 text-black" />
               </div>
