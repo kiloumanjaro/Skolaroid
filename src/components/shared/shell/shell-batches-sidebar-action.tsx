@@ -3,7 +3,7 @@
 import { Layers } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useMemo } from 'react';
-import { useMainShellSidebarAction } from '@/components/main-shell-sidebar-action';
+import { useMainShellSidebarAction } from '@/components/shared/shell/main-shell-sidebar-action';
 
 interface ShellBatchesSidebarActionProps {
   era?: number;

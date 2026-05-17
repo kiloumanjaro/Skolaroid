@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Kalam, Patrick_Hand, Grape_Nuts } from 'next/font/google';
-import { MainShell } from '@/components/main-shell';
+import { Toaster } from 'sonner';
+import { MainShell } from '@/components/shared/shell/main-shell';
 import { QueryProvider } from '@/providers/query-provider';
 import '@/styles/globals.css';
 
@@ -52,6 +53,23 @@ export default function RootLayout({
         <QueryProvider>
           <MainShell>{children}</MainShell>
         </QueryProvider>
+        <Toaster
+          position="bottom-right"
+          theme="light"
+          toastOptions={{
+            style: {
+              border: '2px solid black',
+              backgroundColor: 'white',
+              color: 'black',
+              boxShadow: 'none',
+              borderRadius: '0',
+              padding: '16px',
+            },
+            classNames: {
+              toast: 'font-bold text-sm',
+            },
+          }}
+        />
       </body>
     </html>
   );

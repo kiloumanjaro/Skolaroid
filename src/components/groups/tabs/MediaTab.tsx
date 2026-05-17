@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { Plus, ImageIcon, Loader2, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { MemoryCard } from '@/components/memory-card';
-import { AddMemoryModal } from '@/components/AddMemoryModal';
+import { MemoryCard } from '@/components/shared/memory/memory-card';
+import { AddMemoryModal } from '@/components/shared/memory/AddMemoryModal';
 import { useGroupMemories } from '@/lib/hooks/useGroupMemories';
 import { Group } from '@/lib/types/group';
 

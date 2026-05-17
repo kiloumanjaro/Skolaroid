@@ -2,8 +2,8 @@
 
 import { X, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { MemoryList } from '@/components/memory-list';
-import { usePanelOpenEffects } from '@/components/main-shell-sidebar-action';
+import { MemoryList } from '@/components/shared/memory/memory-list';
+import { usePanelOpenEffects } from '@/components/shared/shell/main-shell-sidebar-action';
 import {
   type Landmark,
   LANDMARK_TYPE_LABELS,

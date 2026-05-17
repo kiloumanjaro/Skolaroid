@@ -3,7 +3,7 @@
 import { X, RotateCcw, Filter } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
-import { usePanelOpenEffects } from '@/components/main-shell-sidebar-action';
+import { usePanelOpenEffects } from '@/components/shared/shell/main-shell-sidebar-action';
 import {
   type MemoryFilters,
   type SortOption,

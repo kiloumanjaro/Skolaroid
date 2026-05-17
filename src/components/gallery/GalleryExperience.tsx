@@ -17,7 +17,7 @@ import {
   type AnnouncementItem,
 } from '@/components/announcement-strips/announcement-config';
 import { GalleryMemoryCard } from '@/components/gallery/GalleryMemoryCard';
-import { ShellBatchesSidebarAction } from '@/components/shell-batches-sidebar-action';
+import { ShellBatchesSidebarAction } from '@/components/shared/shell/shell-batches-sidebar-action';
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 import { cn, getEraFromBatchTag } from '@/lib/utils';
 

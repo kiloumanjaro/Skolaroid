@@ -11,12 +11,12 @@ import {
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { User, ShieldAlert, X } from 'lucide-react';
-import { BatchSidebar, type Era } from '@/components/batch-sidebar';
+import { BatchSidebar, type Era } from '@/components/home/batch-sidebar';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { LoginForm } from '@/components/login-form';
+import { LoginForm } from '@/components/shared/auth/login-form';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
-import { AccountMenu } from '@/components/account-menu';
-import { SpeechBubble } from '@/components/speech-bubble';
+import { AccountMenu } from '@/components/home/account-menu';
+import { SpeechBubble } from '@/components/shared/display/speech-bubble';
 import { Button } from '@/components/ui/button';
 
 const CANVAS_WIDTH = 1000;

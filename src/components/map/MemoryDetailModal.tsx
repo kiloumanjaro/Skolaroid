@@ -40,17 +40,19 @@ import {
   getMemoryMediaURLs,
   getPrimaryMemoryMediaURL,
 } from '@/lib/memory-media';
+import { PolaroidMediaCarousel } from '@/components/shared/memory/PolaroidMediaCarousel';
 import type { MemoryVisibility } from '@/lib/schemas';
 import Image from 'next/image';
 import {
   useState,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useCallback,
-  type TouchEvent,
 } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 import {
   coverLeftVariants,
   coverRightVariants,
@@ -90,10 +92,10 @@ interface MemoryDateInfo {
 }
 
 const PAGE_BASE_STYLES =
-  'flex flex-col gap-4 overflow-hidden bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,#fdfbf7_100%)] p-6 px-10 shadow-[inset_0_0_0_2px_rgba(18,18,18,0.85),inset_0_18px_30px_rgba(255,255,255,0.6)]';
+  'flex flex-col gap-3.5 overflow-hidden bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,#fdfbf7_100%)] p-6 px-10 shadow-[inset_0_0_0_2px_rgba(18,18,18,0.85),inset_0_18px_30px_rgba(255,255,255,0.6)]';
 
 const PAGE_FACE_STYLES =
-  'absolute top-0 left-0 flex h-full w-full flex-col gap-4 overflow-hidden bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,#fdfbf7_100%)] p-6 px-10 shadow-[inset_0_0_0_2px_rgba(18,18,18,0.85),inset_0_18px_30px_rgba(255,255,255,0.6)]';
+  'absolute top-0 left-0 flex h-full w-full flex-col gap-3.5 overflow-hidden bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,#fdfbf7_100%)] p-6 px-10 shadow-[inset_0_0_0_2px_rgba(18,18,18,0.85),inset_0_18px_30px_rgba(255,255,255,0.6)]';
 
 const BOOK_WIDTH = 968;
 const BOOK_HEIGHT = 650;
@@ -230,111 +232,6 @@ const VISIBILITY_META: Record<
   PRIVATE: { Icon: Lock, label: 'Private' },
 };
 
-type MemoryMediaShape = Pick<
-  MemoryWithCoordinates,
-  'id' | 'title' | 'mediaURLs'
->;
-const SWIPE_THRESHOLD_PX = 48;
-interface PolaroidMediaCarouselProps {
-  memory: MemoryMediaShape;
-  activeIndex: number;
-  onIndexChange?: (nextIndex: number) => void;
-  showControls?: boolean;
-}
-
-function PolaroidMediaCarousel({
-  memory,
-  activeIndex,
-  onIndexChange,
-  showControls = true,
-}: PolaroidMediaCarouselProps) {
-  const mediaURLs = getMemoryMediaURLs(memory);
-  const hasMedia = mediaURLs.length > 0;
-  const canNavigate = showControls && mediaURLs.length > 1 && !!onIndexChange;
-
-  const safeIndex =
-    mediaURLs.length > 0
-      ? ((activeIndex % mediaURLs.length) + mediaURLs.length) % mediaURLs.length
-      : 0;
-
-  const touchStartXRef = useRef<number | null>(null);
-  const touchDeltaXRef = useRef(0);
-
-  const goToIndex = useCallback(
-    (nextIndex: number) => {
-      if (!onIndexChange || mediaURLs.length === 0) return;
-
-      const wrappedIndex =
-        ((nextIndex % mediaURLs.length) + mediaURLs.length) % mediaURLs.length;
-      onIndexChange(wrappedIndex);
-    },
-    [onIndexChange, mediaURLs.length]
-  );
-
-  const handleTouchStart = useCallback(
-    (event: TouchEvent<HTMLDivElement>) => {
-      if (!canNavigate) return;
-
-      touchStartXRef.current = event.touches[0]?.clientX ?? null;
-      touchDeltaXRef.current = 0;
-    },
-    [canNavigate]
-  );
-
-  const handleTouchMove = useCallback(
-    (event: TouchEvent<HTMLDivElement>) => {
-      if (!canNavigate || touchStartXRef.current === null) return;
-
-      const currentX = event.touches[0]?.clientX ?? touchStartXRef.current;
-      touchDeltaXRef.current = currentX - touchStartXRef.current;
-    },
-    [canNavigate]
-  );
-
-  const handleTouchEnd = useCallback(() => {
-    if (!canNavigate) return;
-
-    if (Math.abs(touchDeltaXRef.current) >= SWIPE_THRESHOLD_PX) {
-      if (touchDeltaXRef.current < 0) {
-        goToIndex(safeIndex + 1);
-      } else {
-        goToIndex(safeIndex - 1);
-      }
-    }
-
-    touchStartXRef.current = null;
-    touchDeltaXRef.current = 0;
-  }, [canNavigate, goToIndex, safeIndex]);
-
-  return (
-    <div className="w-full">
-      {hasMedia ? (
-        <div className="border-2 border-black bg-white px-[10px] pb-[60px] pt-[10px]">
-          <div
-            className="relative h-[28rem] w-full overflow-hidden border border-black bg-neutral-100"
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          >
-            <Image
-              src={mediaURLs[safeIndex]}
-              alt={`${memory.title} image ${safeIndex + 1}`}
-              fill
-              className="object-cover"
-            />
-          </div>
-        </div>
-      ) : (
-        <div className="border-2 border-black bg-white px-[10px] pb-[60px] pt-[10px]">
-          <div className="flex h-[28rem] w-full items-center justify-center border border-black bg-neutral-100">
-            <span className="text-xl text-muted-foreground">No image</span>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
 export function MemoryDetailModal({
   memory,
   previousMemory = null,
@@ -383,6 +280,14 @@ export function MemoryDetailModal({
     useState<MobileTransitionMode>(null);
   const [mobileTransitionMemory, setMobileTransitionMemory] =
     useState<MemoryWithCoordinates | null>(null);
+  const [isCaptionExpanded, setIsCaptionExpanded] = useState(false);
+  const [isCommentsCollapsed, setIsCommentsCollapsed] = useState(false);
+  const [captionElement, setCaptionElement] =
+    useState<HTMLParagraphElement | null>(null);
+  const handleCaptionRef = useCallback((node: HTMLParagraphElement | null) => {
+    setCaptionElement(node);
+  }, []);
+  const [isCaptionTruncated, setIsCaptionTruncated] = useState(false);
 
   const getActiveImageIndex = useCallback(
     (mem: MemoryWithCoordinates | null) => {
@@ -445,6 +350,8 @@ export function MemoryDetailModal({
       setMobileTransitionMode(null);
       setMobileTransitionMemory(null);
       setActiveImageIndexByMemoryId({});
+      setIsCaptionExpanded(false);
+      setIsCommentsCollapsed(false);
     }
   }, [open]);
 
@@ -547,7 +454,51 @@ export function MemoryDetailModal({
     setMobileTransitionMode(null);
     setMobileTransitionMemory(null);
     setCommentText('');
+    setIsCaptionExpanded(false);
+    setIsCommentsCollapsed(false);
   }, [memory?.id]);
+
+  useLayoutEffect(() => {
+    if (!open) return;
+
+    const element = captionElement;
+    if (!element) return;
+
+    let rafId = 0;
+
+    const checkTruncation = () => {
+      const currentElement = captionElement;
+      if (!currentElement) return;
+
+      setIsCaptionTruncated(
+        currentElement.scrollHeight > currentElement.clientHeight
+      );
+    };
+
+    const scheduleCheck = () => {
+      window.cancelAnimationFrame(rafId);
+      rafId = window.requestAnimationFrame(checkTruncation);
+    };
+
+    scheduleCheck();
+
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(scheduleCheck)
+        : null;
+    resizeObserver?.observe(element);
+
+    const fonts = document.fonts;
+    fonts?.ready.then(scheduleCheck).catch(() => {});
+
+    window.addEventListener('resize', scheduleCheck);
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      resizeObserver?.disconnect();
+      window.removeEventListener('resize', scheduleCheck);
+    };
+  }, [captionElement, memory?.description, memory?.id, open]);
 
   if (!memory || !dateInfo) return null;
 
@@ -724,12 +675,32 @@ export function MemoryDetailModal({
   };
 
   function handleCommentSubmit(content: string) {
-    createComment.mutate({ memoryId: memory!.id, content });
-    setCommentText('');
+    createComment.mutate(
+      { memoryId: memory!.id, content },
+      {
+        onSuccess: () => {
+          toast.success('Comment posted');
+          setCommentText('');
+        },
+        onError: () => {
+          toast.error('Failed to post comment');
+        },
+      }
+    );
   }
 
   function handleCommentDelete(commentId: string) {
-    deleteComment.mutate({ commentId, memoryId: memory!.id });
+    deleteComment.mutate(
+      { commentId, memoryId: memory!.id },
+      {
+        onSuccess: () => {
+          toast.success('Comment deleted');
+        },
+        onError: () => {
+          toast.error('Failed to delete comment');
+        },
+      }
+    );
   }
 
   const showCovers = animationPhase !== 'open';
@@ -879,8 +850,8 @@ export function MemoryDetailModal({
     const hasMultipleImages = mediaCount > 1;
 
     return (
-      <>
-        <div className="flex flex-1 items-center justify-center">
+      <div className="flex min-h-0 flex-1 flex-col gap-4">
+        <div className="flex min-h-0 flex-1 justify-center overflow-hidden">
           <PolaroidMediaCarousel
             memory={pageMemory}
             activeIndex={activeImageIndex}
@@ -890,8 +861,27 @@ export function MemoryDetailModal({
           />
         </div>
 
+        {pageMemory.tags && pageMemory.tags.length > 0 && (
+          <div className="flex shrink-0 flex-wrap gap-2">
+            {pageMemory.tags.map((tag) => (
+              <Badge
+                key={tag.id}
+                variant="outline"
+                style={{ borderRadius: 0 }}
+                className={
+                  isAutoTag(tag.name)
+                    ? 'border-black bg-white px-3 py-1 text-[11px] font-semibold tracking-[0.08em] text-black'
+                    : 'border-black bg-[#f6cb48] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-black'
+                }
+              >
+                {tag.name}
+              </Badge>
+            ))}
+          </div>
+        )}
+
         {mediaCount > 0 && (
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex shrink-0 items-center justify-between gap-3">
             <button
               type="button"
               onClick={() =>
@@ -927,7 +917,7 @@ export function MemoryDetailModal({
         ) : (
           <RightPageSpineRings shouldScale={showSpineScale} />
         )}
-      </>
+      </div>
     );
   };
 
@@ -946,6 +936,7 @@ export function MemoryDetailModal({
     showSpineScale = false,
     pageSide = 'right',
     showCloseButton = false,
+    measureCaption = true,
   }: {
     pageMemory: MemoryWithCoordinates;
     comments: typeof liveComments;
@@ -961,6 +952,7 @@ export function MemoryDetailModal({
     showSpineScale?: boolean;
     pageSide?: 'left' | 'right';
     showCloseButton?: boolean;
+    measureCaption?: boolean;
   }) => (
     <>
       {showCloseButton && (
@@ -984,7 +976,7 @@ export function MemoryDetailModal({
 
       {renderAuthorHeader(pageMemory)}
 
-      <div className="relative px-8 py-7">
+      <div className="relative px-8 py-6">
         <div
           className="pointer-events-none absolute inset-[10px] border-2 border-black"
           aria-hidden="true"
@@ -1005,40 +997,30 @@ export function MemoryDetailModal({
           className="pointer-events-none absolute bottom-[4px] right-[4px] h-4 w-4 border-2 border-black bg-white"
           aria-hidden="true"
         />
-        <p className="relative z-10 text-center font-dancing text-2xl leading-relaxed text-black">
-          {pageMemory.description || 'A memorable moment...'}
-        </p>
+        <div
+          className={`relative z-10 overflow-hidden transition-all ${
+            isCaptionExpanded ? '' : 'max-h-60'
+          }`}
+        >
+          <p
+            ref={measureCaption ? handleCaptionRef : undefined}
+            className={`text-center font-dancing text-2xl leading-relaxed text-black ${
+              !isCaptionExpanded ? 'line-clamp-3' : ''
+            }`}
+          >
+            {pageMemory.description || 'A memorable moment...'}
+          </p>
+        </div>
       </div>
 
       <div className="flex flex-1 flex-col gap-4">
         <ActionBar
           memory={pageMemory}
-          onReport={() => setReportModalOpen(true)}
+          showReadMore
+          readMoreLabel={isCaptionExpanded ? 'Read less' : 'Read more'}
+          isReadMoreDisabled={!isCaptionExpanded && !isCaptionTruncated}
+          onReadMore={() => setIsCaptionExpanded((prev) => !prev)}
         />
-
-        {pageMemory.tags && pageMemory.tags.length > 0 && (
-          <div className="flex flex-col gap-2">
-            <h3 className="text-sm font-semibold uppercase tracking-[0.08em] text-black">
-              Tags
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {pageMemory.tags.map((tag) => (
-                <Badge
-                  key={tag.id}
-                  variant="outline"
-                  style={{ borderRadius: 0 }}
-                  className={
-                    isAutoTag(tag.name)
-                      ? 'border-black bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-black'
-                      : 'border-black bg-[#f6cb48] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-black'
-                  }
-                >
-                  {tag.name}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        )}
 
         <CommentSection
           comments={comments}
@@ -1052,6 +1034,12 @@ export function MemoryDetailModal({
           onLoadMore={onLoadMore}
           commentText={commentValue}
           onCommentTextChange={onCommentValueChange}
+          isCollapsed={isCommentsCollapsed || isCaptionExpanded}
+          onToggleCollapse={() =>
+            isCaptionExpanded
+              ? setIsCaptionExpanded(false)
+              : setIsCommentsCollapsed(!isCommentsCollapsed)
+          }
         />
       </div>
 
@@ -1170,6 +1158,7 @@ export function MemoryDetailModal({
       onLoadMore: () => {},
       commentValue: '',
       onCommentValueChange: () => {},
+      measureCaption: false,
     });
   };
 
@@ -1403,6 +1392,7 @@ export function MemoryDetailModal({
                     onLoadMore: () => {},
                     commentValue: '',
                     onCommentValueChange: () => {},
+                    measureCaption: false,
                   })}
                 </div>
               </motion.div>
@@ -1440,6 +1430,7 @@ export function MemoryDetailModal({
                     onLoadMore: () => {},
                     commentValue: carriedCommentText.current,
                     onCommentValueChange: () => {},
+                    measureCaption: false,
                   })}
                 </div>
 
@@ -1615,6 +1606,7 @@ export function MemoryDetailModal({
                           commentValue: mobileCarriedCommentText.current,
                           onCommentValueChange: () => {},
                           pageSide: 'left',
+                          measureCaption: false,
                         })}
                   </div>
 
@@ -1684,6 +1676,7 @@ export function MemoryDetailModal({
                           commentValue: '',
                           onCommentValueChange: () => {},
                           pageSide: 'left',
+                          measureCaption: false,
                         })}
                   </div>
                 </motion.div>

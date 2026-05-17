@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { GroupSwitcher, useGroupToast } from '@/components/groups';
-import { usePanelOpenEffects } from '@/components/main-shell-sidebar-action';
+import { usePanelOpenEffects } from '@/components/shared/shell/main-shell-sidebar-action';
 import { CreateGroupModal } from '@/components/groups/CreateGroupModal';
 import { InviteMembersModal } from '@/components/groups/InviteMembersModal';
 import { ShareGroupModal } from '@/components/groups/ShareGroupModal';
