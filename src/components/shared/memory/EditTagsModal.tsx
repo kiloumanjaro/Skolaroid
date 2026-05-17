@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { TagInput } from '@/components/tag-input';
+import { TagInput } from '@/components/shared/forms/tag-input';
 import { useUpdateMemoryTags } from '@/lib/hooks/useUpdateMemoryTags';
 import { MAX_TAGS } from '@/lib/schemas';
 

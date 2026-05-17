@@ -13,19 +13,19 @@ import {
 import { getEraFromBatchTag } from '@/lib/utils';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createRoot, type Root } from 'react-dom/client';
-import { AddMemoryModal } from './AddMemoryModal';
-import { GroupPanel } from './groups/GroupPanel';
+import { AddMemoryModal } from '@/components/shared/memory/AddMemoryModal';
+import { GroupPanel } from '@/components/groups/GroupPanel';
 import { BatchesModal } from './BatchesModal';
-import { useMainShellSidebarAction } from './main-shell-sidebar-action';
-import { LandmarkMarker } from './map/LandmarkMarker';
-import { LandmarkMemoriesPanel } from './map/LandmarkMemoriesPanel';
-import { MemoryPin } from './map/MemoryPin';
-import { MemoryPinStack } from './map/MemoryPinStack';
-import { MemoryDetailModal } from './map/MemoryDetailModal';
+import { useMainShellSidebarAction } from '@/components/shared/shell/main-shell-sidebar-action';
+import { LandmarkMarker } from './LandmarkMarker';
+import { LandmarkMemoriesPanel } from './LandmarkMemoriesPanel';
+import { MemoryPin } from './MemoryPin';
+import { MemoryPinStack } from './MemoryPinStack';
+import { MemoryDetailModal } from './MemoryDetailModal';
 import { useMemoryCountsByLandmark } from '@/lib/hooks/useMemoryCountsByLandmark';
 import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
 import { useMemoriesByCreator } from '@/lib/hooks/useMemoriesByCreator';
-import { MapFirstMemoryPrompt } from './map/MapFirstMemoryPrompt';
+import { MapFirstMemoryPrompt } from './MapFirstMemoryPrompt';
 import {
   useAllMemoriesWithCoordinates,
   type MemoryWithCoordinates,
@@ -38,17 +38,17 @@ import type {
   LocationSelectionMode,
   MapLocationSelection,
 } from '@/lib/types/map';
-import { AddMemoryButton } from './map/AddMemoryButton';
-import { EraSelector } from './map/EraSelector';
-import { MapAnnouncementStrip } from './announcement-strips/MapAnnouncementStrip';
-import { MAP_ANNOUNCEMENTS } from './announcement-strips/announcement-config';
-import { MapLocationSelector } from './map/MapLocationSelector';
-import { FilterPanel } from './map/FilterPanel';
+import { AddMemoryButton } from './AddMemoryButton';
+import { EraSelector } from './EraSelector';
+import { MapAnnouncementStrip } from '../announcement-strips/MapAnnouncementStrip';
+import { MAP_ANNOUNCEMENTS } from '../announcement-strips/announcement-config';
+import { MapLocationSelector } from './MapLocationSelector';
+import { FilterPanel } from './FilterPanel';
 import type {
   MemoryFilters,
   GroupFilterOption,
   LocationFilterOption,
-} from './map/filter-memory-types';
+} from './filter-memory-types';
 import {
   applyMemoryFilters,
   filterMemoriesByEra,

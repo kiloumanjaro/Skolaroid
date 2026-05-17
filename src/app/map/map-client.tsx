@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { MapComponent } from '@/components/map';
+import { MapComponent } from '@/components/map/MapComponent';
 import type { MemoryFilters } from '@/components/map/filter-memory-types';
 import {
   readEraFromSearchParams,

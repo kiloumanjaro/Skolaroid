@@ -14,7 +14,7 @@ import {
   CardFooter,
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { EditTagsModal } from '@/components/EditTagsModal';
+import { EditTagsModal } from '@/components/shared/memory/EditTagsModal';
 import { Pencil } from 'lucide-react';
 import { getPrimaryMemoryMediaURL } from '@/lib/memory-media';
 import { VISIBILITY_LABELS, type MemoryWithRelations } from '@/lib/schemas';

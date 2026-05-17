@@ -5,9 +5,9 @@ import {
 import { AboutHero } from '@/components/about/about-hero';
 import { AboutAnnouncementStrip } from '@/components/announcement-strips/AboutAnnouncementStrip';
 import { ABOUT_ANNOUNCEMENTS } from '@/components/announcement-strips/announcement-config';
-import { AboutCreatorsMarquee } from '@/components/about-creators-marquee';
-import { ShellInlineSidebarToggle } from '@/components/shell-inline-sidebar-toggle';
-import { ShellBatchesSidebarAction } from '@/components/shell-batches-sidebar-action';
+import { AboutCreatorsMarquee } from '@/components/about/about-creators-marquee';
+import { ShellInlineSidebarToggle } from '@/components/shared/shell/shell-inline-sidebar-toggle';
+import { ShellBatchesSidebarAction } from '@/components/shared/shell/shell-batches-sidebar-action';
 import { prisma } from '@/lib/prisma';
 
 const pillars: AboutWorkflowCardProps[] = [

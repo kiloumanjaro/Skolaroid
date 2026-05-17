@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { TagInput } from '@/components/tag-input';
+import { TagInput } from '@/components/shared/forms/tag-input';
 import { useCreateMemory } from '@/lib/hooks/useCreateMemory';
 import { useCreateCustomLocation } from '@/lib/hooks/useCreateCustomLocation';
 import { useLocations } from '@/lib/hooks/useLocations';

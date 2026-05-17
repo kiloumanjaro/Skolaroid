@@ -20,12 +20,12 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { LoginForm } from '@/components/login-form';
+import { LoginForm } from '@/components/shared/auth/login-form';
 import {
   MainShellChromeProvider,
   MainShellSidebarActionProvider,
   type MainShellSidebarAction,
-} from '@/components/main-shell-sidebar-action';
+} from '@/components/shared/shell/main-shell-sidebar-action';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import {
   DropdownMenu,

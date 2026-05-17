@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Kalam, Patrick_Hand, Grape_Nuts } from 'next/font/google';
-import { MainShell } from '@/components/main-shell';
+import { MainShell } from '@/components/shared/shell/main-shell';
 import { QueryProvider } from '@/providers/query-provider';
 import '@/styles/globals.css';
 
