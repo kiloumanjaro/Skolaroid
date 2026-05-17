@@ -385,6 +385,8 @@ export function MemoryDetailModal({
     useState<MemoryWithCoordinates | null>(null);
   const [isCaptionExpanded, setIsCaptionExpanded] = useState(false);
   const [isCommentsCollapsed, setIsCommentsCollapsed] = useState(false);
+  const captionRef = useRef<HTMLParagraphElement>(null);
+  const [isCaptionTruncated, setIsCaptionTruncated] = useState(false);
 
   const getActiveImageIndex = useCallback(
     (mem: MemoryWithCoordinates | null) => {
@@ -554,6 +556,21 @@ export function MemoryDetailModal({
     setIsCaptionExpanded(false);
     setIsCommentsCollapsed(false);
   }, [memory?.id]);
+
+  useEffect(() => {
+    if (!captionRef.current) return;
+
+    const checkTruncation = () => {
+      const element = captionRef.current;
+      if (!element) return;
+
+      setIsCaptionTruncated(element.scrollHeight > element.clientHeight);
+    };
+
+    checkTruncation();
+    window.addEventListener('resize', checkTruncation);
+    return () => window.removeEventListener('resize', checkTruncation);
+  }, [memory?.description]);
 
   if (!memory || !dateInfo) return null;
 
@@ -990,11 +1007,7 @@ export function MemoryDetailModal({
 
       {renderAuthorHeader(pageMemory)}
 
-      <div
-        className={`relative px-8 py-7 transition-all ${
-          isCaptionExpanded ? '' : 'max-h-56 overflow-hidden'
-        }`}
-      >
+      <div className="relative px-8 py-7">
         <div
           className="pointer-events-none absolute inset-[10px] border-2 border-black"
           aria-hidden="true"
@@ -1015,15 +1028,22 @@ export function MemoryDetailModal({
           className="pointer-events-none absolute bottom-[4px] right-[4px] h-4 w-4 border-2 border-black bg-white"
           aria-hidden="true"
         />
-        <p
-          className={`relative z-10 text-center font-dancing text-2xl leading-relaxed text-black ${
-            !isCaptionExpanded ? 'line-clamp-4' : ''
+        <div
+          className={`relative z-10 overflow-hidden transition-all ${
+            isCaptionExpanded ? '' : 'max-h-60'
           }`}
         >
-          {pageMemory.description || 'A memorable moment...'}
-        </p>
-        {!isCaptionExpanded && pageMemory.description && (
-          <div className="absolute bottom-0 left-0 right-0 flex h-12 items-end justify-center bg-gradient-to-t from-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,#fdfbf7_100%)] pb-2">
+          <p
+            ref={captionRef}
+            className={`text-center font-dancing text-2xl leading-relaxed text-black ${
+              !isCaptionExpanded ? 'line-clamp-3' : ''
+            }`}
+          >
+            {pageMemory.description || 'A memorable moment...'}
+          </p>
+        </div>
+        {!isCaptionExpanded && isCaptionTruncated && (
+          <div className="mt-2 flex justify-center">
             <button
               type="button"
               onClick={() => setIsCaptionExpanded(true)}
@@ -1036,37 +1056,33 @@ export function MemoryDetailModal({
       </div>
 
       <div className="flex flex-1 flex-col gap-4">
-        {!isCaptionExpanded && (
-          <>
-            <ActionBar
-              memory={pageMemory}
-              onReport={() => setReportModalOpen(true)}
-            />
+        <ActionBar
+          memory={pageMemory}
+          onReport={() => setReportModalOpen(true)}
+        />
 
-            {pageMemory.tags && pageMemory.tags.length > 0 && (
-              <div className="flex flex-col gap-2">
-                <h3 className="text-sm font-semibold uppercase tracking-[0.08em] text-black">
-                  Tags
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {pageMemory.tags.map((tag) => (
-                    <Badge
-                      key={tag.id}
-                      variant="outline"
-                      style={{ borderRadius: 0 }}
-                      className={
-                        isAutoTag(tag.name)
-                          ? 'border-black bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-black'
-                          : 'border-black bg-[#f6cb48] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-black'
-                      }
-                    >
-                      {tag.name}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            )}
-          </>
+        {pageMemory.tags && pageMemory.tags.length > 0 && (
+          <div className="flex flex-col gap-2">
+            <h3 className="text-sm font-semibold uppercase tracking-[0.08em] text-black">
+              Tags
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {pageMemory.tags.map((tag) => (
+                <Badge
+                  key={tag.id}
+                  variant="outline"
+                  style={{ borderRadius: 0 }}
+                  className={
+                    isAutoTag(tag.name)
+                      ? 'border-black bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-black'
+                      : 'border-black bg-[#f6cb48] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-black'
+                  }
+                >
+                  {tag.name}
+                </Badge>
+              ))}
+            </div>
+          </div>
         )}
 
         <CommentSection
@@ -1082,7 +1098,11 @@ export function MemoryDetailModal({
           commentText={commentValue}
           onCommentTextChange={onCommentValueChange}
           isCollapsed={isCommentsCollapsed || isCaptionExpanded}
-          onToggleCollapse={() => setIsCommentsCollapsed(!isCommentsCollapsed)}
+          onToggleCollapse={() =>
+            isCaptionExpanded
+              ? setIsCaptionExpanded(false)
+              : setIsCommentsCollapsed(!isCommentsCollapsed)
+          }
         />
       </div>
 
