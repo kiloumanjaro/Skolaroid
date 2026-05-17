@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Trash2 } from 'lucide-react';
+import { Trash2, ChevronUp, ChevronDown } from 'lucide-react';
 import { User } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { formatRelativeDate } from '@/lib/utils/format-date';
@@ -21,6 +21,10 @@ interface CommentSectionProps {
   commentText?: string;
   /** Change handler for controlled text. */
   onCommentTextChange?: (text: string) => void;
+  /** Whether the comment list is collapsed/hidden. */
+  isCollapsed?: boolean;
+  /** Callback when collapse/expand chevron is clicked. */
+  onToggleCollapse?: () => void;
 }
 
 export function CommentSection({
@@ -35,21 +39,35 @@ export function CommentSection({
   onLoadMore,
   commentText,
   onCommentTextChange,
+  isCollapsed = false,
+  onToggleCollapse,
 }: CommentSectionProps) {
   return (
     <div className="flex flex-1 flex-col gap-2">
       {/* Header */}
-      <div className="flex items-center gap-2">
-        <h3 className="text-sm font-semibold uppercase tracking-[0.08em] text-foreground">
-          Comments
-        </h3>
-        <span className="text-sm font-semibold uppercase tracking-[0.08em] text-black/60">
-          {commentCount}
-        </span>
-      </div>
+      <button
+        type="button"
+        onClick={onToggleCollapse}
+        className="flex items-center justify-between px-0.5 py-1 hover:bg-neutral-50"
+      >
+        <div className="flex items-center gap-2">
+          <h3 className="text-sm font-semibold uppercase tracking-[0.08em] text-foreground">
+            Comments
+          </h3>
+          <span className="text-sm font-semibold uppercase tracking-[0.08em] text-black/60">
+            {commentCount}
+          </span>
+        </div>
+        {onToggleCollapse &&
+          (isCollapsed ? (
+            <ChevronDown className="h-4 w-4 shrink-0 text-black" />
+          ) : (
+            <ChevronUp className="h-4 w-4 shrink-0 text-black" />
+          ))}
+      </button>
 
       {/* Comment list */}
-      {(comments.length > 0 || hasMore) && (
+      {!isCollapsed && (comments.length > 0 || hasMore) && (
         <div className="mt-2 flex max-h-48 flex-col gap-3 overflow-y-auto pr-1">
           {comments.map((comment) => (
             <div key={comment.id} className="flex items-start gap-2">
@@ -101,8 +119,8 @@ export function CommentSection({
         </div>
       )}
 
-      {/* Input — only shown when authenticated */}
-      {currentUserId && (
+      {/* Input — only shown when authenticated and not collapsed */}
+      {!isCollapsed && currentUserId && (
         <div className="mt-2">
           <CommentInput
             onSubmit={onSubmit}
