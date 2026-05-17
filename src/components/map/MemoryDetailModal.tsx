@@ -307,11 +307,12 @@ function PolaroidMediaCarousel({
   }, [canNavigate, goToIndex, safeIndex]);
 
   return (
-    <div className="w-full">
-      {hasMedia ? (
-        <div className="border-2 border-black bg-white px-[10px] pb-[60px] pt-[10px]">
+    <div className="flex h-full w-full max-w-sm flex-col">
+      <div className="flex h-full flex-col border-2 border-black bg-white px-[10px] pb-[60px] pt-[10px]">
+        {hasMedia ? (
           <div
-            className="relative h-[28rem] w-full overflow-hidden border border-black bg-neutral-100"
+            className="relative flex-1 overflow-hidden border border-black bg-neutral-100"
+            style={{ aspectRatio: '1/1' }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
@@ -323,14 +324,15 @@ function PolaroidMediaCarousel({
               className="object-cover"
             />
           </div>
-        </div>
-      ) : (
-        <div className="border-2 border-black bg-white px-[10px] pb-[60px] pt-[10px]">
-          <div className="flex h-[28rem] w-full items-center justify-center border border-black bg-neutral-100">
+        ) : (
+          <div
+            className="flex flex-1 items-center justify-center border border-black bg-neutral-100"
+            style={{ aspectRatio: '1/1' }}
+          >
             <span className="text-xl text-muted-foreground">No image</span>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
@@ -902,8 +904,8 @@ export function MemoryDetailModal({
     const hasMultipleImages = mediaCount > 1;
 
     return (
-      <>
-        <div className="flex flex-1 items-center justify-center">
+      <div className="flex min-h-0 flex-1 flex-col gap-4">
+        <div className="flex min-h-0 flex-1 justify-center overflow-hidden">
           <PolaroidMediaCarousel
             memory={pageMemory}
             activeIndex={activeImageIndex}
@@ -913,8 +915,27 @@ export function MemoryDetailModal({
           />
         </div>
 
+        {pageMemory.tags && pageMemory.tags.length > 0 && (
+          <div className="flex shrink-0 flex-wrap gap-2">
+            {pageMemory.tags.map((tag) => (
+              <Badge
+                key={tag.id}
+                variant="outline"
+                style={{ borderRadius: 0 }}
+                className={
+                  isAutoTag(tag.name)
+                    ? 'border-black bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-black'
+                    : 'border-black bg-[#f6cb48] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-black'
+                }
+              >
+                {tag.name}
+              </Badge>
+            ))}
+          </div>
+        )}
+
         {mediaCount > 0 && (
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex shrink-0 items-center justify-between gap-3">
             <button
               type="button"
               onClick={() =>
@@ -950,7 +971,7 @@ export function MemoryDetailModal({
         ) : (
           <RightPageSpineRings shouldScale={showSpineScale} />
         )}
-      </>
+      </div>
     );
   };
 
@@ -1060,30 +1081,6 @@ export function MemoryDetailModal({
           memory={pageMemory}
           onReport={() => setReportModalOpen(true)}
         />
-
-        {pageMemory.tags && pageMemory.tags.length > 0 && (
-          <div className="flex flex-col gap-2">
-            <h3 className="text-sm font-semibold uppercase tracking-[0.08em] text-black">
-              Tags
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {pageMemory.tags.map((tag) => (
-                <Badge
-                  key={tag.id}
-                  variant="outline"
-                  style={{ borderRadius: 0 }}
-                  className={
-                    isAutoTag(tag.name)
-                      ? 'border-black bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-black'
-                      : 'border-black bg-[#f6cb48] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-black'
-                  }
-                >
-                  {tag.name}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        )}
 
         <CommentSection
           comments={comments}
