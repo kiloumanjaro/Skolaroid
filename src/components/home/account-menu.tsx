@@ -49,7 +49,10 @@ export function AccountMenu() {
           )}
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent
+        align="end"
+        className="border-2 border-black shadow-[4px_4px_0_0_#000]"
+      >
         {userName && (
           <DropdownMenuItem onClick={() => router.push('/profile')}>
             <User className="mr-2 h-4 w-4" />
