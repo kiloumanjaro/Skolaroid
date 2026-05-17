@@ -1,6 +1,6 @@
 'use client';
 
-import { Copy, Heart, Share, Flag } from 'lucide-react';
+import { Copy, Heart, Share } from 'lucide-react';
 import { useState } from 'react';
 import type { MemoryWithRelations } from '@/lib/schemas';
 import { useVoteStatus } from '@/lib/hooks/useVoteStatus';
@@ -10,10 +10,15 @@ import { formatVoteCount } from '@/lib/utils';
 
 interface ActionBarProps {
   memory: MemoryWithRelations;
-  onReport?: () => void;
+  showReadMore?: boolean;
+  onReadMore?: () => void;
 }
 
-export function ActionBar({ memory, onReport }: ActionBarProps) {
+export function ActionBar({
+  memory,
+  showReadMore = false,
+  onReadMore,
+}: ActionBarProps) {
   const { isAuthenticated } = useUserAuth();
   const { data: voteStatusRes, isLoading } = useVoteStatus(memory.id);
   const toggleVote = useToggleVote();
@@ -48,6 +53,8 @@ export function ActionBar({ memory, onReport }: ActionBarProps) {
 
   const actionButtonBaseClass =
     'flex h-10 w-10 items-center justify-center border-2 border-black bg-white text-black transition-colors disabled:opacity-50';
+  const textActionButtonBaseClass =
+    'flex h-10 items-center justify-center border-2 border-black bg-white px-3 text-xs font-semibold uppercase tracking-[0.08em] text-black transition-colors disabled:opacity-50';
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-3">
@@ -83,18 +90,16 @@ export function ActionBar({ memory, onReport }: ActionBarProps) {
         <Share className="h-5 w-5" />
       </button>
 
-      <button
-        onClick={onReport}
-        disabled={!isAuthenticated}
-        className={`${actionButtonBaseClass} ${
-          !isAuthenticated
-            ? 'cursor-default text-black'
-            : 'text-black hover:bg-[#ffe1e1] hover:text-black'
-        }`}
-        aria-label="Report memory"
-      >
-        <Flag className="h-5 w-5" />
-      </button>
+      {showReadMore && onReadMore && (
+        <button
+          type="button"
+          onClick={onReadMore}
+          className={`${textActionButtonBaseClass} hover:bg-[#fff3bf]`}
+          aria-label="Read more caption"
+        >
+          Read more
+        </button>
+      )}
 
       {showOnboardPrompt && (
         <span className="border-2 border-black bg-[#fff3bf] px-2 py-1 text-xs font-medium text-black">

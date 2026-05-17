@@ -40,15 +40,16 @@ import {
   getMemoryMediaURLs,
   getPrimaryMemoryMediaURL,
 } from '@/lib/memory-media';
+import { PolaroidMediaCarousel } from '@/components/shared/memory/PolaroidMediaCarousel';
 import type { MemoryVisibility } from '@/lib/schemas';
 import Image from 'next/image';
 import {
   useState,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useCallback,
-  type TouchEvent,
 } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -230,113 +231,6 @@ const VISIBILITY_META: Record<
   PRIVATE: { Icon: Lock, label: 'Private' },
 };
 
-type MemoryMediaShape = Pick<
-  MemoryWithCoordinates,
-  'id' | 'title' | 'mediaURLs'
->;
-const SWIPE_THRESHOLD_PX = 48;
-interface PolaroidMediaCarouselProps {
-  memory: MemoryMediaShape;
-  activeIndex: number;
-  onIndexChange?: (nextIndex: number) => void;
-  showControls?: boolean;
-}
-
-function PolaroidMediaCarousel({
-  memory,
-  activeIndex,
-  onIndexChange,
-  showControls = true,
-}: PolaroidMediaCarouselProps) {
-  const mediaURLs = getMemoryMediaURLs(memory);
-  const hasMedia = mediaURLs.length > 0;
-  const canNavigate = showControls && mediaURLs.length > 1 && !!onIndexChange;
-
-  const safeIndex =
-    mediaURLs.length > 0
-      ? ((activeIndex % mediaURLs.length) + mediaURLs.length) % mediaURLs.length
-      : 0;
-
-  const touchStartXRef = useRef<number | null>(null);
-  const touchDeltaXRef = useRef(0);
-
-  const goToIndex = useCallback(
-    (nextIndex: number) => {
-      if (!onIndexChange || mediaURLs.length === 0) return;
-
-      const wrappedIndex =
-        ((nextIndex % mediaURLs.length) + mediaURLs.length) % mediaURLs.length;
-      onIndexChange(wrappedIndex);
-    },
-    [onIndexChange, mediaURLs.length]
-  );
-
-  const handleTouchStart = useCallback(
-    (event: TouchEvent<HTMLDivElement>) => {
-      if (!canNavigate) return;
-
-      touchStartXRef.current = event.touches[0]?.clientX ?? null;
-      touchDeltaXRef.current = 0;
-    },
-    [canNavigate]
-  );
-
-  const handleTouchMove = useCallback(
-    (event: TouchEvent<HTMLDivElement>) => {
-      if (!canNavigate || touchStartXRef.current === null) return;
-
-      const currentX = event.touches[0]?.clientX ?? touchStartXRef.current;
-      touchDeltaXRef.current = currentX - touchStartXRef.current;
-    },
-    [canNavigate]
-  );
-
-  const handleTouchEnd = useCallback(() => {
-    if (!canNavigate) return;
-
-    if (Math.abs(touchDeltaXRef.current) >= SWIPE_THRESHOLD_PX) {
-      if (touchDeltaXRef.current < 0) {
-        goToIndex(safeIndex + 1);
-      } else {
-        goToIndex(safeIndex - 1);
-      }
-    }
-
-    touchStartXRef.current = null;
-    touchDeltaXRef.current = 0;
-  }, [canNavigate, goToIndex, safeIndex]);
-
-  return (
-    <div className="flex h-full w-full max-w-sm flex-col">
-      <div className="flex h-full flex-col border-2 border-black bg-white px-[10px] pb-[60px] pt-[10px]">
-        {hasMedia ? (
-          <div
-            className="relative flex-1 overflow-hidden border border-black bg-neutral-100"
-            style={{ aspectRatio: '1/1' }}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          >
-            <Image
-              src={mediaURLs[safeIndex]}
-              alt={`${memory.title} image ${safeIndex + 1}`}
-              fill
-              className="object-cover"
-            />
-          </div>
-        ) : (
-          <div
-            className="flex flex-1 items-center justify-center border border-black bg-neutral-100"
-            style={{ aspectRatio: '1/1' }}
-          >
-            <span className="text-xl text-muted-foreground">No image</span>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
 export function MemoryDetailModal({
   memory,
   previousMemory = null,
@@ -387,7 +281,11 @@ export function MemoryDetailModal({
     useState<MemoryWithCoordinates | null>(null);
   const [isCaptionExpanded, setIsCaptionExpanded] = useState(false);
   const [isCommentsCollapsed, setIsCommentsCollapsed] = useState(false);
-  const captionRef = useRef<HTMLParagraphElement>(null);
+  const [captionElement, setCaptionElement] =
+    useState<HTMLParagraphElement | null>(null);
+  const handleCaptionRef = useCallback((node: HTMLParagraphElement | null) => {
+    setCaptionElement(node);
+  }, []);
   const [isCaptionTruncated, setIsCaptionTruncated] = useState(false);
 
   const getActiveImageIndex = useCallback(
@@ -559,20 +457,47 @@ export function MemoryDetailModal({
     setIsCommentsCollapsed(false);
   }, [memory?.id]);
 
-  useEffect(() => {
-    if (!captionRef.current) return;
+  useLayoutEffect(() => {
+    if (!open) return;
+
+    const element = captionElement;
+    if (!element) return;
+
+    let rafId = 0;
 
     const checkTruncation = () => {
-      const element = captionRef.current;
-      if (!element) return;
+      const currentElement = captionElement;
+      if (!currentElement) return;
 
-      setIsCaptionTruncated(element.scrollHeight > element.clientHeight);
+      setIsCaptionTruncated(
+        currentElement.scrollHeight > currentElement.clientHeight
+      );
     };
 
-    checkTruncation();
-    window.addEventListener('resize', checkTruncation);
-    return () => window.removeEventListener('resize', checkTruncation);
-  }, [memory?.description]);
+    const scheduleCheck = () => {
+      window.cancelAnimationFrame(rafId);
+      rafId = window.requestAnimationFrame(checkTruncation);
+    };
+
+    scheduleCheck();
+
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(scheduleCheck)
+        : null;
+    resizeObserver?.observe(element);
+
+    const fonts = document.fonts;
+    fonts?.ready.then(scheduleCheck).catch(() => {});
+
+    window.addEventListener('resize', scheduleCheck);
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      resizeObserver?.disconnect();
+      window.removeEventListener('resize', scheduleCheck);
+    };
+  }, [captionElement, memory?.description, memory?.id, open]);
 
   if (!memory || !dateInfo) return null;
 
@@ -990,6 +915,7 @@ export function MemoryDetailModal({
     showSpineScale = false,
     pageSide = 'right',
     showCloseButton = false,
+    measureCaption = true,
   }: {
     pageMemory: MemoryWithCoordinates;
     comments: typeof liveComments;
@@ -1005,6 +931,7 @@ export function MemoryDetailModal({
     showSpineScale?: boolean;
     pageSide?: 'left' | 'right';
     showCloseButton?: boolean;
+    measureCaption?: boolean;
   }) => (
     <>
       {showCloseButton && (
@@ -1055,7 +982,7 @@ export function MemoryDetailModal({
           }`}
         >
           <p
-            ref={captionRef}
+            ref={measureCaption ? handleCaptionRef : undefined}
             className={`text-center font-dancing text-2xl leading-relaxed text-black ${
               !isCaptionExpanded ? 'line-clamp-3' : ''
             }`}
@@ -1063,23 +990,13 @@ export function MemoryDetailModal({
             {pageMemory.description || 'A memorable moment...'}
           </p>
         </div>
-        {!isCaptionExpanded && isCaptionTruncated && (
-          <div className="mt-2 flex justify-center">
-            <button
-              type="button"
-              onClick={() => setIsCaptionExpanded(true)}
-              className="text-xs font-semibold uppercase tracking-[0.08em] text-black hover:underline"
-            >
-              Read more...
-            </button>
-          </div>
-        )}
       </div>
 
       <div className="flex flex-1 flex-col gap-4">
         <ActionBar
           memory={pageMemory}
-          onReport={() => setReportModalOpen(true)}
+          showReadMore={!isCaptionExpanded && isCaptionTruncated}
+          onReadMore={() => setIsCaptionExpanded(true)}
         />
 
         <CommentSection
@@ -1218,6 +1135,7 @@ export function MemoryDetailModal({
       onLoadMore: () => {},
       commentValue: '',
       onCommentValueChange: () => {},
+      measureCaption: false,
     });
   };
 
@@ -1451,6 +1369,7 @@ export function MemoryDetailModal({
                     onLoadMore: () => {},
                     commentValue: '',
                     onCommentValueChange: () => {},
+                    measureCaption: false,
                   })}
                 </div>
               </motion.div>
@@ -1488,6 +1407,7 @@ export function MemoryDetailModal({
                     onLoadMore: () => {},
                     commentValue: carriedCommentText.current,
                     onCommentValueChange: () => {},
+                    measureCaption: false,
                   })}
                 </div>
 
@@ -1663,6 +1583,7 @@ export function MemoryDetailModal({
                           commentValue: mobileCarriedCommentText.current,
                           onCommentValueChange: () => {},
                           pageSide: 'left',
+                          measureCaption: false,
                         })}
                   </div>
 
@@ -1732,6 +1653,7 @@ export function MemoryDetailModal({
                           commentValue: '',
                           onCommentValueChange: () => {},
                           pageSide: 'left',
+                          measureCaption: false,
                         })}
                   </div>
                 </motion.div>
