@@ -541,15 +541,23 @@ function ShellSidebarLayout({
         isOpen ? 'w-52 sm:w-64' : 'w-0'
       }`}
     >
-      <div className="flex items-center px-4 pb-6 pt-6">
-        <div
-          className={`flex justify-center overflow-hidden transition-all duration-300 ease-in-out ${
-            isOpen ? 'max-w-[220px] opacity-100' : 'max-w-0 opacity-0'
-          }`}
-        >
-          <p className="whitespace-nowrap font-dancing text-3xl font-bold leading-none text-skolaroid-blue sm:text-4xl">
-            Skolaroid
-          </p>
+      <div className="px-4 pb-6 pt-6">
+        <div className="w-full">
+          <Link
+            href="/"
+            onClick={(event) => {
+              event.preventDefault();
+              onNavigate('/');
+            }}
+            className={`block w-full transition-all duration-300 ease-in-out ${
+              isOpen ? 'opacity-100' : 'opacity-0'
+            }`}
+            aria-label="Go to landing page"
+          >
+            <p className="inline-block whitespace-nowrap pr-2 font-dancing text-3xl font-bold leading-[1.05] text-skolaroid-blue sm:text-4xl">
+              Skolaroid
+            </p>
+          </Link>
         </div>
       </div>
 
