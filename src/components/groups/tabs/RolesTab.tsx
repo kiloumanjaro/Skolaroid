@@ -8,9 +8,9 @@ import {
 } from '@/lib/group-permissions';
 import { useUpdateGroupRolePrivileges } from '@/lib/hooks/useGroupRolePrivileges';
 import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/Button';
+import { Checkbox } from '@/components/ui/Checkbox';
 import {
   Loader2,
   PencilLine,

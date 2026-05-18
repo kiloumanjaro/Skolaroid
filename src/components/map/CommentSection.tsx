@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Trash2, ChevronUp, ChevronDown } from 'lucide-react';
 import { User } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
 import { formatRelativeDate } from '@/lib/utils/format-date';
 import type { Comment } from '@/services/get-comments-service';
 

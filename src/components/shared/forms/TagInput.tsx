@@ -1,9 +1,9 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
 import { useTags } from '@/lib/hooks/useTags';
 import { MAX_TAGS, MAX_TAG_SUGGESTIONS } from '@/lib/schemas';
 import { X } from 'lucide-react';

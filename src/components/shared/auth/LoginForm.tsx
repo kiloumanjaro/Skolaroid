@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { WOBBLY_RADIUS_MD } from '@/lib/hand-drawn';
 import { useState } from 'react';
 

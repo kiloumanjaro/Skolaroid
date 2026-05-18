@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/Dialog';
 import { cn, getEraFromBatchTag } from '@/lib/utils';
 import { getPrimaryMemoryMediaURL } from '@/lib/memory-media';
 import { X, Search, Plus, MapPin } from 'lucide-react';
