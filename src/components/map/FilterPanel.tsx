@@ -1,9 +1,15 @@
 'use client';
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { X, RotateCcw, Filter } from 'lucide-react';
+import { X, RotateCcw, Filter, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/Input';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/DropdownMenu';
 import { usePanelOpenEffects } from '@/components/shared/shell/MainShellSidebarAction';
 import {
   type MemoryFilters,
@@ -112,197 +118,211 @@ export function FilterPanel({
   };
 
   return (
-    <div
-      className={cn(
-        'pointer-events-none absolute left-1/2 z-20 flex w-fit -translate-x-1/2 justify-center transition-[bottom,top,transform] duration-300 ease-out',
-        open && 'pointer-events-auto',
-        open
-          ? 'bottom-[5.5rem] sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2'
-          : 'bottom-0'
+    <>
+      {open && (
+        <div
+          data-state="open"
+          className="fixed inset-0 z-40 bg-[#2d2d2d]/40 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+          onClick={() => onOpenChange(false)}
+          aria-hidden="true"
+        />
       )}
-    >
-      <section
-        aria-label="Memory filters"
+      <div
         className={cn(
-          'pointer-events-auto relative flex max-h-[calc(100dvh-11.5rem)] w-[calc(100vw-2.5rem)] max-w-none flex-col border-2 border-[#1f1f1f] bg-background p-0 shadow-none transition-transform duration-300 ease-out sm:max-h-[calc(100vh-4rem)] md:max-h-[85vh] md:w-[70vw]',
-          open ? 'translate-y-0' : 'translate-y-full'
+          'pointer-events-none absolute left-1/2 z-[60] flex w-fit -translate-x-1/2 justify-center transition-[bottom,top,transform] duration-300 ease-out',
+          open && 'pointer-events-auto',
+          open
+            ? 'bottom-[5.5rem] sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2'
+            : 'bottom-0'
         )}
       >
-        <button
-          type="button"
-          aria-label={open ? 'Close filters' : 'Open filters'}
-          onClick={handleTabClick}
+        <section
+          aria-label="Memory filters"
           className={cn(
-            'pointer-events-auto absolute -top-[4.5rem] left-4 h-[4.5rem] w-10 flex-col items-center justify-start gap-1 border-2 border-b-0 border-[#1f1f1f] bg-[#f6cb48] pt-2 text-black',
-            open || btnAnim === 'submerged' ? 'hidden' : 'flex',
-            btnAnim === 'bob-open' && 'animate-btn-bob-open',
-            btnAnim === 'bounce-back' && 'animate-btn-bounce-back'
+            'pointer-events-auto relative flex h-[calc(100vh-5rem)] max-h-[calc(100dvh-11.5rem)] w-[calc(100vw-1rem)] max-w-none flex-col rounded-none border-[2px] border-black bg-background p-0 shadow-none transition-transform duration-300 ease-out sm:max-h-none md:h-[75vh] md:w-[70vw]',
+            open ? 'translate-y-0' : 'translate-y-full'
           )}
         >
-          <Filter className="h-3 w-3 stroke-[2.5]" aria-hidden />
-        </button>
-        <div className="flex items-center justify-between gap-3 border-b-2 border-b-black bg-[#f6cb48] px-3 py-2 text-black">
-          <p className="truncate text-base font-medium tracking-[0.01em] sm:text-lg">
-            Filter Memories
-          </p>
-          <div className="flex shrink-0 items-center gap-1">
-            <button
-              type="button"
-              aria-label="Reset filters"
-              onClick={(event) => {
-                event.stopPropagation();
-                onFiltersChange(DEFAULT_FILTERS);
-              }}
-              className="grid h-7 w-7 shrink-0 place-items-center border-2 border-black bg-white text-black"
-            >
-              <RotateCcw className="h-4 w-4 stroke-[2]" />
-            </button>
-            <button
-              type="button"
-              aria-label="Close filters panel"
-              onClick={(event) => {
-                event.stopPropagation();
-                onOpenChange(false);
-              }}
-              className="grid h-7 w-7 shrink-0 place-items-center border-2 border-black bg-[#f7d6d5] text-[#7a1111] shadow-[inset_1px_1px_0_#fff8f7,inset_-1px_-1px_0_#c68787]"
-            >
-              <X className="h-4 w-4 stroke-[2]" />
-            </button>
-          </div>
-        </div>
-
-        <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 py-3 sm:gap-5 sm:py-4">
-          <FilterSection label="Search">
-            <div className="flex gap-2">
-              <Input
-                type="text"
-                placeholder="Search title, description, location, tags..."
-                value={filters.searchQuery}
-                onChange={(e) => update('searchQuery', e.target.value)}
-                className="flex-1"
-              />
+          <button
+            type="button"
+            aria-label={open ? 'Close filters' : 'Open filters'}
+            onClick={handleTabClick}
+            className={cn(
+              'pointer-events-auto absolute -top-[4.5rem] left-4 h-[4.5rem] w-10 flex-col items-center justify-start gap-1 border-[2px] border-b-0 border-black bg-[#f6cb48] pt-2 text-black',
+              open || btnAnim === 'submerged' ? 'hidden' : 'flex',
+              btnAnim === 'bob-open' && 'animate-btn-bob-open',
+              btnAnim === 'bounce-back' && 'animate-btn-bounce-back'
+            )}
+          >
+            <Filter className="h-3 w-3 stroke-[2.5]" aria-hidden />
+          </button>
+          <div className="flex items-center justify-between gap-3 border-b-[2px] border-b-black bg-[#f6cb48] px-3 py-2 text-black">
+            <p className="truncate text-base font-medium tracking-[0.01em] sm:text-lg">
+              Filter Memories
+            </p>
+            <div className="flex shrink-0 items-center gap-1">
               <button
                 type="button"
                 aria-label="Reset filters"
-                onClick={() => onFiltersChange(DEFAULT_FILTERS)}
-                className="grid h-10 shrink-0 place-items-center border-2 border-black bg-white px-2 text-xs font-medium text-black hover:bg-[#fff3bf]"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onFiltersChange(DEFAULT_FILTERS);
+                }}
+                className="grid h-7 w-7 shrink-0 place-items-center border-2 border-black bg-white text-black"
               >
                 <RotateCcw className="h-4 w-4 stroke-[2]" />
               </button>
+              <button
+                type="button"
+                aria-label="Close filters panel"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onOpenChange(false);
+                }}
+                className="grid h-7 w-7 shrink-0 place-items-center border-2 border-black bg-[#f7d6d5] text-[#7a1111] shadow-[inset_1px_1px_0_#fff8f7,inset_-1px_-1px_0_#c68787]"
+              >
+                <X className="h-4 w-4 stroke-[2]" />
+              </button>
             </div>
-          </FilterSection>
-
-          <div className="grid gap-5 sm:grid-cols-2">
-            <FilterSection label="Sort by">
-              <div className="flex flex-wrap gap-2">
-                {SORT_OPTIONS.map((opt) => (
-                  <SegmentedButton
-                    key={opt.value}
-                    active={filters.sortBy === opt.value}
-                    onClick={() => update('sortBy', opt.value)}
-                  >
-                    {opt.label}
-                  </SegmentedButton>
-                ))}
-              </div>
-            </FilterSection>
-
-            <FilterSection label="Visibility">
-              <div className="flex flex-wrap gap-2">
-                {VISIBILITY_OPTIONS.map((opt) => (
-                  <SegmentedButton
-                    key={opt.value}
-                    active={filters.visibility === opt.value}
-                    onClick={() => update('visibility', opt.value)}
-                  >
-                    {opt.label}
-                  </SegmentedButton>
-                ))}
-              </div>
-            </FilterSection>
           </div>
 
-          <FilterSection label="Tags">
-            {availableTags.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                No tags available yet.
-              </p>
-            ) : (
-              <div className="flex flex-wrap gap-2">
-                {availableTags.map((tag) => (
-                  <SegmentedButton
-                    key={tag}
-                    active={filters.selectedTags.includes(tag)}
-                    onClick={() => toggleTag(tag)}
-                  >
-                    {tag}
-                  </SegmentedButton>
-                ))}
+          <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 py-3 sm:gap-5 sm:py-4">
+            <FilterSection label="Search">
+              <div className="flex gap-2">
+                <Input
+                  type="text"
+                  placeholder="Search title, description, location, tags..."
+                  value={filters.searchQuery}
+                  onChange={(e) => update('searchQuery', e.target.value)}
+                  className="flex-1 !rounded-none border-2 border-black bg-card py-3 pl-5 pr-8 text-sm text-foreground placeholder:text-muted-foreground focus:border-black focus:outline-none focus:ring-1 focus:ring-skolaroid-blue"
+                />
+                <button
+                  type="button"
+                  aria-label="Reset filters"
+                  onClick={() => onFiltersChange(DEFAULT_FILTERS)}
+                  className="grid h-10 shrink-0 place-items-center border-2 border-black bg-white px-2 text-xs font-medium text-black hover:bg-[#fff3bf]"
+                >
+                  <RotateCcw className="h-4 w-4 stroke-[2]" />
+                </button>
               </div>
-            )}
-          </FilterSection>
-
-          <div className="grid gap-4 sm:grid-cols-3">
-            <FilterSection label="Year">
-              <NativeSelect
-                value={
-                  filters.selectedYear === null
-                    ? ''
-                    : String(filters.selectedYear)
-                }
-                onChange={(value) =>
-                  update(
-                    'selectedYear',
-                    value === '' ? null : Number.parseInt(value, 10)
-                  )
-                }
-              >
-                <option value="">All years</option>
-                {availableYears.slice(0, MAX_DROPDOWN_OPTIONS).map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </NativeSelect>
             </FilterSection>
 
-            <FilterSection label="Group">
-              <NativeSelect
-                value={filters.selectedGroupId ?? ''}
-                onChange={(value) =>
-                  update('selectedGroupId', value === '' ? null : value)
-                }
-              >
-                <option value="">All groups</option>
-                {availableGroups.slice(0, MAX_DROPDOWN_OPTIONS).map((group) => (
-                  <option key={group.id} value={group.id}>
-                    {group.name}
-                  </option>
-                ))}
-              </NativeSelect>
-            </FilterSection>
-
-            <FilterSection label="Location">
-              <NativeSelect
-                value={filters.selectedLocationId ?? ''}
-                onChange={(value) =>
-                  update('selectedLocationId', value === '' ? null : value)
-                }
-              >
-                <option value="">All locations</option>
-                {availableLocations
-                  .slice(0, MAX_DROPDOWN_OPTIONS)
-                  .map((loc) => (
-                    <option key={loc.id} value={loc.id}>
-                      {loc.name}
-                    </option>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <FilterSection label="Sort by">
+                <div className="flex flex-wrap gap-2">
+                  {SORT_OPTIONS.map((opt) => (
+                    <SegmentedButton
+                      key={opt.value}
+                      active={filters.sortBy === opt.value}
+                      onClick={() => update('sortBy', opt.value)}
+                    >
+                      {opt.label}
+                    </SegmentedButton>
                   ))}
-              </NativeSelect>
+                </div>
+              </FilterSection>
+
+              <FilterSection label="Visibility">
+                <div className="flex flex-wrap gap-2">
+                  {VISIBILITY_OPTIONS.map((opt) => (
+                    <SegmentedButton
+                      key={opt.value}
+                      active={filters.visibility === opt.value}
+                      onClick={() => update('visibility', opt.value)}
+                    >
+                      {opt.label}
+                    </SegmentedButton>
+                  ))}
+                </div>
+              </FilterSection>
+            </div>
+
+            <FilterSection label="Tags">
+              {availableTags.length === 0 ? (
+                <p className="text-sm text-muted-foreground">
+                  No tags available yet.
+                </p>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  {availableTags.map((tag) => (
+                    <SegmentedButton
+                      key={tag}
+                      active={filters.selectedTags.includes(tag)}
+                      onClick={() => toggleTag(tag)}
+                    >
+                      {tag}
+                    </SegmentedButton>
+                  ))}
+                </div>
+              )}
             </FilterSection>
+
+            <div className="grid gap-4 sm:grid-cols-3">
+              <FilterSection label="Year">
+                <FilterDropdown
+                  value={
+                    filters.selectedYear === null
+                      ? ''
+                      : String(filters.selectedYear)
+                  }
+                  onChange={(value) =>
+                    update(
+                      'selectedYear',
+                      value === '' ? null : Number.parseInt(value, 10)
+                    )
+                  }
+                  options={[
+                    { label: 'All years', value: '' },
+                    ...availableYears
+                      .slice(0, MAX_DROPDOWN_OPTIONS)
+                      .map((year) => ({
+                        label: String(year),
+                        value: String(year),
+                      })),
+                  ]}
+                />
+              </FilterSection>
+
+              <FilterSection label="Group">
+                <FilterDropdown
+                  value={filters.selectedGroupId ?? ''}
+                  onChange={(value) =>
+                    update('selectedGroupId', value === '' ? null : value)
+                  }
+                  options={[
+                    { label: 'All groups', value: '' },
+                    ...availableGroups
+                      .slice(0, MAX_DROPDOWN_OPTIONS)
+                      .map((group) => ({
+                        label: group.name,
+                        value: group.id,
+                      })),
+                  ]}
+                />
+              </FilterSection>
+
+              <FilterSection label="Location">
+                <FilterDropdown
+                  value={filters.selectedLocationId ?? ''}
+                  onChange={(value) =>
+                    update('selectedLocationId', value === '' ? null : value)
+                  }
+                  options={[
+                    { label: 'All locations', value: '' },
+                    ...availableLocations
+                      .slice(0, MAX_DROPDOWN_OPTIONS)
+                      .map((loc) => ({
+                        label: loc.name,
+                        value: loc.id,
+                      })),
+                  ]}
+                />
+              </FilterSection>
+            </div>
           </div>
-        </div>
-      </section>
-    </div>
+        </section>
+      </div>
+    </>
   );
 }
 
@@ -348,22 +368,52 @@ function SegmentedButton({
   );
 }
 
-function NativeSelect({
+function FilterDropdown({
   value,
   onChange,
-  children,
+  options,
 }: {
   value: string;
   onChange: (value: string) => void;
-  children: React.ReactNode;
+  options: Array<{ label: string; value: string }>;
 }) {
+  const selectedLabel =
+    options.find((opt) => opt.value === value)?.label || 'Select...';
+
   return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="h-10 w-full border-2 border-border bg-transparent px-3 py-1 font-hand text-base focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/20"
-    >
-      {children}
-    </select>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          type="button"
+          className="group relative flex h-10 w-full items-center justify-between gap-2 overflow-hidden border-2 border-border pl-4 pr-3 transition-colors hover:bg-[#f6cb48]"
+        >
+          <span className="relative font-hand text-sm text-foreground">
+            {selectedLabel}
+          </span>
+          <span className="grid h-4 w-4 shrink-0 place-items-center text-foreground">
+            <ChevronDown className="h-full w-full transition-transform duration-150 group-data-[state=open]:rotate-180" />
+          </span>
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        side="bottom"
+        align="start"
+        className="z-[100] w-[var(--radix-dropdown-menu-trigger-width)] rounded-none border-2 border-[#2d2d2d] bg-[#fff4fb] p-0.5 shadow-none"
+      >
+        {options.map((opt) => (
+          <DropdownMenuItem
+            key={opt.value}
+            onSelect={() => onChange(opt.value)}
+            className={cn(
+              'min-h-8 cursor-pointer rounded-none border border-transparent px-2 py-1.5 font-hand text-sm font-normal text-black hover:font-semibold focus:bg-transparent focus:text-black data-[highlighted]:bg-transparent data-[highlighted]:text-black',
+              value === opt.value &&
+                'border-[#2d2d2d] bg-[#fd91e6] font-semibold'
+            )}
+          >
+            {opt.label}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

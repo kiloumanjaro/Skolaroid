@@ -768,7 +768,7 @@ function HomeContent() {
                 <br />
                 into{' '}
                 <span className="font-dancing !text-5xl text-skolaroid-blue md:!text-6xl">
-                  Skolaroid
+                  Skolaroids
                 </span>
               </h1>
             </div>
