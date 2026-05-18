@@ -1,9 +1,9 @@
 'use client';
 
-import { BatchSidebarContent, type Era } from './batch-sidebar-content';
-import { Sidebar } from '../shared/shell/sidebar';
+import { BatchSidebarContent, type Era } from './BatchSidebarContent';
+import { Sidebar } from '../shared/shell/Sidebar';
 
-export type { Era } from './batch-sidebar-content';
+export type { Era } from './BatchSidebarContent';
 
 interface BatchSidebarProps {
   drawerOpen: boolean;
