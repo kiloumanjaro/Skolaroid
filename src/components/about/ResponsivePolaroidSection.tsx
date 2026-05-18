@@ -8,6 +8,8 @@ interface PolaroidConfig {
   color: string;
   rotation: string;
   imageUrl?: string;
+  imagePosition?: string;
+  imageScale?: number;
 }
 
 interface ResponsivePolaroidSectionProps {
@@ -81,6 +83,8 @@ export function ResponsivePolaroidSection({
                 color={polaroid.color}
                 rotation={polaroid.rotation}
                 imageUrl={polaroid.imageUrl}
+                imagePosition={polaroid.imagePosition}
+                imageScale={polaroid.imageScale}
               />
             </div>
           ))}

@@ -10,6 +10,8 @@ interface AboutPolaroidProps {
   label?: string;
   color?: string;
   rotation?: string;
+  imagePosition?: string;
+  imageScale?: number;
 }
 
 export function AboutPolaroid({
@@ -18,6 +20,8 @@ export function AboutPolaroid({
   label = '',
   color = 'bg-secondary',
   rotation = '',
+  imagePosition = 'object-center',
+  imageScale = 1,
 }: AboutPolaroidProps) {
   const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -40,7 +44,8 @@ export function AboutPolaroid({
               src={imageUrl}
               alt={`${label} era photo`}
               fill
-              className="object-cover object-center transition-opacity duration-300 group-hover:opacity-40"
+              className={`object-cover ${imagePosition} transition-opacity duration-300 group-hover:opacity-40`}
+              style={{ transform: `scale(${imageScale})` }}
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
               <span
