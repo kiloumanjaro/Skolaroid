@@ -63,9 +63,37 @@ export default {
           '0%': { opacity: '0', transform: 'translate(-50%, -1rem)' },
           '100%': { opacity: '1', transform: 'translate(-50%, 0)' },
         },
+        btnBobOpen: {
+          '0%': {
+            transform: 'translateY(0)',
+            opacity: '1',
+            animationTimingFunction: 'ease-in',
+          },
+          '8%': {
+            transform: 'translateY(4px)',
+            opacity: '1',
+            animationTimingFunction: 'ease-out',
+          },
+          '22%': {
+            transform: 'translateY(-14px)',
+            opacity: '1',
+            animationTimingFunction: 'ease-in',
+          },
+          '78%': { transform: 'translateY(60px)', opacity: '1' },
+          '100%': { transform: 'translateY(76px)', opacity: '0' },
+        },
+        btnBounceBack: {
+          '0%': { transform: 'translateY(72px)', opacity: '0' },
+          '45%': { transform: 'translateY(-15px)', opacity: '1' },
+          '65%': { transform: 'translateY(3px)', opacity: '1' },
+          '82%': { transform: 'translateY(-8px)', opacity: '1' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
       },
       animation: {
         'slide-down': 'slideDown 0.35s ease-out',
+        'btn-bob-open': 'btnBobOpen 0.4s ease-in both',
+        'btn-bounce-back': 'btnBounceBack 0.5s ease-out both',
       },
     },
   },

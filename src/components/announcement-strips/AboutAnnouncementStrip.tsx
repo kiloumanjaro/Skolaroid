@@ -15,7 +15,7 @@ export function AboutAnnouncementStrip({
       <AnnouncementMarqueeTrack
         announcements={announcements}
         ariaLabel="About page announcements"
-        itemClassName="flex shrink-0 items-center gap-4 px-4 text-xs font-semibold uppercase tracking-[0.14em] text-black sm:text-sm"
+        itemClassName="flex shrink-0 items-center gap-4 pr-4 text-xs font-semibold uppercase tracking-[0.14em] text-black sm:text-sm"
         separatorClassName="text-black/70"
       />
     </div>

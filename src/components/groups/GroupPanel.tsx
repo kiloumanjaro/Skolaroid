@@ -341,7 +341,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
       )}
       <div
         className={cn(
-          'pointer-events-none absolute left-1/2 z-[60] flex w-[calc(100%-1.5rem)] -translate-x-1/2 justify-center transition-[top,bottom,transform] duration-300 ease-out sm:w-[calc(100%-2.5rem)]',
+          'pointer-events-none absolute left-1/2 z-[60] flex w-[calc(100vw-1rem)] -translate-x-1/2 justify-center transition-[top,bottom,transform] duration-300 ease-out md:w-[70vw]',
           open
             ? 'bottom-[5.5rem] sm:bottom-auto sm:top-[47%] sm:-translate-y-1/2'
             : 'bottom-0',

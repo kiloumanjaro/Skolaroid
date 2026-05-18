@@ -538,7 +538,7 @@ function ShellSidebarLayout({
   return (
     <aside
       className={`relative z-40 flex h-full flex-col overflow-hidden bg-white text-foreground transition-all duration-300 ease-in-out ${
-        isOpen ? 'w-52 sm:w-64' : 'w-0'
+        isOpen ? 'w-60 sm:w-72' : 'w-0'
       }`}
     >
       <div className="px-4 pb-6 pt-6">
