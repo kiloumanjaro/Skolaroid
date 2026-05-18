@@ -260,7 +260,7 @@ const BATCH_CANVAS_ITEMS = [
     message:
       'The kind of batch people remember by faces, laughter, and old photo prints.',
     x: -1000,
-    y: -820,
+    y: -760,
   },
   {
     year: 1996,
@@ -421,7 +421,7 @@ function BatchCanvasCard({
   const [isHovered, setIsHovered] = useState(false);
   const era = Math.floor(year / 10) * 10;
   const href = `/map?era=${era}`;
-  const isLeftEdge = x <= -1000;
+  const isLeftEdge = x <= -960;
 
   return (
     <div
