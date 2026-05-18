@@ -3,6 +3,7 @@ import {
   type AboutWorkflowCardProps,
 } from '@/components/about/AboutWorkflowCard';
 import { AboutHero } from '@/components/about/AboutHero';
+import { ResponsivePolaroidSection } from '@/components/about/ResponsivePolaroidSection';
 import { AboutAnnouncementStrip } from '@/components/announcement-strips/AboutAnnouncementStrip';
 import { ABOUT_ANNOUNCEMENTS } from '@/components/announcement-strips/announcement-config';
 import { AboutCreatorsMarquee } from '@/components/about/AboutCreatorsMarquee';
@@ -22,7 +23,7 @@ const pillars: AboutWorkflowCardProps[] = [
   {
     eyebrow: 'How Skolaroid Works',
     date: 'Step 02',
-    title: 'ADD THE PHOTO AND TELL THE STORY',
+    title: 'ADD THE PHOTO & TELL THE STORY',
     description:
       'Upload a photo, add context, and turn a quick snapshot into something more meaningful than a post that disappears in a feed.',
     bannerColor: '#90a8ee',
@@ -61,6 +62,40 @@ const teamMembers = [
 ];
 
 const creators = teamMembers.map((member) => member.name);
+
+const POLAROID_ROTATIONS = [
+  'rotate-[-6deg]',
+  'rotate-[4deg]',
+  'rotate-[-5deg]',
+  'rotate-[3deg]',
+];
+
+const polaroidConfigs = [
+  {
+    label: 'Start exploring',
+    color: 'bg-skolaroid-blue/10',
+    rotation: POLAROID_ROTATIONS[0],
+    imageUrl: '/assets/images/about/Cebu-Building.webp',
+  },
+  {
+    label: 'Discover',
+    color: 'bg-purple-100',
+    rotation: POLAROID_ROTATIONS[1],
+    imageUrl: '/assets/images/about/Cebu-The-Junior-College-at-Cebu-.webp',
+  },
+  {
+    label: 'Remember',
+    color: 'bg-pink-100',
+    rotation: POLAROID_ROTATIONS[2],
+    imageUrl: '/assets/images/about/Cebu-UP-Cebu-College.webp',
+  },
+  {
+    label: 'Share',
+    color: 'bg-yellow-100',
+    rotation: POLAROID_ROTATIONS[3],
+    imageUrl: '/assets/images/about/Cebu-UP-Cebu-Oblation.webp',
+  },
+];
 
 export default async function AboutPage() {
   const users = await prisma.user.count({
@@ -118,14 +153,13 @@ export default async function AboutPage() {
               fill="none"
             />
           </svg>
+
+          <ResponsivePolaroidSection polaroids={polaroidConfigs} />
         </section>
 
         <section className="relative z-0 -mt-10 bg-[#00c59a] pt-10">
-          <div className="mx-auto w-full max-w-7xl px-6 py-10 md:px-10 lg:px-16 lg:py-14">
+          <div className="mx-auto mt-44 w-full max-w-7xl px-6 py-10 md:px-10 lg:px-16 lg:py-14">
             <div className="mb-8 max-w-2xl">
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-foreground/70">
-                What makes it feel like Skolaroid
-              </p>
               <h2 className="mt-3 text-3xl leading-tight text-foreground sm:text-4xl">
                 how skolaroid works..
               </h2>
