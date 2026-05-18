@@ -2,14 +2,14 @@
 
 import { X, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { MemoryList } from '@/components/shared/memory/memory-list';
-import { usePanelOpenEffects } from '@/components/shared/shell/main-shell-sidebar-action';
+import { MemoryList } from '@/components/shared/memory/MemoryList';
+import { usePanelOpenEffects } from '@/components/shared/shell/MainShellSidebarAction';
 import {
   type Landmark,
   LANDMARK_TYPE_LABELS,
   LANDMARK_TYPE_COLORS,
 } from '@/lib/constants/landmarks';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/ui/Badge';
 
 interface LandmarkMemoriesPanelProps {
   landmark: Landmark | null;

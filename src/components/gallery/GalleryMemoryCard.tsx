@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { User } from 'lucide-react';
 import { PolaroidCluster } from './PolaroidCluster';
-import { SpeechBubble } from '@/components/shared/display/speech-bubble';
+import { SpeechBubble } from '@/components/shared/display/SpeechBubble';
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 import { getMemoryMediaURLs } from '@/lib/memory-media';
 

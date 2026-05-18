@@ -15,7 +15,7 @@ import { ProfilePageSkeleton } from '@/components/profile/ProfilePageSkeleton';
 import { MemoryDetailModal } from '@/components/map/MemoryDetailModal';
 import { ProfileAnnouncementStrip } from '@/components/announcement-strips/ProfileAnnouncementStrip';
 import { PROFILE_ANNOUNCEMENTS } from '@/components/announcement-strips/announcement-config';
-import { ShellInlineSidebarToggle } from '@/components/shared/shell/shell-inline-sidebar-toggle';
+import { ShellInlineSidebarToggle } from '@/components/shared/shell/ShellInlineSidebarToggle';
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 
 export function ProfilePageClient() {

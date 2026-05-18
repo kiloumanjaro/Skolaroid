@@ -9,7 +9,7 @@ import {
   HandFistIcon,
   HandIcon,
 } from '@phosphor-icons/react';
-import { useAnyPanelOpen } from '@/components/shared/shell/main-shell-sidebar-action';
+import { useAnyPanelOpen } from '@/components/shared/shell/MainShellSidebarAction';
 import {
   ANNOUNCEMENT_SET_COPIES,
   ANNOUNCEMENT_SPEED_PER_ITEM_SECONDS,

@@ -5,9 +5,9 @@ import { XIcon } from 'lucide-react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { WOBBLY_RADIUS_MD } from '@/lib/hand-drawn';
-import { usePanelOpenEffects } from '@/components/shared/shell/main-shell-sidebar-action';
+import { usePanelOpenEffects } from '@/components/shared/shell/MainShellSidebarAction';
 
 function Dialog({
   ...props

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Kalam, Patrick_Hand, Grape_Nuts } from 'next/font/google';
 import { Toaster } from 'sonner';
-import { MainShell } from '@/components/shared/shell/main-shell';
+import { MainShell } from '@/components/shared/shell/MainShell';
 import { QueryProvider } from '@/providers/query-provider';
 import '@/styles/globals.css';
 

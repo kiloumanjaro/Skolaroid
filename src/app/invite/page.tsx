@@ -9,8 +9,8 @@ import {
   useDeclineInvitation,
   type ValidateInvitationData,
 } from '@/lib/hooks/useInvitation';
-import { LoginForm } from '@/components/shared/auth/login-form';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { LoginForm } from '@/components/shared/auth/LoginForm';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/Dialog';
 import {
   Users,
   AlertCircle,
@@ -20,7 +20,7 @@ import {
   LogIn,
   X,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 
 export default function InvitePage() {
   return (

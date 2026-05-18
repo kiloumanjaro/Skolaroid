@@ -8,9 +8,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { TagInput } from '@/components/shared/forms/tag-input';
+} from '@/components/ui/Dialog';
+import { Button } from '@/components/ui/Button';
+import { TagInput } from '@/components/shared/forms/TagInput';
 import { useUpdateMemoryTags } from '@/lib/hooks/useUpdateMemoryTags';
 import { MAX_TAGS } from '@/lib/schemas';
 

@@ -1,9 +1,9 @@
 import * as React from 'react';
 
 import { cn } from '@/lib/utils';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { FormError } from '@/components/ui/form-error';
+import { Label } from '@/components/ui/Label';
+import { Input } from '@/components/ui/Input';
+import { FormError } from '@/components/ui/FormError';
 
 export interface FormInputProps extends React.ComponentProps<'input'> {
   label: string;

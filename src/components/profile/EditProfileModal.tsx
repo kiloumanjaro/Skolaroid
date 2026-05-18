@@ -3,16 +3,16 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { User as UserIcon } from 'lucide-react';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/Dialog';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Label } from '@/components/ui/Label';
 import { cn } from '@/lib/utils';
 import { useUpdateProfile } from '@/lib/hooks/useUpdateProfile';
 import { updateProfileSchema } from '@/lib/schemas';
 import type { CurrentUserProfile } from '@/lib/hooks/useCurrentUser';
 import type { User } from '@supabase/supabase-js';
-import { profileFlatButtonClass } from '@/components/profile/profile-shell';
+import { profileFlatButtonClass } from '@/components/profile/ProfileShell';
 
 interface EditProfileModalProps {
   open: boolean;

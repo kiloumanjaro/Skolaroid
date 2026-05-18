@@ -3,9 +3,9 @@
 import type { User } from '@supabase/supabase-js';
 import Image from 'next/image';
 import { Mail, SquarePen, User as UserIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import type { CurrentUserProfile } from '@/lib/hooks/useCurrentUser';
-import { profileFlatButtonClass } from '@/components/profile/profile-shell';
+import { profileFlatButtonClass } from '@/components/profile/ProfileShell';
 
 interface ProfileHeroProps {
   user: User | null;

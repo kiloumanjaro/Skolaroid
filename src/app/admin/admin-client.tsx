@@ -38,7 +38,7 @@ import {
   type AuditLogEntry,
 } from '@/lib/hooks/useAuditLog';
 import { AdminAnnouncementStrip } from '@/components/announcement-strips/AdminAnnouncementStrip';
-import { ShellInlineSidebarToggle } from '@/components/shared/shell/shell-inline-sidebar-toggle';
+import { ShellInlineSidebarToggle } from '@/components/shared/shell/ShellInlineSidebarToggle';
 import { useAdminToast } from '@/components/groups/GroupToast';
 
 type AdminTab = 'analytics' | 'published' | 'pending' | 'reports' | 'audit';
