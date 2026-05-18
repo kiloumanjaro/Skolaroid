@@ -114,9 +114,11 @@ export function FilterPanel({
   return (
     <div
       className={cn(
-        'pointer-events-none absolute left-1/2 z-20 flex w-fit -translate-x-1/2 justify-center transition-[bottom,transform] duration-300 ease-out',
+        'pointer-events-none absolute left-1/2 z-20 flex w-fit -translate-x-1/2 justify-center transition-[bottom,top,transform] duration-300 ease-out',
         open && 'pointer-events-auto',
-        open ? 'bottom-[5.5rem] sm:bottom-12' : 'bottom-0'
+        open
+          ? 'bottom-[5.5rem] sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2'
+          : 'bottom-0'
       )}
     >
       <section
