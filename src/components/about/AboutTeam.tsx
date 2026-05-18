@@ -4,6 +4,7 @@ type TeamMember = {
   name: string;
   role: string;
   image?: string;
+  linkedIn?: string;
 };
 
 type AboutTeamProps = {
@@ -18,7 +19,7 @@ export function AboutTeam({ teamMembers }: AboutTeamProps) {
           The people behind Skolaroid
         </p>
         <h2 className="mt-5">
-          <span className="inline-block rounded-lg border-2 border-[#2d2d2d] bg-[#f6cb48] px-4 py-2 text-2xl font-bold uppercase tracking-wider text-[#2d2d2d] shadow-[3px_3px_0_0_#2d2d2d] sm:text-4xl">
+          <span className="inline-block rounded-none border-2 border-[#2d2d2d] bg-[#f6cb48] px-4 py-2 text-2xl font-bold uppercase tracking-wider text-[#2d2d2d] sm:text-4xl">
             team goat
           </span>
         </h2>
@@ -30,12 +31,15 @@ export function AboutTeam({ teamMembers }: AboutTeamProps) {
 
       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-5">
         {teamMembers.map((member) => (
-          <article
+          <a
             key={member.name}
-            className="flex min-h-[220px] flex-col justify-between rounded-[2rem] border-2 border-[#2d2d2d] bg-white p-6 shadow-[0_10px_0_0_#2d2d2d]"
+            href={member.linkedIn || '#'}
+            target={member.linkedIn ? '_blank' : undefined}
+            rel={member.linkedIn ? 'noopener noreferrer' : undefined}
+            className="flex min-h-[220px] flex-col justify-between rounded-none border-2 border-[#2d2d2d] bg-white p-6 transition-opacity hover:opacity-75"
           >
             <div className="space-y-4">
-              <div className="relative aspect-square w-full overflow-hidden rounded-lg border-2 border-[#2d2d2d] bg-gray-300">
+              <div className="relative aspect-square w-full overflow-hidden rounded-none border-2 border-[#2d2d2d] bg-gray-300">
                 {member.image && (
                   <Image
                     src={member.image}
@@ -54,7 +58,7 @@ export function AboutTeam({ teamMembers }: AboutTeamProps) {
                 </p>
               </div>
             </div>
-          </article>
+          </a>
         ))}
       </div>
     </div>

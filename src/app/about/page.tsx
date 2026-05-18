@@ -52,24 +52,29 @@ const teamMembers = [
     name: 'Kint Louise Borbano',
     role: 'Project Manager, UI/UX',
     image: '/assets/images/selfies/Borbano.png',
+    linkedIn: 'https://www.linkedin.com/in/kiloumanjaro/',
   },
   {
     name: 'Larissa Soronio',
     role: 'UI/UX, Frontend Engineer',
+    linkedIn: 'https://www.linkedin.com/in/larissa-gale-soronio/',
   },
   {
     name: 'Norman Jazul',
     role: 'Fullstack Engineer',
+    linkedIn: 'https://www.linkedin.com/in/norman-jazul/',
   },
   {
     name: 'Christian James Bayadog',
     role: 'Fullstack Engineer',
     image: '/assets/images/selfies/Bayadog.png',
+    linkedIn: 'https://www.linkedin.com/in/christian-bayadog-a967ab314/',
   },
   {
     name: 'Jhon Carlo Sandro',
     role: 'Fullstack Engineer',
     image: '/assets/images/selfies/Sandro.png',
+    linkedIn: 'https://www.linkedin.com/in/john-carlo-sandro-071826299/',
   },
 ];
 
