@@ -1,6 +1,13 @@
 'use client';
 
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import {
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+} from 'react';
 import { GroupSwitcher, useGroupToast } from '@/components/groups';
 import { usePanelOpenEffects } from '@/components/shared/shell/MainShellSidebarAction';
 import { CreateGroupModal } from '@/components/groups/CreateGroupModal';
@@ -124,7 +131,52 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
   const [editGroupModalOpen, setEditGroupModalOpen] = useState(false);
   const [editMessageModalOpen, setEditMessageModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('members');
+
+  const [btnAnim, setBtnAnim] = useState<
+    'idle' | 'bob-open' | 'submerged' | 'bounce-back'
+  >('idle');
+  const prevOpenRef = useRef(open);
+  const openTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined
+  );
+  const bounceTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined
+  );
+
   usePanelOpenEffects(open);
+
+  // Synchronously mark button as submerged before paint so there's no flash
+  // when the panel closes and the button re-enters the DOM.
+  useLayoutEffect(() => {
+    if (prevOpenRef.current && !open) {
+      setBtnAnim('submerged');
+    }
+    prevOpenRef.current = open;
+  }, [open]);
+
+  // After the panel has finished sliding down, surface the button.
+  useEffect(() => {
+    if (!open) {
+      bounceTimerRef.current = setTimeout(() => {
+        setBtnAnim('bounce-back');
+        setTimeout(() => setBtnAnim('idle'), 500);
+      }, 300);
+      return () => clearTimeout(bounceTimerRef.current);
+    }
+  }, [open]);
+
+  const handleTabClick = () => {
+    if (open) {
+      onOpenChange(false);
+      return;
+    }
+    setBtnAnim('bob-open');
+    clearTimeout(openTimerRef.current);
+    openTimerRef.current = setTimeout(() => {
+      onOpenChange(true);
+      setBtnAnim('submerged');
+    }, 400);
+  };
 
   const { showSuccess, showError, ToastPortal } = useGroupToast();
   const { user } = useUserAuth();
@@ -351,12 +403,25 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
         <section
           aria-label={selectedGroup?.name ?? 'Groups'}
           className={cn(
-            'pointer-events-auto flex h-[calc(100vh-1rem)] max-h-[calc(100dvh-11.5rem)] w-[calc(100vw-1rem)] max-w-none flex-col overflow-hidden rounded-none border-2 border-[#1f1f1f] bg-background p-0 shadow-none transition-transform duration-300 ease-out sm:max-h-none md:h-[85vh] md:w-[70vw]',
-            open ? 'translate-y-0' : 'translate-y-[calc(100%-2.75rem)]'
+            'pointer-events-auto relative flex h-[calc(100vh-1rem)] max-h-[calc(100dvh-11.5rem)] w-[calc(100vw-1rem)] max-w-none flex-col rounded-none border-[2px] border-black bg-background p-0 shadow-none transition-transform duration-300 ease-out sm:max-h-none md:h-[85vh] md:w-[70vw]',
+            open ? 'translate-y-0' : 'translate-y-full'
           )}
         >
+          <button
+            type="button"
+            aria-label={open ? 'Close groups' : 'Open groups'}
+            onClick={handleTabClick}
+            className={cn(
+              'pointer-events-auto absolute -top-[4.5rem] right-4 h-[4.5rem] w-10 flex-col items-center justify-start gap-1 border-[2px] border-b-0 border-black bg-[#4384dc] pt-2 text-white',
+              open || btnAnim === 'submerged' ? 'hidden' : 'flex',
+              btnAnim === 'bob-open' && 'animate-btn-bob-open',
+              btnAnim === 'bounce-back' && 'animate-btn-bounce-back'
+            )}
+          >
+            <Users className="h-3 w-3 stroke-[2.5]" aria-hidden />
+          </button>
           <div
-            className="flex cursor-pointer items-center justify-between gap-3 border-b-2 border-b-black bg-[#4384dc] px-3 py-2 text-white"
+            className="flex cursor-pointer items-center justify-between gap-3 border-b-[2px] border-b-black bg-[#4384dc] px-3 py-2 text-white"
             onClick={() => {
               if (!open) onOpenChange(true);
             }}
@@ -390,8 +455,8 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
             </div>
           </div>
 
-          <div className="flex min-h-0 flex-1 flex-col">
-            <div className="border-b-2 border-black px-2 py-2 sm:px-3 sm:py-3">
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+            <div className="overflow-x-auto border-b-[2px] border-black px-2 py-2 sm:px-3 sm:py-3">
               <div className="flex flex-col gap-2 sm:gap-3 md:flex-row md:items-start md:justify-between">
                 <div className="flex min-w-0 flex-1 flex-col gap-2 sm:gap-3 md:flex-row md:items-start">
                   <div className="w-full shrink-0 md:w-64">
@@ -535,7 +600,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
             </div>
 
             <div className="flex min-h-0 flex-1 flex-col md:flex-row">
-              <div className="flex w-full shrink-0 flex-col border-b-2 border-black bg-secondary/50 md:w-48 md:border-b-0 md:border-r-2">
+              <div className="flex w-full shrink-0 flex-col border-b-[2px] border-black bg-secondary/50 md:w-48 md:border-b-0 md:border-r-[2px]">
                 {selectedGroup && (
                   <div className="scrollbar-hide flex-1 overflow-x-auto overflow-y-hidden px-0 py-0 md:flex-1">
                     <nav className="flex gap-0 md:block md:space-y-0">
@@ -545,10 +610,10 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                         const isFirstTab = index === 0;
                         const isLastTab = index === visibleTabs.length - 1;
                         const activeTabBorderClassName = isFirstTab
-                          ? 'border-r-2 border-r-black md:border-r-0'
+                          ? 'border-r-[2px] border-r-black md:border-r-0'
                           : isLastTab
-                            ? 'border-l-2 border-l-black md:border-l-0'
-                            : 'border-l-2 border-r-2 border-l-black border-r-black md:border-l-0 md:border-r-0';
+                            ? 'border-l-[2px] border-l-black md:border-l-0'
+                            : 'border-l-[2px] border-r-[2px] border-l-black border-r-black md:border-l-0 md:border-r-0';
 
                         return (
                           <button
@@ -557,7 +622,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
                             className={cn(
                               'flex shrink-0 appearance-none items-center gap-1 whitespace-nowrap border-0 px-2 py-2 text-left text-xs font-medium transition-colors sm:gap-2 sm:px-4 sm:py-3 sm:text-sm md:w-full',
                               isActive
-                                ? `${activeTabBorderClassName} bg-[#f6cb48] text-black md:border-b-2 md:border-t-2 md:border-black`
+                                ? `${activeTabBorderClassName} bg-[#f6cb48] text-black md:border-b-[2px] md:border-t-[2px] md:border-black`
                                 : 'bg-transparent text-muted-foreground hover:bg-secondary hover:text-foreground'
                             )}
                             style={

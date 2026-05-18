@@ -10,11 +10,11 @@ const MIN_PROGRESS_STEP = 3;
 const MAX_PROGRESS_STEP = 12;
 
 const STATUS_MESSAGES = [
-  'MAPPING YOUR CAMPUS...',
-  'FETCHING MEMORIES...',
-  'LOADING PHOTOS...',
-  'BUILDING YOUR TIMELINE...',
-  'CONNECTING TO ARCHIVE...',
+  'Mapping your campus...',
+  'Fetching memories...',
+  'Loading photos...',
+  'Building your timeline...',
+  'Connecting to archive...',
 ] as const;
 
 function getNextProgress(previousValue: number): number {
@@ -51,10 +51,10 @@ export function MemoryLoadingIndicator() {
 
   return (
     <div className="pointer-events-none absolute inset-0 z-[55] flex items-center justify-center">
-      <div className="w-80 border-2 border-black bg-[#fffdf8] p-6 shadow-[6px_6px_0_0_#000]">
+      <div className="w-80 border-2 border-black bg-[#fffdf8] p-6">
         {/* Title row */}
-        <div className="flex items-baseline gap-3">
-          <h2 className="font-kalam text-xl font-bold uppercase tracking-wide text-black">
+        <div className="flex items-center justify-between">
+          <h2 className="font-dancing text-2xl font-bold tracking-wide text-skolaroid-blue">
             Fetching Memories
           </h2>
           <span className="font-mono text-sm font-bold text-black">
@@ -70,18 +70,14 @@ export function MemoryLoadingIndicator() {
           />
         </div>
 
-        {/* Divider */}
-        <div className="my-3 border-t-2 border-black" />
-
         {/* Status row */}
-        <div className="flex items-center justify-between">
+        <div className="mt-5 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <RefreshCw className="h-3.5 w-3.5 animate-spin text-black" />
-            <span className="text-xs font-semibold uppercase tracking-[0.12em] text-black">
+            <span className="text-xs font-semibold tracking-[0.12em]">
               {STATUS_MESSAGES[statusIndex]}
             </span>
           </div>
-          <div className="h-2.5 w-2.5 rounded-full bg-[#aaaaaa]" />
         </div>
       </div>
     </div>

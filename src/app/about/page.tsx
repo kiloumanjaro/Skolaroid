@@ -3,12 +3,22 @@ import {
   type AboutWorkflowCardProps,
 } from '@/components/about/AboutWorkflowCard';
 import { AboutHero } from '@/components/about/AboutHero';
+import { ResponsivePolaroidSection } from '@/components/about/ResponsivePolaroidSection';
+import { AboutTeam } from '@/components/about/AboutTeam';
 import { AboutAnnouncementStrip } from '@/components/announcement-strips/AboutAnnouncementStrip';
 import { ABOUT_ANNOUNCEMENTS } from '@/components/announcement-strips/announcement-config';
-import { AboutCreatorsMarquee } from '@/components/about/AboutCreatorsMarquee';
 import { ShellInlineSidebarToggle } from '@/components/shared/shell/ShellInlineSidebarToggle';
 import { ShellBatchesSidebarAction } from '@/components/shared/shell/ShellBatchesSidebarAction';
 import { prisma } from '@/lib/prisma';
+
+type PolaroidConfig = {
+  label: string;
+  color: string;
+  rotation: string;
+  imageUrl: string;
+  imagePosition?: string;
+  imageScale?: number;
+};
 
 const pillars: AboutWorkflowCardProps[] = [
   {
@@ -22,7 +32,7 @@ const pillars: AboutWorkflowCardProps[] = [
   {
     eyebrow: 'How Skolaroid Works',
     date: 'Step 02',
-    title: 'ADD THE PHOTO AND TELL THE STORY',
+    title: 'ADD THE PHOTO & TELL THE STORY',
     description:
       'Upload a photo, add context, and turn a quick snapshot into something more meaningful than a post that disappears in a feed.',
     bannerColor: '#90a8ee',
@@ -40,27 +50,71 @@ const pillars: AboutWorkflowCardProps[] = [
 const teamMembers = [
   {
     name: 'Kint Louise Borbano',
-    role: 'Project Manager, UI/UX, Frontend Engineer',
+    role: 'Project Manager, UI/UX',
+    image: '/assets/images/selfies/Borbano.png',
+    linkedIn: 'https://www.linkedin.com/in/kiloumanjaro/',
   },
   {
     name: 'Larissa Soronio',
     role: 'UI/UX, Frontend Engineer',
+    linkedIn: 'https://www.linkedin.com/in/larissa-gale-soronio/',
   },
   {
     name: 'Norman Jazul',
     role: 'Fullstack Engineer',
+    linkedIn: 'https://www.linkedin.com/in/norman-jazul/',
   },
   {
     name: 'Christian James Bayadog',
     role: 'Fullstack Engineer',
+    image: '/assets/images/selfies/Bayadog.png',
+    linkedIn: 'https://www.linkedin.com/in/christian-bayadog-a967ab314/',
   },
   {
     name: 'Jhon Carlo Sandro',
     role: 'Fullstack Engineer',
+    image: '/assets/images/selfies/Sandro.png',
+    linkedIn: 'https://www.linkedin.com/in/john-carlo-sandro-071826299/',
   },
 ];
 
-const creators = teamMembers.map((member) => member.name);
+const POLAROID_ROTATIONS = [
+  'rotate-[-6deg]',
+  'rotate-[4deg]',
+  'rotate-[-5deg]',
+  'rotate-[3deg]',
+];
+
+const polaroidConfigs: PolaroidConfig[] = [
+  {
+    label: 'Start exploring',
+    color: 'bg-skolaroid-blue/10',
+    rotation: POLAROID_ROTATIONS[0],
+    imageUrl: '/assets/images/about/Cebu-Building.webp',
+  },
+  {
+    label: 'Discover',
+    color: 'bg-purple-100',
+    rotation: POLAROID_ROTATIONS[1],
+    imageUrl: '/assets/images/about/Cebu-The-Junior-College-at-Cebu-.webp',
+    imagePosition: 'object-right',
+    imageScale: 1.2,
+  },
+  {
+    label: 'Remember',
+    color: 'bg-pink-100',
+    rotation: POLAROID_ROTATIONS[2],
+    imageUrl: '/assets/images/about/Cebu-UP-Cebu-College.webp',
+    imagePosition: 'object-right',
+    imageScale: 1.2,
+  },
+  {
+    label: 'Share',
+    color: 'bg-yellow-100',
+    rotation: POLAROID_ROTATIONS[3],
+    imageUrl: '/assets/images/about/Cebu-UP-Cebu-Oblation.webp',
+  },
+];
 
 export default async function AboutPage() {
   const users = await prisma.user.count({
@@ -118,20 +172,19 @@ export default async function AboutPage() {
               fill="none"
             />
           </svg>
+
+          <ResponsivePolaroidSection polaroids={polaroidConfigs} />
         </section>
 
         <section className="relative z-0 -mt-10 bg-[#00c59a] pt-10">
-          <div className="mx-auto w-full max-w-7xl px-6 py-10 md:px-10 lg:px-16 lg:py-14">
+          <div className="mx-auto mt-44 w-full max-w-7xl px-6 py-10 md:px-10 lg:px-16 lg:py-14">
             <div className="mb-8 max-w-2xl">
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-foreground/70">
-                What makes it feel like Skolaroid
-              </p>
               <h2 className="mt-3 text-3xl leading-tight text-foreground sm:text-4xl">
                 how skolaroid works..
               </h2>
             </div>
 
-            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-16 md:grid-cols-2 lg:grid-cols-3">
               {pillars.map((pillar) => (
                 <AboutWorkflowCard key={pillar.title} {...pillar} />
               ))}
@@ -162,60 +215,33 @@ export default async function AboutPage() {
         </section>
 
         <section className="relative z-0 -mt-10 bg-[#e9c9f0] pt-10">
-          <div className="mx-auto w-full max-w-7xl px-6 py-10 pb-16 md:px-10 lg:px-16 lg:py-14 lg:pb-20">
-            <div className="mb-8 max-w-3xl">
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-foreground/70">
-                The people behind Skolaroid
-              </p>
-              <h2 className="mt-5 flex items-center text-3xl font-bold text-foreground sm:text-4xl sm:leading-[1.4]">
-                meet{' '}
-                <span className="mx-4 inline-block rounded-lg border-2 border-[#2d2d2d] bg-[#f6cb48] px-2 py-0.5 text-base uppercase tracking-wider text-[#2d2d2d] shadow-[3px_3px_0_0_#2d2d2d] sm:text-lg">
-                  team goat
-                </span>
-              </h2>
-              <p className="mt-4 max-w-2xl text-base leading-relaxed text-foreground/75 sm:text-lg">
-                A small team shaping a softer, place-based archive for campus
-                memories and the people who keep them alive.
-              </p>
-            </div>
-
-            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-5">
-              {teamMembers.map((member) => (
-                <article
-                  key={member.name}
-                  className="flex min-h-[220px] flex-col justify-between rounded-[2rem] border-2 border-[#2d2d2d] bg-[#fcf5ef] p-6 shadow-[0_10px_0_0_#2d2d2d]"
-                >
-                  <div className="space-y-4">
-                    {member.name === 'Kint Louise Borbano' ? (
-                      <span className="inline-flex rounded-full border-2 border-[#2d2d2d] bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-foreground/70">
-                        Team Leader
-                      </span>
-                    ) : (
-                      <span className="inline-flex rounded-full border-2 border-[#2d2d2d] bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-foreground/70">
-                        Team member
-                      </span>
-                    )}
-                    <div>
-                      <h3 className="text-2xl leading-tight text-foreground">
-                        {member.name}
-                      </h3>
-                      <p className="mt-2 text-sm font-semibold uppercase tracking-[0.18em] text-foreground/65">
-                        {member.role}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-8 h-3 w-full rounded-full border-2 border-[#2d2d2d] bg-[#e9c9f0]" />
-                </article>
-              ))}
-            </div>
-          </div>
+          <AboutTeam teamMembers={teamMembers} />
         </section>
 
-        <footer className="w-full pb-0">
-          <AboutCreatorsMarquee creators={creators} />
+        <section className="relative z-10">
+          <svg
+            viewBox="0 0 1440 64"
+            preserveAspectRatio="none"
+            className="-mt-px block h-16 w-full"
+            aria-hidden="true"
+          >
+            <path
+              d="M0,0 H1440 V40 C1320,52 1200,52 1080,40 C960,28 840,28 720,40 C600,52 480,52 360,40 C240,28 120,28 0,40 Z"
+              fill="#e9c9f0"
+            />
+            <path
+              d="M0,40 C120,28 240,28 360,40 C480,52 600,52 720,40 C840,28 960,28 1080,40 C1200,52 1320,52 1440,40"
+              stroke="#2d2d2d"
+              strokeWidth="2"
+              vectorEffect="non-scaling-stroke"
+              strokeLinecap="round"
+              fill="none"
+            />
+          </svg>
+        </section>
 
-          <div className="relative flex flex-col items-center justify-center overflow-hidden border-t-2 border-[#2d2d2d] bg-[#fcf5ef] px-6 py-16 text-center">
+        <footer className="relative z-0 -mt-10 bg-[#fcf5ef] pb-0 pt-10">
+          <div className="relative flex flex-col items-center justify-center overflow-hidden bg-[#fcf5ef] px-6 py-16 text-center">
             {/* Subtle background pattern */}
             <div
               className="absolute inset-0 opacity-[0.04]"
@@ -225,13 +251,11 @@ export default async function AboutPage() {
               }}
             />
 
-            <div className="relative z-10 mx-auto max-w-4xl space-y-8">
+            <div className="relative z-10 mx-auto max-w-4xl space-y-16">
               <div className="flex items-center justify-center gap-4">
-                <div className="h-[2px] w-12 bg-[#2d2d2d]/10 sm:w-24" />
                 <span className="rounded-full border-2 border-[#2d2d2d] bg-white px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-[#2d2d2d] shadow-[0_2px_0_0_#2d2d2d]">
                   © 2026 Skolaroid
                 </span>
-                <div className="h-[2px] w-12 bg-[#2d2d2d]/10 sm:w-24" />
               </div>
 
               <p className="text-balance text-lg font-medium leading-relaxed text-[#2d2d2d]/80 sm:text-xl sm:leading-loose">
@@ -246,9 +270,7 @@ export default async function AboutPage() {
                 to preserve campus legacies.
               </p>
 
-              <div className="mx-auto h-[2px] w-16 bg-[#2d2d2d]/10" />
-
-              <div className="mx-auto max-w-3xl space-y-3">
+              <div className="mx-auto max-w-3xl space-y-8">
                 <p className="text-xs font-semibold uppercase leading-relaxed tracking-widest text-[#2d2d2d]/50">
                   All rights reserved. No part of this digital archive or its
                   unique place-based storytelling framework may be reproduced
