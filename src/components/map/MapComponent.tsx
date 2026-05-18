@@ -16,7 +16,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { AddMemoryModal } from '@/components/shared/memory/AddMemoryModal';
 import { GroupPanel } from '@/components/groups/GroupPanel';
 import { BatchesModal } from './BatchesModal';
-import { useMainShellSidebarAction } from '@/components/shared/shell/main-shell-sidebar-action';
+import { useMainShellSidebarAction } from '@/components/shared/shell/MainShellSidebarAction';
 import { LandmarkMarker } from './LandmarkMarker';
 import { LandmarkMemoriesPanel } from './LandmarkMemoriesPanel';
 import { MemoryPin } from './MemoryPin';

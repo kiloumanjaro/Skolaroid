@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/Avatar';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/Button';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/Dialog';
 import { RemoveMemberModal } from '@/components/groups/RemoveMemberModal';
 import {
   useRemoveGroupMember,

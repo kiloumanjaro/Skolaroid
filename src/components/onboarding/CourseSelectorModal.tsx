@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { ChevronRight, Search } from 'lucide-react';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/Dialog';
 
 interface CourseSelectorModalProps {
   open: boolean;

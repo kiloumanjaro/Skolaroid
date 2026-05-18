@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { GroupSwitcher, useGroupToast } from '@/components/groups';
-import { usePanelOpenEffects } from '@/components/shared/shell/main-shell-sidebar-action';
+import { usePanelOpenEffects } from '@/components/shared/shell/MainShellSidebarAction';
 import { CreateGroupModal } from '@/components/groups/CreateGroupModal';
 import { InviteMembersModal } from '@/components/groups/InviteMembersModal';
 import { ShareGroupModal } from '@/components/groups/ShareGroupModal';
@@ -55,8 +55,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-} from '@/components/ui/dropdown-menu';
-import { Badge } from '@/components/ui/badge';
+} from '@/components/ui/DropdownMenu';
+import { Badge } from '@/components/ui/Badge';
 
 interface GroupPanelProps {
   open: boolean;

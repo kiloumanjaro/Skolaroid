@@ -4,7 +4,7 @@ import { Heart, ImageIcon, MessageSquare } from 'lucide-react';
 import {
   ProfilePanel,
   ProfileSkeletonBlock,
-} from '@/components/profile/profile-shell';
+} from '@/components/profile/ProfileShell';
 import {
   useUserActivity,
   type ActivityItem,

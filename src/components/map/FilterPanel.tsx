@@ -3,8 +3,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { X, RotateCcw, Filter } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Input } from '@/components/ui/input';
-import { usePanelOpenEffects } from '@/components/shared/shell/main-shell-sidebar-action';
+import { Input } from '@/components/ui/Input';
+import { usePanelOpenEffects } from '@/components/shared/shell/MainShellSidebarAction';
 import {
   type MemoryFilters,
   type SortOption,

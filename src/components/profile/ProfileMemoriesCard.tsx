@@ -8,7 +8,7 @@ import { VISIBILITY_LABELS, type MemoryWithRelations } from '@/lib/schemas';
 import {
   ProfilePanel,
   ProfileSkeletonBlock,
-} from '@/components/profile/profile-shell';
+} from '@/components/profile/ProfileShell';
 
 interface ProfileMemoriesCardProps {
   userId: string | undefined;

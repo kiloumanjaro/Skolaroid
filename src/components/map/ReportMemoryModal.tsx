@@ -5,7 +5,7 @@ import {
   DialogContent,
   DialogTitle,
   DialogDescription,
-} from '@/components/ui/dialog';
+} from '@/components/ui/Dialog';
 import { Flag, Loader2, CheckCircle2, AlertCircle, Info } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useReportMemory } from '@/lib/hooks/useReportMemory';

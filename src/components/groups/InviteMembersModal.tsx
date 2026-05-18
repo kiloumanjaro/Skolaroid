@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/Dialog';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
 import { Mail, Loader2 } from 'lucide-react';
 import { useSendInvitations } from '@/lib/hooks/useInvitation';
 

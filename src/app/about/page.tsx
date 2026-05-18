@@ -1,13 +1,13 @@
 import {
   AboutWorkflowCard,
   type AboutWorkflowCardProps,
-} from '@/components/about/about-workflow-card';
-import { AboutHero } from '@/components/about/about-hero';
+} from '@/components/about/AboutWorkflowCard';
+import { AboutHero } from '@/components/about/AboutHero';
 import { AboutAnnouncementStrip } from '@/components/announcement-strips/AboutAnnouncementStrip';
 import { ABOUT_ANNOUNCEMENTS } from '@/components/announcement-strips/announcement-config';
-import { AboutCreatorsMarquee } from '@/components/about/about-creators-marquee';
-import { ShellInlineSidebarToggle } from '@/components/shared/shell/shell-inline-sidebar-toggle';
-import { ShellBatchesSidebarAction } from '@/components/shared/shell/shell-batches-sidebar-action';
+import { AboutCreatorsMarquee } from '@/components/about/AboutCreatorsMarquee';
+import { ShellInlineSidebarToggle } from '@/components/shared/shell/ShellInlineSidebarToggle';
+import { ShellBatchesSidebarAction } from '@/components/shared/shell/ShellBatchesSidebarAction';
 import { prisma } from '@/lib/prisma';
 
 const pillars: AboutWorkflowCardProps[] = [

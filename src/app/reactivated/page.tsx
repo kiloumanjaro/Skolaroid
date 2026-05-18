@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Check } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 
 // Shown immediately after a deactivated user logs back in within the 30-day grace period
 export default function ReactivatedPage() {

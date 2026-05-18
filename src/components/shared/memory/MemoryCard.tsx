@@ -12,8 +12,8 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+} from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
 import { EditTagsModal } from '@/components/shared/memory/EditTagsModal';
 import { Pencil } from 'lucide-react';
 import { getPrimaryMemoryMediaURL } from '@/lib/memory-media';

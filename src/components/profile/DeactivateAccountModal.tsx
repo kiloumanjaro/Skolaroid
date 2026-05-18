@@ -3,11 +3,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { AlertTriangle, Check, Loader2 } from 'lucide-react';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/Dialog';
+import { Button } from '@/components/ui/Button';
+import { Checkbox } from '@/components/ui/Checkbox';
 import { createClient } from '@/lib/supabase/client';
-import { profileFlatButtonClass } from '@/components/profile/profile-shell';
+import { profileFlatButtonClass } from '@/components/profile/ProfileShell';
 
 const REDIRECT_DELAY_SECONDS = 4;
 

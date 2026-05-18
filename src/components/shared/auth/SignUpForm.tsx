@@ -2,11 +2,11 @@
 
 import { cn } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
-import { Checkbox } from '@/components/ui/checkbox';
-import { FormInput } from '@/components/ui/form-input';
-import { FormButton } from '@/components/ui/form-button';
-import { FormError } from '@/components/ui/form-error';
-import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/Checkbox';
+import { FormInput } from '@/components/ui/FormInput';
+import { FormButton } from '@/components/ui/FormButton';
+import { FormError } from '@/components/ui/FormError';
+import { Label } from '@/components/ui/Label';
 import { WOBBLY_RADIUS_MD } from '@/lib/hand-drawn';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';

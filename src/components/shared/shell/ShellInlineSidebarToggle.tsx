@@ -1,6 +1,6 @@
 'use client';
 
-import { useMainShellChrome } from '@/components/shared/shell/main-shell-sidebar-action';
+import { useMainShellChrome } from '@/components/shared/shell/MainShellSidebarAction';
 
 export function ShellInlineSidebarToggle() {
   const shellChrome = useMainShellChrome();

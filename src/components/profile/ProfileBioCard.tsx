@@ -1,6 +1,6 @@
 'use client';
 
-import { ProfilePanel } from '@/components/profile/profile-shell';
+import { ProfilePanel } from '@/components/profile/ProfileShell';
 
 interface ProfileBioCardProps {
   bio?: string | null;

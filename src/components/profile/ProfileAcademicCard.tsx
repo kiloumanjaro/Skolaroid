@@ -3,7 +3,7 @@
 import {
   ProfilePanel,
   ProfileStatTile,
-} from '@/components/profile/profile-shell';
+} from '@/components/profile/ProfileShell';
 
 interface ProfileAcademicCardProps {
   studentId?: string | null;

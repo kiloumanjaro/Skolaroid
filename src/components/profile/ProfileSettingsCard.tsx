@@ -1,13 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { DeleteAccountModal } from '@/components/profile/DeleteAccountModal';
 import { DeactivateAccountModal } from '@/components/profile/DeactivateAccountModal';
 import {
   ProfilePanel,
   profileFlatButtonClass,
-} from '@/components/profile/profile-shell';
+} from '@/components/profile/ProfileShell';
 import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
 
 export function ProfileSettingsCard() {

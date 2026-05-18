@@ -20,20 +20,20 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { LoginForm } from '@/components/shared/auth/login-form';
+import { LoginForm } from '@/components/shared/auth/LoginForm';
 import {
   MainShellChromeProvider,
   MainShellSidebarActionProvider,
   type MainShellSidebarAction,
-} from '@/components/shared/shell/main-shell-sidebar-action';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+} from '@/components/shared/shell/MainShellSidebarAction';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/Dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/components/ui/DropdownMenu';
 import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
 import {
   useMarkNotificationsRead,
@@ -554,7 +554,7 @@ function ShellSidebarLayout({
             }`}
             aria-label="Go to landing page"
           >
-            <p className="inline-block whitespace-nowrap pr-2 font-dancing text-3xl font-bold leading-[1.05] text-skolaroid-blue sm:text-4xl">
+            <p className="w-full text-center font-dancing text-3xl font-bold leading-[1.05] text-skolaroid-blue sm:text-4xl">
               Skolaroid
             </p>
           </Link>
@@ -600,7 +600,7 @@ function ShellSidebarLayout({
           );
         })}
 
-        {leadingAction && (
+        {leadingAction && pathname === '/map' && (
           <Suspense
             fallback={
               <LeadingActionButton

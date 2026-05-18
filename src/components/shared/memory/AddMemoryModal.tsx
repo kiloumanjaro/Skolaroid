@@ -1,8 +1,8 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { TagInput } from '@/components/shared/forms/tag-input';
+import { Button } from '@/components/ui/Button';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/Dialog';
+import { TagInput } from '@/components/shared/forms/TagInput';
 import { useCreateMemory } from '@/lib/hooks/useCreateMemory';
 import { useCreateCustomLocation } from '@/lib/hooks/useCreateCustomLocation';
 import { useLocations } from '@/lib/hooks/useLocations';

@@ -1,7 +1,7 @@
 import {
   ProfilePanel,
   ProfileSkeletonBlock,
-} from '@/components/profile/profile-shell';
+} from '@/components/profile/ProfileShell';
 
 function ProfilePanelSkeleton({
   eyebrow,

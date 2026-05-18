@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { Pencil, Check, X, Loader2, Settings } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 import { type Group } from '@/lib/types/group';
 import { useUpdateGroup } from '@/lib/hooks/useUpdateGroup';
 import { updateGroupServerSchema } from '@/lib/schemas';

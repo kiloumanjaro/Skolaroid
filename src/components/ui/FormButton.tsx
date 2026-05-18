@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Button, type ButtonProps } from '@/components/ui/button';
+import { Button, type ButtonProps } from '@/components/ui/Button';
 
 interface FormButtonProps extends ButtonProps {
   isLoading?: boolean;

@@ -1,7 +1,7 @@
 'use client';
 
 import type { MouseEventHandler, ReactNode, RefObject } from 'react';
-import { ColorStrip } from '@/components/ui/color-strip';
+import { ColorStrip } from '@/components/ui/ColorStrip';
 import { cn } from '@/lib/utils';
 
 interface SidebarProps {

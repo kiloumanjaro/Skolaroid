@@ -14,16 +14,16 @@ import {
   User,
   Pencil,
 } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogTitle } from '@/components/ui/dialog';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
+import { Badge } from '@/components/ui/Badge';
+import { Dialog, DialogTitle } from '@/components/ui/Dialog';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/components/ui/DropdownMenu';
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 import { ActionBar } from '@/components/map/ActionBar';
 import { DeleteMemoryModal } from '@/components/map/DeleteMemoryModal';
