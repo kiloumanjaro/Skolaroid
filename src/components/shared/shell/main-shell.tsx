@@ -538,12 +538,12 @@ function ShellSidebarLayout({
   return (
     <aside
       className={`relative z-40 flex h-full flex-col overflow-hidden bg-white text-foreground transition-all duration-300 ease-in-out ${
-        isOpen ? 'w-52 sm:w-64' : 'w-0'
+        isOpen ? 'w-60 sm:w-72' : 'w-0'
       }`}
     >
       <div className="flex items-center px-4 pb-6 pt-6">
         <div
-          className={`flex justify-center overflow-hidden transition-all duration-300 ease-in-out ${
+          className={`flex justify-start transition-all duration-300 ease-in-out ${
             isOpen ? 'max-w-[220px] opacity-100' : 'max-w-0 opacity-0'
           }`}
         >
