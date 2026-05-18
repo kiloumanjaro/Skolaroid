@@ -1,4 +1,4 @@
-import type { HTMLAttributes, ReactNode } from 'react';
+﻿import type { HTMLAttributes, ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 
 export const profileFlatButtonClass =
@@ -44,7 +44,7 @@ export function ProfilePanel({
             {title}
           </h2>
           {description ? (
-            <p className="mt-1 max-w-[48ch] text-sm leading-6 text-foreground/75">
+            <p className="mt-1 text-sm leading-6 text-foreground/75">
               {description}
             </p>
           ) : null}

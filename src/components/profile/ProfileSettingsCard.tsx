@@ -19,7 +19,7 @@ export function ProfileSettingsCard() {
   return (
     <>
       <ProfilePanel
-        eyebrow="Settings"
+        eyebrow=""
         title="Account Controls"
         description="Sensitive account actions stay here so the rest of the page can stay calm."
         accentClassName="bg-[#fff1bd]"

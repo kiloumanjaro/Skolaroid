@@ -135,9 +135,6 @@ function OnboardingContent() {
               We&apos;re very excited to get started with you
             </p>
           </div>
-          <button className="flex-shrink-0 bg-secondary px-3 py-1.5 text-xs font-medium text-foreground transition hover:bg-secondary/80">
-            ❓ Need Help
-          </button>
         </div>
 
         {/* Main Card - Flex to fill remaining space */}
@@ -190,13 +187,7 @@ function OnboardingContent() {
           )}
 
           {/* Footer Actions */}
-          <div className="mt-4 flex flex-shrink-0 items-center justify-between border-t border-border pt-4">
-            <a
-              href="#"
-              className="text-xs font-medium text-foreground underline hover:text-foreground/80"
-            >
-              More info ↗
-            </a>
+          <div className="mt-4 flex flex-shrink-0 items-center justify-end border-t border-border pt-4">
             <div className="flex gap-2">
               <button
                 disabled={deleteUser.isPending}

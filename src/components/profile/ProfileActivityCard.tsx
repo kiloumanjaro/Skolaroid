@@ -74,7 +74,7 @@ export function ProfileActivityCard({
 
   return (
     <ProfilePanel
-      eyebrow="Timeline"
+      eyebrow=""
       title="Recent Activity"
       description="A quick pulse on the latest things you have done around the archive."
       accentClassName="bg-[#c0f7fe]"

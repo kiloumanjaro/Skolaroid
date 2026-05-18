@@ -32,7 +32,7 @@ function ProfilePanelSkeleton({
 function MemoriesSkeleton() {
   return (
     <ProfilePanel
-      eyebrow="Archive"
+      eyebrow=""
       title="My Memories"
       accentClassName="bg-[#ffe3b3]"
       contentClassName="grid gap-4 md:grid-cols-2"
@@ -93,7 +93,7 @@ export function ProfilePageSkeleton() {
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.3fr)_minmax(18rem,0.9fr)]">
         <div className="grid gap-6">
           <ProfilePanelSkeleton
-            eyebrow="Story"
+            eyebrow=""
             title="About Me"
             accentClassName="bg-[#ffd7e5]"
           />
@@ -111,12 +111,12 @@ export function ProfilePageSkeleton() {
             accentClassName="bg-[#d9ddff]"
           />
           <ProfilePanelSkeleton
-            eyebrow="Timeline"
+            eyebrow=""
             title="Recent Activity"
             accentClassName="bg-[#c0f7fe]"
           />
           <ProfilePanelSkeleton
-            eyebrow="Settings"
+            eyebrow=""
             title="Account Controls"
             accentClassName="bg-[#fff1bd]"
           />
