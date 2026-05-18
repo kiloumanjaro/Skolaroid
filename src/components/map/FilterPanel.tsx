@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { X, RotateCcw, Filter, ChevronDown } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { X, RotateCcw, ChevronDown } from 'lucide-react';
+import { FunnelIcon } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/Input';
 import {
@@ -117,7 +119,7 @@ export function FilterPanel({
     update('selectedTags', next);
   };
 
-  return (
+  const panelContent = (
     <>
       {open && (
         <div
@@ -129,7 +131,7 @@ export function FilterPanel({
       )}
       <div
         className={cn(
-          'pointer-events-none absolute left-1/2 z-[60] flex w-fit -translate-x-1/2 justify-center transition-[bottom,top,transform] duration-300 ease-out',
+          'pointer-events-none fixed left-1/2 z-[60] flex w-fit -translate-x-1/2 justify-center transition-[bottom,top,transform] duration-300 ease-out',
           open && 'pointer-events-auto',
           open
             ? 'bottom-[5.5rem] sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2'
@@ -148,13 +150,19 @@ export function FilterPanel({
             aria-label={open ? 'Close filters' : 'Open filters'}
             onClick={handleTabClick}
             className={cn(
-              'pointer-events-auto absolute -top-[4.5rem] left-4 h-[4.5rem] w-10 flex-col items-center justify-start gap-1 border-[2px] border-b-0 border-black bg-[#f6cb48] pt-2 text-black',
+              'pointer-events-auto absolute -top-[4rem] left-4 h-[5.5rem] w-12 flex-col items-center justify-start gap-1 border-[2px] border-b-0 border-black bg-[#f6cb48] pt-2 text-black',
               open || btnAnim === 'submerged' ? 'hidden' : 'flex',
               btnAnim === 'bob-open' && 'animate-btn-bob-open',
               btnAnim === 'bounce-back' && 'animate-btn-bounce-back'
             )}
           >
-            <Filter className="h-3 w-3 stroke-[2.5]" aria-hidden />
+            <FunnelIcon
+              size={22}
+              weight="duotone"
+              className="filter-panel-icon mt-1"
+              style={{ flexShrink: 0 }}
+              aria-hidden
+            />
           </button>
           <div className="flex items-center justify-between gap-3 border-b-[2px] border-b-black bg-[#f6cb48] px-3 py-2 text-black">
             <p className="truncate text-base font-medium tracking-[0.01em] sm:text-lg">
@@ -324,6 +332,8 @@ export function FilterPanel({
       </div>
     </>
   );
+
+  return createPortal(panelContent, document.body);
 }
 
 function FilterSection({
