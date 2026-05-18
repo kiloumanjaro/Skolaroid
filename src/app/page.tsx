@@ -421,6 +421,7 @@ function BatchCanvasCard({
   const [isHovered, setIsHovered] = useState(false);
   const era = Math.floor(year / 10) * 10;
   const href = `/map?era=${era}`;
+  const isLeftEdge = x <= -1000;
 
   return (
     <div
@@ -436,8 +437,10 @@ function BatchCanvasCard({
         height={126}
         message={message}
         visible={isHovered}
-        tailPosition="center"
-        className="pointer-events-none absolute bottom-full left-1/2 z-[100] mb-5 -translate-x-1/2"
+        {...(isLeftEdge && { tailPosition: 'center' })}
+        className={`pointer-events-none absolute bottom-full left-1/2 z-[100] mb-5 ${
+          isLeftEdge ? '-translate-x-1/2' : '-translate-x-[80%]'
+        }`}
       />
       <Link
         href={href}
