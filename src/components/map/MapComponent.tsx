@@ -44,6 +44,7 @@ import { MapAnnouncementStrip } from '../announcement-strips/MapAnnouncementStri
 import { MAP_ANNOUNCEMENTS } from '../announcement-strips/announcement-config';
 import { MapLocationSelector } from './MapLocationSelector';
 import { FilterPanel } from './FilterPanel';
+import { MemoryLoadingIndicator } from '@/components/shared/MemoryLoadingIndicator';
 import type {
   MemoryFilters,
   GroupFilterOption,
@@ -1037,6 +1038,8 @@ export function MapComponent({
 
         <div className="relative min-h-0 flex-1 overflow-hidden">
           <div ref={mapContainerRef} className="h-full w-full" />
+
+          {memoriesLoading && <MemoryLoadingIndicator />}
 
           <EraSelector
             activeEra={activeMapEra}
