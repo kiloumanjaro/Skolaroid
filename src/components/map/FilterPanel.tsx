@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { X, RotateCcw, Filter } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
@@ -54,6 +55,50 @@ export function FilterPanel({
 }: FilterPanelProps) {
   usePanelOpenEffects(open);
 
+  const [btnAnim, setBtnAnim] = useState<
+    'idle' | 'bob-open' | 'submerged' | 'bounce-back'
+  >('idle');
+  const prevOpenRef = useRef(open);
+  const openTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined
+  );
+  const bounceTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined
+  );
+
+  // Synchronously mark button as submerged before paint so there's no flash
+  // when the panel closes and the button re-enters the DOM.
+  useLayoutEffect(() => {
+    if (prevOpenRef.current && !open) {
+      setBtnAnim('submerged');
+    }
+    prevOpenRef.current = open;
+  }, [open]);
+
+  // After the panel has finished sliding down, surface the button.
+  useEffect(() => {
+    if (!open) {
+      bounceTimerRef.current = setTimeout(() => {
+        setBtnAnim('bounce-back');
+        setTimeout(() => setBtnAnim('idle'), 500);
+      }, 300);
+      return () => clearTimeout(bounceTimerRef.current);
+    }
+  }, [open]);
+
+  const handleTabClick = () => {
+    if (open) {
+      onOpenChange(false);
+      return;
+    }
+    setBtnAnim('bob-open');
+    clearTimeout(openTimerRef.current);
+    openTimerRef.current = setTimeout(() => {
+      onOpenChange(true);
+      setBtnAnim('submerged');
+    }, 400);
+  };
+
   const update = <K extends keyof MemoryFilters>(
     key: K,
     value: MemoryFilters[K]
@@ -84,10 +129,12 @@ export function FilterPanel({
         <button
           type="button"
           aria-label={open ? 'Close filters' : 'Open filters'}
-          onClick={() => onOpenChange(!open)}
+          onClick={handleTabClick}
           className={cn(
-            'pointer-events-auto absolute -top-[4.5rem] left-4 h-[4.5rem] w-10 flex-col items-center justify-start gap-1 border-2 border-b-0 border-[#1f1f1f] bg-[#f6cb48] pt-2 text-black transition-transform duration-200 ease-out',
-            open ? 'hidden sm:flex' : 'flex'
+            'pointer-events-auto absolute -top-[4.5rem] left-4 h-[4.5rem] w-10 flex-col items-center justify-start gap-1 border-2 border-b-0 border-[#1f1f1f] bg-[#f6cb48] pt-2 text-black',
+            open || btnAnim === 'submerged' ? 'hidden' : 'flex',
+            btnAnim === 'bob-open' && 'animate-btn-bob-open',
+            btnAnim === 'bounce-back' && 'animate-btn-bounce-back'
           )}
         >
           <Filter className="h-3 w-3 stroke-[2.5]" aria-hidden />
