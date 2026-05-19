@@ -11,10 +11,10 @@ export function AboutHero({ users, memoryUploads }: AboutHeroProps) {
       <div className="flex flex-col items-center gap-0">
         <div className="flex flex-col items-center gap-14 lg:flex-row lg:flex-wrap lg:items-end lg:justify-center">
           <h1 className="text-6xl font-light leading-[0.9] tracking-[-0.05em] text-foreground sm:text-7xl md:text-7xl lg:text-8xl">
-            <span className="font-dancing text-[clamp(3.5rem,12vw,7rem)] font-medium text-skolaroid-blue">
+            <span className="block font-dancing text-[clamp(3.5rem,12vw,7rem)] font-medium text-skolaroid-blue sm:inline">
               Iskolar
-            </span>{' '}
-            memories
+            </span>
+            <span className="block sm:inline"> memories</span>
           </h1>
 
           {/* Desktop stats — hidden on mobile, shown lg+ in original position */}
@@ -44,8 +44,8 @@ export function AboutHero({ users, memoryUploads }: AboutHeroProps) {
         </div>
 
         <p className="text-center text-6xl font-normal leading-[0.9] tracking-[-0.05em] text-foreground sm:text-7xl md:text-7xl lg:text-8xl">
-          in digital{' '}
-          <span className="font-dancing text-[clamp(3.5rem,12vw,7rem)] font-normal text-skolaroid-blue">
+          <span className="block sm:inline">in digital</span>{' '}
+          <span className="block font-dancing text-[clamp(3.5rem,12vw,7rem)] font-normal text-skolaroid-blue sm:inline">
             Polaroids
           </span>
         </p>

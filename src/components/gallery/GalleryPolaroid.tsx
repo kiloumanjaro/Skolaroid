@@ -69,7 +69,7 @@ export function GalleryPolaroid({
       }}
       onClick={onClick}
     >
-      <div className="border-2 border-border bg-card p-2 pb-12 shadow-[4px_4px_0px_0px_#2d2d2d]">
+      <div className="border-2 border-border bg-card p-2 pb-12 [filter:drop-shadow(4px_4px_0px_#2d2d2d)]">
         <div
           className="relative overflow-hidden bg-secondary"
           style={{ aspectRatio: '7/10' }}
