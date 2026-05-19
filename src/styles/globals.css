@@ -84,6 +84,26 @@
     stroke-width: 1.5;
   }
 
+  .filter-panel-icon path:first-child {
+    fill: white;
+    opacity: 1;
+  }
+
+  .filter-panel-icon path:last-child {
+    stroke: black;
+    stroke-width: 1.5;
+  }
+
+  .group-panel-icon path:first-child {
+    fill: white;
+    opacity: 1;
+  }
+
+  .group-panel-icon path:last-child {
+    stroke: black;
+    stroke-width: 1.5;
+  }
+
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }

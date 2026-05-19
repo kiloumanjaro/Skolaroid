@@ -30,7 +30,7 @@ export function AboutPolaroid({
   return (
     <div
       ref={cardRef}
-      className={`relative w-full cursor-pointer border-2 border-border bg-card p-2 pb-8 shadow-[4px_4px_0px_0px_#2d2d2d] transition-transform duration-300 ease-out hover:rotate-0 ${rotation}`}
+      className={`relative w-full cursor-pointer border-2 border-border bg-card p-2 pb-8 transition-transform duration-300 ease-out [filter:drop-shadow(4px_4px_0px_#2d2d2d)] hover:rotate-0 ${rotation}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => setIsHovered(!isHovered)}

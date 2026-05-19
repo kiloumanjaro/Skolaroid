@@ -1,7 +1,9 @@
 'use client';
 
+import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/Button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/Dialog';
+import { usePanelOpenEffects } from '@/components/shared/shell/MainShellSidebarAction';
 import { TagInput } from '@/components/shared/forms/TagInput';
 import { useCreateMemory } from '@/lib/hooks/useCreateMemory';
 import { useCreateCustomLocation } from '@/lib/hooks/useCreateCustomLocation';
@@ -47,6 +49,7 @@ import {
 import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 // =============================================================================
 // TYPES
@@ -794,6 +797,17 @@ export function AddMemoryModal({
     [locations]
   );
 
+  usePanelOpenEffects(open);
+
+  useEffect(() => {
+    if (!open) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') handleAttemptClose();
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [open, handleAttemptClose]);
+
   // ---------------------------------------------------------------------------
   // Placeholder handlers
   // ---------------------------------------------------------------------------
@@ -1288,7 +1302,7 @@ export function AddMemoryModal({
   // Main render
   // ---------------------------------------------------------------------------
 
-  return (
+  const modalContent = (
     <>
       {/* Exit confirmation dialog */}
       <Dialog open={showExitConfirm} onOpenChange={setShowExitConfirm}>
@@ -1310,21 +1324,32 @@ export function AddMemoryModal({
         </DialogContent>
       </Dialog>
 
-      {/* Main modal */}
-      <Dialog
-        open={open && !showExitConfirm}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) {
-            handleAttemptClose();
-          } else {
-            onOpenChange(true);
-          }
-        }}
+      {/* Backdrop */}
+      {open && (
+        <div
+          data-state="open"
+          className="fixed inset-0 z-40 bg-[#2d2d2d]/40 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+          onClick={handleAttemptClose}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Main modal panel */}
+      <div
+        className={cn(
+          'pointer-events-none fixed left-1/2 z-[60] flex w-[calc(100vw-1rem)] -translate-x-1/2 justify-center transition-[top,bottom,transform] duration-300 ease-out md:w-[70vw]',
+          open
+            ? 'bottom-[5.5rem] sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2'
+            : 'bottom-0',
+          open && 'pointer-events-auto'
+        )}
       >
-        <DialogContent
-          className="flex h-[calc(100vh-1rem)] w-[calc(100vw-1rem)] max-w-none flex-col gap-0 overflow-hidden rounded-none border-2 border-[#1f1f1f] p-0 shadow-none sm:max-w-none md:h-[85vh] md:w-[70vw]"
-          style={{ borderRadius: 0 }}
-          showCloseButton={false}
+        <section
+          aria-label="Add Memory"
+          className={cn(
+            'pointer-events-auto relative flex h-[calc(100vh-1rem)] max-h-[calc(100dvh-11.5rem)] w-[calc(100vw-1rem)] max-w-none flex-col rounded-none border-[2px] border-black bg-background p-0 shadow-none transition-transform duration-300 ease-out sm:max-h-none md:h-[85vh] md:w-[70vw]',
+            open ? 'translate-y-0' : 'translate-y-full'
+          )}
         >
           {/* Success toast overlay */}
           <AnimatePresence>
@@ -1346,7 +1371,7 @@ export function AddMemoryModal({
             )}
           </AnimatePresence>
 
-          <DialogTitle className="sr-only">Add Memory</DialogTitle>
+          <h2 className="sr-only">Add Memory</h2>
 
           <div className="flex items-center justify-between gap-3 border-b-2 border-b-black bg-[#4384dc] px-3 py-2 text-white">
             <div className="min-w-0">
@@ -1527,8 +1552,10 @@ export function AddMemoryModal({
               </div>
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
+        </section>
+      </div>
     </>
   );
+
+  return createPortal(modalContent, document.body);
 }

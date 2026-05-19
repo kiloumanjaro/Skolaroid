@@ -8,6 +8,7 @@ import {
   useLayoutEffect,
   useRef,
 } from 'react';
+import { createPortal } from 'react-dom';
 import { GroupSwitcher, useGroupToast } from '@/components/groups';
 import { usePanelOpenEffects } from '@/components/shared/shell/MainShellSidebarAction';
 import { CreateGroupModal } from '@/components/groups/CreateGroupModal';
@@ -56,6 +57,7 @@ import {
   Pencil,
   MessageSquare,
 } from 'lucide-react';
+import { BookmarkSimpleIcon } from '@phosphor-icons/react';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -381,7 +383,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
     },
   ];
 
-  return (
+  const panelContent = (
     <>
       {open && (
         <div
@@ -393,9 +395,9 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
       )}
       <div
         className={cn(
-          'pointer-events-none absolute left-1/2 z-[60] flex w-[calc(100vw-1rem)] -translate-x-1/2 justify-center transition-[top,bottom,transform] duration-300 ease-out md:w-[70vw]',
+          'pointer-events-none fixed left-1/2 z-[60] flex w-[calc(100vw-1rem)] -translate-x-1/2 justify-center transition-[top,bottom,transform] duration-300 ease-out md:w-[70vw]',
           open
-            ? 'bottom-[5.5rem] sm:bottom-auto sm:top-[47%] sm:-translate-y-1/2'
+            ? 'bottom-[5.5rem] sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2'
             : 'bottom-0',
           open && 'pointer-events-auto'
         )}
@@ -412,13 +414,19 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
             aria-label={open ? 'Close groups' : 'Open groups'}
             onClick={handleTabClick}
             className={cn(
-              'pointer-events-auto absolute -top-[4.5rem] right-4 h-[4.5rem] w-10 flex-col items-center justify-start gap-1 border-[2px] border-b-0 border-black bg-[#4384dc] pt-2 text-white',
+              'pointer-events-auto absolute -top-[3rem] left-14 z-30 h-[5.5rem] w-12 flex-col items-center justify-start gap-1 border-[2px] border-b-0 border-black bg-[#4384dc] pt-2 text-black',
               open || btnAnim === 'submerged' ? 'hidden' : 'flex',
               btnAnim === 'bob-open' && 'animate-btn-bob-open',
               btnAnim === 'bounce-back' && 'animate-btn-bounce-back'
             )}
           >
-            <Users className="h-3 w-3 stroke-[2.5]" aria-hidden />
+            <BookmarkSimpleIcon
+              size={22}
+              weight="duotone"
+              className="group-panel-icon mt-0.5"
+              style={{ flexShrink: 0 }}
+              aria-hidden
+            />
           </button>
           <div
             className="flex cursor-pointer items-center justify-between gap-3 border-b-[2px] border-b-black bg-[#4384dc] px-3 py-2 text-white"
@@ -769,4 +777,6 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
       <ToastPortal />
     </>
   );
+
+  return createPortal(panelContent, document.body);
 }

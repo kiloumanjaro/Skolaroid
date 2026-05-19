@@ -177,18 +177,20 @@ export default async function AboutPage() {
         </section>
 
         <section className="relative z-0 -mt-10 bg-[#00c59a] pt-10">
-          <div className="mx-auto mt-44 w-full max-w-7xl px-6 py-10 md:px-10 lg:px-16 lg:py-14">
+          <div className="mx-auto mt-44 w-full max-w-7xl px-6 pb-8 pt-10 md:px-10 lg:px-16 lg:pt-14">
             <div className="mb-8 max-w-2xl">
               <h2 className="mt-3 text-3xl leading-tight text-foreground sm:text-4xl">
                 how skolaroid works..
               </h2>
             </div>
+          </div>
 
-            <div className="grid gap-16 md:grid-cols-2 lg:grid-cols-3">
-              {pillars.map((pillar) => (
-                <AboutWorkflowCard key={pillar.title} {...pillar} />
-              ))}
-            </div>
+          <div className="scrollbar-hide flex flex-row gap-6 overflow-x-auto px-6 pb-10 lg:mx-auto lg:grid lg:max-w-7xl lg:grid-cols-3 lg:overflow-visible lg:px-16 lg:pb-14">
+            {pillars.map((pillar) => (
+              <div key={pillar.title} className="w-80 flex-shrink-0 lg:w-auto">
+                <AboutWorkflowCard {...pillar} />
+              </div>
+            ))}
           </div>
         </section>
 
