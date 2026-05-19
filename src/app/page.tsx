@@ -29,6 +29,7 @@ const EXPLORE_BUTTON_X = 0;
 const EXPLORE_BUTTON_Y = 105;
 const BATCH_CARD_SIZE = 64;
 const DRAG_PADDING = 120;
+const BATCH_TOOLTIP_WIDTH = 250;
 
 const BATCH_CANVAS_ITEMS = [
   // Center-based world coordinates. Keep batch positions between -1000 and 1000.
@@ -259,7 +260,7 @@ const BATCH_CANVAS_ITEMS = [
     message:
       'The kind of batch people remember by faces, laughter, and old photo prints.',
     x: -1000,
-    y: -820,
+    y: -760,
   },
   {
     year: 1996,
@@ -384,7 +385,6 @@ function getDragBounds(viewportSize: ViewportSize): DragBounds {
     Math.max(...BATCH_CANVAS_ITEMS.map((batch) => batch.y)) + halfCard;
   const viewportHalfWidth = viewportSize.width / 2;
   const viewportHalfHeight = viewportSize.height / 2;
-
   const minWorldShiftX = DRAG_PADDING - viewportHalfWidth - minBatchX;
   const maxWorldShiftX = viewportHalfWidth - DRAG_PADDING - maxBatchX;
   const minWorldShiftY = DRAG_PADDING - viewportHalfHeight - minBatchY;
@@ -421,6 +421,7 @@ function BatchCanvasCard({
   const [isHovered, setIsHovered] = useState(false);
   const era = Math.floor(year / 10) * 10;
   const href = `/map?era=${era}`;
+  const isLeftEdge = x <= -960;
 
   return (
     <div
@@ -432,11 +433,14 @@ function BatchCanvasCard({
       }}
     >
       <SpeechBubble
-        width={250}
+        width={BATCH_TOOLTIP_WIDTH}
         height={126}
         message={message}
         visible={isHovered}
-        className="pointer-events-none absolute bottom-full left-1/2 z-[100] mb-5 -translate-x-[80%]"
+        {...(isLeftEdge && { tailPosition: 'center' })}
+        className={`pointer-events-none absolute bottom-full left-1/2 z-[100] mb-5 ${
+          isLeftEdge ? '-translate-x-1/2' : '-translate-x-[80%]'
+        }`}
       />
       <Link
         href={href}
