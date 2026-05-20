@@ -369,6 +369,9 @@ export function MemoryDetailModal({
   const mobileRightChevronLabel =
     state.mobileNotebookPage === 'photo' ? 'Show comments page' : 'Next memory';
   const mobileVisibleMemory = state.mobileTransitionMemory ?? memory;
+  const captionRef = state.captionElement
+    ? { current: state.captionElement }
+    : undefined;
   const isMobileNextMemoryTransition =
     state.mobileTransitionMode === 'memory' &&
     state.mobileTransitionDirection === 'next';
@@ -420,7 +423,7 @@ export function MemoryDetailModal({
       isCaptionExpanded={state.isCaptionExpanded}
       onCaptionExpandChange={state.setIsCaptionExpanded}
       isCaptionTruncated={state.isCaptionTruncated}
-      captionRef={{ current: state.captionElement }}
+      captionRef={captionRef}
       isCommentsCollapsed={state.isCommentsCollapsed}
       onCommentsCollapsedChange={state.setIsCommentsCollapsed}
       currentUserId={authUser?.id}
