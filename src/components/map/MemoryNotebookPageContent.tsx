@@ -317,6 +317,18 @@ export const MemoryNotebookPageContent = memo(
             <p className="text-normal text-black">{authorName}</p>
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <span>{visibilityDisplay.label}</span>
+              {memory.memoryDate && (
+                <>
+                  <span>·</span>
+                  <span>
+                    {new Date(memory.memoryDate).toLocaleDateString('en-US', {
+                      month: 'long',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })}
+                  </span>
+                </>
+              )}
             </div>
           </div>
         </div>
