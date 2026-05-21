@@ -1,5 +1,6 @@
 'use client';
 
+import { type ReactNode } from 'react';
 import { ChevronDown } from 'lucide-react';
 import {
   DropdownMenu,
@@ -20,12 +21,14 @@ interface EraSelectorProps {
   activeEra: number | null;
   selectedYear: number | null;
   onEraSelect: (era: number) => void;
+  leadingSlot?: ReactNode;
 }
 
 export function EraSelector({
   activeEra,
   selectedYear,
   onEraSelect,
+  leadingSlot,
 }: EraSelectorProps) {
   const label = selectedYear
     ? String(selectedYear)
@@ -34,7 +37,8 @@ export function EraSelector({
       : '2020s';
 
   return (
-    <div className="absolute bottom-10 right-[4.5rem] z-30 sm:bottom-14 sm:right-24">
+    <div className="absolute bottom-10 right-[4.5rem] z-30 flex items-center gap-2 sm:bottom-14 sm:right-24 sm:gap-3">
+      {leadingSlot}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button

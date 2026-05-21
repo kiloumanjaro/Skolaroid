@@ -167,7 +167,10 @@ export function applyMemoryFilters(
       if (memoryYear !== filters.selectedYear) return false;
     }
 
+    // A selected group is gated by membership, which overrides the visibility
+    // filter — group memories show regardless of their PUBLIC/PROGRAM/BATCH value.
     if (
+      !filters.selectedGroupId &&
       filters.visibility !== DEFAULT_FILTERS.visibility &&
       memory.visibility !== filters.visibility
     ) {

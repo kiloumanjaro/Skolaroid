@@ -179,6 +179,53 @@ export function FilterPanel({
     update('selectedTags', next);
   };
 
+  // When a group is selected, membership overrides visibility: hide the
+  // Visibility control and surface Year + Location next to Sort by instead.
+  const groupSelected = filters.selectedGroupId != null;
+
+  const yearSection = (
+    <FilterSection label="Year">
+      <FilterDropdown
+        side="top"
+        value={
+          filters.selectedYear === null ? '' : String(filters.selectedYear)
+        }
+        onChange={(value) =>
+          update(
+            'selectedYear',
+            value === '' ? null : Number.parseInt(value, 10)
+          )
+        }
+        options={[
+          { label: '—', value: '' },
+          ...displayedAvailableYears.map((year) => ({
+            label: String(year),
+            value: String(year),
+          })),
+        ]}
+      />
+    </FilterSection>
+  );
+
+  const locationSection = (
+    <FilterSection label="Location">
+      <FilterDropdown
+        side="top"
+        value={filters.selectedLocationId ?? ''}
+        onChange={(value) =>
+          update('selectedLocationId', value === '' ? null : value)
+        }
+        options={[
+          { label: 'All locations', value: '' },
+          ...availableLocations.slice(0, MAX_DROPDOWN_OPTIONS).map((loc) => ({
+            label: loc.name,
+            value: loc.id,
+          })),
+        ]}
+      />
+    </FilterSection>
+  );
+
   const panelContent = (
     <>
       {open && (
@@ -299,7 +346,12 @@ export function FilterPanel({
               </div>
             </FilterSection>
 
-            <div className="grid gap-5 sm:grid-cols-2">
+            <div
+              className={cn(
+                'grid items-start gap-5',
+                groupSelected ? 'sm:grid-cols-3' : 'sm:grid-cols-2'
+              )}
+            >
               <FilterSection label="Sort by">
                 <div className="flex flex-wrap gap-2">
                   {SORT_OPTIONS.map((opt) => (
@@ -314,19 +366,28 @@ export function FilterPanel({
                 </div>
               </FilterSection>
 
-              <FilterSection label="Visibility">
-                <div className="flex flex-wrap gap-2">
-                  {VISIBILITY_OPTIONS.map((opt) => (
-                    <SegmentedButton
-                      key={opt.value}
-                      active={filters.visibility === opt.value}
-                      onClick={() => update('visibility', opt.value)}
-                    >
-                      {opt.label}
-                    </SegmentedButton>
-                  ))}
-                </div>
-              </FilterSection>
+              {groupSelected ? (
+                // Membership overrides visibility — Year + Location sit in the
+                // same row as Sort by (top-aligned, not stretched).
+                <>
+                  {yearSection}
+                  {locationSection}
+                </>
+              ) : (
+                <FilterSection label="Visibility">
+                  <div className="flex flex-wrap gap-2">
+                    {VISIBILITY_OPTIONS.map((opt) => (
+                      <SegmentedButton
+                        key={opt.value}
+                        active={filters.visibility === opt.value}
+                        onClick={() => update('visibility', opt.value)}
+                      >
+                        {opt.label}
+                      </SegmentedButton>
+                    ))}
+                  </div>
+                </FilterSection>
+              )}
             </div>
 
             <FilterSection label="Tags">
@@ -349,50 +410,12 @@ export function FilterPanel({
               )}
             </FilterSection>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <FilterSection label="Year">
-                <FilterDropdown
-                  side="top"
-                  value={
-                    filters.selectedYear === null
-                      ? ''
-                      : String(filters.selectedYear)
-                  }
-                  onChange={(value) =>
-                    update(
-                      'selectedYear',
-                      value === '' ? null : Number.parseInt(value, 10)
-                    )
-                  }
-                  options={[
-                    { label: '—', value: '' },
-                    ...displayedAvailableYears.map((year) => ({
-                      label: String(year),
-                      value: String(year),
-                    })),
-                  ]}
-                />
-              </FilterSection>
-
-              <FilterSection label="Location">
-                <FilterDropdown
-                  side="top"
-                  value={filters.selectedLocationId ?? ''}
-                  onChange={(value) =>
-                    update('selectedLocationId', value === '' ? null : value)
-                  }
-                  options={[
-                    { label: 'All locations', value: '' },
-                    ...availableLocations
-                      .slice(0, MAX_DROPDOWN_OPTIONS)
-                      .map((loc) => ({
-                        label: loc.name,
-                        value: loc.id,
-                      })),
-                  ]}
-                />
-              </FilterSection>
-            </div>
+            {!groupSelected && (
+              <div className="grid gap-4 sm:grid-cols-2">
+                {yearSection}
+                {locationSection}
+              </div>
+            )}
           </div>
         </section>
       </div>
