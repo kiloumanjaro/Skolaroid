@@ -73,6 +73,7 @@ export function FilterPanel({
   const bounceTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined
   );
+  const panelRef = useRef<HTMLElement | null>(null);
 
   // Synchronously mark button as submerged before paint so there's no flash
   // when the panel closes and the button re-enters the DOM.
@@ -93,6 +94,31 @@ export function FilterPanel({
       return () => clearTimeout(bounceTimerRef.current);
     }
   }, [open]);
+
+  useLayoutEffect(() => {
+    const panel = panelRef.current;
+    if (!panel) return;
+
+    const updatePanelLeft = () => {
+      const nextLeft = panel.getBoundingClientRect().left;
+      panel.style.setProperty('--panel-left', `${nextLeft}px`);
+    };
+
+    updatePanelLeft();
+
+    const observer =
+      typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(updatePanelLeft)
+        : null;
+
+    observer?.observe(panel);
+    window.addEventListener('resize', updatePanelLeft);
+
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener('resize', updatePanelLeft);
+    };
+  }, []);
 
   const handleTabClick = () => {
     if (open) {
@@ -139,6 +165,7 @@ export function FilterPanel({
         )}
       >
         <section
+          ref={panelRef}
           aria-label="Memory filters"
           className={cn(
             'pointer-events-auto relative flex h-[calc(100vh-5rem)] max-h-[calc(100dvh-11.5rem)] w-[calc(100vw-1rem)] max-w-none flex-col rounded-none border-[2px] border-black bg-background p-0 shadow-none transition-transform duration-300 ease-out sm:max-h-none md:h-[75vh] md:w-[70vw]',
@@ -150,11 +177,16 @@ export function FilterPanel({
             aria-label={open ? 'Close filters' : 'Open filters'}
             onClick={handleTabClick}
             className={cn(
-              'pointer-events-auto absolute -top-[4rem] left-4 h-[5.5rem] w-12 flex-col items-center justify-start gap-1 border-[2px] border-b-0 border-black bg-[#f6cb48] pt-2 text-black',
+              'pointer-events-auto absolute -top-[4rem] h-[5.5rem] w-12 flex-col items-center justify-start gap-1 border-[2px] border-b-0 border-black bg-[#f6cb48] pt-2 text-black',
               open || btnAnim === 'submerged' ? 'hidden' : 'flex',
               btnAnim === 'bob-open' && 'animate-btn-bob-open',
               btnAnim === 'bounce-back' && 'animate-btn-bounce-back'
             )}
+            style={{
+              left: 100,
+              transform:
+                'translateX(max(0px, calc(var(--map-left-offset, 0px) - var(--panel-left, 0px))))',
+            }}
           >
             <FunnelIcon
               size={22}

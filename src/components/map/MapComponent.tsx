@@ -16,7 +16,10 @@ import { createRoot, type Root } from 'react-dom/client';
 import { AddMemoryModal } from '@/components/shared/memory/AddMemoryModal';
 import { GroupPanel } from '@/components/groups/GroupPanel';
 import { BatchesModal } from './BatchesModal';
-import { useMainShellSidebarAction } from '@/components/shared/shell/MainShellSidebarAction';
+import {
+  useMainShellChrome,
+  useMainShellSidebarAction,
+} from '@/components/shared/shell/MainShellSidebarAction';
 import { LandmarkMarker } from './LandmarkMarker';
 import { LandmarkMemoriesPanel } from './LandmarkMemoriesPanel';
 import { MemoryPin } from './MemoryPin';
@@ -147,9 +150,67 @@ export function MapComponent({
   const memoryMarkersRef = useRef<mapboxgl.Marker[]>([]);
   const memoryRootsRef = useRef<Root[]>([]);
   const memoryOpenSequenceRef = useRef(0);
+  const shellChrome = useMainShellChrome();
+  const sidebarOpen = shellChrome?.sidebarOpen ?? false;
 
   // Pending memory for the flyTo → open detail flow
   const pendingMemoryRef = useRef<MemoryWithCoordinates | null>(null);
+
+  const updateMapLeftOffset = useCallback(() => {
+    const node = mapContainerRef.current;
+    if (!node) return;
+
+    const nextLeft = node.getBoundingClientRect().left;
+    document.documentElement.style.setProperty(
+      '--map-left-offset',
+      `${nextLeft}px`
+    );
+  }, []);
+
+  useLayoutEffect(() => {
+    if (!isClient) return;
+
+    updateMapLeftOffset();
+
+    const node = mapContainerRef.current;
+    if (!node) return;
+
+    const observer =
+      typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(updateMapLeftOffset)
+        : null;
+
+    observer?.observe(node);
+    window.addEventListener('resize', updateMapLeftOffset);
+
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener('resize', updateMapLeftOffset);
+    };
+  }, [isClient, updateMapLeftOffset]);
+
+  useEffect(() => {
+    if (!isClient) return;
+
+    let rafId = 0;
+    let start = 0;
+    const durationMs = 420;
+
+    const tick = (now: number) => {
+      if (!start) start = now;
+      updateMapLeftOffset();
+
+      if (now - start < durationMs) {
+        rafId = window.requestAnimationFrame(tick);
+      }
+    };
+
+    rafId = window.requestAnimationFrame(tick);
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+    };
+  }, [isClient, sidebarOpen, updateMapLeftOffset]);
 
   useEffect(() => {
     if (activeMapEra !== activeEraFromUrl) {
