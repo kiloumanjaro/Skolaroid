@@ -31,7 +31,6 @@ import {
   FileText,
   Globe,
   Grid3X3,
-  Languages,
   Info,
   List,
   Loader2,
@@ -292,9 +291,6 @@ export function AddMemoryModal({
     [uploadingFiles]
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const hasCompletedUploads = completedFiles.length > 0;
-
   const currentVisibilityOption = useMemo(
     () =>
       VISIBILITY_OPTIONS.find((o) => o.value === visibility) ??
@@ -513,11 +509,12 @@ export function AddMemoryModal({
   // ---------------------------------------------------------------------------
 
   const handleNext = useCallback(() => {
-    // TODO: re-enable upload check once backend is wired up
-    // if (activeTab === 'upload' && !hasCompletedUploads) return;
+    if (activeTab === 'upload' && completedFiles.length === 0) return;
 
     // Require location selection before advancing past Location tab
     if (activeTab === 'location' && !selectedLocationId) return;
+
+    if (activeTab === 'caption' && !caption.trim()) return;
 
     const nextIndex = activeTabIndex + 1;
     if (nextIndex < TABS.length) {
@@ -525,7 +522,7 @@ export function AddMemoryModal({
       setActiveTab(nextTab);
       setHighestReachedTab((prev) => Math.max(prev, nextIndex));
     }
-  }, [activeTab, activeTabIndex, selectedLocationId]);
+  }, [activeTab, activeTabIndex, caption, completedFiles, selectedLocationId]);
 
   const handleBack = useCallback(() => {
     const prevIndex = activeTabIndex - 1;
@@ -566,7 +563,7 @@ export function AddMemoryModal({
 
     createMemory(
       {
-        title: caption.trim() || 'Untitled Memory',
+        title: caption.trim(),
         description: caption.trim() || undefined,
         visibility,
         locationId,
@@ -1054,7 +1051,7 @@ export function AddMemoryModal({
           htmlFor="caption"
           className="mb-2 block text-sm font-medium text-foreground"
         >
-          Caption
+          Caption <span className="text-red-500">*</span>
         </label>
         <textarea
           id="caption"
@@ -1127,13 +1124,14 @@ export function AddMemoryModal({
           </div>
         </div>
 
-        {/* Live */}
+        {/* Attachment count */}
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-3">
             <FileText className="mt-0.5 h-5 w-5 text-muted-foreground" />
             <div>
               <p className="text-sm font-semibold text-muted-foreground">
-                Not uploaded yet
+                {completedFiles.length} attachment
+                {completedFiles.length !== 1 ? 's' : ''}
               </p>
             </div>
           </div>
@@ -1148,30 +1146,12 @@ export function AddMemoryModal({
                 Moderation
               </p>
               <p className="text-xs text-muted-foreground">
-                {visibility === 'PUBLIC'
-                  ? 'Needs approval'
-                  : 'Does not need approval'}
+                {visibility === 'GROUP_ONLY'
+                  ? 'Does not need approval'
+                  : 'Needs approval'}
               </p>
             </div>
           </div>
-        </div>
-
-        {/* English */}
-        <div className="flex items-start justify-between">
-          <div className="flex items-start gap-3">
-            <Languages className="mt-0.5 h-5 w-5 text-foreground" />
-            <div>
-              <p className="text-sm font-semibold text-foreground">English</p>
-            </div>
-          </div>
-          <button
-            // TODO: Implement switch language functionality
-            type="button"
-            disabled
-            className="cursor-not-allowed text-sm font-medium text-muted-foreground opacity-50"
-          >
-            Switch languages
-          </button>
         </div>
 
         {/* Current visibility */}
@@ -1453,24 +1433,15 @@ export function AddMemoryModal({
               <div className="flex h-14 items-stretch justify-end border-t-2 border-black">
                 <div className="min-w-0 flex-1"></div>
                 {activeTab === 'upload' && (
-                  <>
-                    <button
-                      type="button"
-                      onClick={handleAttemptClose}
-                      aria-label="Cancel add memory"
-                      className={footerLeadingActionClassName}
-                    >
-                      <X className={footerActionIconClassName} />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleNext}
-                      aria-label="Continue to next step"
-                      className={footerPrimaryActionClassName}
-                    >
-                      <Check className={footerActionIconClassName} />
-                    </button>
-                  </>
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    aria-label="Continue to next step"
+                    disabled={completedFiles.length === 0}
+                    className={footerPrimaryActionClassName}
+                  >
+                    <ArrowRight className={footerActionIconClassName} />
+                  </button>
                 )}
 
                 {activeTab === 'location' && (
@@ -1515,6 +1486,7 @@ export function AddMemoryModal({
                       type="button"
                       onClick={handleNext}
                       aria-label="Continue to privacy step"
+                      disabled={!caption.trim()}
                       className={footerPrimaryActionClassName}
                     >
                       <ArrowRight className={footerActionIconClassName} />
