@@ -43,6 +43,8 @@ import type {
 } from '@/lib/types/map';
 import { AddMemoryButton } from './AddMemoryButton';
 import { EraSelector } from './EraSelector';
+import { GroupPillButton } from './GroupPillButton';
+import { CreateGroupModal } from '@/components/groups/CreateGroupModal';
 import { MapAnnouncementStrip } from '../announcement-strips/MapAnnouncementStrip';
 import { MAP_ANNOUNCEMENTS } from '../announcement-strips/announcement-config';
 import { MapLocationSelector } from './MapLocationSelector';
@@ -127,6 +129,9 @@ export function MapComponent({
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
   const [batchesModalOpen, setBatchesModalOpen] = useState(false);
   const [activeMapEra, setActiveMapEra] = useState(activeEraFromUrl);
+  const [groupsMode, setGroupsMode] = useState(false);
+  const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
+  const [createGroupModalOpen, setCreateGroupModalOpen] = useState(false);
   const [selectedLandmark, setSelectedLandmark] = useState<Landmark | null>(
     null
   );
@@ -245,9 +250,21 @@ export function MapComponent({
     [userGroups]
   );
 
-  const eraFilteredMemories = useMemo(
-    () => filterMemoriesByEra(memories, activeMapEra),
-    [memories, activeMapEra]
+  // In groups mode the active group's memories form the base set (ignoring the
+  // decade); otherwise the base set is the era-filtered memories. Either way the
+  // filter panel and sort are then layered on top of this base set below.
+  const groupMemories = useMemo(
+    () =>
+      activeGroupId
+        ? memories.filter((m) => m.privateGroupId === activeGroupId)
+        : [],
+    [memories, activeGroupId]
+  );
+
+  const baseMemories = useMemo(
+    () =>
+      groupsMode ? groupMemories : filterMemoriesByEra(memories, activeMapEra),
+    [groupsMode, groupMemories, memories, activeMapEra]
   );
 
   const selectedMemoryIndex = useMemo(
@@ -265,8 +282,8 @@ export function MapComponent({
       : null;
 
   const tagFilteredMemories = useMemo(
-    () => applyMemoryFilters(eraFilteredMemories, filters),
-    [eraFilteredMemories, filters]
+    () => applyMemoryFilters(baseMemories, filters),
+    [baseMemories, filters]
   );
 
   const sortedMemories = useMemo(
@@ -279,18 +296,16 @@ export function MapComponent({
   const availableTags = useMemo(
     () =>
       Array.from(
-        new Set(
-          eraFilteredMemories.flatMap((m) => m.tags?.map((t) => t.name) ?? [])
-        )
+        new Set(baseMemories.flatMap((m) => m.tags?.map((t) => t.name) ?? []))
       ).sort(),
-    [eraFilteredMemories]
+    [baseMemories]
   );
 
   const availableYears = useMemo(
     () =>
       Array.from(
         new Set(
-          eraFilteredMemories.map((m) => {
+          baseMemories.map((m) => {
             const memoryDateValue = (m as { memoryDate?: string }).memoryDate;
             const date = memoryDateValue
               ? new Date(memoryDateValue)
@@ -299,12 +314,12 @@ export function MapComponent({
           })
         )
       ).sort((a, b) => b - a),
-    [eraFilteredMemories]
+    [baseMemories]
   );
 
   const availableLocations = useMemo<LocationFilterOption[]>(() => {
     const locationIdsInEra = new Set(
-      eraFilteredMemories
+      baseMemories
         .map((memory) => (memory.location as { id?: string } | undefined)?.id)
         .filter((id): id is string => Boolean(id))
     );
@@ -324,7 +339,7 @@ export function MapComponent({
 
     const fallbackLocations = new Map<string, LocationFilterOption>();
 
-    for (const memory of eraFilteredMemories) {
+    for (const memory of baseMemories) {
       const location = memory.location as
         | { id?: string; buildingName: string }
         | undefined;
@@ -340,7 +355,7 @@ export function MapComponent({
     return Array.from(fallbackLocations.values()).sort((a, b) =>
       a.name.localeCompare(b.name)
     );
-  }, [eraFilteredMemories, locationsData]);
+  }, [baseMemories, locationsData]);
 
   // Keep a stable ref for the click handler so detached roots always call the latest version
   const handleClickRef = useRef<(landmark: Landmark) => void>(() => {});
@@ -998,7 +1013,7 @@ export function MapComponent({
     // Group memories by location coordinates (rounded to 5 decimal places)
     const groups = new Map<
       string,
-      { lng: number; lat: number; memories: typeof eraFilteredMemories }
+      { lng: number; lat: number; memories: typeof displayedMemories }
     >();
 
     for (const memory of displayedMemories) {
@@ -1104,7 +1119,31 @@ export function MapComponent({
 
           <EraSelector
             activeEra={activeMapEra}
-            onEraSelect={(era) => setActiveMapEra(era)}
+            onEraSelect={(era) => {
+              setGroupsMode(false);
+              setActiveMapEra(era);
+            }}
+            groupsMode={groupsMode}
+            onSelectGroupsMode={() => setGroupsMode(true)}
+            leadingSlot={
+              groupsMode ? (
+                <GroupPillButton
+                  label={
+                    userGroups.length === 0
+                      ? 'Add a group'
+                      : (userGroups.find((g) => g.id === activeGroupId)?.name ??
+                        userGroups[0].name)
+                  }
+                  onClick={() => {
+                    if (userGroups.length === 0) {
+                      setCreateGroupModalOpen(true);
+                    } else {
+                      setGroupModalOpen(true);
+                    }
+                  }}
+                />
+              ) : null
+            }
           />
           <AddMemoryButton onClick={() => openAddMemoryModal()} />
 
@@ -1121,6 +1160,16 @@ export function MapComponent({
               }
               setGroupModalOpen(isOpen);
               if (isOpen) cancelPendingFlyTo();
+            }}
+            onSelectedGroupChange={setActiveGroupId}
+          />
+
+          <CreateGroupModal
+            open={createGroupModalOpen}
+            onOpenChange={setCreateGroupModalOpen}
+            onCreated={(group) => {
+              setActiveGroupId(group.id);
+              setGroupModalOpen(true);
             }}
           />
 

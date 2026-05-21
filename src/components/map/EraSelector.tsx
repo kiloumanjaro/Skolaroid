@@ -1,5 +1,6 @@
 'use client';
 
+import { type ReactNode } from 'react';
 import { ChevronDown } from 'lucide-react';
 import {
   DropdownMenu,
@@ -19,13 +20,27 @@ const ERAS = [
 interface EraSelectorProps {
   activeEra: number | null;
   onEraSelect: (era: number) => void;
+  groupsMode: boolean;
+  onSelectGroupsMode: () => void;
+  leadingSlot?: ReactNode;
 }
 
-export function EraSelector({ activeEra, onEraSelect }: EraSelectorProps) {
-  const label = activeEra ? `${activeEra}s` : '2020s';
+export function EraSelector({
+  activeEra,
+  onEraSelect,
+  groupsMode,
+  onSelectGroupsMode,
+  leadingSlot,
+}: EraSelectorProps) {
+  const label = groupsMode
+    ? 'My Groups'
+    : activeEra
+      ? `${activeEra}s`
+      : '2020s';
 
   return (
-    <div className="absolute bottom-10 right-[4.5rem] z-30 sm:bottom-14 sm:right-24">
+    <div className="absolute bottom-10 right-[4.5rem] z-30 flex items-center gap-2 sm:bottom-14 sm:right-24 sm:gap-3">
+      {leadingSlot}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
@@ -63,13 +78,23 @@ export function EraSelector({ activeEra, onEraSelect }: EraSelectorProps) {
               onSelect={() => onEraSelect(era.decade)}
               className={cn(
                 'min-h-8 cursor-pointer rounded-none border border-transparent px-2 py-1.5 font-hand text-sm font-normal text-black hover:font-semibold focus:bg-transparent focus:text-black data-[highlighted]:bg-transparent data-[highlighted]:text-black',
-                activeEra === era.decade &&
+                !groupsMode &&
+                  activeEra === era.decade &&
                   'border-[#2d2d2d] bg-[#fd91e6] font-semibold'
               )}
             >
               {era.label}
             </DropdownMenuItem>
           ))}
+          <DropdownMenuItem
+            onSelect={() => onSelectGroupsMode()}
+            className={cn(
+              'min-h-8 cursor-pointer rounded-none border border-transparent px-2 py-1.5 font-hand text-sm font-normal text-black hover:font-semibold focus:bg-transparent focus:text-black data-[highlighted]:bg-transparent data-[highlighted]:text-black',
+              groupsMode && 'border-[#2d2d2d] bg-[#fd91e6] font-semibold'
+            )}
+          >
+            My Groups
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
