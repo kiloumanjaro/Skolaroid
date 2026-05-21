@@ -1,26 +1,11 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/Dialog';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
-import { WOBBLY_RADIUS_MD } from '@/lib/hand-drawn';
-import {
-  Globe,
-  Lock,
-  Eye,
-  EyeOff,
-  ChevronDown,
-  Mail,
-  Info,
-  Loader2,
-} from 'lucide-react';
-import {
-  type GroupPrivacy,
-  type GroupVisibility,
-  createGroupSchema,
-} from '@/lib/types/group';
+import { Mail, Loader2 } from 'lucide-react';
 import { useCreateGroup, type GroupResponse } from '@/lib/hooks/useCreateGroup';
 
 // ─── PROPS ──────────────────────────────────────────────────────────
@@ -33,159 +18,6 @@ interface CreateGroupModalProps {
   onCreated: (group: GroupResponse) => void;
 }
 
-// ─── CUSTOM DROPDOWN COMPONENT ──────────────────────────────────────
-
-interface DropdownOption<T extends string> {
-  value: T;
-  label: string;
-  description: string;
-  icon: React.ReactNode;
-}
-
-interface CustomDropdownProps<T extends string> {
-  label: string;
-  tooltip: string;
-  options: DropdownOption<T>[];
-  value: T;
-  onChange: (value: T) => void;
-}
-
-function CustomDropdown<T extends string>({
-  label,
-  tooltip,
-  options,
-  value,
-  onChange,
-}: CustomDropdownProps<T>) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const selected = options.find((o) => o.value === value);
-
-  return (
-    <div className="space-y-2">
-      <div className="flex items-center gap-1.5">
-        <Label>{label}</Label>
-        <div
-          className="relative"
-          onMouseEnter={() => setShowTooltip(true)}
-          onMouseLeave={() => setShowTooltip(false)}
-        >
-          <Info size={14} className="cursor-help text-muted-foreground" />
-          {showTooltip && (
-            <div
-              className="absolute bottom-full left-1/2 z-30 mb-2 w-56 -translate-x-1/2 border-2 border-border bg-card px-3 py-2 text-xs text-muted-foreground shadow-[3px_3px_0px_0px_#2d2d2d]"
-              style={{ borderRadius: WOBBLY_RADIUS_MD }}
-            >
-              {tooltip}
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div ref={dropdownRef} className="relative">
-        <button
-          type="button"
-          onClick={() => setIsOpen(!isOpen)}
-          className="flex w-full items-center justify-between border-2 border-input bg-transparent px-3 py-2 text-sm transition-colors hover:bg-secondary"
-        >
-          <span className="flex items-center gap-2">
-            {selected?.icon}
-            <span>{selected?.label}</span>
-          </span>
-          <ChevronDown
-            size={16}
-            className={`text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`}
-          />
-        </button>
-
-        {isOpen && (
-          <div
-            className="absolute left-0 top-full z-20 mt-1 w-full overflow-hidden border-2 border-border bg-card shadow-[3px_3px_0px_0px_#2d2d2d]"
-            style={{ borderRadius: WOBBLY_RADIUS_MD }}
-          >
-            {options.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => {
-                  onChange(option.value);
-                  setIsOpen(false);
-                }}
-                className={`flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-secondary ${
-                  value === option.value
-                    ? 'border-l-2 border-skolaroid-blue bg-skolaroid-blue/5'
-                    : 'border-l-2 border-transparent'
-                }`}
-              >
-                <span className="mt-0.5 shrink-0 text-skolaroid-blue">
-                  {option.icon}
-                </span>
-                <span>
-                  <span className="block text-sm font-semibold text-foreground">
-                    {option.label}
-                  </span>
-                  <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">
-                    {option.description}
-                  </span>
-                </span>
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// ─── PRIVACY/VISIBILITY OPTIONS ─────────────────────────────────────
-
-const privacyOptions: DropdownOption<GroupPrivacy>[] = [
-  {
-    value: 'PUBLIC',
-    label: 'Public',
-    description:
-      "Anyone can see who's in the group and what they post. Depending on your group's size and age, you might be able to change to private later.",
-    icon: <Globe size={20} />,
-  },
-  {
-    value: 'PRIVATE',
-    label: 'Private',
-    description:
-      "Only members can see who's in the group and what they post. You might be able to change to public later.",
-    icon: <Lock size={20} />,
-  },
-];
-
-const visibilityOptions: DropdownOption<GroupVisibility>[] = [
-  {
-    value: 'VISIBLE',
-    label: 'Visible',
-    description: 'Anyone can find this group.',
-    icon: <Eye size={20} />,
-  },
-  {
-    value: 'HIDDEN',
-    label: 'Hidden',
-    description: 'Only members can find this group.',
-    icon: <EyeOff size={20} />,
-  },
-];
-
 // ─── MAIN COMPONENT ─────────────────────────────────────────────────
 
 export function CreateGroupModal({
@@ -195,8 +27,6 @@ export function CreateGroupModal({
 }: CreateGroupModalProps) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [privacy, setPrivacy] = useState<GroupPrivacy>('PUBLIC');
-  const [visibility, setVisibility] = useState<GroupVisibility>('VISIBLE');
   const [inviteEmails, setInviteEmails] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const createGroup = useCreateGroup();
@@ -204,8 +34,6 @@ export function CreateGroupModal({
   const resetForm = useCallback(() => {
     setName('');
     setDescription('');
-    setPrivacy('PUBLIC');
-    setVisibility('VISIBLE');
     setInviteEmails('');
     setErrors({});
   }, []);
@@ -239,23 +67,13 @@ export function CreateGroupModal({
   };
 
   const handleSubmit = () => {
-    const result = createGroupSchema.safeParse({
-      name,
-      description: description || undefined,
-      privacy,
-      visibility,
-      inviteEmails,
-    });
-
-    if (!result.success) {
-      const fieldErrors: Record<string, string> = {};
-      for (const issue of result.error.issues) {
-        const field = issue.path[0] as string;
-        if (!fieldErrors[field]) {
-          fieldErrors[field] = issue.message;
-        }
-      }
-      setErrors(fieldErrors);
+    const trimmedName = name.trim();
+    if (!trimmedName) {
+      setErrors({ name: 'Group name is required' });
+      return;
+    }
+    if (trimmedName.length > 100) {
+      setErrors({ name: 'Group name must be 100 characters or less' });
       return;
     }
 
@@ -345,25 +163,7 @@ export function CreateGroupModal({
               </p>
             </div>
 
-            {/* Field 3 — Choose Privacy */}
-            <CustomDropdown
-              label="Choose Privacy"
-              tooltip="Privacy controls who can see group content and members."
-              options={privacyOptions}
-              value={privacy}
-              onChange={setPrivacy}
-            />
-
-            {/* Field 4 — Choose Visibility */}
-            <CustomDropdown
-              label="Choose Visibility"
-              tooltip="Visibility controls whether people can find this group in search."
-              options={visibilityOptions}
-              value={visibility}
-              onChange={setVisibility}
-            />
-
-            {/* Field 5 — Invite Users */}
+            {/* Field 3 — Invite Users */}
             <div className="space-y-2">
               <Label>
                 Invite Members{' '}

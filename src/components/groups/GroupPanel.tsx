@@ -12,12 +12,9 @@ import { createPortal } from 'react-dom';
 import { GroupSwitcher, useGroupToast } from '@/components/groups';
 import { usePanelOpenEffects } from '@/components/shared/shell/MainShellSidebarAction';
 import { CreateGroupModal } from '@/components/groups/CreateGroupModal';
-import { InviteMembersModal } from '@/components/groups/InviteMembersModal';
 import { ShareGroupModal } from '@/components/groups/ShareGroupModal';
 import { LeaveGroupModal } from '@/components/groups/LeaveGroupModal';
 import { DeleteGroupModal } from '@/components/groups/DeleteGroupModal';
-import { EditGroupModal } from '@/components/groups/EditGroupModal';
-import { EditGroupMessageModal } from '@/components/groups/EditGroupMessageModal';
 import { MembersTab } from '@/components/groups/tabs/MembersTab';
 import { MediaTab } from '@/components/groups/tabs/MediaTab';
 import { AboutTab } from '@/components/groups/tabs/AboutTab';
@@ -41,35 +38,24 @@ import {
 import { cn } from '@/lib/utils';
 import {
   X,
-  MoreHorizontal,
   Users,
   Image as ImageIcon,
   Info,
   Settings,
-  UserPlus,
   Share2,
-  Trash2,
   LogOut,
   Globe,
   Lock,
   Loader2,
   Shield,
-  Pencil,
-  MessageSquare,
 } from 'lucide-react';
 import { BookmarkSimpleIcon } from '@phosphor-icons/react';
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-} from '@/components/ui/DropdownMenu';
 import { Badge } from '@/components/ui/Badge';
 
 interface GroupPanelProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSelectedGroupChange?: (groupId: string | null) => void;
 }
 
 type TabType = 'members' | 'media' | 'settings' | 'about' | 'roles';
@@ -123,15 +109,16 @@ function toGroup(g: GroupResponse): Group {
   };
 }
 
-export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
+export function GroupPanel({
+  open,
+  onOpenChange,
+  onSelectedGroupChange,
+}: GroupPanelProps) {
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
   const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [leaveModalOpen, setLeaveModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [editGroupModalOpen, setEditGroupModalOpen] = useState(false);
-  const [editMessageModalOpen, setEditMessageModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('members');
 
   const [btnAnim, setBtnAnim] = useState<
@@ -233,6 +220,11 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
     }
   }, [groups, selectedGroupId]);
 
+  // Notify parent when selected group changes
+  useEffect(() => {
+    onSelectedGroupChange?.(selectedGroupId);
+  }, [selectedGroupId, onSelectedGroupChange]);
+
   // Build the selected group from either the detail query or the list
   const selectedGroup: Group | null = useMemo(() => {
     if (groupDetailRaw) return toGroup(groupDetailRaw);
@@ -254,13 +246,6 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
   const canManageMembers =
     !!selectedGroup &&
     canRoleUsePermission(rolePrivileges, currentUserRole, 'manageMembers');
-  const canSendInvitations =
-    !!selectedGroup &&
-    canRoleUsePermission(rolePrivileges, currentUserRole, 'sendInvitations');
-  const canEditMessage =
-    !!selectedGroup &&
-    (currentUserRole === 'OWNER' || currentUserRole === 'ADMIN');
-  const hasMoreActions = isOwner || canSendInvitations || canEditMessage;
 
   // ─── Handlers ────────────────────────────────────────────────────
   const handleSelectGroup = useCallback((group: Group) => {
@@ -352,16 +337,6 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
   const handlePrivilegesSaved = useCallback(() => {
     refetchGroupDetail();
     showSuccess('Role privileges updated successfully.');
-  }, [refetchGroupDetail, showSuccess]);
-
-  const handleGroupUpdated = useCallback(() => {
-    refetchGroupDetail();
-    showSuccess('Group updated successfully.');
-  }, [refetchGroupDetail, showSuccess]);
-
-  const handleMessageUpdated = useCallback(() => {
-    refetchGroupDetail();
-    showSuccess('Group message updated.');
   }, [refetchGroupDetail, showSuccess]);
 
   const openNestedModal = useCallback(
@@ -495,8 +470,8 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
             </div>
           </div>
 
-          <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-            <div className="overflow-x-auto border-b-[2px] border-black px-2 py-2 sm:px-3 sm:py-3">
+          <div className="flex min-h-0 flex-1 flex-col">
+            <div className="border-b-[2px] border-black px-2 py-2 sm:px-3 sm:py-3">
               <div className="flex flex-col gap-2 sm:gap-3 md:flex-row md:items-start md:justify-between">
                 <div className="flex min-w-0 flex-1 flex-col gap-2 sm:gap-3 md:flex-row md:items-start">
                   <div className="w-full shrink-0 md:w-64">
@@ -544,102 +519,48 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
 
                 {selectedGroup && (
                   <div className="flex shrink-0 items-center gap-1 self-end md:self-start">
-                    <button
-                      type="button"
-                      aria-label="Share group"
-                      onClick={() => {
-                        if (!selectedGroup) return;
-                        openNestedModal(setShareModalOpen);
-                      }}
-                      className="grid h-7 w-7 shrink-0 place-items-center border-2 border-black bg-white text-black"
-                    >
-                      <Share2 className="h-4 w-4 stroke-[2]" />
-                    </button>
-                    <button
-                      type="button"
-                      aria-label="Leave group"
-                      onClick={() => {
-                        if (!selectedGroup) return;
-                        openNestedModal(setLeaveModalOpen);
-                      }}
-                      className="grid h-7 w-7 shrink-0 place-items-center border-2 border-black bg-white text-black"
-                    >
-                      <LogOut className="h-4 w-4 stroke-[2]" />
-                    </button>
-                    {hasMoreActions && (
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <button
-                            type="button"
-                            className="group relative h-7 w-7 shrink-0 overflow-hidden border-2 border-black transition-colors"
-                            aria-label="Open group actions"
-                          >
-                            <div className="absolute inset-0 bg-background transition-colors group-hover:bg-[#f6cb48] group-active:bg-[#f6cb48]" />
-                            <span className="relative flex h-full w-full items-center justify-center text-foreground">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </span>
-                          </button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48">
-                          {isOwner && (
-                            <>
-                              <DropdownMenuItem
-                                onClick={() =>
-                                  openNestedModal(setEditGroupModalOpen)
-                                }
-                              >
-                                <Pencil className="mr-2 h-4 w-4" />
-                                Edit Group
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                            </>
-                          )}
-                          {canSendInvitations && (
-                            <>
-                              <DropdownMenuItem
-                                onClick={() =>
-                                  openNestedModal(setInviteModalOpen)
-                                }
-                              >
-                                <UserPlus className="mr-2 h-4 w-4" />
-                                Invite Members
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                            </>
-                          )}
-                          {canEditMessage && (
-                            <>
-                              <DropdownMenuItem
-                                onClick={() =>
-                                  openNestedModal(setEditMessageModalOpen)
-                                }
-                              >
-                                <MessageSquare className="mr-2 h-4 w-4" />
-                                Edit Message
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                            </>
-                          )}
-                          {isOwner && (
-                            <DropdownMenuItem
-                              onClick={() =>
-                                openNestedModal(setDeleteModalOpen)
-                              }
-                              className="text-red-600 focus:text-red-600"
-                            >
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              Delete Group
-                            </DropdownMenuItem>
-                          )}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    )}
+                    <div className="group relative">
+                      <button
+                        type="button"
+                        aria-label="Share group"
+                        onClick={() => {
+                          if (!selectedGroup) return;
+                          openNestedModal(setShareModalOpen);
+                        }}
+                        className="grid h-7 w-7 shrink-0 place-items-center border-2 border-black bg-white text-black"
+                      >
+                        <Share2 className="h-4 w-4 stroke-[2]" />
+                      </button>
+                      <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-1.5 -translate-x-1/2 whitespace-nowrap border border-black bg-black px-2 py-0.5 text-[11px] text-white opacity-0 transition-opacity group-hover:opacity-100">
+                        Share group
+                      </div>
+                    </div>
+                    <div className="group relative">
+                      <button
+                        type="button"
+                        aria-label="Leave group"
+                        onClick={() => {
+                          if (!selectedGroup) return;
+                          if (selectedGroup.memberCount === 1) {
+                            openNestedModal(setDeleteModalOpen);
+                          } else {
+                            openNestedModal(setLeaveModalOpen);
+                          }
+                        }}
+                        className="grid h-7 w-7 shrink-0 place-items-center border-2 border-black bg-white text-black"
+                      >
+                        <LogOut className="h-4 w-4 stroke-[2]" />
+                      </button>
+                      <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-1.5 -translate-x-1/2 whitespace-nowrap border border-black bg-black px-2 py-0.5 text-[11px] text-white opacity-0 transition-opacity group-hover:opacity-100">
+                        Leave group
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
             </div>
 
-            <div className="flex min-h-0 flex-1 flex-col md:flex-row">
+            <div className="flex min-h-0 flex-1 flex-col overflow-hidden md:flex-row">
               <div className="flex w-full shrink-0 flex-col border-b-[2px] border-black bg-secondary/50 md:w-48 md:border-b-0 md:border-r-[2px]">
                 {selectedGroup && (
                   <div className="scrollbar-hide flex-1 overflow-x-auto overflow-y-hidden px-0 py-0 md:flex-1">
@@ -755,14 +676,6 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
 
       {selectedGroup && (
         <>
-          <InviteMembersModal
-            open={inviteModalOpen}
-            onOpenChange={setInviteModalOpen}
-            groupName={selectedGroup.name}
-            groupId={selectedGroup.id}
-            showSuccess={showSuccess}
-          />
-
           <ShareGroupModal
             open={shareModalOpen}
             onOpenChange={setShareModalOpen}
@@ -785,24 +698,6 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
             groupName={selectedGroup.name}
             onConfirmDelete={handleGroupDeleted}
           />
-
-          {isOwner && (
-            <EditGroupModal
-              open={editGroupModalOpen}
-              onOpenChange={setEditGroupModalOpen}
-              group={selectedGroup}
-              onUpdated={handleGroupUpdated}
-            />
-          )}
-
-          {canEditMessage && (
-            <EditGroupMessageModal
-              open={editMessageModalOpen}
-              onOpenChange={setEditMessageModalOpen}
-              group={selectedGroup}
-              onUpdated={handleMessageUpdated}
-            />
-          )}
         </>
       )}
 
