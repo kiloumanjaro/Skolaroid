@@ -3,12 +3,7 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Camera, RefreshCw, Upload, Check } from 'lucide-react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/Dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/Dialog';
 import { TagInput } from '@/components/shared/forms/TagInput';
 import { QRGateModal } from './QRGateModal';
 
@@ -210,17 +205,31 @@ export function PhotoboothModal({
         }}
       >
         <DialogContent
-          className="max-w-sm"
+          className="w-[calc(100vw-2rem)] max-w-sm !rounded-none !shadow-none sm:w-[calc(100vw-4rem)]"
           showCloseButton={step !== 'uploading'}
         >
-          <DialogHeader>
-            <DialogTitle>
-              {step === 'camera' && 'Take a Photo'}
-              {step === 'metadata' && 'Add Details'}
-              {step === 'uploading' && 'Uploading…'}
-              {step === 'done' && 'Memory Saved!'}
+          <div className="flex items-center justify-between gap-3 px-4 py-0">
+            <DialogTitle className="font-dancing text-3xl font-semibold">
+              {step === 'camera' && (
+                <>
+                  Take a <span className="text-skolaroid-blue">Skolaroid</span>
+                </>
+              )}
+              {step === 'metadata' && (
+                <>
+                  Add <span className="text-skolaroid-blue">Details</span>
+                </>
+              )}
+              {step === 'uploading' && (
+                <span className="text-skolaroid-blue">Uploading…</span>
+              )}
+              {step === 'done' && (
+                <>
+                  Memory <span className="text-skolaroid-blue">Saved!</span>
+                </>
+              )}
             </DialogTitle>
-          </DialogHeader>
+          </div>
 
           <AnimatePresence mode="wait">
             {step === 'camera' && (
@@ -238,7 +247,7 @@ export function PhotoboothModal({
                       Camera access is unavailable. Choose a photo from your
                       device instead.
                     </p>
-                    <label className="cursor-pointer border-2 border-border px-4 py-2 text-sm font-medium transition hover:bg-muted">
+                    <label className="cursor-pointer border-2 border-black px-4 py-2 text-sm font-bold uppercase tracking-wide transition">
                       Choose Photo
                       <input
                         type="file"
@@ -251,7 +260,7 @@ export function PhotoboothModal({
                   </div>
                 ) : (
                   <>
-                    <div className="relative aspect-[4/3] overflow-hidden rounded bg-black">
+                    <div className="relative aspect-[4/3] overflow-hidden border-2 border-black bg-black">
                       <video
                         ref={videoRef}
                         autoPlay
@@ -263,16 +272,14 @@ export function PhotoboothModal({
                     <canvas ref={canvasRef} className="hidden" />
                     <button
                       onClick={handleCapture}
-                      className="flex w-full items-center justify-center gap-2 bg-skolaroid-blue px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
+                      className="flex w-full items-center justify-center gap-2 border-2 border-black px-4 py-3 text-sm font-bold uppercase tracking-wide text-white transition active:scale-95"
+                      style={{ backgroundColor: '#4384dc' }}
                     >
-                      <Camera className="h-4 w-4" />
+                      <Camera className="h-5 w-5" />
                       Capture
                     </button>
                   </>
                 )}
-                <p className="text-center text-xs text-muted-foreground">
-                  {event.name} · {event.location.buildingName}
-                </p>
               </motion.div>
             )}
 
@@ -290,7 +297,7 @@ export function PhotoboothModal({
                     <img
                       src={previewUrl}
                       alt="Preview"
-                      className="aspect-[4/3] w-full rounded object-cover"
+                      className="aspect-[4/3] w-full border-2 border-black object-cover"
                     />
                   </>
                 )}
@@ -305,8 +312,7 @@ export function PhotoboothModal({
                     placeholder="What's the story? (optional)"
                     maxLength={500}
                     rows={2}
-                    className="w-full resize-none border border-border bg-card px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-                    style={{ borderRadius: 0 }}
+                    className="w-full resize-none border-2 border-black bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>
 
@@ -322,17 +328,18 @@ export function PhotoboothModal({
                 <div className="flex gap-2">
                   <button
                     onClick={handleReset}
-                    className="flex items-center gap-1.5 border border-border px-3 py-2 text-xs font-medium transition hover:bg-muted"
+                    className="flex items-center gap-2 border-2 border-black px-3 py-2.5 text-xs font-bold uppercase tracking-wide transition active:scale-95"
                   >
-                    <RefreshCw className="h-3.5 w-3.5" />
+                    <RefreshCw className="h-4 w-4" />
                     Retake
                   </button>
                   <button
                     onClick={handleUpload}
-                    className="flex flex-1 items-center justify-center gap-1.5 bg-skolaroid-blue px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-700"
+                    className="flex flex-1 items-center justify-center gap-2 border-2 border-black px-3 py-2.5 text-xs font-bold uppercase tracking-wide text-white transition active:scale-95"
+                    style={{ backgroundColor: '#4384dc' }}
                   >
-                    <Upload className="h-3.5 w-3.5" />
-                    Upload &amp; Get QR Code
+                    <Upload className="h-4 w-4" />
+                    Upload QR
                   </button>
                 </div>
               </motion.div>
@@ -346,7 +353,7 @@ export function PhotoboothModal({
                 exit={{ opacity: 0 }}
                 className="flex flex-col items-center gap-3 py-6"
               >
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-border border-t-skolaroid-blue" />
+                <div className="h-8 w-8 animate-spin border-4 border-border border-t-skolaroid-blue" />
                 <p className="text-sm text-muted-foreground">
                   Uploading your memory…
                 </p>
@@ -361,7 +368,7 @@ export function PhotoboothModal({
                 exit={{ opacity: 0 }}
                 className="flex flex-col items-center gap-3 py-4 text-center"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+                <div className="flex h-12 w-12 items-center justify-center bg-green-100">
                   <Check className="h-6 w-6 text-green-600" />
                 </div>
                 <p className="text-sm font-semibold text-foreground">
@@ -372,7 +379,7 @@ export function PhotoboothModal({
                 </p>
                 <button
                   onClick={handleClose}
-                  className="mt-1 border border-border px-6 py-2 text-xs font-medium transition hover:bg-muted"
+                  className="mt-1 border-2 border-black px-6 py-2 text-xs font-bold uppercase tracking-wide transition active:scale-95"
                 >
                   Close
                 </button>

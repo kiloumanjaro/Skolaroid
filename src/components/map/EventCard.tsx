@@ -1,7 +1,7 @@
 'use client';
 
 import { X, Camera, Clock } from 'lucide-react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/Dialog';
 
 interface EventCardEvent {
   id: string;
@@ -27,73 +27,70 @@ function formatTime(date: string | Date) {
   }).format(new Date(date));
 }
 
-/**
- * Overlay card shown when the user clicks an event alert pin.
- * Positioned over the map without blocking it (no dialog overlay).
- */
 export function EventCard({
   event,
   onClose,
   onOpenPhotobooth,
 }: EventCardProps) {
   return (
-    <AnimatePresence>
-      {event && (
-        <motion.div
-          key={event.id}
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 16 }}
-          transition={{ duration: 0.2 }}
-          className="absolute bottom-24 left-4 z-40 w-72 overflow-hidden border-2 border-border bg-card shadow-[4px_4px_0px_0px_#2d2d2d]"
-        >
-          {/* Color strip header */}
-          <div
-            className="flex items-center justify-between px-3 py-2"
-            style={{ backgroundColor: event.bannerColor }}
-          >
-            <span className="text-xs font-bold uppercase tracking-wide text-white">
-              Live Event
-            </span>
-            <button
-              onClick={onClose}
-              className="rounded p-0.5 text-white/80 transition hover:text-white"
-              aria-label="Close event card"
-            >
-              <X className="h-3.5 w-3.5" />
-            </button>
-          </div>
-
-          {/* Body */}
-          <div className="p-3">
-            <h3 className="text-sm font-semibold leading-tight text-foreground">
-              {event.name}
-            </h3>
-
-            {event.description && (
-              <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
-                {event.description}
-              </p>
-            )}
-
-            <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
-              <Clock className="h-3 w-3 shrink-0" />
-              <span>
-                {formatTime(event.startAt)} – {formatTime(event.endAt)}
-              </span>
-            </div>
-
-            <button
-              onClick={onOpenPhotobooth}
-              className="mt-3 flex w-full items-center justify-center gap-2 px-3 py-2 text-xs font-semibold text-white transition hover:opacity-90 active:scale-95"
+    <Dialog open={!!event} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent
+        className="w-[calc(100vw-2rem)] max-w-2xl !rounded-none !shadow-none sm:w-[calc(100vw-4rem)]"
+        showCloseButton={false}
+      >
+        {event && (
+          <>
+            <DialogTitle className="sr-only">Live Event</DialogTitle>
+            {/* Header with banner color */}
+            <div
+              className="-mx-6 -mt-6 flex items-center justify-between border-b-2 border-black px-6 py-3"
               style={{ backgroundColor: event.bannerColor }}
             >
-              <Camera className="h-3.5 w-3.5" />
-              Open Photobooth
-            </button>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+              <span className="text-sm font-bold uppercase tracking-wider text-white">
+                Live Event
+              </span>
+              <button
+                onClick={onClose}
+                className="grid h-6 w-6 place-items-center border-2 border-black bg-white text-foreground shadow-[inset_1px_1px_0_#fff,inset_-1px_-1px_0_#999] transition hover:bg-gray-100 active:shadow-[inset_1px_1px_0_#ccc,inset_-1px_-1px_0_#fff]"
+                aria-label="Close event card"
+              >
+                <X className="h-4 w-4 stroke-[2.5]" />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-lg font-bold leading-tight text-foreground">
+                  {event.name}
+                </h3>
+
+                {event.description && (
+                  <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">
+                    {event.description}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2 border-l-4 border-black py-2 pl-3 text-sm font-medium text-foreground">
+                <Clock className="h-4 w-4 shrink-0" />
+                <span>
+                  {formatTime(event.startAt)} – {formatTime(event.endAt)}
+                </span>
+              </div>
+
+              <button
+                onClick={onOpenPhotobooth}
+                className="flex w-full items-center justify-center gap-2 border-2 border-black px-4 py-3 text-sm font-bold uppercase tracking-wide text-white transition active:scale-95"
+                style={{ backgroundColor: event.bannerColor }}
+              >
+                <Camera className="h-5 w-5" />
+                Open Photobooth
+              </button>
+            </div>
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 }

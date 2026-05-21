@@ -75,6 +75,7 @@ export function TagInput({ tags, onTagsChange }: TagInputProps) {
             variant="outline"
             onClick={handleAddTag}
             disabled={!tagInput.trim() || tags.length >= MAX_TAGS}
+            className="!shadow-none transition-opacity active:translate-y-0 disabled:opacity-50"
             style={{ borderRadius: 0 }}
           >
             Add
