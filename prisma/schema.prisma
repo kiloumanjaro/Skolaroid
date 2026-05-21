@@ -30,6 +30,7 @@ model User {
   groupMemberships  GroupMembership[]
   sentInvitations   Invitation[]          @relation("SentInvitations")
   memories          Memory[]
+  createdLiveEvents LiveEvent[]           @relation("CreatedLiveEvents")
   comments          MemoryComment[]
   votes             MemoryVote[]
   moderationActions ModerationActionLog[] @relation("ModerationActionsByAdmin")
@@ -113,6 +114,8 @@ model Memory {
   notifications     Notification[]         @relation("NotificationMemory")
   reports           Report[]
   tags              Tag[]                  @relation("MemoryTags")
+  liveEventId       String?                @db.Uuid
+  liveEvent         LiveEvent?             @relation(fields: [liveEventId], references: [id])
 
   @@index([creatorId])
   @@index([programBatchId])
@@ -123,6 +126,7 @@ model Memory {
   @@index([deletedAt])
   @@index([createdAt])
   @@index([privateGroupId])
+  @@index([liveEventId])
 }
 
 model MemoryComment {
@@ -210,9 +214,50 @@ model Location {
   updatedAt    DateTime @updatedAt
   description  String?
   memories     Memory[]
+  liveEvents   LiveEvent[]
 
   @@unique([latitude, longitude])
   @@index([buildingName])
+}
+
+model LiveEvent {
+  id          String            @id @default(uuid()) @db.Uuid
+  name        String            @db.VarChar(200)
+  description String?
+  bannerColor String            @db.VarChar(7)
+  startAt     DateTime
+  endAt       DateTime
+  isActive    Boolean           @default(true)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  creatorId   String            @db.Uuid
+  locationId  String            @db.Uuid
+  creator     User              @relation("CreatedLiveEvents", fields: [creatorId], references: [id])
+  location    Location          @relation(fields: [locationId], references: [id])
+  drafts      PhotoboothDraft[]
+  memories    Memory[]
+
+  @@index([isActive])
+  @@index([startAt, endAt])
+  @@index([creatorId])
+  @@index([locationId])
+}
+
+model PhotoboothDraft {
+  id        String    @id @default(uuid()) @db.Uuid
+  token     String    @unique @db.VarChar(64)
+  photoPath String    @db.VarChar(500)
+  caption   String?   @db.VarChar(500)
+  tags      Json      @default("[]")
+  eventId   String    @db.Uuid
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  event     LiveEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([eventId])
+  @@index([expiresAt])
 }
 
 model Tag {

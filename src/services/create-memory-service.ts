@@ -15,6 +15,7 @@ interface CreateMemoryInput {
   mediaURLs?: string[];
   creatorId: string;
   privateGroupId?: string;
+  liveEventId?: string;
 }
 /**
  * Create a memory with auto-generated tags
@@ -33,6 +34,7 @@ export async function createMemoryService(
     mediaURLs,
     creatorId,
     privateGroupId,
+    liveEventId,
   } = input;
 
   const normalizedMediaURLs = Array.from(
@@ -94,6 +96,11 @@ export async function createMemoryService(
     ...(privateGroupId && {
       privateGroup: {
         connect: { id: privateGroupId },
+      },
+    }),
+    ...(liveEventId && {
+      liveEvent: {
+        connect: { id: liveEventId },
       },
     }),
     tags: {

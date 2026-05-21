@@ -14,7 +14,8 @@ const securityHeaders = [
   // Restrict browser features the app doesn't need
   {
     key: 'Permissions-Policy',
-    value: 'camera=(), microphone=(), geolocation=(self), interest-cohort=()',
+    value:
+      'camera=(self), microphone=(), geolocation=(self), interest-cohort=()',
   },
   // Enforce HTTPS (1 year, include subdomains)
   {
