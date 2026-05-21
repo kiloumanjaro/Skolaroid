@@ -120,7 +120,12 @@ export function filterMemoriesByEra(
       return false;
     }
 
-    return getEraFromBatchTag(memory.tags ?? [], memory.createdAt) === era;
+    return (
+      getEraFromBatchTag(
+        memory.tags ?? [],
+        memory.memoryDate || memory.createdAt
+      ) === era
+    );
   });
 }
 

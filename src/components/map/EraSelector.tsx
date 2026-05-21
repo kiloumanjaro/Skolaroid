@@ -18,11 +18,20 @@ const ERAS = [
 
 interface EraSelectorProps {
   activeEra: number | null;
+  selectedYear: number | null;
   onEraSelect: (era: number) => void;
 }
 
-export function EraSelector({ activeEra, onEraSelect }: EraSelectorProps) {
-  const label = activeEra ? `${activeEra}s` : '2020s';
+export function EraSelector({
+  activeEra,
+  selectedYear,
+  onEraSelect,
+}: EraSelectorProps) {
+  const label = selectedYear
+    ? String(selectedYear)
+    : activeEra
+      ? `${activeEra}s`
+      : '2020s';
 
   return (
     <div className="absolute bottom-10 right-[4.5rem] z-30 sm:bottom-14 sm:right-24">
