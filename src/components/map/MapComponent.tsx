@@ -483,7 +483,10 @@ export function MapComponent({
         return;
       }
 
-      const memoryEra = getEraFromBatchTag(memory.tags ?? [], memory.createdAt);
+      const memoryEra = getEraFromBatchTag(
+        memory.tags ?? [],
+        memory.memoryDate || memory.createdAt
+      );
       const needsEraSwitch = memoryEra !== activeMapEra;
 
       const targetLng = memory.location.longitude;
@@ -842,7 +845,7 @@ export function MapComponent({
     // Switch era if needed
     const memoryEra = getEraFromBatchTag(
       targetMemory.tags ?? [],
-      targetMemory.createdAt
+      targetMemory.memoryDate || targetMemory.createdAt
     );
 
     if (memoryEra !== activeMapEra) {

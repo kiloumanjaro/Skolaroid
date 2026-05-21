@@ -11,7 +11,7 @@ export function cn(...inputs: ClassValue[]) {
  */
 export function getEraFromBatchTag(
   tags: { name: string }[],
-  fallbackDate?: string | null
+  fallbackDate?: string | Date | null
 ): number {
   for (const tag of tags) {
     const match = tag.name.match(/^batch-(\d{4})$/i);
@@ -20,7 +20,7 @@ export function getEraFromBatchTag(
     }
   }
   if (fallbackDate) {
-    return Math.floor(new Date(fallbackDate).getFullYear() / 10) * 10;
+    return Math.floor(new Date(fallbackDate as string).getFullYear() / 10) * 10;
   }
   return 2020;
 }
