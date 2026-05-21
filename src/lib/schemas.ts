@@ -328,6 +328,7 @@ export interface MemoryWithRelations {
   moderationStatus?: ModerationStatus;
   creatorId?: string | null;
   privateGroupId?: string | null;
+  memoryDate?: string | null;
   createdAt?: string;
   memoryDate?: string | Date | null;
   tags?: { id: string; name: string }[];

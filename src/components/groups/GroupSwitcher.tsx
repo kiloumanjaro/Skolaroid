@@ -60,7 +60,7 @@ export function GroupSwitcher({
       </button>
 
       {isOpen && (
-        <div className="absolute left-0 right-0 top-full z-30 mt-1 overflow-hidden border-2 border-[#1f1f1f] bg-white shadow-none">
+        <div className="absolute left-0 right-0 top-full z-[60] mt-1 overflow-hidden border-2 border-[#1f1f1f] bg-white shadow-none">
           <div className="scrollbar-hide max-h-52 overflow-y-auto">
             <div className="sticky top-0 z-10 bg-white px-3 pb-1 pt-3">
               <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">

@@ -78,15 +78,6 @@ export function MediaTab({ group, onRequestModalOpen }: MediaTabProps) {
         <div className="flex h-64 flex-col items-center justify-center gap-2">
           <ImageIcon className="h-12 w-12 text-muted-foreground" />
           <p className="text-sm text-muted-foreground">No posts yet</p>
-          <Button
-            variant="outline"
-            onClick={() => {
-              onRequestModalOpen?.();
-              setAddMemoryOpen(true);
-            }}
-          >
-            Create First Post
-          </Button>
         </div>
       )}
 

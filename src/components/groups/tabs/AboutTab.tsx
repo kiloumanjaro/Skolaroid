@@ -1,15 +1,6 @@
 'use client';
 
-import {
-  Globe,
-  Lock,
-  Eye,
-  EyeOff,
-  Users,
-  Calendar,
-  Crown,
-  MessageSquare,
-} from 'lucide-react';
+import { Users, Calendar, Crown, MessageSquare } from 'lucide-react';
 import { type Group } from '@/lib/types/group';
 
 function formatFullDate(dateStr: string): string {
@@ -72,28 +63,6 @@ export function AboutTab({ group }: AboutTabProps) {
         </h3>
 
         <div className="space-y-2.5">
-          <div className="flex items-center gap-3">
-            {group.privacy === 'PUBLIC' ? (
-              <Globe size={15} className="shrink-0 text-gray-400" />
-            ) : (
-              <Lock size={15} className="shrink-0 text-gray-400" />
-            )}
-            <span className="text-sm text-gray-600">
-              {group.privacy === 'PUBLIC' ? 'Public' : 'Private'} group
-            </span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {group.visibility === 'VISIBLE' ? (
-              <Eye size={15} className="shrink-0 text-gray-400" />
-            ) : (
-              <EyeOff size={15} className="shrink-0 text-gray-400" />
-            )}
-            <span className="text-sm text-gray-600">
-              {group.visibility === 'VISIBLE' ? 'Visible' : 'Hidden'} in search
-            </span>
-          </div>
-
           <div className="flex items-center gap-3">
             <Users size={15} className="shrink-0 text-gray-400" />
             <span className="text-sm text-gray-600">
