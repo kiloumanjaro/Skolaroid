@@ -202,7 +202,7 @@ export function FilterPanel({
           ref={panelRef}
           aria-label="Memory filters"
           className={cn(
-            'pointer-events-auto relative flex h-[calc(100vh-5rem)] max-h-[calc(100dvh-11.5rem)] w-[calc(100vw-1rem)] max-w-none flex-col rounded-none border-[2px] border-black bg-background p-0 shadow-none transition-transform duration-300 ease-out sm:max-h-none md:h-[75vh] md:w-[70vw]',
+            'pointer-events-auto relative flex w-[calc(100vw-1rem)] max-w-none flex-col rounded-none border-[2px] border-black bg-background p-0 shadow-none transition-transform duration-300 ease-out md:w-[70vw]',
             open ? 'translate-y-0' : 'translate-y-full'
           )}
         >
@@ -270,7 +270,7 @@ export function FilterPanel({
             </div>
           </div>
 
-          <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 py-3 sm:gap-5 sm:py-4">
+          <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 py-3 pb-5 sm:gap-5 sm:py-4 sm:pb-5">
             <FilterSection label="Search">
               <div className="flex gap-2">
                 <Input
