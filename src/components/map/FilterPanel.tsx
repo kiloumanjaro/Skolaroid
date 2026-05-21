@@ -348,7 +348,7 @@ export function FilterPanel({
 
             <div
               className={cn(
-                'grid gap-5',
+                'grid items-start gap-5',
                 groupSelected ? 'sm:grid-cols-3' : 'sm:grid-cols-2'
               )}
             >
@@ -367,6 +367,8 @@ export function FilterPanel({
               </FilterSection>
 
               {groupSelected ? (
+                // Membership overrides visibility — Year + Location sit in the
+                // same row as Sort by (top-aligned, not stretched).
                 <>
                   {yearSection}
                   {locationSection}
