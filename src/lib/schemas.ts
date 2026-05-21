@@ -330,7 +330,6 @@ export interface MemoryWithRelations {
   privateGroupId?: string | null;
   memoryDate?: string | null;
   createdAt?: string;
-  memoryDate?: string | Date | null;
   tags?: { id: string; name: string }[];
   location?: { buildingName: string };
   creator?: {
