@@ -99,6 +99,7 @@ interface MapComponentProps {
   activeEraFromUrl: number;
   filters: MemoryFilters;
   onFiltersChange: (filters: MemoryFilters) => void;
+  onEraChange: (era: number) => void;
   onMemoryDetailOpenRequest?: () => Promise<void> | void;
   onMemoryDetailOpenStateChange?: (open: boolean) => void;
 }
@@ -107,6 +108,7 @@ export function MapComponent({
   activeEraFromUrl,
   filters,
   onFiltersChange,
+  onEraChange,
   onMemoryDetailOpenRequest,
   onMemoryDetailOpenStateChange,
 }: MapComponentProps) {
@@ -239,6 +241,25 @@ export function MapComponent({
     [memories, activeMapEra]
   );
 
+  // Primary scope: year overrides era completely, filtering from the global set.
+  const scopedMemories = useMemo(() => {
+    if (filters.selectedYear) {
+      return memories.filter((m) => {
+        if (
+          m.moderationStatus === 'REJECTED' ||
+          m.moderationStatus === 'REMOVED'
+        )
+          return false;
+        const dateVal = (m as { memoryDate?: string }).memoryDate;
+        const year = dateVal
+          ? new Date(dateVal).getFullYear()
+          : new Date(m.createdAt ?? Date.now()).getFullYear();
+        return year === filters.selectedYear;
+      });
+    }
+    return eraFilteredMemories;
+  }, [memories, eraFilteredMemories, filters.selectedYear]);
+
   const selectedMemoryIndex = useMemo(
     () =>
       selectedMemory
@@ -254,8 +275,8 @@ export function MapComponent({
       : null;
 
   const tagFilteredMemories = useMemo(
-    () => applyMemoryFilters(eraFilteredMemories, filters),
-    [eraFilteredMemories, filters]
+    () => applyMemoryFilters(scopedMemories, filters),
+    [scopedMemories, filters]
   );
 
   const sortedMemories = useMemo(
@@ -266,7 +287,7 @@ export function MapComponent({
   const displayedMemories = sortedMemories;
 
   const visibilityFilteredMemories = useMemo(() => {
-    return eraFilteredMemories.filter((memory) => {
+    return scopedMemories.filter((memory) => {
       if (
         filters.visibility !== 'ALL' &&
         memory.visibility !== filters.visibility
@@ -275,7 +296,7 @@ export function MapComponent({
       }
       return true;
     });
-  }, [eraFilteredMemories, filters.visibility]);
+  }, [scopedMemories, filters.visibility]);
 
   const availableTags = useMemo(
     () =>
@@ -289,20 +310,31 @@ export function MapComponent({
     [visibilityFilteredMemories]
   );
 
+  // Years derive from visibility-gated global memories (not era-restricted).
   const availableYears = useMemo(
     () =>
       Array.from(
         new Set(
-          visibilityFilteredMemories.map((m) => {
-            const memoryDateValue = (m as { memoryDate?: string }).memoryDate;
-            const date = memoryDateValue
-              ? new Date(memoryDateValue)
-              : new Date(m.createdAt ?? Date.now());
-            return date.getFullYear();
-          })
+          memories
+            .filter(
+              (m) =>
+                m.moderationStatus !== 'REJECTED' &&
+                m.moderationStatus !== 'REMOVED'
+            )
+            .filter((m) => {
+              if (filters.visibility === 'ALL') return true;
+              return m.visibility === filters.visibility;
+            })
+            .map((m) => {
+              const memoryDateValue = (m as { memoryDate?: string }).memoryDate;
+              const date = memoryDateValue
+                ? new Date(memoryDateValue)
+                : new Date(m.createdAt ?? Date.now());
+              return date.getFullYear();
+            })
         )
       ).sort((a, b) => b - a),
-    [visibilityFilteredMemories]
+    [memories, filters.visibility]
   );
 
   const availableLocations = useMemo<LocationFilterOption[]>(() => {
@@ -1107,7 +1139,8 @@ export function MapComponent({
 
           <EraSelector
             activeEra={activeMapEra}
-            onEraSelect={(era) => setActiveMapEra(era)}
+            selectedYear={filters.selectedYear}
+            onEraSelect={onEraChange}
           />
           <AddMemoryButton onClick={() => openAddMemoryModal()} />
 

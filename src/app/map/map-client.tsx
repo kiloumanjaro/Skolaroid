@@ -58,6 +58,28 @@ export default function MapPageClient() {
     [router, searchParams]
   );
 
+  const handleEraChange = useCallback(
+    (era: number) => {
+      const nextParams = new URLSearchParams(searchParams.toString());
+      nextParams.set('era', String(era));
+      // Clear year override and dependent filters atomically
+      nextParams.delete('year');
+      nextParams.delete('tags');
+      nextParams.delete('locationId');
+
+      const nextSearch = nextParams.toString();
+      const nextUrl = nextSearch ? `/map?${nextSearch}` : '/map';
+      const currentUrl = `/map${
+        searchParams.toString() ? `?${searchParams.toString()}` : ''
+      }`;
+
+      if (nextUrl !== currentUrl) {
+        router.replace(nextUrl, { scroll: false });
+      }
+    },
+    [router, searchParams]
+  );
+
   return (
     <div className="relative h-dvh overflow-hidden bg-background">
       <div className="h-full min-w-0 overflow-hidden">
@@ -65,6 +87,7 @@ export default function MapPageClient() {
           activeEraFromUrl={activeEra}
           filters={filters}
           onFiltersChange={setFilters}
+          onEraChange={handleEraChange}
         />
       </div>
     </div>

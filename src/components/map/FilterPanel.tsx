@@ -365,13 +365,11 @@ export function FilterPanel({
                     )
                   }
                   options={[
-                    { label: 'All years', value: '' },
-                    ...displayedAvailableYears
-                      .slice(0, MAX_DROPDOWN_OPTIONS)
-                      .map((year) => ({
-                        label: String(year),
-                        value: String(year),
-                      })),
+                    { label: '—', value: '' },
+                    ...displayedAvailableYears.map((year) => ({
+                      label: String(year),
+                      value: String(year),
+                    })),
                   ]}
                 />
               </FilterSection>

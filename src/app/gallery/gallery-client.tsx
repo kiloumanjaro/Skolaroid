@@ -26,8 +26,26 @@ export default function GalleryPageClient() {
   );
   const { data: response, isLoading, error } = useAllMemoriesWithCoordinates();
   const visibleMemories = useMemo(() => {
-    const eraMemories = filterMemoriesByEra(response?.data ?? [], activeEra);
-    const filteredMemories = applyMemoryFilters(eraMemories, filters);
+    const all = response?.data ?? [];
+    let scoped;
+    if (filters.selectedYear) {
+      // Year overrides era — filter from global set
+      scoped = all.filter((m) => {
+        if (
+          m.moderationStatus === 'REJECTED' ||
+          m.moderationStatus === 'REMOVED'
+        )
+          return false;
+        const dv = (m as { memoryDate?: string }).memoryDate;
+        const y = dv
+          ? new Date(dv).getFullYear()
+          : new Date(m.createdAt ?? Date.now()).getFullYear();
+        return y === filters.selectedYear;
+      });
+    } else {
+      scoped = filterMemoriesByEra(all, activeEra);
+    }
+    const filteredMemories = applyMemoryFilters(scoped, filters);
     return sortMemories(filteredMemories, filters.sortBy);
   }, [activeEra, filters, response?.data]);
   const mapHrefBase = useMemo(
