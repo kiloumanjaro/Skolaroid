@@ -12,7 +12,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu';
-import { usePanelOpenEffects } from '@/components/shared/shell/MainShellSidebarAction';
+import {
+  usePanelOpenEffects,
+  useMainShellChrome,
+} from '@/components/shared/shell/MainShellSidebarAction';
 import {
   type MemoryFilters,
   type SortOption,
@@ -62,6 +65,9 @@ export function FilterPanel({
   availableLocations,
 }: FilterPanelProps) {
   usePanelOpenEffects(open);
+
+  const shellChrome = useMainShellChrome();
+  const sidebarOpen = shellChrome?.sidebarOpen ?? false;
 
   const [btnAnim, setBtnAnim] = useState<
     'idle' | 'bob-open' | 'submerged' | 'bounce-back'
@@ -172,30 +178,51 @@ export function FilterPanel({
             open ? 'translate-y-0' : 'translate-y-full'
           )}
         >
-          <button
-            type="button"
-            aria-label={open ? 'Close filters' : 'Open filters'}
-            onClick={handleTabClick}
+          {/*
+           * Positioning wrapper: owns `left` + X-translation via CSS vars.
+           * This layer is NEVER animated, so the X-offset survives every
+           * click → re-render → keyframe cycle without jumping.
+           */}
+          <div
             className={cn(
-              'pointer-events-auto absolute -top-[4rem] h-[5.5rem] w-12 flex-col items-center justify-start gap-1 border-[2px] border-b-0 border-black bg-[#f6cb48] pt-2 text-black',
-              open || btnAnim === 'submerged' ? 'hidden' : 'flex',
-              btnAnim === 'bob-open' && 'animate-btn-bob-open',
-              btnAnim === 'bounce-back' && 'animate-btn-bounce-back'
+              'pointer-events-none absolute -top-[4rem]',
+              // Visibility mirrors the old button logic, now on the wrapper
+              open || btnAnim === 'submerged'
+                ? 'hidden'
+                : sidebarOpen
+                  ? 'hidden sm:block'
+                  : 'block'
             )}
             style={{
-              left: 100,
+              left: 74,
               transform:
                 'translateX(max(0px, calc(var(--map-left-offset, 0px) - var(--panel-left, 0px))))',
             }}
           >
-            <FunnelIcon
-              size={22}
-              weight="duotone"
-              className="filter-panel-icon mt-1"
-              style={{ flexShrink: 0 }}
-              aria-hidden
-            />
-          </button>
+            {/*
+             * Inner button: owns click, aria, and Y-only animation classes.
+             * No inline transform here — keyframes only set translateY so
+             * they never clobber the wrapper's translateX.
+             */}
+            <button
+              type="button"
+              aria-label={open ? 'Close filters' : 'Open filters'}
+              onClick={handleTabClick}
+              className={cn(
+                'pointer-events-auto flex h-[5.5rem] w-12 flex-col items-center justify-start gap-1 border-[2px] border-b-0 border-black bg-[#f6cb48] pt-2 text-black',
+                btnAnim === 'bob-open' && 'animate-btn-bob-open',
+                btnAnim === 'bounce-back' && 'animate-btn-bounce-back'
+              )}
+            >
+              <FunnelIcon
+                size={22}
+                weight="duotone"
+                className="filter-panel-icon mt-1"
+                style={{ flexShrink: 0 }}
+                aria-hidden
+              />
+            </button>
+          </div>
           <div className="flex items-center justify-between gap-3 border-b-[2px] border-b-black bg-[#f6cb48] px-3 py-2 text-black">
             <p className="truncate text-base font-medium tracking-[0.01em] sm:text-lg">
               Filter Memories
