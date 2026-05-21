@@ -34,7 +34,7 @@ import {
   type MemoryWithCoordinates,
 } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 import { useLocations } from '@/lib/hooks/useLocations';
-import { useUserGroups } from '@/lib/hooks/useUserGroups';
+
 import { LANDMARKS, type Landmark } from '@/lib/constants/landmarks';
 import { getPrimaryMemoryMediaURL } from '@/lib/memory-media';
 import type {
@@ -50,7 +50,6 @@ import { FilterPanel } from './FilterPanel';
 import { MemoryLoadingIndicator } from '@/components/shared/MemoryLoadingIndicator';
 import type {
   MemoryFilters,
-  GroupFilterOption,
   LocationFilterOption,
 } from './filter-memory-types';
 import {
@@ -95,7 +94,6 @@ const CAMERA_ANIMATION = {
 
 const DEFAULT_MAP_CENTER: [number, number] = [123.8986, 10.3224];
 const DEFAULT_MAP_ZOOM = 17;
-const EMPTY_USER_GROUPS: { id: string; name: string }[] = [];
 
 interface MapComponentProps {
   activeEraFromUrl: number;
@@ -229,21 +227,12 @@ export function MapComponent({
   const { data: creatorMemoriesData, isLoading: creatorMemoriesLoading } =
     useMemoriesByCreator(currentUserId);
   const { data: locationsData } = useLocations();
-  const { data: userGroupsData } = useUserGroups();
-  const userGroups = userGroupsData ?? EMPTY_USER_GROUPS;
+
   const showFirstMemoryPrompt =
     !!currentUserData?.data &&
     !creatorMemoriesLoading &&
     creatorMemoriesData?.data?.length === 0 &&
     !addMemoryOpen;
-
-  const availableGroups = useMemo<GroupFilterOption[]>(
-    () =>
-      userGroups
-        .map((group) => ({ id: group.id, name: group.name }))
-        .sort((a, b) => a.name.localeCompare(b.name)),
-    [userGroups]
-  );
 
   const eraFilteredMemories = useMemo(
     () => filterMemoriesByEra(memories, activeMapEra),
@@ -276,21 +265,35 @@ export function MapComponent({
 
   const displayedMemories = sortedMemories;
 
+  const visibilityFilteredMemories = useMemo(() => {
+    return eraFilteredMemories.filter((memory) => {
+      if (
+        filters.visibility !== 'ALL' &&
+        memory.visibility !== filters.visibility
+      ) {
+        return false;
+      }
+      return true;
+    });
+  }, [eraFilteredMemories, filters.visibility]);
+
   const availableTags = useMemo(
     () =>
       Array.from(
         new Set(
-          eraFilteredMemories.flatMap((m) => m.tags?.map((t) => t.name) ?? [])
+          visibilityFilteredMemories.flatMap(
+            (m) => m.tags?.map((t) => t.name) ?? []
+          )
         )
       ).sort(),
-    [eraFilteredMemories]
+    [visibilityFilteredMemories]
   );
 
   const availableYears = useMemo(
     () =>
       Array.from(
         new Set(
-          eraFilteredMemories.map((m) => {
+          visibilityFilteredMemories.map((m) => {
             const memoryDateValue = (m as { memoryDate?: string }).memoryDate;
             const date = memoryDateValue
               ? new Date(memoryDateValue)
@@ -299,22 +302,19 @@ export function MapComponent({
           })
         )
       ).sort((a, b) => b - a),
-    [eraFilteredMemories]
+    [visibilityFilteredMemories]
   );
 
   const availableLocations = useMemo<LocationFilterOption[]>(() => {
     const locationIdsInEra = new Set(
-      eraFilteredMemories
+      visibilityFilteredMemories
         .map((memory) => (memory.location as { id?: string } | undefined)?.id)
         .filter((id): id is string => Boolean(id))
     );
 
     if (locationsData?.data?.length) {
       return locationsData.data
-        .filter(
-          (location) =>
-            locationIdsInEra.size === 0 || locationIdsInEra.has(location.id)
-        )
+        .filter((location) => locationIdsInEra.has(location.id))
         .map((location) => ({
           id: location.id,
           name: location.buildingName,
@@ -324,7 +324,7 @@ export function MapComponent({
 
     const fallbackLocations = new Map<string, LocationFilterOption>();
 
-    for (const memory of eraFilteredMemories) {
+    for (const memory of visibilityFilteredMemories) {
       const location = memory.location as
         | { id?: string; buildingName: string }
         | undefined;
@@ -340,7 +340,7 @@ export function MapComponent({
     return Array.from(fallbackLocations.values()).sort((a, b) =>
       a.name.localeCompare(b.name)
     );
-  }, [eraFilteredMemories, locationsData]);
+  }, [visibilityFilteredMemories, locationsData]);
 
   // Keep a stable ref for the click handler so detached roots always call the latest version
   const handleClickRef = useRef<(landmark: Landmark) => void>(() => {});
@@ -1142,7 +1142,6 @@ export function MapComponent({
             onFiltersChange={onFiltersChange}
             availableTags={availableTags}
             availableYears={availableYears}
-            availableGroups={availableGroups}
             availableLocations={availableLocations}
           />
 
