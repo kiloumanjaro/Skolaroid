@@ -19,21 +19,19 @@ const ERAS = [
 
 interface EraSelectorProps {
   activeEra: number | null;
+  selectedYear: number | null;
   onEraSelect: (era: number) => void;
-  groupsMode: boolean;
-  onSelectGroupsMode: () => void;
   leadingSlot?: ReactNode;
 }
 
 export function EraSelector({
   activeEra,
+  selectedYear,
   onEraSelect,
-  groupsMode,
-  onSelectGroupsMode,
   leadingSlot,
 }: EraSelectorProps) {
-  const label = groupsMode
-    ? 'My Groups'
+  const label = selectedYear
+    ? String(selectedYear)
     : activeEra
       ? `${activeEra}s`
       : '2020s';
@@ -78,23 +76,13 @@ export function EraSelector({
               onSelect={() => onEraSelect(era.decade)}
               className={cn(
                 'min-h-8 cursor-pointer rounded-none border border-transparent px-2 py-1.5 font-hand text-sm font-normal text-black hover:font-semibold focus:bg-transparent focus:text-black data-[highlighted]:bg-transparent data-[highlighted]:text-black',
-                !groupsMode &&
-                  activeEra === era.decade &&
+                activeEra === era.decade &&
                   'border-[#2d2d2d] bg-[#fd91e6] font-semibold'
               )}
             >
               {era.label}
             </DropdownMenuItem>
           ))}
-          <DropdownMenuItem
-            onSelect={() => onSelectGroupsMode()}
-            className={cn(
-              'min-h-8 cursor-pointer rounded-none border border-transparent px-2 py-1.5 font-hand text-sm font-normal text-black hover:font-semibold focus:bg-transparent focus:text-black data-[highlighted]:bg-transparent data-[highlighted]:text-black',
-              groupsMode && 'border-[#2d2d2d] bg-[#fd91e6] font-semibold'
-            )}
-          >
-            My Groups
-          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

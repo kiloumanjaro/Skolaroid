@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { X, RotateCcw, ChevronDown } from 'lucide-react';
 import { FunnelIcon } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/Input';
+import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,7 +21,6 @@ import {
   type MemoryFilters,
   type SortOption,
   type VisibilityFilter,
-  type GroupFilterOption,
   type LocationFilterOption,
   DEFAULT_FILTERS,
 } from './filter-memory-types';
@@ -32,7 +32,6 @@ interface FilterPanelProps {
   onFiltersChange: (filters: MemoryFilters) => void;
   availableTags: string[];
   availableYears: number[];
-  availableGroups: GroupFilterOption[];
   availableLocations: LocationFilterOption[];
 }
 
@@ -49,9 +48,8 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
 const VISIBILITY_OPTIONS: { value: VisibilityFilter; label: string }[] = [
   { value: 'ALL', label: 'All' },
   { value: 'PUBLIC', label: 'Public' },
-  { value: 'BATCH_ONLY', label: 'Batch' },
   { value: 'PROGRAM_ONLY', label: 'Program' },
-  { value: 'GROUP_ONLY', label: 'Group' },
+  { value: 'BATCH_ONLY', label: 'Batch' },
 ];
 
 export function FilterPanel({
@@ -61,7 +59,6 @@ export function FilterPanel({
   onFiltersChange,
   availableTags,
   availableYears,
-  availableGroups,
   availableLocations,
 }: FilterPanelProps) {
   usePanelOpenEffects(open);
@@ -69,9 +66,24 @@ export function FilterPanel({
   const shellChrome = useMainShellChrome();
   const sidebarOpen = shellChrome?.sidebarOpen ?? false;
 
+  const { data: currentUserData } = useCurrentUser();
+  const userBatchYear =
+    currentUserData?.data?.programBatch?.batch?.year ?? null;
+  const currentYear = new Date().getFullYear();
+
+  const displayedAvailableYears = useMemo(() => {
+    if (filters.visibility === 'BATCH_ONLY' && userBatchYear !== null) {
+      return availableYears.filter(
+        (year) => year >= userBatchYear && year <= currentYear
+      );
+    }
+    return availableYears;
+  }, [availableYears, filters.visibility, userBatchYear, currentYear]);
+
   const [btnAnim, setBtnAnim] = useState<
     'idle' | 'bob-open' | 'submerged' | 'bounce-back'
   >('idle');
+  const [resetSuccess, setResetSuccess] = useState(false);
   const prevOpenRef = useRef(open);
   const openTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined
@@ -80,6 +92,22 @@ export function FilterPanel({
     undefined
   );
   const panelRef = useRef<HTMLElement | null>(null);
+
+  const [localSearch, setLocalSearch] = useState(filters.searchQuery);
+
+  useEffect(() => {
+    setLocalSearch(filters.searchQuery);
+  }, [filters.searchQuery]);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (localSearch !== filters.searchQuery) {
+        update('searchQuery', localSearch);
+      }
+    }, 300);
+    return () => clearTimeout(handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [localSearch]);
 
   // Synchronously mark button as submerged before paint so there's no flash
   // when the panel closes and the button re-enters the DOM.
@@ -151,6 +179,53 @@ export function FilterPanel({
     update('selectedTags', next);
   };
 
+  // When a group is selected, membership overrides visibility: hide the
+  // Visibility control and surface Year + Location next to Sort by instead.
+  const groupSelected = filters.selectedGroupId != null;
+
+  const yearSection = (
+    <FilterSection label="Year">
+      <FilterDropdown
+        side="top"
+        value={
+          filters.selectedYear === null ? '' : String(filters.selectedYear)
+        }
+        onChange={(value) =>
+          update(
+            'selectedYear',
+            value === '' ? null : Number.parseInt(value, 10)
+          )
+        }
+        options={[
+          { label: '—', value: '' },
+          ...displayedAvailableYears.map((year) => ({
+            label: String(year),
+            value: String(year),
+          })),
+        ]}
+      />
+    </FilterSection>
+  );
+
+  const locationSection = (
+    <FilterSection label="Location">
+      <FilterDropdown
+        side="top"
+        value={filters.selectedLocationId ?? ''}
+        onChange={(value) =>
+          update('selectedLocationId', value === '' ? null : value)
+        }
+        options={[
+          { label: 'All locations', value: '' },
+          ...availableLocations.slice(0, MAX_DROPDOWN_OPTIONS).map((loc) => ({
+            label: loc.name,
+            value: loc.id,
+          })),
+        ]}
+      />
+    </FilterSection>
+  );
+
   const panelContent = (
     <>
       {open && (
@@ -174,7 +249,7 @@ export function FilterPanel({
           ref={panelRef}
           aria-label="Memory filters"
           className={cn(
-            'pointer-events-auto relative flex h-[calc(100vh-5rem)] max-h-[calc(100dvh-11.5rem)] w-[calc(100vw-1rem)] max-w-none flex-col rounded-none border-[2px] border-black bg-background p-0 shadow-none transition-transform duration-300 ease-out sm:max-h-none md:h-[75vh] md:w-[70vw]',
+            'pointer-events-auto relative flex w-[calc(100vw-1rem)] max-w-none flex-col rounded-none border-[2px] border-black bg-background p-0 shadow-none transition-transform duration-300 ease-out md:w-[70vw]',
             open ? 'translate-y-0' : 'translate-y-full'
           )}
         >
@@ -230,17 +305,6 @@ export function FilterPanel({
             <div className="flex shrink-0 items-center gap-1">
               <button
                 type="button"
-                aria-label="Reset filters"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  onFiltersChange(DEFAULT_FILTERS);
-                }}
-                className="grid h-7 w-7 shrink-0 place-items-center border-2 border-black bg-white text-black"
-              >
-                <RotateCcw className="h-4 w-4 stroke-[2]" />
-              </button>
-              <button
-                type="button"
                 aria-label="Close filters panel"
                 onClick={(event) => {
                   event.stopPropagation();
@@ -253,28 +317,41 @@ export function FilterPanel({
             </div>
           </div>
 
-          <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 py-3 sm:gap-5 sm:py-4">
+          <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 py-3 pb-5 sm:gap-5 sm:py-4 sm:pb-5">
             <FilterSection label="Search">
               <div className="flex gap-2">
                 <Input
                   type="text"
                   placeholder="Search title, description, location, tags..."
-                  value={filters.searchQuery}
-                  onChange={(e) => update('searchQuery', e.target.value)}
+                  value={localSearch}
+                  onChange={(e) => setLocalSearch(e.target.value)}
                   className="flex-1 !rounded-none border-2 border-black bg-card py-3 pl-5 pr-8 text-sm text-foreground placeholder:text-muted-foreground focus:border-black focus:outline-none focus:ring-1 focus:ring-skolaroid-blue"
                 />
                 <button
                   type="button"
                   aria-label="Reset filters"
-                  onClick={() => onFiltersChange(DEFAULT_FILTERS)}
-                  className="grid h-10 shrink-0 place-items-center border-2 border-black bg-white px-2 text-xs font-medium text-black hover:bg-[#fff3bf]"
+                  onClick={(e) => {
+                    onFiltersChange(DEFAULT_FILTERS);
+                    setResetSuccess(true);
+                    e.currentTarget.blur();
+                    setTimeout(() => setResetSuccess(false), 800);
+                  }}
+                  className={cn(
+                    'grid h-10 shrink-0 place-items-center border-2 border-black bg-white px-2 text-xs font-medium text-black transition-all duration-300 active:scale-95 active:bg-[#fff3bf]/50',
+                    resetSuccess ? 'bg-white' : 'hover:bg-[#fff3bf]'
+                  )}
                 >
                   <RotateCcw className="h-4 w-4 stroke-[2]" />
                 </button>
               </div>
             </FilterSection>
 
-            <div className="grid gap-5 sm:grid-cols-2">
+            <div
+              className={cn(
+                'grid gap-5',
+                groupSelected ? 'sm:grid-cols-3' : 'sm:grid-cols-2'
+              )}
+            >
               <FilterSection label="Sort by">
                 <div className="flex flex-wrap gap-2">
                   {SORT_OPTIONS.map((opt) => (
@@ -289,19 +366,26 @@ export function FilterPanel({
                 </div>
               </FilterSection>
 
-              <FilterSection label="Visibility">
-                <div className="flex flex-wrap gap-2">
-                  {VISIBILITY_OPTIONS.map((opt) => (
-                    <SegmentedButton
-                      key={opt.value}
-                      active={filters.visibility === opt.value}
-                      onClick={() => update('visibility', opt.value)}
-                    >
-                      {opt.label}
-                    </SegmentedButton>
-                  ))}
-                </div>
-              </FilterSection>
+              {groupSelected ? (
+                <>
+                  {yearSection}
+                  {locationSection}
+                </>
+              ) : (
+                <FilterSection label="Visibility">
+                  <div className="flex flex-wrap gap-2">
+                    {VISIBILITY_OPTIONS.map((opt) => (
+                      <SegmentedButton
+                        key={opt.value}
+                        active={filters.visibility === opt.value}
+                        onClick={() => update('visibility', opt.value)}
+                      >
+                        {opt.label}
+                      </SegmentedButton>
+                    ))}
+                  </div>
+                </FilterSection>
+              )}
             </div>
 
             <FilterSection label="Tags">
@@ -324,68 +408,12 @@ export function FilterPanel({
               )}
             </FilterSection>
 
-            <div className="grid gap-4 sm:grid-cols-3">
-              <FilterSection label="Year">
-                <FilterDropdown
-                  value={
-                    filters.selectedYear === null
-                      ? ''
-                      : String(filters.selectedYear)
-                  }
-                  onChange={(value) =>
-                    update(
-                      'selectedYear',
-                      value === '' ? null : Number.parseInt(value, 10)
-                    )
-                  }
-                  options={[
-                    { label: 'All years', value: '' },
-                    ...availableYears
-                      .slice(0, MAX_DROPDOWN_OPTIONS)
-                      .map((year) => ({
-                        label: String(year),
-                        value: String(year),
-                      })),
-                  ]}
-                />
-              </FilterSection>
-
-              <FilterSection label="Group">
-                <FilterDropdown
-                  value={filters.selectedGroupId ?? ''}
-                  onChange={(value) =>
-                    update('selectedGroupId', value === '' ? null : value)
-                  }
-                  options={[
-                    { label: 'All groups', value: '' },
-                    ...availableGroups
-                      .slice(0, MAX_DROPDOWN_OPTIONS)
-                      .map((group) => ({
-                        label: group.name,
-                        value: group.id,
-                      })),
-                  ]}
-                />
-              </FilterSection>
-
-              <FilterSection label="Location">
-                <FilterDropdown
-                  value={filters.selectedLocationId ?? ''}
-                  onChange={(value) =>
-                    update('selectedLocationId', value === '' ? null : value)
-                  }
-                  options={[
-                    { label: 'All locations', value: '' },
-                    ...availableLocations
-                      .slice(0, MAX_DROPDOWN_OPTIONS)
-                      .map((loc) => ({
-                        label: loc.name,
-                        value: loc.id,
-                      })),
-                  ]}
-                />
-              </FilterSection>
-            </div>
+            {!groupSelected && (
+              <div className="grid gap-4 sm:grid-cols-2">
+                {yearSection}
+                {locationSection}
+              </div>
+            )}
           </div>
         </section>
       </div>
@@ -441,10 +469,12 @@ function FilterDropdown({
   value,
   onChange,
   options,
+  side = 'bottom',
 }: {
   value: string;
   onChange: (value: string) => void;
   options: Array<{ label: string; value: string }>;
+  side?: 'top' | 'bottom';
 }) {
   const selectedLabel =
     options.find((opt) => opt.value === value)?.label || 'Select...';
@@ -465,7 +495,7 @@ function FilterDropdown({
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        side="bottom"
+        side={side}
         align="start"
         className="z-[100] w-[var(--radix-dropdown-menu-trigger-width)] rounded-none border-2 border-[#2d2d2d] bg-[#fff4fb] p-0.5 shadow-none"
       >

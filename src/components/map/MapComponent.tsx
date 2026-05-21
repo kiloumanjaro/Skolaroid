@@ -34,7 +34,7 @@ import {
   type MemoryWithCoordinates,
 } from '@/lib/hooks/useAllMemoriesWithCoordinates';
 import { useLocations } from '@/lib/hooks/useLocations';
-import { useUserGroups } from '@/lib/hooks/useUserGroups';
+
 import { LANDMARKS, type Landmark } from '@/lib/constants/landmarks';
 import { getPrimaryMemoryMediaURL } from '@/lib/memory-media';
 import type {
@@ -43,8 +43,9 @@ import type {
 } from '@/lib/types/map';
 import { AddMemoryButton } from './AddMemoryButton';
 import { EraSelector } from './EraSelector';
-import { GroupPillButton } from './GroupPillButton';
+import { GroupSelector } from './GroupSelector';
 import { CreateGroupModal } from '@/components/groups/CreateGroupModal';
+import { useUserGroups } from '@/lib/hooks/useUserGroups';
 import { MapAnnouncementStrip } from '../announcement-strips/MapAnnouncementStrip';
 import { MAP_ANNOUNCEMENTS } from '../announcement-strips/announcement-config';
 import { MapLocationSelector } from './MapLocationSelector';
@@ -52,8 +53,8 @@ import { FilterPanel } from './FilterPanel';
 import { MemoryLoadingIndicator } from '@/components/shared/MemoryLoadingIndicator';
 import type {
   MemoryFilters,
-  GroupFilterOption,
   LocationFilterOption,
+  GroupFilterOption,
 } from './filter-memory-types';
 import {
   applyMemoryFilters,
@@ -97,12 +98,12 @@ const CAMERA_ANIMATION = {
 
 const DEFAULT_MAP_CENTER: [number, number] = [123.8986, 10.3224];
 const DEFAULT_MAP_ZOOM = 17;
-const EMPTY_USER_GROUPS: { id: string; name: string }[] = [];
 
 interface MapComponentProps {
   activeEraFromUrl: number;
   filters: MemoryFilters;
   onFiltersChange: (filters: MemoryFilters) => void;
+  onEraChange: (era: number) => void;
   onMemoryDetailOpenRequest?: () => Promise<void> | void;
   onMemoryDetailOpenStateChange?: (open: boolean) => void;
 }
@@ -111,6 +112,7 @@ export function MapComponent({
   activeEraFromUrl,
   filters,
   onFiltersChange,
+  onEraChange,
   onMemoryDetailOpenRequest,
   onMemoryDetailOpenStateChange,
 }: MapComponentProps) {
@@ -129,8 +131,6 @@ export function MapComponent({
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
   const [batchesModalOpen, setBatchesModalOpen] = useState(false);
   const [activeMapEra, setActiveMapEra] = useState(activeEraFromUrl);
-  const [groupsMode, setGroupsMode] = useState(false);
-  const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
   const [createGroupModalOpen, setCreateGroupModalOpen] = useState(false);
   const [selectedLandmark, setSelectedLandmark] = useState<Landmark | null>(
     null
@@ -234,8 +234,8 @@ export function MapComponent({
   const { data: creatorMemoriesData, isLoading: creatorMemoriesLoading } =
     useMemoriesByCreator(currentUserId);
   const { data: locationsData } = useLocations();
-  const { data: userGroupsData } = useUserGroups();
-  const userGroups = userGroupsData ?? EMPTY_USER_GROUPS;
+  const { data: userGroups } = useUserGroups();
+
   const showFirstMemoryPrompt =
     !!currentUserData?.data &&
     !creatorMemoriesLoading &&
@@ -244,28 +244,35 @@ export function MapComponent({
 
   const availableGroups = useMemo<GroupFilterOption[]>(
     () =>
-      userGroups
+      (userGroups ?? [])
         .map((group) => ({ id: group.id, name: group.name }))
         .sort((a, b) => a.name.localeCompare(b.name)),
     [userGroups]
   );
 
-  // In groups mode the active group's memories form the base set (ignoring the
-  // decade); otherwise the base set is the era-filtered memories. Either way the
-  // filter panel and sort are then layered on top of this base set below.
-  const groupMemories = useMemo(
-    () =>
-      activeGroupId
-        ? memories.filter((m) => m.privateGroupId === activeGroupId)
-        : [],
-    [memories, activeGroupId]
+  const eraFilteredMemories = useMemo(
+    () => filterMemoriesByEra(memories, activeMapEra),
+    [memories, activeMapEra]
   );
 
-  const baseMemories = useMemo(
-    () =>
-      groupsMode ? groupMemories : filterMemoriesByEra(memories, activeMapEra),
-    [groupsMode, groupMemories, memories, activeMapEra]
-  );
+  // Primary scope: year overrides era completely, filtering from the global set.
+  const scopedMemories = useMemo(() => {
+    if (filters.selectedYear) {
+      return memories.filter((m) => {
+        if (
+          m.moderationStatus === 'REJECTED' ||
+          m.moderationStatus === 'REMOVED'
+        )
+          return false;
+        const dateVal = (m as { memoryDate?: string }).memoryDate;
+        const year = dateVal
+          ? new Date(dateVal).getFullYear()
+          : new Date(m.createdAt ?? Date.now()).getFullYear();
+        return year === filters.selectedYear;
+      });
+    }
+    return eraFilteredMemories;
+  }, [memories, eraFilteredMemories, filters.selectedYear]);
 
   const selectedMemoryIndex = useMemo(
     () =>
@@ -282,8 +289,8 @@ export function MapComponent({
       : null;
 
   const tagFilteredMemories = useMemo(
-    () => applyMemoryFilters(baseMemories, filters),
-    [baseMemories, filters]
+    () => applyMemoryFilters(scopedMemories, filters),
+    [scopedMemories, filters]
   );
 
   const sortedMemories = useMemo(
@@ -293,43 +300,79 @@ export function MapComponent({
 
   const displayedMemories = sortedMemories;
 
+  // Base for filter option lists. When a group is selected, membership overrides
+  // visibility (no visibility gate) and options reflect that group's memories;
+  // otherwise apply the visibility filter as usual.
+  const visibilityFilteredMemories = useMemo(() => {
+    if (filters.selectedGroupId) {
+      return scopedMemories.filter(
+        (memory) => memory.privateGroupId === filters.selectedGroupId
+      );
+    }
+    return scopedMemories.filter((memory) => {
+      if (
+        filters.visibility !== 'ALL' &&
+        memory.visibility !== filters.visibility
+      ) {
+        return false;
+      }
+      return true;
+    });
+  }, [scopedMemories, filters.visibility, filters.selectedGroupId]);
+
   const availableTags = useMemo(
     () =>
       Array.from(
-        new Set(baseMemories.flatMap((m) => m.tags?.map((t) => t.name) ?? []))
+        new Set(
+          visibilityFilteredMemories.flatMap(
+            (m) => m.tags?.map((t) => t.name) ?? []
+          )
+        )
       ).sort(),
-    [baseMemories]
+    [visibilityFilteredMemories]
   );
 
+  // Years derive from the selected group's memories when a group is active;
+  // otherwise from visibility-gated global memories (not era-restricted).
   const availableYears = useMemo(
     () =>
       Array.from(
         new Set(
-          baseMemories.map((m) => {
-            const memoryDateValue = (m as { memoryDate?: string }).memoryDate;
-            const date = memoryDateValue
-              ? new Date(memoryDateValue)
-              : new Date(m.createdAt ?? Date.now());
-            return date.getFullYear();
-          })
+          memories
+            .filter(
+              (m) =>
+                m.moderationStatus !== 'REJECTED' &&
+                m.moderationStatus !== 'REMOVED'
+            )
+            .filter((m) => {
+              if (filters.selectedGroupId) {
+                return m.privateGroupId === filters.selectedGroupId;
+              }
+              if (filters.visibility === 'ALL') return true;
+              return m.visibility === filters.visibility;
+            })
+            .map((m) => {
+              const memoryDateValue = (m as { memoryDate?: string }).memoryDate;
+              const date = memoryDateValue
+                ? new Date(memoryDateValue)
+                : new Date(m.createdAt ?? Date.now());
+              return date.getFullYear();
+            })
         )
       ).sort((a, b) => b - a),
-    [baseMemories]
+    [memories, filters.visibility, filters.selectedGroupId]
   );
 
   const availableLocations = useMemo<LocationFilterOption[]>(() => {
     const locationIdsInEra = new Set(
-      baseMemories
+      visibilityFilteredMemories
         .map((memory) => (memory.location as { id?: string } | undefined)?.id)
         .filter((id): id is string => Boolean(id))
     );
 
     if (locationsData?.data?.length) {
       return locationsData.data
-        .filter(
-          (location) =>
-            locationIdsInEra.size === 0 || locationIdsInEra.has(location.id)
-        )
+        .filter((location) => locationIdsInEra.has(location.id))
         .map((location) => ({
           id: location.id,
           name: location.buildingName,
@@ -339,7 +382,7 @@ export function MapComponent({
 
     const fallbackLocations = new Map<string, LocationFilterOption>();
 
-    for (const memory of baseMemories) {
+    for (const memory of visibilityFilteredMemories) {
       const location = memory.location as
         | { id?: string; buildingName: string }
         | undefined;
@@ -355,7 +398,7 @@ export function MapComponent({
     return Array.from(fallbackLocations.values()).sort((a, b) =>
       a.name.localeCompare(b.name)
     );
-  }, [baseMemories, locationsData]);
+  }, [visibilityFilteredMemories, locationsData]);
 
   // Keep a stable ref for the click handler so detached roots always call the latest version
   const handleClickRef = useRef<(landmark: Landmark) => void>(() => {});
@@ -498,7 +541,10 @@ export function MapComponent({
         return;
       }
 
-      const memoryEra = getEraFromBatchTag(memory.tags ?? [], memory.createdAt);
+      const memoryEra = getEraFromBatchTag(
+        memory.tags ?? [],
+        memory.memoryDate || memory.createdAt
+      );
       const needsEraSwitch = memoryEra !== activeMapEra;
 
       const targetLng = memory.location.longitude;
@@ -857,7 +903,7 @@ export function MapComponent({
     // Switch era if needed
     const memoryEra = getEraFromBatchTag(
       targetMemory.tags ?? [],
-      targetMemory.createdAt
+      targetMemory.memoryDate || targetMemory.createdAt
     );
 
     if (memoryEra !== activeMapEra) {
@@ -1119,30 +1165,17 @@ export function MapComponent({
 
           <EraSelector
             activeEra={activeMapEra}
-            onEraSelect={(era) => {
-              setGroupsMode(false);
-              setActiveMapEra(era);
-            }}
-            groupsMode={groupsMode}
-            onSelectGroupsMode={() => setGroupsMode(true)}
+            selectedYear={filters.selectedYear}
+            onEraSelect={onEraChange}
             leadingSlot={
-              groupsMode ? (
-                <GroupPillButton
-                  label={
-                    userGroups.length === 0
-                      ? 'Add a group'
-                      : (userGroups.find((g) => g.id === activeGroupId)?.name ??
-                        userGroups[0].name)
-                  }
-                  onClick={() => {
-                    if (userGroups.length === 0) {
-                      setCreateGroupModalOpen(true);
-                    } else {
-                      setGroupModalOpen(true);
-                    }
-                  }}
-                />
-              ) : null
+              <GroupSelector
+                groups={availableGroups}
+                selectedGroupId={filters.selectedGroupId}
+                onSelect={(id) =>
+                  onFiltersChange({ ...filters, selectedGroupId: id })
+                }
+                onCreateGroup={() => setCreateGroupModalOpen(true)}
+              />
             }
           />
           <AddMemoryButton onClick={() => openAddMemoryModal()} />
@@ -1161,14 +1194,13 @@ export function MapComponent({
               setGroupModalOpen(isOpen);
               if (isOpen) cancelPendingFlyTo();
             }}
-            onSelectedGroupChange={setActiveGroupId}
           />
 
           <CreateGroupModal
             open={createGroupModalOpen}
             onOpenChange={setCreateGroupModalOpen}
             onCreated={(group) => {
-              setActiveGroupId(group.id);
+              onFiltersChange({ ...filters, selectedGroupId: group.id });
               setGroupModalOpen(true);
             }}
           />
@@ -1191,7 +1223,6 @@ export function MapComponent({
             onFiltersChange={onFiltersChange}
             availableTags={availableTags}
             availableYears={availableYears}
-            availableGroups={availableGroups}
             availableLocations={availableLocations}
           />
 

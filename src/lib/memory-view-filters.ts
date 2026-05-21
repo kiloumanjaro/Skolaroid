@@ -120,7 +120,12 @@ export function filterMemoriesByEra(
       return false;
     }
 
-    return getEraFromBatchTag(memory.tags ?? [], memory.createdAt) === era;
+    return (
+      getEraFromBatchTag(
+        memory.tags ?? [],
+        memory.memoryDate || memory.createdAt
+      ) === era
+    );
   });
 }
 
@@ -162,7 +167,10 @@ export function applyMemoryFilters(
       if (memoryYear !== filters.selectedYear) return false;
     }
 
+    // A selected group is gated by membership, which overrides the visibility
+    // filter — group memories show regardless of their PUBLIC/PROGRAM/BATCH value.
     if (
+      !filters.selectedGroupId &&
       filters.visibility !== DEFAULT_FILTERS.visibility &&
       memory.visibility !== filters.visibility
     ) {
