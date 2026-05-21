@@ -3,10 +3,6 @@ import { slugify } from '@/lib/slugify';
 import { MAX_TAGS, type MemoryVisibility } from '@/lib/schemas';
 import { generateAutoTags } from '@/lib/utils/memory-tags';
 import { assertCanPostInGroup } from '@/lib/server/group-permissions';
-import {
-  isContentPrescreeningEnabled,
-  moderationPolicyService,
-} from '@/services/moderation-policy-service';
 
 interface CreateMemoryInput {
   title: string;
@@ -44,11 +40,6 @@ export async function createMemoryService(
   );
   const isPrivateGroupMemory =
     visibility === 'GROUP_ONLY' || Boolean(privateGroupId);
-
-  const prescreeningEnabled = isContentPrescreeningEnabled();
-  const moderationResult = prescreeningEnabled
-    ? moderationPolicyService({ title, description })
-    : null;
 
   if (visibility === 'GROUP_ONLY' && !privateGroupId) {
     throw new Error('Group ID is required for group-only memories');
@@ -90,11 +81,7 @@ export async function createMemoryService(
     description,
     mediaURLs: normalizedMediaURLs,
     visibility,
-    moderationStatus: isPrivateGroupMemory
-      ? 'APPROVED'
-      : prescreeningEnabled && moderationResult?.status === 'flag'
-        ? 'PENDING'
-        : 'APPROVED',
+    moderationStatus: isPrivateGroupMemory ? 'APPROVED' : 'PENDING',
     creator: {
       connect: { id: creatorId },
     },
