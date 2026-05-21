@@ -27,6 +27,13 @@ export function useAllMemoriesWithCoordinates() {
       if (!res.ok) throw new Error('Failed to fetch memories');
       return res.json() as Promise<AllMemoriesResponse>;
     },
+    select: (data) => ({
+      ...data,
+      data: data.data.map((m) => ({
+        ...m,
+        memoryDate: m.memoryDate ?? m.createdAt ?? null,
+      })),
+    }),
     staleTime: 5 * 60 * 1000,
     refetchOnMount: 'always',
     refetchOnWindowFocus: 'always',

@@ -1,6 +1,6 @@
 'use client';
 
-import { Copy, Heart, Share } from 'lucide-react';
+import { Copy, Heart } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import type { MemoryWithRelations } from '@/lib/schemas';
@@ -78,17 +78,6 @@ export function ActionBar({
     }
   }, [memory.description]);
 
-  const handleShare = useCallback(async () => {
-    try {
-      const url = `${window.location.origin}/memories/${memory.id}`;
-      await navigator.clipboard.writeText(url);
-      toast.success('Link copied');
-    } catch (err) {
-      console.error('Failed to copy link:', err);
-      toast.error('Failed to copy link');
-    }
-  }, [memory.id]);
-
   const actionButtonBaseClass =
     'flex h-10 w-10 items-center justify-center border-2 border-black bg-white text-black transition-colors disabled:opacity-50';
   const textActionButtonBaseClass =
@@ -123,14 +112,6 @@ export function ActionBar({
         aria-label="Copy caption"
       >
         <Copy className="h-5 w-5" />
-      </button>
-
-      <button
-        onClick={handleShare}
-        className={actionButtonBaseClass}
-        aria-label="Share memory"
-      >
-        <Share className="h-5 w-5" />
       </button>
 
       {showReadMore && onReadMore && (
