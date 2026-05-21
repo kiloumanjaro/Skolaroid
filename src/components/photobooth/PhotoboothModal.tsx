@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Camera, RefreshCw, Upload, Check } from 'lucide-react';
+import { Camera, RefreshCw, Upload, Check, Loader2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/Dialog';
 import { TagInput } from '@/components/shared/forms/TagInput';
 import { QRGateModal } from './QRGateModal';
@@ -353,7 +353,7 @@ export function PhotoboothModal({
                 exit={{ opacity: 0 }}
                 className="flex flex-col items-center gap-3 py-6"
               >
-                <div className="h-8 w-8 animate-spin border-4 border-border border-t-skolaroid-blue" />
+                <Loader2 className="h-8 w-8 animate-spin text-skolaroid-blue" />
                 <p className="text-sm text-muted-foreground">
                   Uploading your memory…
                 </p>

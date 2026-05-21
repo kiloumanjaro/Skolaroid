@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useCallback } from 'react';
-import { HandFistIcon } from '@phosphor-icons/react';
+import { ClockIcon } from '@phosphor-icons/react';
 
 interface EventAlertPinEvent {
   id: string;
@@ -53,13 +53,13 @@ export const EventAlertPin = React.forwardRef<
 
       {/* Main circle */}
       <div
-        className="relative flex h-8 w-8 items-center justify-center rounded-full shadow-lg ring-2 ring-black transition-transform duration-200"
+        className="relative flex h-8 w-8 items-center justify-center rounded-full shadow-lg ring-[1.5px] ring-black transition-transform duration-200"
         style={{
           backgroundColor: '#7b91f7',
           transform: isHovered ? 'scale(1.2)' : 'scale(1)',
         }}
       >
-        <HandFistIcon
+        <ClockIcon
           size={20}
           weight="duotone"
           className="event-alert-pin-icon"
