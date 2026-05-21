@@ -144,6 +144,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
   const bounceTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined
   );
+  const panelRef = useRef<HTMLElement | null>(null);
 
   usePanelOpenEffects(open);
 
@@ -166,6 +167,31 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
       return () => clearTimeout(bounceTimerRef.current);
     }
   }, [open]);
+
+  useLayoutEffect(() => {
+    const panel = panelRef.current;
+    if (!panel) return;
+
+    const updatePanelLeft = () => {
+      const nextLeft = panel.getBoundingClientRect().left;
+      panel.style.setProperty('--panel-left', `${nextLeft}px`);
+    };
+
+    updatePanelLeft();
+
+    const observer =
+      typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(updatePanelLeft)
+        : null;
+
+    observer?.observe(panel);
+    window.addEventListener('resize', updatePanelLeft);
+
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener('resize', updatePanelLeft);
+    };
+  }, []);
 
   const handleTabClick = () => {
     if (open) {
@@ -403,6 +429,7 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
         )}
       >
         <section
+          ref={panelRef}
           aria-label={selectedGroup?.name ?? 'Groups'}
           className={cn(
             'pointer-events-auto relative flex h-[calc(100vh-1rem)] max-h-[calc(100dvh-11.5rem)] w-[calc(100vw-1rem)] max-w-none flex-col rounded-none border-[2px] border-black bg-background p-0 shadow-none transition-transform duration-300 ease-out sm:max-h-none md:h-[85vh] md:w-[70vw]',
@@ -414,11 +441,16 @@ export function GroupPanel({ open, onOpenChange }: GroupPanelProps) {
             aria-label={open ? 'Close groups' : 'Open groups'}
             onClick={handleTabClick}
             className={cn(
-              'pointer-events-auto absolute -top-[3rem] left-14 z-30 h-[5.5rem] w-12 flex-col items-center justify-start gap-1 border-[2px] border-b-0 border-black bg-[#4384dc] pt-2 text-black',
+              'pointer-events-auto absolute -top-[3rem] z-30 h-[5.5rem] w-12 flex-col items-center justify-start gap-1 border-[2px] border-b-0 border-black bg-[#4384dc] pt-2 text-black',
               open || btnAnim === 'submerged' ? 'hidden' : 'flex',
               btnAnim === 'bob-open' && 'animate-btn-bob-open',
               btnAnim === 'bounce-back' && 'animate-btn-bounce-back'
             )}
+            style={{
+              left: 147,
+              transform:
+                'translateX(max(0px, calc(var(--map-left-offset, 0px) - var(--panel-left, 0px))))',
+            }}
           >
             <BookmarkSimpleIcon
               size={22}
