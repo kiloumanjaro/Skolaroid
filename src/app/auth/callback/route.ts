@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
-// Needed to check and restore deactivated accounts on login
 import { prisma } from '@/lib/prisma';
+import { createMemoryService } from '@/services/create-memory-service';
 
 /*
  * Handles the Supabase OAuth PKCE callback.
@@ -65,8 +65,79 @@ export async function GET(request: Request) {
         }
       }
 
-      // Check for a post-login redirect cookie (set by LoginForm)
+      // ── Check for photobooth draft cookie ──────────────────────────
       const cookieStore = await cookies();
+      const draftToken = cookieStore.get('photobooth_draft_token')?.value;
+
+      if (draftToken) {
+        const isOnboarded = authUser?.app_metadata?.onboarded === true;
+
+        const clearDraftCookie = (res: NextResponse) => {
+          res.cookies.set('photobooth_draft_token', '', {
+            maxAge: 0,
+            path: '/',
+          });
+          return res;
+        };
+
+        if (isOnboarded && authUser) {
+          // User already has an account — submit the draft immediately
+          try {
+            const draft = await prisma.photoboothDraft.findUnique({
+              where: { token: draftToken },
+              include: { event: true },
+            });
+
+            if (draft && draft.expiresAt > new Date() && !draft.usedAt) {
+              const dbUser = await prisma.user.findUnique({
+                where: { id: authUser.id, deletedAt: null },
+                select: { programBatchId: true },
+              });
+
+              if (dbUser) {
+                const photoUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/memory-media/${draft.photoPath}`;
+                const tags = Array.isArray(draft.tags)
+                  ? (draft.tags as string[])
+                  : [];
+
+                await createMemoryService({
+                  title: draft.event.name,
+                  description: draft.caption ?? undefined,
+                  visibility: 'PUBLIC',
+                  locationId: draft.event.locationId,
+                  programBatchId: dbUser.programBatchId,
+                  tags,
+                  mediaURLs: [photoUrl],
+                  creatorId: authUser.id,
+                  liveEventId: draft.eventId,
+                });
+
+                await prisma.photoboothDraft.update({
+                  where: { token: draftToken },
+                  data: { usedAt: new Date() },
+                });
+              }
+            }
+          } catch (err) {
+            console.error(
+              '[auth/callback] photobooth draft submission failed:',
+              err
+            );
+          }
+
+          return clearDraftCookie(
+            NextResponse.redirect(`${origin}/?memory_uploaded=1`)
+          );
+        } else {
+          // New user — pass token to onboarding; it will submit after account creation
+          const res = NextResponse.redirect(
+            `${origin}/onboarding?draft_token=${draftToken}`
+          );
+          return clearDraftCookie(res);
+        }
+      }
+
+      // Check for a post-login redirect cookie (set by LoginForm)
       const redirectCookie = cookieStore.get('post_login_redirect')?.value;
       const redirect = redirectCookie
         ? decodeURIComponent(redirectCookie)

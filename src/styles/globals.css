@@ -84,6 +84,16 @@
     stroke-width: 1.5;
   }
 
+  .event-alert-pin-icon path:first-child {
+    fill: white;
+    opacity: 1;
+  }
+
+  .event-alert-pin-icon path:last-child {
+    stroke: black;
+    stroke-width: 1.5;
+  }
+
   .filter-panel-icon path:first-child {
     fill: white;
     opacity: 1;

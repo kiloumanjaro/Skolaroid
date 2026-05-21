@@ -36,6 +36,8 @@ function OnboardingContent() {
 
   // After onboarding, redirect to the original page (e.g. /invite?token=...)
   const redirectTo = searchParams.get('redirect') || '/';
+  // Photobooth draft to auto-submit after account creation
+  const draftToken = searchParams.get('draft_token');
 
   // Extract first name from auth user
   const getAuthFirstName = () => {
@@ -224,6 +226,16 @@ function OnboardingContent() {
                       studentId,
                       status,
                     });
+                    if (draftToken) {
+                      try {
+                        await fetch(
+                          `/api/photobooth-draft/${draftToken}/submit`,
+                          { method: 'POST' }
+                        );
+                      } catch {
+                        /* best-effort — draft still valid for 30 min */
+                      }
+                    }
                     window.location.href = redirectTo;
                   } catch (err) {
                     setOnboardError(
