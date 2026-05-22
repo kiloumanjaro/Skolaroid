@@ -1371,7 +1371,7 @@ export function MapComponent({
             hasPrevious={selectedMemoryIndex > 0}
             hasNext={
               selectedMemoryIndex >= 0 &&
-              selectedMemoryIndex < memories.length - 1
+              selectedMemoryIndex < displayedMemories.length - 1
             }
             onPrevious={() => {
               if (previousSelectedMemory) {
