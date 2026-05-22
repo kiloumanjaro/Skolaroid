@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
-import { createMemoryService } from '@/services/create-memory-service';
 
 /*
  * Handles the Supabase OAuth PKCE callback.
@@ -66,7 +65,7 @@ export async function GET(request: Request) {
       }
 
       // ── Check for photobooth draft token ──────────────────────────
-      // First check URL params (from /photobooth/resume), then fallback to cookie (legacy)
+      // Check URL params first, then fallback to cookie for reliability
       const cookieStore = await cookies();
       const draftToken =
         searchParams.get('draft_token') ||
@@ -76,65 +75,12 @@ export async function GET(request: Request) {
         const isOnboarded = authUser?.app_metadata?.onboarded === true;
 
         if (isOnboarded && authUser) {
-          // User already has an account — submit the draft immediately
-          try {
-            const draft = await prisma.photoboothDraft.findUnique({
-              where: { token: draftToken },
-              include: { event: true },
-            });
-
-            if (draft && draft.expiresAt > new Date() && !draft.usedAt) {
-              const dbUser = await prisma.user.findUnique({
-                where: { id: authUser.id, deletedAt: null },
-                select: { programBatchId: true },
-              });
-
-              if (dbUser) {
-                const photoUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/memory-media/${draft.photoPath}`;
-                const tags = Array.isArray(draft.tags)
-                  ? (draft.tags as string[])
-                  : [];
-
-                await createMemoryService({
-                  title: draft.event.name,
-                  description: draft.caption ?? undefined,
-                  visibility: 'PUBLIC',
-                  locationId: draft.event.locationId,
-                  programBatchId: dbUser.programBatchId,
-                  tags,
-                  mediaURLs: [photoUrl],
-                  creatorId: authUser.id,
-                  liveEventId: draft.eventId,
-                });
-
-                await prisma.photoboothDraft.update({
-                  where: { token: draftToken },
-                  data: { usedAt: new Date() },
-                });
-                console.log(
-                  `[auth/callback] photobooth draft ${draftToken} submitted successfully`
-                );
-              } else {
-                console.warn(
-                  `[auth/callback] user not found in database for draft ${draftToken}`
-                );
-              }
-            } else {
-              console.warn(
-                `[auth/callback] draft ${draftToken} invalid/expired/already used`
-              );
-            }
-          } catch (err) {
-            console.error(
-              `[auth/callback] photobooth draft ${draftToken} submission failed:`,
-              err
-            );
-          }
-
+          // For existing users, redirect to verify page which will submit the draft
+          // This ensures proper auth session establishment before submission
           const res = NextResponse.redirect(
-            `${origin}/?photobooth_success=true`
+            `${origin}/photobooth/verify?token=${encodeURIComponent(draftToken)}`
           );
-          // Clear legacy cookie if present
+          // Clear cookies
           res.cookies.set('photobooth_draft_token', '', {
             maxAge: 0,
             path: '/',
@@ -145,7 +91,7 @@ export async function GET(request: Request) {
           const res = NextResponse.redirect(
             `${origin}/onboarding?draft_token=${draftToken}`
           );
-          // Clear legacy cookie if present
+          // Clear cookies
           res.cookies.set('photobooth_draft_token', '', {
             maxAge: 0,
             path: '/',

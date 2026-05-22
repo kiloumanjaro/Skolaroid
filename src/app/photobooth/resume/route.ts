@@ -25,8 +25,20 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/?photobooth_error=invalid_token`);
   }
 
-  // Pass the draft token via URL to survive the OAuth flow reliably
-  return NextResponse.redirect(
+  // Pass the draft token via URL and store in session cookie for additional reliability
+  // The token will also be stored in localStorage on the client side
+  const response = NextResponse.redirect(
     `${origin}/?draft_token=${encodeURIComponent(token)}`
   );
+
+  // Set a temporary session cookie as backup (sameSite=lax allows it through OAuth flow)
+  response.cookies.set('photobooth_draft_token', token, {
+    maxAge: 30 * 60, // 30 minutes
+    path: '/',
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: false, // Allow JavaScript to read it for localStorage backup
+  });
+
+  return response;
 }
