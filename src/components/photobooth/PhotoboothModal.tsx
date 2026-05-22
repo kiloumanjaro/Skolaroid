@@ -41,6 +41,7 @@ export function PhotoboothModal({
   // QR gate state
   const [qrUrl, setQrUrl] = useState('');
   const [qrExpiresAt, setQrExpiresAt] = useState<Date>(new Date());
+  const [draftToken, setDraftToken] = useState('');
 
   const stopStream = useCallback(() => {
     if (streamRef.current) {
@@ -130,6 +131,10 @@ export function PhotoboothModal({
     onOpenChange(false);
   };
 
+  const handleDirectUploadComplete = () => {
+    setStep('done');
+  };
+
   const handleCapture = () => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
@@ -188,6 +193,7 @@ export function PhotoboothModal({
       // so the memory is credited to them, not the device operator
       const resumeUrl = `${window.location.origin}/photobooth/resume?token=${draftData.token}`;
       setQrUrl(resumeUrl);
+      setDraftToken(draftData.token);
       setQrExpiresAt(new Date(draftData.expiresAt));
       setStep('qr_gate');
     } catch (err) {
@@ -397,6 +403,8 @@ export function PhotoboothModal({
         qrUrl={qrUrl}
         expiresAt={qrExpiresAt}
         onCancel={handleClose}
+        draftToken={draftToken}
+        onDirectUploadComplete={handleDirectUploadComplete}
       />
     </>
   );

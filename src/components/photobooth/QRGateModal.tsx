@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import QRCode from 'react-qr-code';
+import { Loader2, Send } from 'lucide-react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/Dialog';
 
 interface QRGateModalProps {
@@ -10,6 +11,8 @@ interface QRGateModalProps {
   qrUrl: string;
   expiresAt: Date;
   onCancel: () => void;
+  draftToken: string;
+  onDirectUploadComplete?: () => void;
 }
 
 function formatCountdown(seconds: number) {
@@ -24,8 +27,12 @@ export function QRGateModal({
   qrUrl,
   expiresAt,
   onCancel,
+  draftToken,
+  onDirectUploadComplete,
 }: QRGateModalProps) {
   const [secondsLeft, setSecondsLeft] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   // Reset and start countdown whenever the modal opens or expiresAt changes
   useEffect(() => {
@@ -44,6 +51,30 @@ export function QRGateModal({
     }, 1000);
     return () => clearInterval(interval);
   }, [open, expiresAt]);
+
+  const handleDirectUpload = async () => {
+    setIsUploading(true);
+    setUploadError(null);
+    try {
+      const res = await fetch(`/api/photobooth-draft/${draftToken}/submit`, {
+        method: 'POST',
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        setUploadError(data.message || 'Failed to upload photo');
+        setIsUploading(false);
+        return;
+      }
+
+      onDirectUploadComplete?.();
+    } catch (err) {
+      setUploadError(
+        err instanceof Error ? err.message : 'Failed to upload photo'
+      );
+      setIsUploading(false);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -76,13 +107,36 @@ export function QRGateModal({
             </span>
           </div>
 
-          <button
-            onClick={onCancel}
-            className="flex w-full items-center justify-center border-2 border-black px-4 py-3 text-sm font-bold uppercase tracking-wide text-white transition active:scale-95"
-            style={{ backgroundColor: '#4384dc' }}
-          >
-            Cancel
-          </button>
+          {uploadError && <p className="text-xs text-red-600">{uploadError}</p>}
+
+          <div className="flex w-full flex-col gap-2">
+            <button
+              onClick={handleDirectUpload}
+              disabled={isUploading}
+              className="flex w-full items-center justify-center gap-2 border-2 border-black px-4 py-3 text-sm font-bold uppercase tracking-wide text-white transition active:scale-95 disabled:opacity-50"
+              style={{ backgroundColor: '#7BC122' }}
+            >
+              {isUploading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Uploading...
+                </>
+              ) : (
+                <>
+                  <Send className="h-4 w-4" />
+                  Save to this device
+                </>
+              )}
+            </button>
+            <button
+              onClick={onCancel}
+              disabled={isUploading}
+              className="flex w-full items-center justify-center border-2 border-black px-4 py-3 text-sm font-bold uppercase tracking-wide text-white transition active:scale-95 disabled:opacity-50"
+              style={{ backgroundColor: '#4384dc' }}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
