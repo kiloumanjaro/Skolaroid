@@ -7,6 +7,7 @@ export async function POST(
   _request: NextRequest,
   { params }: { params: Promise<{ token: string }> }
 ) {
+  const { token } = await params;
   try {
     const supabase = await createClient();
     const {
@@ -14,6 +15,7 @@ export async function POST(
     } = await supabase.auth.getUser();
 
     if (!authUser) {
+      console.warn(`[photobooth-draft/${token}/submit] user not authenticated`);
       return NextResponse.json(
         { success: false, message: 'Not authenticated' },
         { status: 401 }
@@ -26,13 +28,14 @@ export async function POST(
     });
 
     if (!dbUser) {
+      console.warn(
+        `[photobooth-draft/${token}/submit] user ${authUser.id} not found in database`
+      );
       return NextResponse.json(
         { success: false, message: 'User not found' },
         { status: 404 }
       );
     }
-
-    const { token } = await params;
 
     const draft = await prisma.photoboothDraft.findUnique({
       where: { token },
@@ -42,6 +45,7 @@ export async function POST(
     });
 
     if (!draft) {
+      console.warn(`[photobooth-draft/${token}/submit] draft not found`);
       return NextResponse.json(
         { success: false, message: 'Draft not found' },
         { status: 404 }
@@ -49,6 +53,7 @@ export async function POST(
     }
 
     if (draft.expiresAt < new Date()) {
+      console.warn(`[photobooth-draft/${token}/submit] draft expired`);
       return NextResponse.json(
         { success: false, message: 'Draft has expired' },
         { status: 410 }
@@ -56,6 +61,9 @@ export async function POST(
     }
 
     if (draft.usedAt !== null) {
+      console.warn(
+        `[photobooth-draft/${token}/submit] draft already used at ${draft.usedAt}`
+      );
       return NextResponse.json(
         { success: false, message: 'Draft has already been used' },
         { status: 409 }
@@ -67,6 +75,9 @@ export async function POST(
 
     const tags = Array.isArray(draft.tags) ? (draft.tags as string[]) : [];
 
+    console.log(
+      `[photobooth-draft/${token}/submit] creating memory for user ${authUser.id}`
+    );
     const memory = await createMemoryService({
       title: draft.event.name,
       description: draft.caption ?? undefined,
@@ -84,9 +95,12 @@ export async function POST(
       data: { usedAt: new Date() },
     });
 
+    console.log(
+      `[photobooth-draft/${token}/submit] successfully created memory ${memory.id}`
+    );
     return NextResponse.json({ success: true, data: { memoryId: memory.id } });
   } catch (error) {
-    console.error('[POST /api/photobooth-draft/[token]/submit]', error);
+    console.error(`[photobooth-draft/${token}/submit] error:`, error);
     return NextResponse.json(
       { success: false, message: 'Failed to submit draft' },
       { status: 500 }

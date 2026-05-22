@@ -228,12 +228,24 @@ function OnboardingContent() {
                     });
                     if (draftToken) {
                       try {
-                        await fetch(
+                        const submitRes = await fetch(
                           `/api/photobooth-draft/${draftToken}/submit`,
                           { method: 'POST' }
                         );
-                      } catch {
-                        /* best-effort — draft still valid for 30 min */
+                        if (!submitRes.ok) {
+                          const errorData = await submitRes.json();
+                          console.warn(
+                            `[onboarding] draft submission failed: ${submitRes.status} - ${errorData.message}`
+                          );
+                        } else {
+                          console.log(
+                            `[onboarding] draft ${draftToken} submitted successfully`
+                          );
+                        }
+                      } catch (err) {
+                        console.error(
+                          `[onboarding] draft submission error: ${err instanceof Error ? err.message : 'Unknown error'}`
+                        );
                       }
                     }
                     window.location.href = redirectTo;

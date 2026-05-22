@@ -65,20 +65,14 @@ export async function GET(request: Request) {
         }
       }
 
-      // ── Check for photobooth draft cookie ──────────────────────────
-      const cookieStore = await cookies();
-      const draftToken = cookieStore.get('photobooth_draft_token')?.value;
+      // ── Check for photobooth draft token ──────────────────────────
+      // First check URL params (from /photobooth/resume), then fallback to cookie (legacy)
+      const draftToken =
+        searchParams.get('draft_token') ||
+        (await cookies()).get('photobooth_draft_token')?.value;
 
       if (draftToken) {
         const isOnboarded = authUser?.app_metadata?.onboarded === true;
-
-        const clearDraftCookie = (res: NextResponse) => {
-          res.cookies.set('photobooth_draft_token', '', {
-            maxAge: 0,
-            path: '/',
-          });
-          return res;
-        };
 
         if (isOnboarded && authUser) {
           // User already has an account — submit the draft immediately
@@ -116,24 +110,44 @@ export async function GET(request: Request) {
                   where: { token: draftToken },
                   data: { usedAt: new Date() },
                 });
+                console.log(
+                  `[auth/callback] photobooth draft ${draftToken} submitted successfully`
+                );
+              } else {
+                console.warn(
+                  `[auth/callback] user not found in database for draft ${draftToken}`
+                );
               }
+            } else {
+              console.warn(
+                `[auth/callback] draft ${draftToken} invalid/expired/already used`
+              );
             }
           } catch (err) {
             console.error(
-              '[auth/callback] photobooth draft submission failed:',
+              `[auth/callback] photobooth draft ${draftToken} submission failed:`,
               err
             );
           }
 
-          return clearDraftCookie(
-            NextResponse.redirect(`${origin}/?memory_uploaded=1`)
-          );
+          const res = NextResponse.redirect(`${origin}/?memory_uploaded=1`);
+          // Clear legacy cookie if present
+          res.cookies.set('photobooth_draft_token', '', {
+            maxAge: 0,
+            path: '/',
+          });
+          return res;
         } else {
           // New user — pass token to onboarding; it will submit after account creation
           const res = NextResponse.redirect(
             `${origin}/onboarding?draft_token=${draftToken}`
           );
-          return clearDraftCookie(res);
+          // Clear legacy cookie if present
+          res.cookies.set('photobooth_draft_token', '', {
+            maxAge: 0,
+            path: '/',
+          });
+          return res;
         }
       }
 
