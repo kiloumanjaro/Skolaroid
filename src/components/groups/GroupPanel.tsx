@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { GroupSwitcher, useGroupToast } from '@/components/groups';
 import { usePanelOpenEffects } from '@/components/shared/shell/MainShellSidebarAction';
 import { CreateGroupModal } from '@/components/groups/CreateGroupModal';
+import { InviteMembersModal } from '@/components/groups/InviteMembersModal';
 import { ShareGroupModal } from '@/components/groups/ShareGroupModal';
 import { LeaveGroupModal } from '@/components/groups/LeaveGroupModal';
 import { DeleteGroupModal } from '@/components/groups/DeleteGroupModal';
@@ -41,6 +42,7 @@ import {
   Lock,
   Loader2,
   Shield,
+  Mail,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 
@@ -112,6 +114,7 @@ export function GroupPanel({
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [leaveModalOpen, setLeaveModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('members');
 
   usePanelOpenEffects(open);
@@ -157,6 +160,9 @@ export function GroupPanel({
   const canManageMembers =
     !!selectedGroup &&
     canRoleUsePermission(rolePrivileges, currentUserRole, 'manageMembers');
+  const canSendInvitations =
+    !!selectedGroup &&
+    canRoleUsePermission(rolePrivileges, currentUserRole, 'sendInvitations');
 
   // ─── Handlers ────────────────────────────────────────────────────
   const handleSelectGroup = useCallback(
@@ -426,6 +432,24 @@ export function GroupPanel({
                         Share group
                       </div>
                     </div>
+                    {canSendInvitations && (
+                      <div className="group relative">
+                        <button
+                          type="button"
+                          aria-label="Invite members by email"
+                          onClick={() => {
+                            if (!selectedGroup) return;
+                            openNestedModal(setInviteModalOpen);
+                          }}
+                          className="grid h-7 w-7 shrink-0 place-items-center border-2 border-black bg-white text-black"
+                        >
+                          <Mail className="h-4 w-4 stroke-[2]" />
+                        </button>
+                        <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-1.5 -translate-x-1/2 whitespace-nowrap border border-black bg-black px-2 py-0.5 text-[11px] text-white opacity-0 transition-opacity group-hover:opacity-100">
+                          Invite by email
+                        </div>
+                      </div>
+                    )}
                     <div className="group relative">
                       <button
                         type="button"
@@ -570,6 +594,14 @@ export function GroupPanel({
           <ShareGroupModal
             open={shareModalOpen}
             onOpenChange={setShareModalOpen}
+            groupName={selectedGroup.name}
+            groupId={selectedGroup.id}
+            showSuccess={showSuccess}
+          />
+
+          <InviteMembersModal
+            open={inviteModalOpen}
+            onOpenChange={setInviteModalOpen}
             groupName={selectedGroup.name}
             groupId={selectedGroup.id}
             showSuccess={showSuccess}
