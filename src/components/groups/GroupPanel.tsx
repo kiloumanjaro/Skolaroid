@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { GroupSwitcher, useGroupToast } from '@/components/groups';
 import { usePanelOpenEffects } from '@/components/shared/shell/MainShellSidebarAction';
 import { CreateGroupModal } from '@/components/groups/CreateGroupModal';
+import { InviteMembersModal } from '@/components/groups/InviteMembersModal';
 import { ShareGroupModal } from '@/components/groups/ShareGroupModal';
 import { LeaveGroupModal } from '@/components/groups/LeaveGroupModal';
 import { DeleteGroupModal } from '@/components/groups/DeleteGroupModal';
@@ -41,11 +42,13 @@ import {
   Lock,
   Loader2,
   Shield,
+  Mail,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 
 interface GroupPanelProps {
   open: boolean;
+  selectedGroupId: string | null;
   onOpenChange: (open: boolean) => void;
   onSelectedGroupChange?: (groupId: string | null) => void;
 }
@@ -103,14 +106,15 @@ function toGroup(g: GroupResponse): Group {
 
 export function GroupPanel({
   open,
+  selectedGroupId,
   onOpenChange,
   onSelectedGroupChange,
 }: GroupPanelProps) {
-  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [leaveModalOpen, setLeaveModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('members');
 
   usePanelOpenEffects(open);
@@ -135,18 +139,6 @@ export function GroupPanel({
     return groupsRaw.map(toGroup);
   }, [groupsRaw]);
 
-  // Auto-select first group when list loads
-  useEffect(() => {
-    if (groups.length > 0 && !selectedGroupId) {
-      setSelectedGroupId(groups[0].id);
-    }
-  }, [groups, selectedGroupId]);
-
-  // Notify parent when selected group changes
-  useEffect(() => {
-    onSelectedGroupChange?.(selectedGroupId);
-  }, [selectedGroupId, onSelectedGroupChange]);
-
   // Build the selected group from either the detail query or the list
   const selectedGroup: Group | null = useMemo(() => {
     if (groupDetailRaw) return toGroup(groupDetailRaw);
@@ -168,18 +160,24 @@ export function GroupPanel({
   const canManageMembers =
     !!selectedGroup &&
     canRoleUsePermission(rolePrivileges, currentUserRole, 'manageMembers');
+  const canSendInvitations =
+    !!selectedGroup &&
+    canRoleUsePermission(rolePrivileges, currentUserRole, 'sendInvitations');
 
   // ─── Handlers ────────────────────────────────────────────────────
-  const handleSelectGroup = useCallback((group: Group) => {
-    setSelectedGroupId(group.id);
-  }, []);
+  const handleSelectGroup = useCallback(
+    (group: Group) => {
+      onSelectedGroupChange?.(group.id);
+    },
+    [onSelectedGroupChange]
+  );
 
   const handleGroupCreated = useCallback(
     (groupResponse: GroupResponse) => {
-      setSelectedGroupId(groupResponse.id);
+      onSelectedGroupChange?.(groupResponse.id);
       showSuccess(`Group "${groupResponse.name}" created successfully!`);
     },
-    [showSuccess]
+    [onSelectedGroupChange, showSuccess]
   );
 
   const handleGroupDeleted = useCallback(() => {
@@ -188,7 +186,7 @@ export function GroupPanel({
     deleteGroup.mutate(selectedGroup.id, {
       onSuccess: () => {
         showSuccess(`Group "${selectedGroup.name}" deleted.`);
-        setSelectedGroupId(
+        onSelectedGroupChange?.(
           groups.find((g) => g.id !== selectedGroup.id)?.id ?? null
         );
         onOpenChange(false);
@@ -202,6 +200,7 @@ export function GroupPanel({
     groups,
     deleteGroup,
     onOpenChange,
+    onSelectedGroupChange,
     showSuccess,
     showError,
   ]);
@@ -219,7 +218,7 @@ export function GroupPanel({
               ? `You left "${selectedGroup.name}" and ownership was transferred.`
               : `You left "${selectedGroup.name}".`
           );
-          setSelectedGroupId(
+          onSelectedGroupChange?.(
             groups.find((g) => g.id !== selectedGroup.id)?.id ?? null
           );
         },
@@ -234,6 +233,7 @@ export function GroupPanel({
     currentUserId,
     groups,
     leaveGroup,
+    onSelectedGroupChange,
     showSuccess,
     showError,
   ]);
@@ -432,6 +432,24 @@ export function GroupPanel({
                         Share group
                       </div>
                     </div>
+                    {canSendInvitations && (
+                      <div className="group relative">
+                        <button
+                          type="button"
+                          aria-label="Invite members by email"
+                          onClick={() => {
+                            if (!selectedGroup) return;
+                            openNestedModal(setInviteModalOpen);
+                          }}
+                          className="grid h-7 w-7 shrink-0 place-items-center border-2 border-black bg-white text-black"
+                        >
+                          <Mail className="h-4 w-4 stroke-[2]" />
+                        </button>
+                        <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-1.5 -translate-x-1/2 whitespace-nowrap border border-black bg-black px-2 py-0.5 text-[11px] text-white opacity-0 transition-opacity group-hover:opacity-100">
+                          Invite by email
+                        </div>
+                      </div>
+                    )}
                     <div className="group relative">
                       <button
                         type="button"
@@ -549,10 +567,10 @@ export function GroupPanel({
                       <>
                         <Users className="mb-3 h-12 w-12 text-muted-foreground" />
                         <h3 className="text-base font-semibold text-foreground">
-                          No Group Selected
+                          No group selected
                         </h3>
                         <p className="mt-1 text-center text-sm text-muted-foreground">
-                          Select a group from the switcher or create a new one
+                          Select a group to view details
                         </p>
                       </>
                     )}
@@ -576,6 +594,14 @@ export function GroupPanel({
           <ShareGroupModal
             open={shareModalOpen}
             onOpenChange={setShareModalOpen}
+            groupName={selectedGroup.name}
+            groupId={selectedGroup.id}
+            showSuccess={showSuccess}
+          />
+
+          <InviteMembersModal
+            open={inviteModalOpen}
+            onOpenChange={setInviteModalOpen}
             groupName={selectedGroup.name}
             groupId={selectedGroup.id}
             showSuccess={showSuccess}

@@ -346,47 +346,46 @@ export function FilterPanel({
               </div>
             </FilterSection>
 
-            <div
-              className={cn(
-                'grid items-start gap-5',
-                groupSelected ? 'sm:grid-cols-3' : 'sm:grid-cols-2'
-              )}
-            >
-              <FilterSection label="Sort by">
-                <div className="flex flex-wrap gap-2">
-                  {SORT_OPTIONS.map((opt) => (
-                    <SegmentedButton
-                      key={opt.value}
-                      active={filters.sortBy === opt.value}
-                      onClick={() => update('sortBy', opt.value)}
-                    >
-                      {opt.label}
-                    </SegmentedButton>
-                  ))}
-                </div>
-              </FilterSection>
-
-              {groupSelected ? (
-                // Membership overrides visibility — Year + Location sit in the
-                // same row as Sort by (top-aligned, not stretched).
-                <>
-                  {yearSection}
-                  {locationSection}
-                </>
-              ) : (
-                <FilterSection label="Visibility">
+            <div className="flex flex-wrap items-start gap-5">
+              <div className="min-w-[22rem] flex-1">
+                <FilterSection label="Sort by">
                   <div className="flex flex-wrap gap-2">
-                    {VISIBILITY_OPTIONS.map((opt) => (
+                    {SORT_OPTIONS.map((opt) => (
                       <SegmentedButton
                         key={opt.value}
-                        active={filters.visibility === opt.value}
-                        onClick={() => update('visibility', opt.value)}
+                        active={filters.sortBy === opt.value}
+                        onClick={() => update('sortBy', opt.value)}
                       >
                         {opt.label}
                       </SegmentedButton>
                     ))}
                   </div>
                 </FilterSection>
+              </div>
+
+              {groupSelected ? (
+                // Membership overrides visibility — Year + Location sit in the
+                // same row as Sort by (top-aligned, not stretched).
+                <>
+                  <div className="min-w-[12rem] flex-1">{yearSection}</div>
+                  <div className="min-w-[12rem] flex-1">{locationSection}</div>
+                </>
+              ) : (
+                <div className="min-w-[14rem] flex-1">
+                  <FilterSection label="Visibility">
+                    <div className="flex flex-wrap gap-2">
+                      {VISIBILITY_OPTIONS.map((opt) => (
+                        <SegmentedButton
+                          key={opt.value}
+                          active={filters.visibility === opt.value}
+                          onClick={() => update('visibility', opt.value)}
+                        >
+                          {opt.label}
+                        </SegmentedButton>
+                      ))}
+                    </div>
+                  </FilterSection>
+                </div>
               )}
             </div>
 
@@ -411,9 +410,9 @@ export function FilterPanel({
             </FilterSection>
 
             {!groupSelected && (
-              <div className="grid gap-4 sm:grid-cols-2">
-                {yearSection}
-                {locationSection}
+              <div className="flex flex-wrap items-start gap-4">
+                <div className="min-w-[12rem] flex-1">{yearSection}</div>
+                <div className="min-w-[12rem] flex-1">{locationSection}</div>
               </div>
             )}
           </div>
@@ -456,7 +455,7 @@ function SegmentedButton({
       type="button"
       onClick={onClick}
       className={cn(
-        'border-2 border-black px-3 py-1 text-sm font-medium transition-colors',
+        'shrink-0 whitespace-nowrap border-2 border-black px-3 py-1 text-sm font-medium transition-colors',
         active
           ? 'bg-[#4384dc] text-white'
           : 'bg-white text-black hover:bg-[#fff3bf]'

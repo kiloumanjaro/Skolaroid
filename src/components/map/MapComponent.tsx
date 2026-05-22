@@ -51,6 +51,10 @@ import { MAP_ANNOUNCEMENTS } from '../announcement-strips/announcement-config';
 import { MapLocationSelector } from './MapLocationSelector';
 import { FilterPanel } from './FilterPanel';
 import { MemoryLoadingIndicator } from '@/components/shared/MemoryLoadingIndicator';
+import { EventAlertPin } from './EventAlertPin';
+import { EventCard } from './EventCard';
+import { PhotoboothModal } from '@/components/photobooth/PhotoboothModal';
+import { useActiveEvents, type ActiveEvent } from '@/lib/hooks/useActiveEvents';
 import type {
   MemoryFilters,
   LocationFilterOption,
@@ -141,6 +145,10 @@ export function MapComponent({
   const [memoryDetailOpen, setMemoryDetailOpen] = useState(false);
   const [showLandmarks, setShowLandmarks] = useState(false);
   const [showMemoryPins, setShowMemoryPins] = useState(true);
+  const [selectedEvent, setSelectedEvent] = useState<ActiveEvent | null>(null);
+  const [photoboothEvent, setPhotoboothEvent] = useState<ActiveEvent | null>(
+    null
+  );
 
   // Location selection mode for Add Memory flow
   const [locationSelectionMode, setLocationSelectionMode] =
@@ -155,6 +163,8 @@ export function MapComponent({
   const memoryMarkersRef = useRef<mapboxgl.Marker[]>([]);
   const memoryRootsRef = useRef<Root[]>([]);
   const memoryOpenSequenceRef = useRef(0);
+  const eventMarkersRef = useRef<mapboxgl.Marker[]>([]);
+  const eventRootsRef = useRef<Root[]>([]);
   const shellChrome = useMainShellChrome();
   const sidebarOpen = shellChrome?.sidebarOpen ?? false;
 
@@ -231,6 +241,11 @@ export function MapComponent({
   const memories = useMemo(() => memoriesData?.data ?? [], [memoriesData]);
   const { data: currentUserData } = useCurrentUser();
   const currentUserId = currentUserData?.data?.id;
+  const { data: activeEventsData } = useActiveEvents();
+  const activeEvents = useMemo(
+    () => activeEventsData?.data ?? [],
+    [activeEventsData]
+  );
   const { data: creatorMemoriesData, isLoading: creatorMemoriesLoading } =
     useMemoriesByCreator(currentUserId);
   const { data: locationsData } = useLocations();
@@ -813,24 +828,28 @@ export function MapComponent({
           markersRef.current = [];
           memoryMarkersRef.current.forEach((m) => m.remove());
           memoryMarkersRef.current = [];
+          eventMarkersRef.current.forEach((m) => m.remove());
+          eventMarkersRef.current = [];
 
           // Unmount React roots asynchronously to avoid race condition
           const rootsToUnmount = [
             ...markerRootsRef.current,
             ...memoryRootsRef.current,
+            ...eventRootsRef.current.map((r) => ({ root: r })),
           ];
           setTimeout(() => {
             rootsToUnmount.forEach((item) => {
               if ('root' in item) {
                 item.root.unmount();
               } else {
-                item.unmount();
+                (item as Root).unmount();
               }
             });
           }, 0);
 
           markerRootsRef.current = [];
           memoryRootsRef.current = [];
+          eventRootsRef.current = [];
           map.remove();
           mapRef.current = null;
           setMapReady(false);
@@ -1134,6 +1153,38 @@ export function MapComponent({
     showMemoryPins,
   ]);
 
+  // Render live event alert pins
+  useEffect(() => {
+    if (!mapReady || !mapRef.current) return;
+
+    // Clean up old event markers
+    eventMarkersRef.current.forEach((m) => m.remove());
+    eventMarkersRef.current = [];
+    const oldRoots = [...eventRootsRef.current];
+    eventRootsRef.current = [];
+    setTimeout(() => oldRoots.forEach((r) => r.unmount()), 0);
+
+    for (const event of activeEvents) {
+      const el = document.createElement('div');
+      const root = createRoot(el);
+      root.render(
+        <EventAlertPin
+          event={event}
+          onClick={(eventId) => {
+            const found = activeEvents.find((e) => e.id === eventId);
+            if (found) setSelectedEvent(found);
+          }}
+        />
+      );
+      eventRootsRef.current.push(root);
+
+      const marker = new mapboxgl.Marker({ element: el, anchor: 'bottom' })
+        .setLngLat([event.location.longitude, event.location.latitude])
+        .addTo(mapRef.current!);
+      eventMarkersRef.current.push(marker);
+    }
+  }, [mapReady, activeEvents]);
+
   if (!isClient) {
     return <div className="relative h-full w-full" />;
   }
@@ -1174,7 +1225,7 @@ export function MapComponent({
                 onSelect={(id) =>
                   onFiltersChange({ ...filters, selectedGroupId: id })
                 }
-                onCreateGroup={() => setCreateGroupModalOpen(true)}
+                onOpenGroups={() => setGroupModalOpen(true)}
               />
             }
           />
@@ -1182,6 +1233,10 @@ export function MapComponent({
 
           <GroupPanel
             open={groupModalOpen}
+            selectedGroupId={filters.selectedGroupId}
+            onSelectedGroupChange={(id) =>
+              onFiltersChange({ ...filters, selectedGroupId: id })
+            }
             onOpenChange={(isOpen) => {
               if (isOpen) {
                 setAddMemoryOpen(false);
@@ -1268,6 +1323,25 @@ export function MapComponent({
             }
             onClose={() => setSelectedLandmark(null)}
           />
+
+          <EventCard
+            event={selectedEvent}
+            onClose={() => setSelectedEvent(null)}
+            onOpenPhotobooth={() => {
+              setPhotoboothEvent(selectedEvent);
+              setSelectedEvent(null);
+            }}
+          />
+
+          {photoboothEvent && (
+            <PhotoboothModal
+              open={!!photoboothEvent}
+              onOpenChange={(open) => {
+                if (!open) setPhotoboothEvent(null);
+              }}
+              event={photoboothEvent}
+            />
+          )}
 
           {showFirstMemoryPrompt && (
             <MapFirstMemoryPrompt onAddMemory={() => openAddMemoryModal()} />
