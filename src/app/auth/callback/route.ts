@@ -67,9 +67,10 @@ export async function GET(request: Request) {
 
       // ── Check for photobooth draft token ──────────────────────────
       // First check URL params (from /photobooth/resume), then fallback to cookie (legacy)
+      const cookieStore = await cookies();
       const draftToken =
         searchParams.get('draft_token') ||
-        (await cookies()).get('photobooth_draft_token')?.value;
+        cookieStore.get('photobooth_draft_token')?.value;
 
       if (draftToken) {
         const isOnboarded = authUser?.app_metadata?.onboarded === true;
