@@ -37,6 +37,7 @@ export function PhotoboothModal({
   const [caption, setCaption] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [countdown, setCountdown] = useState<number | null>(null);
 
   // QR gate state
   const [qrUrl, setQrUrl] = useState('');
@@ -70,6 +71,7 @@ export function PhotoboothModal({
         streamRef.current = stream;
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
+          videoRef.current.play().catch(() => {});
         }
       });
 
@@ -115,15 +117,17 @@ export function PhotoboothModal({
   }, [previewUrl]);
 
   const handleReset = () => {
+    setCountdown(null);
     stopStream();
+    if (videoRef.current) videoRef.current.srcObject = null;
     setCapturedBlob(null);
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreviewUrl(null);
     setCaption('');
     setTags([]);
     setError(null);
-    setStep('camera');
     setCameraFallback(false);
+    setStep('camera');
   };
 
   const handleClose = () => {
@@ -135,7 +139,7 @@ export function PhotoboothModal({
     setStep('done');
   };
 
-  const handleCapture = () => {
+  const doCapture = useCallback(() => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
     if (!video || !canvas) return;
@@ -156,6 +160,22 @@ export function PhotoboothModal({
       'image/jpeg',
       0.92
     );
+  }, [stopStream]);
+
+  useEffect(() => {
+    if (countdown === null) return;
+    if (countdown === 0) {
+      setCountdown(null);
+      doCapture();
+      return;
+    }
+    const timer = setTimeout(() => setCountdown((c) => (c ?? 1) - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [countdown, doCapture]);
+
+  const handleCapture = () => {
+    if (countdown !== null) return;
+    setCountdown(3);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -274,15 +294,25 @@ export function PhotoboothModal({
                         muted
                         className="h-full w-full object-cover"
                       />
+                      {countdown !== null && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                          <span className="text-8xl font-bold text-white drop-shadow-lg">
+                            {countdown}
+                          </span>
+                        </div>
+                      )}
                     </div>
                     <canvas ref={canvasRef} className="hidden" />
                     <button
                       onClick={handleCapture}
-                      className="flex w-full items-center justify-center gap-2 border-2 border-black px-4 py-3 text-sm font-bold uppercase tracking-wide text-white transition active:scale-95"
+                      disabled={countdown !== null}
+                      className="flex w-full items-center justify-center gap-2 border-2 border-black px-4 py-3 text-sm font-bold uppercase tracking-wide text-white transition active:scale-95 disabled:opacity-60"
                       style={{ backgroundColor: '#4384dc' }}
                     >
                       <Camera className="h-5 w-5" />
-                      Capture
+                      {countdown !== null
+                        ? `Capturing in ${countdown}…`
+                        : 'Capture'}
                     </button>
                   </>
                 )}
