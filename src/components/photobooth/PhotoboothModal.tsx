@@ -288,7 +288,17 @@ export function PhotoboothModal({
                   <>
                     <div className="relative aspect-[4/3] overflow-hidden border-2 border-black bg-black">
                       <video
-                        ref={videoRef}
+                        ref={(el) => {
+                          videoRef.current = el;
+                          if (
+                            el &&
+                            streamRef.current &&
+                            el.srcObject !== streamRef.current
+                          ) {
+                            el.srcObject = streamRef.current;
+                            el.play().catch(() => {});
+                          }
+                        }}
                         autoPlay
                         playsInline
                         muted

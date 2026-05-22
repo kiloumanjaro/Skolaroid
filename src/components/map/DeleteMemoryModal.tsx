@@ -28,6 +28,7 @@ export function DeleteMemoryModal({
       <DialogContent
         className="flex max-w-md gap-0 overflow-hidden p-0"
         showCloseButton={false}
+        portalClassName="z-[40000]"
       >
         <DialogTitle className="sr-only">Delete Memory</DialogTitle>
 

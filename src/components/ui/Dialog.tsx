@@ -25,11 +25,14 @@ function DialogTrigger({
 
 function DialogPortal({
   children,
+  className,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Portal>) {
+}: React.ComponentProps<typeof DialogPrimitive.Portal> & {
+  className?: string;
+}) {
   return (
     <DialogPrimitive.Portal data-slot="dialog-portal" {...props}>
-      <div className="fixed inset-0 z-[9999]">{children}</div>
+      <div className={cn('fixed inset-0 z-[20000]', className)}>{children}</div>
     </DialogPrimitive.Portal>
   );
 }
@@ -58,15 +61,17 @@ function DialogOverlay({
 
 function DialogContent({
   className,
+  portalClassName,
   children,
   showCloseButton = true,
   style,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean;
+  portalClassName?: string;
 }) {
   return (
-    <DialogPortal data-slot="dialog-portal">
+    <DialogPortal data-slot="dialog-portal" className={portalClassName}>
       <DialogOverlay />
       <DialogPrimitive.Content
         data-slot="dialog-content"
