@@ -289,20 +289,6 @@ export function MapComponent({
     return eraFilteredMemories;
   }, [memories, eraFilteredMemories, filters.selectedYear]);
 
-  const selectedMemoryIndex = useMemo(
-    () =>
-      selectedMemory
-        ? memories.findIndex((m) => m.id === selectedMemory.id)
-        : -1,
-    [memories, selectedMemory]
-  );
-  const previousSelectedMemory =
-    selectedMemoryIndex > 0 ? memories[selectedMemoryIndex - 1] : null;
-  const nextSelectedMemory =
-    selectedMemoryIndex >= 0 && selectedMemoryIndex < memories.length - 1
-      ? memories[selectedMemoryIndex + 1]
-      : null;
-
   const tagFilteredMemories = useMemo(
     () => applyMemoryFilters(scopedMemories, filters),
     [scopedMemories, filters]
@@ -314,6 +300,21 @@ export function MapComponent({
   );
 
   const displayedMemories = sortedMemories;
+
+  const selectedMemoryIndex = useMemo(
+    () =>
+      selectedMemory
+        ? displayedMemories.findIndex((m) => m.id === selectedMemory.id)
+        : -1,
+    [displayedMemories, selectedMemory]
+  );
+  const previousSelectedMemory =
+    selectedMemoryIndex > 0 ? displayedMemories[selectedMemoryIndex - 1] : null;
+  const nextSelectedMemory =
+    selectedMemoryIndex >= 0 &&
+    selectedMemoryIndex < displayedMemories.length - 1
+      ? displayedMemories[selectedMemoryIndex + 1]
+      : null;
 
   // Base for filter option lists. When a group is selected, membership overrides
   // visibility (no visibility gate) and options reflect that group's memories;
