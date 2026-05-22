@@ -9,6 +9,8 @@ import {
   FileCheck,
   FileMinus,
   Loader2,
+  Clock,
+  Pin,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -22,6 +24,7 @@ import {
   useUnreadNotificationCount,
   useMarkNotificationsRead,
 } from '@/lib/hooks/useNotifications';
+import { useActiveEvents } from '@/lib/hooks/useActiveEvents';
 
 function getIcon(type: string) {
   switch (type) {
@@ -57,6 +60,8 @@ function formatTime(dateStr: string): string {
 
 export function NotificationsMenu() {
   const [open, setOpen] = useState(false);
+  const { data: eventsData } = useActiveEvents();
+  const activeEvents = eventsData?.data ?? [];
   const { data: unreadCount = 0, refetch: refetchUnreadCount } =
     useUnreadNotificationCount();
   const {
@@ -117,6 +122,46 @@ export function NotificationsMenu() {
             </button>
           )}
         </div>
+        {activeEvents.length > 0 && (
+          <>
+            <div className="flex items-center gap-1.5 px-3 py-1.5">
+              <Pin className="h-3 w-3 text-skolaroid-blue" />
+              <span className="text-xs font-medium text-skolaroid-blue">
+                Live Events
+              </span>
+            </div>
+            {activeEvents.map((event) => (
+              <DropdownMenuItem
+                key={event.id}
+                className="cursor-default px-3 py-2.5"
+                onSelect={(e) => e.preventDefault()}
+              >
+                <div className="flex w-full gap-3">
+                  <div className="mt-0.5 flex-shrink-0">
+                    <Clock className="h-4 w-4 text-skolaroid-blue" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="break-words text-sm font-medium text-gray-900">
+                      {event.name}
+                    </p>
+                    {event.description && (
+                      <p className="mt-0.5 break-words text-xs text-gray-500">
+                        {event.description}
+                      </p>
+                    )}
+                    <p className="mt-1 text-xs text-skolaroid-blue">
+                      Happening now
+                    </p>
+                  </div>
+                  <span
+                    className="mt-1 h-2.5 w-2.5 flex-shrink-0 animate-pulse rounded-full"
+                    style={{ backgroundColor: event.bannerColor }}
+                  />
+                </div>
+              </DropdownMenuItem>
+            ))}
+          </>
+        )}
         <DropdownMenuSeparator />
         <div className="max-h-96 overflow-y-auto overflow-x-hidden">
           {isLoading ? (
