@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  useState,
-  useCallback,
-  useMemo,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-} from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { GroupSwitcher, useGroupToast } from '@/components/groups';
 import { usePanelOpenEffects } from '@/components/shared/shell/MainShellSidebarAction';
@@ -49,11 +42,11 @@ import {
   Loader2,
   Shield,
 } from 'lucide-react';
-import { BookmarkSimpleIcon } from '@phosphor-icons/react';
 import { Badge } from '@/components/ui/Badge';
 
 interface GroupPanelProps {
   open: boolean;
+  selectedGroupId: string | null;
   onOpenChange: (open: boolean) => void;
   onSelectedGroupChange?: (groupId: string | null) => void;
 }
@@ -111,87 +104,17 @@ function toGroup(g: GroupResponse): Group {
 
 export function GroupPanel({
   open,
+  selectedGroupId,
   onOpenChange,
   onSelectedGroupChange,
 }: GroupPanelProps) {
-  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [leaveModalOpen, setLeaveModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('members');
 
-  const [btnAnim, setBtnAnim] = useState<
-    'idle' | 'bob-open' | 'submerged' | 'bounce-back'
-  >('idle');
-  const prevOpenRef = useRef(open);
-  const openTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(
-    undefined
-  );
-  const bounceTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(
-    undefined
-  );
-  const panelRef = useRef<HTMLElement | null>(null);
-
   usePanelOpenEffects(open);
-
-  // Synchronously mark button as submerged before paint so there's no flash
-  // when the panel closes and the button re-enters the DOM.
-  useLayoutEffect(() => {
-    if (prevOpenRef.current && !open) {
-      setBtnAnim('submerged');
-    }
-    prevOpenRef.current = open;
-  }, [open]);
-
-  // After the panel has finished sliding down, surface the button.
-  useEffect(() => {
-    if (!open) {
-      bounceTimerRef.current = setTimeout(() => {
-        setBtnAnim('bounce-back');
-        setTimeout(() => setBtnAnim('idle'), 500);
-      }, 300);
-      return () => clearTimeout(bounceTimerRef.current);
-    }
-  }, [open]);
-
-  useLayoutEffect(() => {
-    const panel = panelRef.current;
-    if (!panel) return;
-
-    const updatePanelLeft = () => {
-      const nextLeft = panel.getBoundingClientRect().left;
-      panel.style.setProperty('--panel-left', `${nextLeft}px`);
-    };
-
-    updatePanelLeft();
-
-    const observer =
-      typeof ResizeObserver !== 'undefined'
-        ? new ResizeObserver(updatePanelLeft)
-        : null;
-
-    observer?.observe(panel);
-    window.addEventListener('resize', updatePanelLeft);
-
-    return () => {
-      observer?.disconnect();
-      window.removeEventListener('resize', updatePanelLeft);
-    };
-  }, []);
-
-  const handleTabClick = () => {
-    if (open) {
-      onOpenChange(false);
-      return;
-    }
-    setBtnAnim('bob-open');
-    clearTimeout(openTimerRef.current);
-    openTimerRef.current = setTimeout(() => {
-      onOpenChange(true);
-      setBtnAnim('submerged');
-    }, 400);
-  };
 
   const { showSuccess, showError, ToastPortal } = useGroupToast();
   const { user } = useUserAuth();
@@ -212,18 +135,6 @@ export function GroupPanel({
     if (!groupsRaw) return [];
     return groupsRaw.map(toGroup);
   }, [groupsRaw]);
-
-  // Auto-select first group when list loads
-  useEffect(() => {
-    if (groups.length > 0 && !selectedGroupId) {
-      setSelectedGroupId(groups[0].id);
-    }
-  }, [groups, selectedGroupId]);
-
-  // Notify parent when selected group changes
-  useEffect(() => {
-    onSelectedGroupChange?.(selectedGroupId);
-  }, [selectedGroupId, onSelectedGroupChange]);
 
   // Build the selected group from either the detail query or the list
   const selectedGroup: Group | null = useMemo(() => {
@@ -248,16 +159,19 @@ export function GroupPanel({
     canRoleUsePermission(rolePrivileges, currentUserRole, 'manageMembers');
 
   // ─── Handlers ────────────────────────────────────────────────────
-  const handleSelectGroup = useCallback((group: Group) => {
-    setSelectedGroupId(group.id);
-  }, []);
+  const handleSelectGroup = useCallback(
+    (group: Group) => {
+      onSelectedGroupChange?.(group.id);
+    },
+    [onSelectedGroupChange]
+  );
 
   const handleGroupCreated = useCallback(
     (groupResponse: GroupResponse) => {
-      setSelectedGroupId(groupResponse.id);
+      onSelectedGroupChange?.(groupResponse.id);
       showSuccess(`Group "${groupResponse.name}" created successfully!`);
     },
-    [showSuccess]
+    [onSelectedGroupChange, showSuccess]
   );
 
   const handleGroupDeleted = useCallback(() => {
@@ -266,7 +180,7 @@ export function GroupPanel({
     deleteGroup.mutate(selectedGroup.id, {
       onSuccess: () => {
         showSuccess(`Group "${selectedGroup.name}" deleted.`);
-        setSelectedGroupId(
+        onSelectedGroupChange?.(
           groups.find((g) => g.id !== selectedGroup.id)?.id ?? null
         );
         onOpenChange(false);
@@ -280,6 +194,7 @@ export function GroupPanel({
     groups,
     deleteGroup,
     onOpenChange,
+    onSelectedGroupChange,
     showSuccess,
     showError,
   ]);
@@ -297,7 +212,7 @@ export function GroupPanel({
               ? `You left "${selectedGroup.name}" and ownership was transferred.`
               : `You left "${selectedGroup.name}".`
           );
-          setSelectedGroupId(
+          onSelectedGroupChange?.(
             groups.find((g) => g.id !== selectedGroup.id)?.id ?? null
           );
         },
@@ -312,6 +227,7 @@ export function GroupPanel({
     currentUserId,
     groups,
     leaveGroup,
+    onSelectedGroupChange,
     showSuccess,
     showError,
   ]);
@@ -404,37 +320,12 @@ export function GroupPanel({
         )}
       >
         <section
-          ref={panelRef}
           aria-label={selectedGroup?.name ?? 'Groups'}
           className={cn(
             'pointer-events-auto relative flex h-[calc(100vh-1rem)] max-h-[calc(100dvh-11.5rem)] w-[calc(100vw-1rem)] max-w-none flex-col rounded-none border-[2px] border-black bg-background p-0 shadow-none transition-transform duration-300 ease-out sm:max-h-none md:h-[85vh] md:w-[70vw]',
             open ? 'translate-y-0' : 'translate-y-full'
           )}
         >
-          <button
-            type="button"
-            aria-label={open ? 'Close groups' : 'Open groups'}
-            onClick={handleTabClick}
-            className={cn(
-              'pointer-events-auto absolute -top-[3rem] z-30 h-[5.5rem] w-12 flex-col items-center justify-start gap-1 border-[2px] border-b-0 border-black bg-[#4384dc] pt-2 text-black',
-              open || btnAnim === 'submerged' ? 'hidden' : 'flex',
-              btnAnim === 'bob-open' && 'animate-btn-bob-open',
-              btnAnim === 'bounce-back' && 'animate-btn-bounce-back'
-            )}
-            style={{
-              left: 147,
-              transform:
-                'translateX(max(0px, calc(var(--map-left-offset, 0px) - var(--panel-left, 0px))))',
-            }}
-          >
-            <BookmarkSimpleIcon
-              size={22}
-              weight="duotone"
-              className="group-panel-icon mt-0.5"
-              style={{ flexShrink: 0 }}
-              aria-hidden
-            />
-          </button>
           <div
             className="flex cursor-pointer items-center justify-between gap-3 border-b-[2px] border-b-black bg-[#4384dc] px-3 py-2 text-white"
             onClick={() => {
@@ -652,10 +543,10 @@ export function GroupPanel({
                       <>
                         <Users className="mb-3 h-12 w-12 text-muted-foreground" />
                         <h3 className="text-base font-semibold text-foreground">
-                          No Group Selected
+                          No group selected
                         </h3>
                         <p className="mt-1 text-center text-sm text-muted-foreground">
-                          Select a group from the switcher or create a new one
+                          Select a group to view details
                         </p>
                       </>
                     )}
