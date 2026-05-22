@@ -23,6 +23,7 @@ export function MemoryPin({
       type="button"
       onClick={onClick}
       className="group relative w-fit cursor-pointer transition-transform duration-200 hover:-translate-y-1"
+      style={{ zIndex: 100 }}
       aria-label={ariaLabel}
     >
       {isPending && (

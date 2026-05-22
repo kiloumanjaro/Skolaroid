@@ -81,6 +81,7 @@ export function MemoryPinStack({ memories, onClick }: MemoryPinStackProps) {
         type="button"
         onClick={() => onClick(mem.id)}
         className="group relative w-fit cursor-pointer transition-transform duration-200 hover:-translate-y-1"
+        style={{ zIndex: 100 }}
         aria-label={ariaLabel}
       >
         {mem.isPending && (
@@ -107,7 +108,7 @@ export function MemoryPinStack({ memories, onClick }: MemoryPinStackProps) {
       className="relative cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      style={{ width: pinSize, height: pinSize }}
+      style={{ width: pinSize, height: pinSize, zIndex: 100 }}
     >
       {/* Fanned pins */}
       {visibleMemories.map((mem, index) => (

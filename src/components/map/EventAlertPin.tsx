@@ -32,6 +32,7 @@ export const EventAlertPin = React.forwardRef<
     <div
       ref={ref}
       className="relative h-8 w-8 cursor-pointer"
+      style={{ zIndex: 1000 }}
       onClick={handleClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
