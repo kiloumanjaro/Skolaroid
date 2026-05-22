@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, memo } from 'react';
+import { useMemo, useState, useEffect, memo } from 'react';
 import { ChevronLeft, ChevronRight, MoreHorizontal, X } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import type { MemoryWithCoordinates } from '@/lib/hooks/useAllMemoriesWithCoordinates';
@@ -152,6 +152,14 @@ export const MemoryNotebookPageContent = memo(
     activeImageIndex = 0,
     measureCaption = true,
   }: MemoryNotebookPageContentProps) {
+    // Ref to document.body for portaling dropdown outside 3D-transformed ancestors
+    const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(
+      null
+    );
+    useEffect(() => {
+      setPortalContainer(document.body);
+    }, []);
+
     const mediaURLs = getMemoryMediaURLs(memory);
     const mediaCount = mediaURLs.length;
     const hasMultipleImages = mediaCount > 1;
@@ -257,7 +265,8 @@ export const MemoryNotebookPageContent = memo(
                 <DropdownMenuContent
                   align="end"
                   sideOffset={6}
-                  className="min-w-[9.5rem] rounded-none border-2 border-[#2d2d2d] bg-[#fff4fb] p-0.5 shadow-none"
+                  container={portalContainer}
+                  className="z-[10001] min-w-[9.5rem] rounded-none border-2 border-[#2d2d2d] bg-[#fff4fb] p-0.5 shadow-none"
                 >
                   {isPageOwner && (
                     <DropdownMenuItem
