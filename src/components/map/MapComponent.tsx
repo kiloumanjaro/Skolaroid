@@ -1099,7 +1099,6 @@ export function MapComponent({
     // Render grouped pins
     for (const [, group] of groups) {
       const el = document.createElement('div');
-      el.style.zIndex = '100';
       const root = createRoot(el);
 
       if (group.memories.length === 1) {
@@ -1168,7 +1167,6 @@ export function MapComponent({
 
     for (const event of activeEvents) {
       const el = document.createElement('div');
-      el.style.zIndex = '1000';
       const root = createRoot(el);
       root.render(
         <EventAlertPin
