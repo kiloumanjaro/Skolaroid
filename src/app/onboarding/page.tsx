@@ -5,11 +5,12 @@ import { useSearchParams } from 'next/navigation';
 import { ChevronRight } from 'lucide-react';
 import { useOnboardUser } from '@/lib/hooks/useOnboardUser';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
-import { useDeleteUser } from '@/lib/hooks/useDeleteUser';
+
 import { BatchSelectorModal } from '@/components/onboarding/BatchSelectorModal';
 import { CourseSelectorModal } from '@/components/onboarding/CourseSelectorModal';
 import { NameInputModal } from '@/components/onboarding/NameInputModal';
 import { StudentInfoModal } from '@/components/onboarding/StudentInfoModal';
+import { createClient } from '@/lib/supabase/client';
 
 interface OnboardingStep {
   id: string;
@@ -31,7 +32,7 @@ export default function OnboardingPage() {
 function OnboardingContent() {
   const searchParams = useSearchParams();
   const onboardUser = useOnboardUser();
-  const deleteUser = useDeleteUser();
+
   const { user } = useUserAuth();
 
   // After onboarding, redirect to the original page (e.g. /invite?token=...)
@@ -54,6 +55,7 @@ function OnboardingContent() {
   const [studentId, setStudentId] = useState<string | null>(null);
   const [status, setStatus] = useState<StatusValue>('STUDENT');
   const [onboardError, setOnboardError] = useState<string | null>(null);
+  const [isSigningOut, setIsSigningOut] = useState(false);
 
   const [nameModalOpen, setNameModalOpen] = useState(false);
   const [batchModalOpen, setBatchModalOpen] = useState(false);
@@ -192,18 +194,21 @@ function OnboardingContent() {
           <div className="mt-4 flex flex-shrink-0 items-center justify-end border-t border-border pt-4">
             <div className="flex gap-2">
               <button
-                disabled={deleteUser.isPending}
+                disabled={isSigningOut}
                 onClick={async () => {
+                  setIsSigningOut(true);
                   try {
-                    await deleteUser.mutateAsync();
+                    const supabase = createClient();
+                    await supabase.auth.signOut();
                     window.location.href = '/';
                   } catch (err) {
-                    console.error('Failed to delete user:', err);
+                    console.error('Failed to sign out user:', err);
+                    setIsSigningOut(false);
                   }
                 }}
                 className="bg-secondary px-4 py-1.5 text-xs font-medium text-foreground transition hover:bg-secondary/80 disabled:opacity-50"
               >
-                {deleteUser.isPending ? 'Going back...' : 'Back'}
+                {isSigningOut ? 'Going back...' : 'Back'}
               </button>
               <button
                 disabled={!allCompleted || onboardUser.isPending}
