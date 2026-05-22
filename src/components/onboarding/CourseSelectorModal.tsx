@@ -1,8 +1,53 @@
 'use client';
 
-import { useState } from 'react';
-import { ChevronRight, Search } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { ChevronDown, ChevronRight, Search } from 'lucide-react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/Dialog';
+
+interface CollegeGroup {
+  college: string;
+  programs: string[];
+}
+
+// UP Cebu programs grouped by college/department
+const COLLEGE_GROUPS: CollegeGroup[] = [
+  {
+    college: 'College of Science',
+    programs: [
+      'Bachelor of Science in Biology',
+      'Bachelor of Science in Mathematics',
+      'Bachelor of Science in Computer Science',
+      'Bachelor of Science in Statistics',
+    ],
+  },
+  {
+    college: 'College of Social Sciences',
+    programs: [
+      'Bachelor of Arts in Political Science',
+      'Bachelor of Arts in Psychology',
+      'Associate in Arts (Sports Studies)',
+      'Bachelor of Physical Education',
+      'Bachelor of Sports Science',
+    ],
+  },
+  {
+    college: 'School of Management',
+    programs: [
+      'Bachelor of Science in Management',
+      'Bachelor of Science in Accountancy',
+    ],
+  },
+  {
+    college: 'College of Communication, Arts, and Design',
+    programs: [
+      'Certificate in Fine Arts (Studio Arts)',
+      'Certificate in Fine Arts (Product Design)',
+      'Bachelor of Fine Arts (Studio Arts)',
+      'Bachelor of Fine Arts (Product Design)',
+      'Bachelor of Arts in Communication',
+    ],
+  },
+];
 
 interface CourseSelectorModalProps {
   open: boolean;
@@ -16,42 +61,51 @@ export function CourseSelectorModal({
   onSelect,
 }: CourseSelectorModalProps) {
   const [searchQuery, setSearchQuery] = useState('');
-
-  // UP Cebu courses
-  const courses = [
-    'Bachelor of Science in Computer Science',
-    'Bachelor of Science in Information Technology',
-    'Bachelor of Science in Civil Engineering',
-    'Bachelor of Science in Mechanical Engineering',
-    'Bachelor of Science in Electrical Engineering',
-    'Bachelor of Science in Chemical Engineering',
-    'Bachelor of Science in Business Administration',
-    'Bachelor of Science in Accountancy',
-    'Bachelor of Science in Biology',
-    'Bachelor of Science in Chemistry',
-    'Bachelor of Science in Physics',
-    'Bachelor of Science in Mathematics',
-    'Bachelor of Arts in English',
-    'Bachelor of Arts in Filipino',
-    'Bachelor of Arts in Philosophy',
-    'Bachelor of Arts in History',
-    'Bachelor of Science in Nursing',
-    'Bachelor of Science in Public Health',
-    'Bachelor of Science in Psychology',
-    'Bachelor of Science in Social Work',
-    'Bachelor of Music',
-    'Bachelor of Fine Arts',
-    'Bachelor of Physical Education',
-  ].sort();
-
-  const filteredCourses = courses.filter((course) =>
-    course.toLowerCase().includes(searchQuery.toLowerCase())
+  const [expandedColleges, setExpandedColleges] = useState<Set<string>>(
+    new Set()
   );
+
+  // Filter groups by search query, only showing colleges with matching programs
+  const filteredGroups = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
+    if (!q) return COLLEGE_GROUPS;
+
+    return COLLEGE_GROUPS.map((group) => ({
+      ...group,
+      programs: group.programs.filter(
+        (p) =>
+          p.toLowerCase().includes(q) || group.college.toLowerCase().includes(q)
+      ),
+    })).filter((group) => group.programs.length > 0);
+  }, [searchQuery]);
+
+  // Auto-expand all groups when searching
+  const isSearching = searchQuery.trim().length > 0;
+
+  const toggleCollege = (college: string) => {
+    setExpandedColleges((prev) => {
+      const next = new Set(prev);
+      if (next.has(college)) {
+        next.delete(college);
+      } else {
+        next.add(college);
+      }
+      return next;
+    });
+  };
+
+  const isExpanded = (college: string) =>
+    isSearching || expandedColleges.has(college);
 
   const handleSelect = (course: string) => {
     onSelect(course);
     onOpenChange(false);
   };
+
+  const totalFiltered = filteredGroups.reduce(
+    (sum, g) => sum + g.programs.length,
+    0
+  );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -81,26 +135,56 @@ export function CourseSelectorModal({
         </div>
 
         <div className="min-h-0 flex-grow overflow-y-auto">
-          <div className="space-y-2">
-            {filteredCourses.length > 0 ? (
-              filteredCourses.map((course) => (
-                <button
-                  key={course}
-                  onClick={() => handleSelect(course)}
-                  className="group flex w-full items-center justify-between rounded-lg border border-gray-200 px-4 py-3 text-left transition hover:border-skolaroid-blue hover:bg-blue-50"
-                >
-                  <span className="text-sm font-medium text-gray-900">
-                    {course}
-                  </span>
-                  <ChevronRight className="h-4 w-4 flex-shrink-0 text-gray-400 transition group-hover:text-skolaroid-blue" />
-                </button>
-              ))
-            ) : (
-              <div className="py-8 text-center text-sm text-gray-500">
-                No courses found
-              </div>
-            )}
-          </div>
+          {totalFiltered > 0 ? (
+            <div className="space-y-2">
+              {filteredGroups.map((group) => {
+                const expanded = isExpanded(group.college);
+                return (
+                  <div
+                    key={group.college}
+                    className="overflow-hidden rounded-lg border border-gray-200"
+                  >
+                    {/* College header */}
+                    <button
+                      onClick={() => toggleCollege(group.college)}
+                      className="flex w-full items-center justify-between bg-gray-50 px-4 py-2.5 text-left transition hover:bg-gray-100"
+                    >
+                      <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                        {group.college}
+                      </span>
+                      {expanded ? (
+                        <ChevronDown className="h-4 w-4 flex-shrink-0 text-gray-400" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4 flex-shrink-0 text-gray-400" />
+                      )}
+                    </button>
+
+                    {/* Programs list */}
+                    {expanded && (
+                      <div className="border-t border-gray-100">
+                        {group.programs.map((program) => (
+                          <button
+                            key={program}
+                            onClick={() => handleSelect(program)}
+                            className="group flex w-full items-center justify-between px-4 py-3 text-left transition hover:bg-blue-50"
+                          >
+                            <span className="text-sm font-medium text-gray-900">
+                              {program}
+                            </span>
+                            <ChevronRight className="h-4 w-4 flex-shrink-0 text-gray-400 transition group-hover:text-skolaroid-blue" />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="py-8 text-center text-sm text-gray-500">
+              No courses found
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
