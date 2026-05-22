@@ -237,15 +237,23 @@ function OnboardingContent() {
                           console.warn(
                             `[onboarding] draft submission failed: ${submitRes.status} - ${errorData.message}`
                           );
+                          window.location.href = `${redirectTo}?photobooth_error=${encodeURIComponent(errorData.message)}`;
+                          return;
                         } else {
                           console.log(
                             `[onboarding] draft ${draftToken} submitted successfully`
                           );
+                          window.location.href = `${redirectTo}?photobooth_success=true`;
+                          return;
                         }
                       } catch (err) {
+                        const errMsg =
+                          err instanceof Error ? err.message : 'Unknown error';
                         console.error(
-                          `[onboarding] draft submission error: ${err instanceof Error ? err.message : 'Unknown error'}`
+                          `[onboarding] draft submission error: ${errMsg}`
                         );
+                        window.location.href = `${redirectTo}?photobooth_error=${encodeURIComponent(errMsg)}`;
+                        return;
                       }
                     }
                     window.location.href = redirectTo;

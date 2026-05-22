@@ -131,7 +131,9 @@ export async function GET(request: Request) {
             );
           }
 
-          const res = NextResponse.redirect(`${origin}/?memory_uploaded=1`);
+          const res = NextResponse.redirect(
+            `${origin}/?photobooth_success=true`
+          );
           // Clear legacy cookie if present
           res.cookies.set('photobooth_draft_token', '', {
             maxAge: 0,

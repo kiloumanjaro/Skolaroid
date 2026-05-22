@@ -18,6 +18,7 @@ import { useUserAuth } from '@/lib/hooks/useUserAuth';
 import { AccountMenu } from '@/components/home/AccountMenu';
 import { SpeechBubble } from '@/components/shared/display/SpeechBubble';
 import { Button } from '@/components/ui/Button';
+import { PhotoboothAlert } from '@/components/photobooth/PhotoboothAlert';
 
 const CANVAS_WIDTH = 1000;
 const CANVAS_HEIGHT = 1000;
@@ -660,6 +661,7 @@ function HomeContent() {
 
   return (
     <main className="relative flex min-h-screen w-full items-center justify-center overflow-hidden">
+      <PhotoboothAlert />
       {/* ── Auth error banner ── */}
       {authError && (
         <div
