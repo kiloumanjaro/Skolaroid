@@ -18,6 +18,7 @@ import {
   type AuditLogEntry,
   type AuditLogFilters,
 } from '@/lib/hooks/useAuditLog';
+import { LiveEventsTab } from '@/components/admin/LiveEventsTab';
 import { useModerateMemory } from '@/lib/hooks/useModerateMemory';
 import { useResolveReport } from '@/lib/hooks/useResolveReport';
 import { getPrimaryMemoryMediaURL } from '@/lib/memory-media';
@@ -41,10 +42,17 @@ import {
 import Image from 'next/image';
 import { useState } from 'react';
 
-type AdminTab = 'analytics' | 'published' | 'pending' | 'reports' | 'audit';
+type AdminTab =
+  | 'live-events'
+  | 'analytics'
+  | 'published'
+  | 'pending'
+  | 'reports'
+  | 'audit';
 type AnalyticsMemoryStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'REMOVED';
 
 const tabLabels: Record<AdminTab, string> = {
+  'live-events': 'Live Events',
   analytics: 'Analytics',
   published: 'Published Posts',
   pending: 'Pending Review',
@@ -1222,6 +1230,7 @@ export function AdminPageClient() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const tabs: AdminTab[] = [
+    'live-events',
     'analytics',
     'published',
     'pending',
@@ -1230,13 +1239,15 @@ export function AdminPageClient() {
   ];
 
   const searchPlaceholder =
-    currentTab === 'analytics'
-      ? 'Search locations or batches'
-      : currentTab === 'reports'
-        ? 'Search reports'
-        : currentTab === 'audit'
-          ? 'Search admins or targets'
-          : 'Search posts';
+    currentTab === 'live-events'
+      ? 'Search events'
+      : currentTab === 'analytics'
+        ? 'Search locations or batches'
+        : currentTab === 'reports'
+          ? 'Search reports'
+          : currentTab === 'audit'
+            ? 'Search admins or targets'
+            : 'Search posts';
 
   const showPostFilter = currentTab === 'published' || currentTab === 'pending';
 
@@ -1302,6 +1313,9 @@ export function AdminPageClient() {
             </div>
 
             {/* Tab Content */}
+            {currentTab === 'live-events' && (
+              <LiveEventsTab searchQuery={searchQuery} />
+            )}
             {currentTab === 'analytics' && (
               <AnalyticsContent searchQuery={searchQuery} />
             )}
