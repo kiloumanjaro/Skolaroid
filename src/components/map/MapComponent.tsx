@@ -43,6 +43,9 @@ import type {
 } from '@/lib/types/map';
 import { AddMemoryButton } from './AddMemoryButton';
 import { EraSelector } from './EraSelector';
+import { GroupSelector } from './GroupSelector';
+import { CreateGroupModal } from '@/components/groups/CreateGroupModal';
+import { useUserGroups } from '@/lib/hooks/useUserGroups';
 import { MapAnnouncementStrip } from '../announcement-strips/MapAnnouncementStrip';
 import { MAP_ANNOUNCEMENTS } from '../announcement-strips/announcement-config';
 import { MapLocationSelector } from './MapLocationSelector';
@@ -55,6 +58,7 @@ import { useActiveEvents, type ActiveEvent } from '@/lib/hooks/useActiveEvents';
 import type {
   MemoryFilters,
   LocationFilterOption,
+  GroupFilterOption,
 } from './filter-memory-types';
 import {
   applyMemoryFilters,
@@ -131,6 +135,7 @@ export function MapComponent({
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
   const [batchesModalOpen, setBatchesModalOpen] = useState(false);
   const [activeMapEra, setActiveMapEra] = useState(activeEraFromUrl);
+  const [createGroupModalOpen, setCreateGroupModalOpen] = useState(false);
   const [selectedLandmark, setSelectedLandmark] = useState<Landmark | null>(
     null
   );
@@ -244,12 +249,21 @@ export function MapComponent({
   const { data: creatorMemoriesData, isLoading: creatorMemoriesLoading } =
     useMemoriesByCreator(currentUserId);
   const { data: locationsData } = useLocations();
+  const { data: userGroups } = useUserGroups();
 
   const showFirstMemoryPrompt =
     !!currentUserData?.data &&
     !creatorMemoriesLoading &&
     creatorMemoriesData?.data?.length === 0 &&
     !addMemoryOpen;
+
+  const availableGroups = useMemo<GroupFilterOption[]>(
+    () =>
+      (userGroups ?? [])
+        .map((group) => ({ id: group.id, name: group.name }))
+        .sort((a, b) => a.name.localeCompare(b.name)),
+    [userGroups]
+  );
 
   const eraFilteredMemories = useMemo(
     () => filterMemoriesByEra(memories, activeMapEra),
@@ -301,7 +315,15 @@ export function MapComponent({
 
   const displayedMemories = sortedMemories;
 
+  // Base for filter option lists. When a group is selected, membership overrides
+  // visibility (no visibility gate) and options reflect that group's memories;
+  // otherwise apply the visibility filter as usual.
   const visibilityFilteredMemories = useMemo(() => {
+    if (filters.selectedGroupId) {
+      return scopedMemories.filter(
+        (memory) => memory.privateGroupId === filters.selectedGroupId
+      );
+    }
     return scopedMemories.filter((memory) => {
       if (
         filters.visibility !== 'ALL' &&
@@ -311,7 +333,7 @@ export function MapComponent({
       }
       return true;
     });
-  }, [scopedMemories, filters.visibility]);
+  }, [scopedMemories, filters.visibility, filters.selectedGroupId]);
 
   const availableTags = useMemo(
     () =>
@@ -325,7 +347,8 @@ export function MapComponent({
     [visibilityFilteredMemories]
   );
 
-  // Years derive from visibility-gated global memories (not era-restricted).
+  // Years derive from the selected group's memories when a group is active;
+  // otherwise from visibility-gated global memories (not era-restricted).
   const availableYears = useMemo(
     () =>
       Array.from(
@@ -337,6 +360,9 @@ export function MapComponent({
                 m.moderationStatus !== 'REMOVED'
             )
             .filter((m) => {
+              if (filters.selectedGroupId) {
+                return m.privateGroupId === filters.selectedGroupId;
+              }
               if (filters.visibility === 'ALL') return true;
               return m.visibility === filters.visibility;
             })
@@ -349,7 +375,7 @@ export function MapComponent({
             })
         )
       ).sort((a, b) => b - a),
-    [memories, filters.visibility]
+    [memories, filters.visibility, filters.selectedGroupId]
   );
 
   const availableLocations = useMemo<LocationFilterOption[]>(() => {
@@ -1052,7 +1078,7 @@ export function MapComponent({
     // Group memories by location coordinates (rounded to 5 decimal places)
     const groups = new Map<
       string,
-      { lng: number; lat: number; memories: typeof eraFilteredMemories }
+      { lng: number; lat: number; memories: typeof displayedMemories }
     >();
 
     for (const memory of displayedMemories) {
@@ -1192,11 +1218,25 @@ export function MapComponent({
             activeEra={activeMapEra}
             selectedYear={filters.selectedYear}
             onEraSelect={onEraChange}
+            leadingSlot={
+              <GroupSelector
+                groups={availableGroups}
+                selectedGroupId={filters.selectedGroupId}
+                onSelect={(id) =>
+                  onFiltersChange({ ...filters, selectedGroupId: id })
+                }
+                onOpenGroups={() => setGroupModalOpen(true)}
+              />
+            }
           />
           <AddMemoryButton onClick={() => openAddMemoryModal()} />
 
           <GroupPanel
             open={groupModalOpen}
+            selectedGroupId={filters.selectedGroupId}
+            onSelectedGroupChange={(id) =>
+              onFiltersChange({ ...filters, selectedGroupId: id })
+            }
             onOpenChange={(isOpen) => {
               if (isOpen) {
                 setAddMemoryOpen(false);
@@ -1208,6 +1248,15 @@ export function MapComponent({
               }
               setGroupModalOpen(isOpen);
               if (isOpen) cancelPendingFlyTo();
+            }}
+          />
+
+          <CreateGroupModal
+            open={createGroupModalOpen}
+            onOpenChange={setCreateGroupModalOpen}
+            onCreated={(group) => {
+              onFiltersChange({ ...filters, selectedGroupId: group.id });
+              setGroupModalOpen(true);
             }}
           />
 

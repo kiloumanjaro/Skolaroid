@@ -1,46 +1,46 @@
 'use client';
 
-import { useState } from 'react';
-import {
-  Search,
-  Filter,
-  Trash2,
-  Clock,
-  AlertTriangle,
-  Flag,
-  CheckCircle,
-  XCircle,
-  Loader2,
-  RefreshCw,
-  ChevronDown,
-  ArrowUpDown,
-  Users,
-  MapPin,
-  CalendarRange,
-} from 'lucide-react';
-import Image from 'next/image';
-import { getPrimaryMemoryMediaURL } from '@/lib/memory-media';
+import { AdminAnnouncementStrip } from '@/components/announcement-strips/AdminAnnouncementStrip';
+import { ADMIN_ANNOUNCEMENTS } from '@/components/announcement-strips/announcement-config';
+import { useAdminToast } from '@/components/groups/GroupToast';
+import { ShellInlineSidebarToggle } from '@/components/shared/shell/ShellInlineSidebarToggle';
+import { useAdminAnalytics } from '@/lib/hooks/useAdminAnalytics';
 import {
   useAdminMemories,
   type AdminMemoryItem,
 } from '@/lib/hooks/useAdminMemories';
-import { useAdminAnalytics } from '@/lib/hooks/useAdminAnalytics';
-import { useModerateMemory } from '@/lib/hooks/useModerateMemory';
 import {
   useAdminReports,
   type AdminReportItem,
 } from '@/lib/hooks/useAdminReports';
-import { useResolveReport } from '@/lib/hooks/useResolveReport';
-import { ADMIN_ANNOUNCEMENTS } from '@/components/announcement-strips/announcement-config';
 import {
   useAuditLog,
-  type AuditLogFilters,
   type AuditLogEntry,
+  type AuditLogFilters,
 } from '@/lib/hooks/useAuditLog';
-import { AdminAnnouncementStrip } from '@/components/announcement-strips/AdminAnnouncementStrip';
-import { ShellInlineSidebarToggle } from '@/components/shared/shell/ShellInlineSidebarToggle';
-import { useAdminToast } from '@/components/groups/GroupToast';
 import { LiveEventsTab } from '@/components/admin/LiveEventsTab';
+import { useModerateMemory } from '@/lib/hooks/useModerateMemory';
+import { useResolveReport } from '@/lib/hooks/useResolveReport';
+import { getPrimaryMemoryMediaURL } from '@/lib/memory-media';
+import {
+  AlertTriangle,
+  ArrowUpDown,
+  CalendarRange,
+  CheckCircle,
+  ChevronDown,
+  Clock,
+  Filter,
+  Flag,
+  Loader2,
+  MapPin,
+  RefreshCw,
+  Search,
+  Trash2,
+  Users,
+  XCircle,
+} from 'lucide-react';
+import Image from 'next/image';
+import { useState } from 'react';
 
 type AdminTab =
   | 'live-events'
@@ -243,17 +243,16 @@ function PostCard({
         >
           {memory.title}
         </p>
-        {memory.description && (
-          <p
-            className={
-              isPublishedStyle
-                ? 'truncate whitespace-nowrap text-base leading-7 text-foreground'
-                : 'truncate whitespace-nowrap text-sm leading-relaxed text-muted-foreground'
-            }
-          >
-            {memory.description}
-          </p>
-        )}
+        {memory.description &&
+          memory.description.trim() !== memory.title.trim() && (
+            <p
+              className={
+                isPublishedStyle
+                  ? 'truncate whitespace-nowrap text-base leading-7 text-foreground'
+                  : 'truncate whitespace-nowrap text-sm leading-relaxed text-muted-foreground'
+              }
+            ></p>
+          )}
 
         {isPublishedStyle ? (
           <div className="flex flex-col gap-2">
