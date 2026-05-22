@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { GroupSwitcher, useGroupToast } from '@/components/groups';
 import { usePanelOpenEffects } from '@/components/shared/shell/MainShellSidebarAction';
@@ -46,6 +46,7 @@ import { Badge } from '@/components/ui/Badge';
 
 interface GroupPanelProps {
   open: boolean;
+  selectedGroupId: string | null;
   onOpenChange: (open: boolean) => void;
   onSelectedGroupChange?: (groupId: string | null) => void;
 }
@@ -103,10 +104,10 @@ function toGroup(g: GroupResponse): Group {
 
 export function GroupPanel({
   open,
+  selectedGroupId,
   onOpenChange,
   onSelectedGroupChange,
 }: GroupPanelProps) {
-  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [leaveModalOpen, setLeaveModalOpen] = useState(false);
@@ -135,18 +136,6 @@ export function GroupPanel({
     return groupsRaw.map(toGroup);
   }, [groupsRaw]);
 
-  // Auto-select first group when list loads
-  useEffect(() => {
-    if (groups.length > 0 && !selectedGroupId) {
-      setSelectedGroupId(groups[0].id);
-    }
-  }, [groups, selectedGroupId]);
-
-  // Notify parent when selected group changes
-  useEffect(() => {
-    onSelectedGroupChange?.(selectedGroupId);
-  }, [selectedGroupId, onSelectedGroupChange]);
-
   // Build the selected group from either the detail query or the list
   const selectedGroup: Group | null = useMemo(() => {
     if (groupDetailRaw) return toGroup(groupDetailRaw);
@@ -170,16 +159,19 @@ export function GroupPanel({
     canRoleUsePermission(rolePrivileges, currentUserRole, 'manageMembers');
 
   // ─── Handlers ────────────────────────────────────────────────────
-  const handleSelectGroup = useCallback((group: Group) => {
-    setSelectedGroupId(group.id);
-  }, []);
+  const handleSelectGroup = useCallback(
+    (group: Group) => {
+      onSelectedGroupChange?.(group.id);
+    },
+    [onSelectedGroupChange]
+  );
 
   const handleGroupCreated = useCallback(
     (groupResponse: GroupResponse) => {
-      setSelectedGroupId(groupResponse.id);
+      onSelectedGroupChange?.(groupResponse.id);
       showSuccess(`Group "${groupResponse.name}" created successfully!`);
     },
-    [showSuccess]
+    [onSelectedGroupChange, showSuccess]
   );
 
   const handleGroupDeleted = useCallback(() => {
@@ -188,7 +180,7 @@ export function GroupPanel({
     deleteGroup.mutate(selectedGroup.id, {
       onSuccess: () => {
         showSuccess(`Group "${selectedGroup.name}" deleted.`);
-        setSelectedGroupId(
+        onSelectedGroupChange?.(
           groups.find((g) => g.id !== selectedGroup.id)?.id ?? null
         );
         onOpenChange(false);
@@ -202,6 +194,7 @@ export function GroupPanel({
     groups,
     deleteGroup,
     onOpenChange,
+    onSelectedGroupChange,
     showSuccess,
     showError,
   ]);
@@ -219,7 +212,7 @@ export function GroupPanel({
               ? `You left "${selectedGroup.name}" and ownership was transferred.`
               : `You left "${selectedGroup.name}".`
           );
-          setSelectedGroupId(
+          onSelectedGroupChange?.(
             groups.find((g) => g.id !== selectedGroup.id)?.id ?? null
           );
         },
@@ -234,6 +227,7 @@ export function GroupPanel({
     currentUserId,
     groups,
     leaveGroup,
+    onSelectedGroupChange,
     showSuccess,
     showError,
   ]);
@@ -549,10 +543,10 @@ export function GroupPanel({
                       <>
                         <Users className="mb-3 h-12 w-12 text-muted-foreground" />
                         <h3 className="text-base font-semibold text-foreground">
-                          No Group Selected
+                          No group selected
                         </h3>
                         <p className="mt-1 text-center text-sm text-muted-foreground">
-                          Select a group from the switcher or create a new one
+                          Select a group to view details
                         </p>
                       </>
                     )}

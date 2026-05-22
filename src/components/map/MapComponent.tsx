@@ -1174,7 +1174,7 @@ export function MapComponent({
                 onSelect={(id) =>
                   onFiltersChange({ ...filters, selectedGroupId: id })
                 }
-                onCreateGroup={() => setCreateGroupModalOpen(true)}
+                onOpenGroups={() => setGroupModalOpen(true)}
               />
             }
           />
@@ -1182,6 +1182,10 @@ export function MapComponent({
 
           <GroupPanel
             open={groupModalOpen}
+            selectedGroupId={filters.selectedGroupId}
+            onSelectedGroupChange={(id) =>
+              onFiltersChange({ ...filters, selectedGroupId: id })
+            }
             onOpenChange={(isOpen) => {
               if (isOpen) {
                 setAddMemoryOpen(false);
