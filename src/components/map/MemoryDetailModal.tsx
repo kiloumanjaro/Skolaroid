@@ -482,7 +482,7 @@ export function MemoryDetailModal({
           {open && (
             <DialogPrimitive.Portal forceMount>
               <motion.div
-                className="fixed inset-0 z-[10000] bg-[#2d2d2d]/50"
+                className="fixed inset-0 z-[30000] bg-[#2d2d2d]/50"
                 variants={overlayVariants}
                 initial="closed"
                 animate="open"
@@ -492,7 +492,7 @@ export function MemoryDetailModal({
 
               <DialogPrimitive.Content asChild forceMount>
                 <div
-                  className={`fixed inset-0 z-[10000] flex ${
+                  className={`fixed inset-0 z-[30000] flex ${
                     state.isMobileViewport
                       ? 'items-start justify-center px-3 pb-6 pt-20'
                       : 'items-center justify-center'

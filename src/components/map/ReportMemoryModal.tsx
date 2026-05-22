@@ -138,6 +138,7 @@ export function ReportMemoryModal({
         className="flex max-w-md gap-0 overflow-hidden border-2 border-[#2d2d2d] p-0 shadow-none"
         showCloseButton={false}
         style={{ borderRadius: 0 }}
+        portalClassName="z-[40000]"
       >
         <DialogTitle className="sr-only">Report Memory</DialogTitle>
         <DialogDescription className="sr-only">

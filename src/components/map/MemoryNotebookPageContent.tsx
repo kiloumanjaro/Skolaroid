@@ -266,7 +266,7 @@ export const MemoryNotebookPageContent = memo(
                   align="end"
                   sideOffset={6}
                   container={portalContainer}
-                  className="z-[10001] min-w-[9.5rem] rounded-none border-2 border-[#2d2d2d] bg-[#fff4fb] p-0.5 shadow-none"
+                  className="z-[30001] min-w-[9.5rem] rounded-none border-2 border-[#2d2d2d] bg-[#fff4fb] p-0.5 shadow-none"
                 >
                   {isPageOwner && (
                     <DropdownMenuItem

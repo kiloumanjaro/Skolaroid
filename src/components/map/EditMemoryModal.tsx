@@ -191,6 +191,7 @@ export function EditMemoryModal({
       <DialogContent
         className="border-2 shadow-[6px_6px_0px_0px_#2d2d2d] sm:max-w-md"
         style={{ borderRadius: WOBBLY_RADIUS_MD }}
+        portalClassName="z-[40000]"
       >
         <DialogHeader>
           <DialogTitle className="font-kalam text-xl">Edit Memory</DialogTitle>
