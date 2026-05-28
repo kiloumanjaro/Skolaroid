@@ -3,15 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import {
-  Bell,
-  CheckCircle,
-  FileCheck,
-  FileMinus,
-  Loader2,
-  Trash2,
-  XCircle,
-} from 'lucide-react';
+import { Bell, Loader2 } from 'lucide-react';
 import {
   Suspense,
   useCallback,
@@ -43,8 +35,11 @@ import {
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
 import { copyMemoryViewSearchParams } from '@/lib/memory-view-filters';
 import { cn } from '@/lib/utils';
-
-const shellRoutes = ['/map', '/gallery', '/profile', '/admin', '/about'];
+import {
+  formatNotificationTime,
+  getNotificationIcon,
+  isShellRoute,
+} from './MainShell.helpers';
 
 const navItems = [
   {
@@ -153,44 +148,6 @@ const navItems = [
     ),
   },
 ];
-
-function isShellRoute(pathname: string) {
-  return shellRoutes.some(
-    (route) => pathname === route || pathname.startsWith(`${route}/`)
-  );
-}
-
-function getNotificationIcon(type: string) {
-  switch (type) {
-    case 'MEMORY_APPROVED':
-      return <CheckCircle className="h-4 w-4 text-green-500" />;
-    case 'MEMORY_REJECTED':
-      return <XCircle className="h-4 w-4 text-red-500" />;
-    case 'MEMORY_REMOVED':
-      return <Trash2 className="h-4 w-4 text-red-600" />;
-    case 'REPORT_RESOLVED':
-      return <FileCheck className="h-4 w-4 text-blue-500" />;
-    case 'REPORT_DISMISSED':
-      return <FileMinus className="h-4 w-4 text-gray-500" />;
-    default:
-      return <Bell className="h-4 w-4 text-gray-500" />;
-  }
-}
-
-function formatNotificationTime(dateStr: string): string {
-  const date = new Date(dateStr);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffMins = Math.floor(diffMs / 60_000);
-  const diffHours = Math.floor(diffMs / 3_600_000);
-  const diffDays = Math.floor(diffMs / 86_400_000);
-
-  if (diffMins < 1) return 'Just now';
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays < 7) return `${diffDays}d ago`;
-  return date.toLocaleDateString();
-}
 
 function FloatingNotificationsButton() {
   const [open, setOpen] = useState(false);

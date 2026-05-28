@@ -41,6 +41,17 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
+import {
+  ANALYTICS_HIGHLIGHT_LIMIT,
+  ANALYTICS_WINDOW_PRESETS,
+  DEFAULT_ANALYTICS_WINDOW_DAYS,
+  MAX_ANALYTICS_WINDOW_DAYS,
+  MIN_ANALYTICS_WINDOW_DAYS,
+  clampAnalyticsWindowDays,
+  formatCount,
+  formatDate,
+  formatPercent,
+} from './admin-client.helpers';
 
 type AdminTab =
   | 'live-events'
@@ -85,40 +96,6 @@ const statusBadgeStyles: Record<
     text: 'text-foreground',
   },
 };
-
-const numberFormatter = new Intl.NumberFormat('en-US');
-
-function formatCount(value: number): string {
-  return numberFormatter.format(value);
-}
-
-function formatPercent(value: number): string {
-  return `${value.toFixed(1)}%`;
-}
-
-function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true,
-  });
-}
-
-const MIN_ANALYTICS_WINDOW_DAYS = 7;
-const MAX_ANALYTICS_WINDOW_DAYS = 365;
-const DEFAULT_ANALYTICS_WINDOW_DAYS = 30;
-const ANALYTICS_WINDOW_PRESETS = [7, 14, 30, 60, 90, 180, 365] as const;
-const ANALYTICS_HIGHLIGHT_LIMIT = 5;
-
-function clampAnalyticsWindowDays(days: number): number {
-  return Math.min(
-    MAX_ANALYTICS_WINDOW_DAYS,
-    Math.max(MIN_ANALYTICS_WINDOW_DAYS, Math.round(days))
-  );
-}
 
 function LoadingState() {
   return (

@@ -1,5 +1,10 @@
 'use client';
 
+import {
+  generateId,
+  formatFileSize,
+  uploadFileWithProgress,
+} from './AddMemoryModal.helpers';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/Button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/Dialog';
@@ -137,62 +142,6 @@ const LANDMARK_TYPE_ICONS = {
   activity: Trees,
   security: Shield,
 } as const;
-
-// =============================================================================
-// HELPERS
-// =============================================================================
-
-function generateId(): string {
-  return Math.random().toString(36).substring(2, 12);
-}
-
-function formatFileSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
-function uploadFileWithProgress(
-  file: File,
-  onProgress: (percent: number) => void
-): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    const formData = new FormData();
-    formData.append('file', file);
-
-    xhr.upload.addEventListener('progress', (e) => {
-      if (e.lengthComputable) {
-        const percent = Math.round((e.loaded / e.total) * 100);
-        onProgress(percent);
-      }
-    });
-
-    xhr.addEventListener('load', () => {
-      try {
-        const json = JSON.parse(xhr.responseText);
-        if (xhr.status >= 200 && xhr.status < 300 && json.success) {
-          resolve(json.url as string);
-        } else {
-          reject(new Error(json.message ?? 'Upload failed'));
-        }
-      } catch {
-        reject(new Error('Invalid response from server'));
-      }
-    });
-
-    xhr.addEventListener('error', () => {
-      reject(new Error('Network error during upload'));
-    });
-
-    xhr.addEventListener('abort', () => {
-      reject(new Error('Upload aborted'));
-    });
-
-    xhr.open('POST', '/api/storage/upload-memory-media');
-    xhr.send(formData);
-  });
-}
 
 // =============================================================================
 // COMPONENT
