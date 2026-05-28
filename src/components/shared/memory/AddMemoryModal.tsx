@@ -211,6 +211,8 @@ export function AddMemoryModal({
   const [activeTab, setActiveTab] = useState<Tab>('upload');
   const [highestReachedTab, setHighestReachedTab] = useState<number>(0);
   const [uploadingFiles, setUploadingFiles] = useState<UploadingFile[]>([]);
+  const uploadingFilesRef = useRef<UploadingFile[]>([]);
+  uploadingFilesRef.current = uploadingFiles;
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [caption, setCaption] = useState('');
   const [memoryDate, setMemoryDate] = useState('');
@@ -303,14 +305,14 @@ export function AddMemoryModal({
   // Cleanup Object URLs on unmount
   // ---------------------------------------------------------------------------
 
+  // Revoke any in-flight blob URLs on unmount — uses a ref so the cleanup sees
+  // the latest array instead of an empty closure from mount time.
   useEffect(() => {
     return () => {
-      uploadingFiles.forEach((f) => {
+      uploadingFilesRef.current.forEach((f) => {
         URL.revokeObjectURL(f.previewUrl);
       });
     };
-    // Only run on unmount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ---------------------------------------------------------------------------

@@ -122,6 +122,8 @@ function LocationPicker({
       map.remove();
       mapRef.current = null;
     };
+    // Mount-only: Mapbox owns the DOM/teardown after init; `onSelect` is read
+    // through the closure but should not retrigger map recreation.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

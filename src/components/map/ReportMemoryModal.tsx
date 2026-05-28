@@ -41,14 +41,16 @@ export function ReportMemoryModal({
   const isReasonTooLong = trimmedReason.length > MAX_REPORT_REASON_LENGTH;
   const isInvalid = isReasonEmpty || isReasonTooLong;
 
-  // Reset state when dialog opens
+  // Reset on open — runs once per open transition; reportMemory.reset() identity
+  // changes every render and is intentionally excluded.
   useEffect(() => {
     if (open) {
       setReason('');
       setFeedback(null);
       reportMemory.reset();
     }
-  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   // Focus textarea when dialog opens
   useEffect(() => {
