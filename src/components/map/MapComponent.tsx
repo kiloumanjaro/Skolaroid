@@ -103,6 +103,15 @@ const CAMERA_ANIMATION = {
 const DEFAULT_MAP_CENTER: [number, number] = [123.8986, 10.3224];
 const DEFAULT_MAP_ZOOM = 17;
 
+/** Duration (ms) for the camera ease back to the overview after closing a notebook. */
+const OVERVIEW_EASE_DURATION_MS = 900;
+
+/** Duration (ms) for the cinematic flyTo when focusing a single memory. */
+const CINEMATIC_FLYTO_DURATION_MS = 1500;
+
+/** Delay (ms) after a Mapbox style.load before kicking off a follow-up flyTo. */
+const POST_STYLE_LOAD_FLYTO_DELAY_MS = 300;
+
 interface MapComponentProps {
   activeEraFromUrl: number;
   filters: MemoryFilters;
@@ -475,7 +484,7 @@ export function MapComponent({
     map?.easeTo({
       center: DEFAULT_MAP_CENTER,
       zoom: DEFAULT_MAP_ZOOM,
-      duration: 900,
+      duration: OVERVIEW_EASE_DURATION_MS,
       essential: true,
     });
 
@@ -526,7 +535,7 @@ export function MapComponent({
         zoom: CAMERA_ANIMATION.targetZoom,
         speed: CAMERA_ANIMATION.speed,
         curve: CAMERA_ANIMATION.curve,
-        duration: 1500,
+        duration: CINEMATIC_FLYTO_DURATION_MS,
         essential: CAMERA_ANIMATION.essential,
       });
 
@@ -934,7 +943,7 @@ export function MapComponent({
         map.off('style.load', onStyleLoad);
         setTimeout(() => {
           flyToMemoryWithSequence(targetMemory);
-        }, 300);
+        }, POST_STYLE_LOAD_FLYTO_DELAY_MS);
       };
 
       map.on('style.load', onStyleLoad);
@@ -942,7 +951,7 @@ export function MapComponent({
     } else {
       setTimeout(() => {
         flyToMemoryWithSequence(targetMemory);
-      }, 300);
+      }, POST_STYLE_LOAD_FLYTO_DELAY_MS);
     }
   }, [
     memories,

@@ -143,6 +143,9 @@ const LANDMARK_TYPE_ICONS = {
   security: Shield,
 } as const;
 
+/** Time (ms) the success confirmation stays visible before the modal closes. */
+const SUCCESS_MODAL_DURATION_MS = 2000;
+
 // =============================================================================
 // COMPONENT
 // =============================================================================
@@ -530,7 +533,7 @@ export function AddMemoryModal({
           setTimeout(() => {
             resetState();
             onOpenChange(false);
-          }, 2000);
+          }, SUCCESS_MODAL_DURATION_MS);
         },
         onError: (err) => {
           setSubmitError(
