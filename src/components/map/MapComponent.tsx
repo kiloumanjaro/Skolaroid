@@ -73,18 +73,18 @@ const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 // Era → Mapbox style mapping
 // Use the outdoors style consistently across all eras.
 // ---------------------------------------------------------------------------
-const ERA_MAP_STYLES: Record<number, string> = {
-  2020: 'mapbox://styles/mapbox/outdoors-v12',
-  2010: 'mapbox://styles/mapbox/outdoors-v12',
-  2000: 'mapbox://styles/mapbox/outdoors-v12',
-  1990: 'mapbox://styles/mapbox/outdoors-v12',
-  1980: 'mapbox://styles/mapbox/outdoors-v12',
-  1970: 'mapbox://styles/mapbox/outdoors-v12',
-  1960: 'mapbox://styles/mapbox/outdoors-v12',
-  1950: 'mapbox://styles/mapbox/outdoors-v12',
-  1940: 'mapbox://styles/mapbox/outdoors-v12',
-};
 const DEFAULT_MAP_STYLE = 'mapbox://styles/mapbox/outdoors-v12';
+const ERA_MAP_STYLES: Record<number, string> = {
+  2020: DEFAULT_MAP_STYLE,
+  2010: DEFAULT_MAP_STYLE,
+  2000: DEFAULT_MAP_STYLE,
+  1990: DEFAULT_MAP_STYLE,
+  1980: DEFAULT_MAP_STYLE,
+  1970: DEFAULT_MAP_STYLE,
+  1960: DEFAULT_MAP_STYLE,
+  1950: DEFAULT_MAP_STYLE,
+  1940: DEFAULT_MAP_STYLE,
+};
 
 /** Distance threshold (degrees) — if map center is already within this of the target, skip flyTo. */
 const FLY_TO_THRESHOLD = 0.0001;
