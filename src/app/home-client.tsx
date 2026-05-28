@@ -493,11 +493,15 @@ export default function HomeClient() {
 
       // Clean both the query param and any leftover hash fragments.
       window.history.replaceState({}, '', window.location.pathname);
-
-      const timer = setTimeout(() => setAuthError(null), 8000);
-      return () => clearTimeout(timer);
     }
   }, [searchParams]);
+
+  // Auto-dismiss the auth error banner after 8s; cleanup follows authError.
+  useEffect(() => {
+    if (!authError) return;
+    const timer = setTimeout(() => setAuthError(null), 8000);
+    return () => clearTimeout(timer);
+  }, [authError]);
 
   useEffect(() => {
     if (!loading && isAuthenticated) {
