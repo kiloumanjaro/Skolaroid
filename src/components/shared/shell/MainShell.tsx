@@ -731,6 +731,12 @@ function SearchAwareLeadingActionButton({
   );
 }
 
+/**
+ * Top-level app chrome. Wraps every page from app/layout.tsx. On routes listed
+ * in `SHELL_ROUTES` it renders the persistent sidebar, account menu, and
+ * notifications surface; on every other route it passes children through
+ * untouched. Pure helpers live in `./MainShell.helpers.tsx`.
+ */
 export function MainShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();

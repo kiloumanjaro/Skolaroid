@@ -50,6 +50,13 @@ interface GroupPanelProps {
 type TabType = 'members' | 'media' | 'settings' | 'about' | 'roles';
 type MemberChangeAction = 'removed' | 'role-updated' | 'ownership-transferred';
 
+/**
+ * Side-panel surface for browsing and managing a group: switcher, tabs
+ * (Members / Media / About / Roles / Settings), and the create / invite /
+ * share / leave / delete modals. Mounted via a React portal.
+ *
+ * Pure API → frontend transforms live in `./GroupPanel.helpers.ts`.
+ */
 export function GroupPanel({
   open,
   selectedGroupId,

@@ -150,6 +150,13 @@ const SUCCESS_MODAL_DURATION_MS = 2000;
 // COMPONENT
 // =============================================================================
 
+/**
+ * Multi-tab modal that walks the user through creating a memory: media upload,
+ * location pick, caption + tags, and privacy/visibility. Mounted in a React
+ * portal so it overlays the rest of the app chrome.
+ *
+ * Helpers live in `./AddMemoryModal.helpers.ts`.
+ */
 export function AddMemoryModal({
   open,
   onOpenChange,

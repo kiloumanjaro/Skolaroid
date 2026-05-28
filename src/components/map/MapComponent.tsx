@@ -121,6 +121,11 @@ interface MapComponentProps {
   onMemoryDetailOpenStateChange?: (open: boolean) => void;
 }
 
+/**
+ * Mapbox-backed campus map. Owns the map instance, era → style switching,
+ * landmark + memory marker management, URL ⇄ state sync, and the embedded
+ * modal/panel surfaces (memory detail, batches, photobooth, add-memory).
+ */
 export function MapComponent({
   activeEraFromUrl,
   filters,

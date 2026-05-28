@@ -1211,6 +1211,12 @@ function AuditLogContent({ searchQuery }: { searchQuery: string }) {
   );
 }
 
+/**
+ * Top-level admin dashboard client component. Owns tab routing, the shared
+ * search field, and renders the six tab contents (Live Events, Analytics,
+ * Published, Pending, Reports, Audit). Pure helpers live in
+ * `./admin-client.helpers.ts`.
+ */
 export function AdminPageClient() {
   const [currentTab, setCurrentTab] = useState<AdminTab>('analytics');
   const [searchQuery, setSearchQuery] = useState('');
