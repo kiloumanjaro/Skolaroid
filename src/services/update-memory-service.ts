@@ -1,3 +1,4 @@
+import type { Prisma } from '@/generated/prisma/client';
 import { prisma } from '@/lib/prisma';
 import { slugify } from '@/lib/slugify';
 import { MAX_TAGS, type EditMemoryInput } from '@/lib/schemas';
@@ -52,8 +53,7 @@ export async function updateMemoryService(
     await assertCanPostInGroup(actorId, data.privateGroupId);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const updateData: any = {
+  const updateData: Prisma.MemoryUpdateInput = {
     ...(data.title !== undefined && { title: data.title }),
     ...(data.description !== undefined && { description: data.description }),
     ...(data.visibility !== undefined && { visibility: data.visibility }),
