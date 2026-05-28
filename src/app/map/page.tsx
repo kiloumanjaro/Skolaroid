@@ -7,9 +7,12 @@ export default function MapPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex h-dvh items-center justify-center">
-          <p className="text-lg text-gray-600">Loading map...</p>
-        </div>
+        <main className="flex min-h-screen items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-secondary border-t-foreground" />
+            <p className="text-sm text-muted-foreground">Loading map…</p>
+          </div>
+        </main>
       }
     >
       <MapPageClient />
