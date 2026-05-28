@@ -1,11 +1,11 @@
 'use client';
 
 import {
+  useCallback,
   useEffect,
   useRef,
   useState,
   type MouseEvent as ReactMouseEvent,
-  type TouchEvent as ReactTouchEvent,
 } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -14,6 +14,11 @@ import { BatchSidebar, type Era } from '@/components/home/BatchSidebar';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/Dialog';
 import { LoginForm } from '@/components/shared/auth/LoginForm';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
+import {
+  useDragCanvas,
+  type CanvasOffset,
+  type ViewportSize,
+} from '@/lib/hooks/useDragCanvas';
 import { AccountMenu } from '@/components/home/AccountMenu';
 import { SpeechBubble } from '@/components/shared/display/SpeechBubble';
 import { Button } from '@/components/ui/Button';
@@ -345,23 +350,6 @@ const ERAS: Era[] = [
   },
 ];
 
-type CanvasOffset = {
-  x: number;
-  y: number;
-};
-
-type ViewportSize = {
-  width: number;
-  height: number;
-};
-
-type DragOrigin = {
-  pointerX: number;
-  pointerY: number;
-  startOffsetX: number;
-  startOffsetY: number;
-};
-
 type DragBounds = {
   minOffsetX: number;
   maxOffsetX: number;
@@ -477,20 +465,24 @@ export default function HomeClient() {
   const [isSidebarDragging, setIsSidebarDragging] = useState(false);
   const [sidebarStartY, setSidebarStartY] = useState(0);
   const [sidebarScrollTop, setSidebarScrollTop] = useState(0);
-  const [canvasOffset, setCanvasOffset] = useState<CanvasOffset>({
-    x: INITIAL_CANVAS_OFFSET_X,
-    y: INITIAL_CANVAS_OFFSET_Y,
+
+  const clampOffsetCallback = useCallback(
+    (offset: CanvasOffset, vs: ViewportSize) => clampCanvasOffset(offset, vs),
+    []
+  );
+  const {
+    canvasOffset,
+    viewportSize,
+    isCanvasDragging,
+    handleCanvasMouseDown,
+    handleCanvasTouchStart,
+  } = useDragCanvas({
+    initialOffset: {
+      x: INITIAL_CANVAS_OFFSET_X,
+      y: INITIAL_CANVAS_OFFSET_Y,
+    },
+    clampOffset: clampOffsetCallback,
   });
-  const [viewportSize, setViewportSize] = useState<ViewportSize>({
-    width: 0,
-    height: 0,
-  });
-  const canvasOffsetRef = useRef<CanvasOffset>({
-    x: INITIAL_CANVAS_OFFSET_X,
-    y: INITIAL_CANVAS_OFFSET_Y,
-  });
-  const dragOriginRef = useRef<DragOrigin | null>(null);
-  const [isCanvasDragging, setIsCanvasDragging] = useState(false);
 
   // Show a fixed error banner if auth_error is present, then clean the URL.
   useEffect(() => {
@@ -518,31 +510,6 @@ export default function HomeClient() {
   }, [loading, isAuthenticated, router]);
 
   useEffect(() => {
-    const updateViewportSize = () => {
-      const nextViewportSize = {
-        width: window.innerWidth,
-        height: window.innerHeight,
-      };
-
-      setViewportSize(nextViewportSize);
-
-      const nextOffset = clampCanvasOffset(
-        canvasOffsetRef.current,
-        nextViewportSize
-      );
-      canvasOffsetRef.current = nextOffset;
-      setCanvasOffset(nextOffset);
-    };
-
-    updateViewportSize();
-    window.addEventListener('resize', updateViewportSize);
-
-    return () => {
-      window.removeEventListener('resize', updateViewportSize);
-    };
-  }, []);
-
-  useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
       if (!isSidebarDragging || !drawerContentRef.current) return;
       event.preventDefault();
@@ -565,84 +532,11 @@ export default function HomeClient() {
     };
   }, [isSidebarDragging, sidebarScrollTop, sidebarStartY]);
 
-  useEffect(() => {
-    if (!isCanvasDragging) return;
-
-    const updateCanvasPosition = (clientX: number, clientY: number) => {
-      const dragOrigin = dragOriginRef.current;
-      if (!dragOrigin) return;
-
-      const nextOffset = clampCanvasOffset(
-        {
-          x: dragOrigin.startOffsetX + (clientX - dragOrigin.pointerX),
-          y: dragOrigin.startOffsetY + (clientY - dragOrigin.pointerY),
-        },
-        viewportSize
-      );
-
-      canvasOffsetRef.current = nextOffset;
-      setCanvasOffset(nextOffset);
-    };
-
-    const stopCanvasDrag = () => {
-      dragOriginRef.current = null;
-      setIsCanvasDragging(false);
-    };
-
-    const handleMouseMove = (event: MouseEvent) => {
-      event.preventDefault();
-      updateCanvasPosition(event.clientX, event.clientY);
-    };
-
-    const handleTouchMove = (event: TouchEvent) => {
-      if (event.touches.length === 0) return;
-      event.preventDefault();
-      const touch = event.touches[0];
-      updateCanvasPosition(touch.clientX, touch.clientY);
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', stopCanvasDrag);
-    document.addEventListener('touchmove', handleTouchMove, { passive: false });
-    document.addEventListener('touchend', stopCanvasDrag);
-    document.addEventListener('touchcancel', stopCanvasDrag);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', stopCanvasDrag);
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('touchend', stopCanvasDrag);
-      document.removeEventListener('touchcancel', stopCanvasDrag);
-    };
-  }, [isCanvasDragging, viewportSize]);
-
   const handleSidebarMouseDown = (event: ReactMouseEvent) => {
     if (!drawerContentRef.current) return;
     setIsSidebarDragging(true);
     setSidebarStartY(event.pageY);
     setSidebarScrollTop(drawerContentRef.current.scrollTop);
-  };
-
-  const startCanvasDrag = (clientX: number, clientY: number) => {
-    dragOriginRef.current = {
-      pointerX: clientX,
-      pointerY: clientY,
-      startOffsetX: canvasOffsetRef.current.x,
-      startOffsetY: canvasOffsetRef.current.y,
-    };
-    setIsCanvasDragging(true);
-  };
-
-  const handleCanvasMouseDown = (event: ReactMouseEvent<HTMLDivElement>) => {
-    if (event.button !== 0) return;
-    event.preventDefault();
-    startCanvasDrag(event.clientX, event.clientY);
-  };
-
-  const handleCanvasTouchStart = (event: ReactTouchEvent<HTMLDivElement>) => {
-    if (event.touches.length !== 1) return;
-    const touch = event.touches[0];
-    startCanvasDrag(touch.clientX, touch.clientY);
   };
 
   const openLoginModal = () => {
