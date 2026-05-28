@@ -1,7 +1,5 @@
 'use client';
 
-// TODO: Integrate into map sidebar when landmark click handlers are implemented.
-
 import { useMemoriesByLocation } from '@/lib/hooks/useMemoriesByLocation';
 import { MemoryCard } from './MemoryCard';
 
