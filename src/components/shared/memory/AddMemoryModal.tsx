@@ -201,8 +201,6 @@ function uploadFileWithProgress(
 export function AddMemoryModal({
   open,
   onOpenChange,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  defaultEra,
   defaultGroupId,
   onRequestMapSelection,
 }: AddMemoryModalProps) {
@@ -224,14 +222,11 @@ export function AddMemoryModal({
   const [showSuccess, setShowSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [, setShowVisibilityDropdown] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [placeholderStates, setPlaceholderStates] = useState<PlaceholderStates>(
-    {
-      addToStory: false,
-      shareToFeed: true,
-      enableComments: true,
-    }
-  );
+  const [, setPlaceholderStates] = useState<PlaceholderStates>({
+    addToStory: false,
+    shareToFeed: true,
+    enableComments: true,
+  });
 
   // Location selection state
   const [selectedLocationName, setSelectedLocationName] = useState<
@@ -804,25 +799,6 @@ export function AddMemoryModal({
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [open, handleAttemptClose]);
-
-  // ---------------------------------------------------------------------------
-  // Placeholder handlers
-  // ---------------------------------------------------------------------------
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const updatePlaceholder = useCallback(
-    <K extends keyof PlaceholderStates>(
-      key: K,
-      value: PlaceholderStates[K]
-    ) => {
-      setPlaceholderStates((prev) => ({ ...prev, [key]: value }));
-      // TODO: Implement backend integration for placeholder states
-      console.log(
-        `[AddMemoryModal] placeholder state changed: ${key} = ${String(value)}`
-      );
-    },
-    []
-  );
 
   // ---------------------------------------------------------------------------
   // Tab: Upload Media
