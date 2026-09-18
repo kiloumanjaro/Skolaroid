@@ -324,6 +324,40 @@ When adding a new feature, follow this checklist:
 - [ ] Run `pnpm type-check && pnpm lint`
 - [ ] Commit with descriptive message
 
+## Serving the mobile app
+
+The Expo app in `../Skolaroid-Mobile` is a client of this backend. It shares
+the Supabase project, the database and the user accounts; it has no Prisma of
+its own.
+
+**Auth.** Browsers send the Supabase session cookie. Native clients have no
+cookie jar, so the app sends `Authorization: Bearer <access_token>` and
+`src/lib/supabase/server.ts` forwards that header to `createServerClient`. The
+header is only consulted when present, so cookie auth is unchanged. Do not
+remove that branch — it is the only thing letting the app authenticate.
+
+**`/api/mobile/*`.** Three properties of the web routes do not survive a
+cellular connection: lists are unbounded, list payloads carry every story body,
+and there is no single-memory route. Two endpoints exist for that:
+
+- `GET /api/mobile/feed` — cursor-paged, server-filtered memory list, without
+  `description`.
+- `GET /api/mobile/memory/[memoryId]` — one memory, plus the viewer's vote and
+  ownership.
+
+Both send `Cache-Control: private, no-store`; they are per-user and must never
+be held by a CDN.
+
+**`src/lib/server/memory-visibility.ts`.** `loadViewer` and `visibleToViewer`
+are the single definition of who may see which memory. The same predicate is
+still inlined in the older `get-all-with-coordinates`, `get-by-location` and
+`get-by-group` routes; when you touch one of those, move it onto the helper.
+A drift between copies silently leaks private memories.
+
+When adding a route the app will call, check
+`../Skolaroid-Mobile/docs/BACKEND_CONTRACT.md` — it documents the contract from
+the client side.
+
 ## Questions?
 
 Refer to this guide when:
