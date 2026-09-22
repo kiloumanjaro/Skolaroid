@@ -26,6 +26,10 @@ export async function updateMemoryService(
       memoryDate: true,
       visibility: true,
       privateGroupId: true,
+      moderationStatus: true,
+      title: true,
+      description: true,
+      tags: { select: { slug: true } },
     },
   });
 
@@ -64,6 +68,31 @@ export async function updateMemoryService(
           : { connect: { id: data.privateGroupId } },
     }),
   };
+
+  // Approval covers the content and audience an admin actually saw. Group
+  // memories skip review at creation, so without this a creator could post to
+  // a one-person group and flip it to PUBLIC, or swap an approved memory's
+  // text after the fact. Removed/rejected memories keep their status so an
+  // edit cannot resurrect them.
+  // Edit forms resend every field, so compare values rather than presence.
+  const currentTagSlugs = new Set(memory.tags.map((tag) => tag.slug));
+  const changesReviewedContent =
+    (data.title !== undefined && data.title !== memory.title) ||
+    (data.description !== undefined &&
+      (data.description || null) !== (memory.description || null)) ||
+    (data.tags !== undefined &&
+      data.tags.some((tag) => !currentTagSlugs.has(slugify(tag)))) ||
+    effectiveVisibility !== memory.visibility ||
+    effectivePrivateGroupId !== memory.privateGroupId;
+
+  if (
+    !isAdmin &&
+    changesReviewedContent &&
+    effectiveVisibility !== 'GROUP_ONLY' &&
+    memory.moderationStatus === 'APPROVED'
+  ) {
+    updateData.moderationStatus = 'PENDING';
+  }
 
   if (data.tags !== undefined) {
     const autoTags = await generateAutoTags(
