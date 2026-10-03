@@ -1,0 +1,367 @@
+{
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\components.json": {
+    "size": 427,
+    "mtime_ns": 1787031689042319800,
+    "hash": "4c6f4c3b2c6a2117de2866624505b4a43aefda7a2a8c33c726dba85e3ae354d0"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\package.json": {
+    "size": 2410,
+    "mtime_ns": 1787031686281755600,
+    "hash": "4cd5da8d8e6b4d419ab2598cca5295f79c95b4b1669390465c0d2189c48febf1"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\tsconfig.json": {
+    "size": 727,
+    "mtime_ns": 1787031689071902600,
+    "hash": "21250cc52c0175c9215b3363357d18aadf844608497d194b2bba31cd31717036"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\vercel.json": {
+    "size": 293,
+    "mtime_ns": 1787031686240840500,
+    "hash": "86b63174fe35fe109491db7e73ba1c7d86e2a4f997f4926feb807a67d300d06f"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.claude\\settings.json": {
+    "size": 813,
+    "mtime_ns": 1787031686195170000,
+    "hash": "9510cc51a2fcb4c40e47c6c28c3f90dae9153203e7838e4d91714a1147ac3625"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.husky\\_\\husky.sh": {
+    "size": 160,
+    "mtime_ns": 1789744599434131200,
+    "hash": "6db0aa99aece6ebd17bbc27c5e5287a462fb39cc4a2ca3a82a6277c166bdb3a0"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.vscode\\settings.json": {
+    "size": 89,
+    "mtime_ns": 1787031686222372500,
+    "hash": "6c215ab4439e24e616fa9b0959d05d18921c0b7f6fdb7c7d9e5680a7395b5f53"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\prisma\\migrations\\20260211164334_init\\migration.sql": {
+    "size": 3329,
+    "mtime_ns": 1787031688981159800,
+    "hash": "a70907a12af4625b43f1e2f3309179f8b0337ad97d747972b0e8981ef5c25a64"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\prisma\\migrations\\20260213070937_added_tags_table\\migration.sql": {
+    "size": 1411,
+    "mtime_ns": 1787031688835824300,
+    "hash": "bf36a49a70afa233c2abc55c417fdd0a632ed5f70af394caa16ec29c08c9b3f4"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\prisma\\migrations\\20260215114127_improved_schemas\\migration.sql": {
+    "size": 10774,
+    "mtime_ns": 1787031688855362200,
+    "hash": "eae12edd54524dd096d9a689de3eca1cbaed7ed3617173790f93634a822e2fc0"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\prisma\\migrations\\20260224071258_make_user_fields_nullable\\migration.sql": {
+    "size": 197,
+    "mtime_ns": 1787031688941306100,
+    "hash": "a047ff5e5b10792a6759cc30eab3b3e2e39592c62a5d51f246d4c69b37fd1303"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\prisma\\migrations\\20260309085545_added_private_group\\migration.sql": {
+    "size": 1849,
+    "mtime_ns": 1787031688825565800,
+    "hash": "23d402986d336efd44cd4ff0c12355650eb3bcc79fa204b861effef0b77cbe66"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\prisma\\migrations\\20260309225241_make_user_fields_required\\migration.sql": {
+    "size": 729,
+    "mtime_ns": 1787031688932188500,
+    "hash": "ff59013a161b78c52a5f39ab499e521abf41cb5db8a2a4db46bb71aabd587f4f"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\prisma\\migrations\\20260310072603_add_invitation_table\\migration.sql": {
+    "size": 1116,
+    "mtime_ns": 1787031688992196200,
+    "hash": "ccf938527b04a529494d38d67b96ac71d07b5d6e8d4ac7bf0c7b97afdef9918b"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\prisma\\migrations\\20260324015350_add_memories_by_creator_api\\migration.sql": {
+    "size": 1072,
+    "mtime_ns": 1787031689001252600,
+    "hash": "eab7de97c71fa18e9515e2d72f4a20376e85a45b6e22a0d8ef06253ebf79074c"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\prisma\\migrations\\20260403120000_add_group_role_privileges\\migration.sql": {
+    "size": 1322,
+    "mtime_ns": 1787031688970974100,
+    "hash": "497fbaafa72e38a3a59f5cd3c0c311791b3bff01cf7c16b2740f1ff894f8ca77"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\prisma\\migrations\\20260409000000_add_memory_date\\migration.sql": {
+    "size": 72,
+    "mtime_ns": 1787031688923346500,
+    "hash": "222b67ff220f98ea65cd6e32f4092bc3e1fa3f5515277ed8982d559a899de28a"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\prisma\\migrations\\20260409144133_add_moderation_models\\migration.sql": {
+    "size": 3731,
+    "mtime_ns": 1787031688951332600,
+    "hash": "e047086854f8d65e9d8912dd8b633096bb88ec46d714941ae1d52a0a5b6235dd"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\prisma\\migrations\\20260412050959_add_notification_model\\migration.sql": {
+    "size": 1546,
+    "mtime_ns": 1787031688904888600,
+    "hash": "ce760c6a33d9dce5ac7cb4044af5a24878b5e7a511fa30f3f5c63fe69ceeeec3"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\prisma\\migrations\\20260419205626_add_profile_fields\\migration.sql": {
+    "size": 275,
+    "mtime_ns": 1787031688914360300,
+    "hash": "e4d914edcbf4b9a45839ff8a83d52788dbbd690878740dba0ff01d21737ac2ba"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\prisma\\migrations\\20260420113000_add_memory_media_urls\\migration.sql": {
+    "size": 445,
+    "mtime_ns": 1787031688960839500,
+    "hash": "ba4b172b1e8eb0434ad0316079cd0e7509e2dab5cc767741c072bdd922a285cb"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\prisma\\migrations\\20260421023202_add_account_deactivation\\migration.sql": {
+    "size": 394,
+    "mtime_ns": 1787031688884047900,
+    "hash": "f4a0269ff7f3d6675dd28641d0c10e10585c844e6d6a14feee9028d4111cef6b"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\prisma\\migrations\\20260421050308_add_invitation_public_link_fields\\migration.sql": {
+    "size": 186,
+    "mtime_ns": 1787031689018949900,
+    "hash": "2dcece6fa1cc671b248c98f77f7f9439b2da08bd30252cfdefdbc394234dac9c"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\prisma\\migrations\\20260421052002_add_upload_rate_limit\\migration.sql": {
+    "size": 340,
+    "mtime_ns": 1787031688893758600,
+    "hash": "eb86da0f1be3dffbc4eff3249c71c1407ff28338ce2a4bc130c475067d91360b"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\prisma\\migrations\\20260504174054_fix_db_drift\\migration.sql": {
+    "size": 261,
+    "mtime_ns": 1787031688864513900,
+    "hash": "f38bd840a0f9844d31ca5ce4e28371f434f382222277d0a8982bb9add778e591"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\prisma\\migrations\\20260504182922_removed_media_url_column\\migration.sql": {
+    "size": 191,
+    "mtime_ns": 1787031688845180300,
+    "hash": "e770264932970975ec4df1ea66511e8aaf7eef378c4b344fb55d7ef261c91ed2"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\prisma\\migrations\\20260505120000_remove_legacy_memory_mediaurl_and_uploaddate\\migration.sql": {
+    "size": 532,
+    "mtime_ns": 1787031688814829800,
+    "hash": "89b95d30dce4597712525396b38a2084ef1885fdadb52cd098ceb2819bbe9e1b"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\prisma\\migrations\\20260522000000_add_live_event_photobooth\\migration.sql": {
+    "size": 2655,
+    "mtime_ns": 1787031688874215900,
+    "hash": "ff2b3f5e584a83d46efdfde516f3929adcce804f515d867784f1b2c9ae88a93c"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\test-results\\.last-run.json": {
+    "size": 45,
+    "mtime_ns": 1779980841108127700,
+    "hash": "2b64175ef58c779348b9f3b1bc212093f30455a8c3b30e90ec66bc0c83893a17"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md": {
+    "size": 10561,
+    "mtime_ns": 1789745462119169400,
+    "hash": "d62dc46354a9b6c59ec30ee3f2d16a75f4b3b42ecf41f033e2e41377bd21f6ef"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\CLAUDE.md": {
+    "size": 772,
+    "mtime_ns": 1787031686251149200,
+    "hash": "3612256e7473a2e5f67ef4778d4edeefb44794ef22bac5529bee9c87dc5d8f3d"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\pnpm-workspace.yaml": {
+    "size": 235,
+    "mtime_ns": 1779399632940721700,
+    "hash": "608244a25dbf70197931bd4fdb3c2f61eb5d4464b5338d183846ee83592bede9"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md": {
+    "size": 11958,
+    "mtime_ns": 1787031685732866700,
+    "hash": "cad6ab315db17290491d15e60cac8fd06994e527307571049f576bd46a319376"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.claude\\CLAUDE.md": {
+    "size": 224,
+    "mtime_ns": 1787031686189321500,
+    "hash": "76afa4121b20a24dc3fb4a60c534624675bcefcc0967de7fe7709f3cc84652ae"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.claude\\skills\\graphify\\SKILL.md": {
+    "size": 68858,
+    "mtime_ns": 1787031686179328600,
+    "hash": "2fd258a3e05c1e4826968ea35e53de1cd7757a467f10acd1d08399e7737bf3cb"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\copilot-instructions.md": {
+    "size": 8227,
+    "mtime_ns": 1787031689181634500,
+    "hash": "dce8a6dc51b1e1c4e1a6aaf6c2dd7037d01869fc286196534f9d9d0e5647cfd5"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\agents\\implement.agent.md": {
+    "size": 2308,
+    "mtime_ns": 1787031689191524500,
+    "hash": "4c6c924166d49ae207ee8ec052169a1e26a92dcabfb722ec37675f8d33e2fab4"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\instructions\\nextjs.instructions.md": {
+    "size": 10265,
+    "mtime_ns": 1787031689095354200,
+    "hash": "124ee5e35771741a96dfbfe51e504bc31920eed4af317532b1092aecfae21f5c"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\conventional-commit.prompt.md": {
+    "size": 3929,
+    "mtime_ns": 1787031689148090400,
+    "hash": "6085f6e822512a3903867e55d7378b234651e9fe489023ae3d773c0458446163"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md": {
+    "size": 4167,
+    "mtime_ns": 1787031689116870000,
+    "hash": "1ea702bb7ea7dd2cba16b62700314da1f34a5c32c838f30cd1cda2caa253409a"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-plan.prompt.md": {
+    "size": 3066,
+    "mtime_ns": 1787031689127449300,
+    "hash": "2a334a4ae2f5c897104b6ef7ea175bbd9b428dce57669a371cf58af530db0907"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md": {
+    "size": 6556,
+    "mtime_ns": 1787031689160145500,
+    "hash": "5d0e27c64788b2946a69ef0ea3b3b2fa892527d8d0f2f067cf56aca4c3e435a5"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md": {
+    "size": 6465,
+    "mtime_ns": 1787031689137312700,
+    "hash": "607e7dbf5c3c93946ffb3c82535f859895a3be30032d424e3d20e61cbbc7f743"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\so-generate.prompt.md": {
+    "size": 4169,
+    "mtime_ns": 1787031689105558300,
+    "hash": "c1422cdd343f6602b8e812ba75c86ba123e999ada7bede0affb494e613092d88"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\so-plan.prompt.md": {
+    "size": 3068,
+    "mtime_ns": 1787031689169771800,
+    "hash": "803a6295a1b4a241175ac127ad2f9f5185de35b56563a5b6abe7b3388d8fe9d7"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\workflows\\deploy.yml": {
+    "size": 3234,
+    "mtime_ns": 1779399632280497000,
+    "hash": "71d25fd4640800d48269d723131c4e8d47516f832b1bd3e59960e68fb1aaa587"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\BOOK_COVER_SPRING_PROMPT.md": {
+    "size": 2233,
+    "mtime_ns": 1787031685607861700,
+    "hash": "d7c839e2c1ffe8d21713f66de6c4fd7ee2310dc0fa1ef9665b9f4cf02903944e"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md": {
+    "size": 5988,
+    "mtime_ns": 1787031685661978300,
+    "hash": "2cd0b76ea89c10954c26929459a8ec26ea92d0854947e7787d2fa8a18a20587b"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md": {
+    "size": 5558,
+    "mtime_ns": 1787031685632684600,
+    "hash": "4c1bb876f5a8e43248acf817ed74f5720652b266ef76c26ea97dd65d4d68269a"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md": {
+    "size": 14901,
+    "mtime_ns": 1787031685650979200,
+    "hash": "3d276973a7193bb13f54beaff27def93c3f813c5508af8c137d4786d0378287c"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PAGE_FLIP_ANIMATION_GUIDE.md": {
+    "size": 9159,
+    "mtime_ns": 1787031685700138200,
+    "hash": "914ea05aeaf765deb6afd5b247755024775bb707df2a7aeafab8e0c7a130e205"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md": {
+    "size": 31785,
+    "mtime_ns": 1787031685673592900,
+    "hash": "4346fb4fd513eb9ed76f7ff1e0446120132979074eb6ec4d406646dbe2b9d01d"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA WORKFLOW.md": {
+    "size": 1749,
+    "mtime_ns": 1787031685591982000,
+    "hash": "4bdb3ee4ec5e983a7863762dda5e7379bb5f8a34a6aa3ab3eadac761e4652680"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md": {
+    "size": 10851,
+    "mtime_ns": 1787031685619745100,
+    "hash": "0cadd22a9a183140202621dc106f35f8ccf39abb3642bbacca47200929c392fa"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md": {
+    "size": 7215,
+    "mtime_ns": 1787031685598642500,
+    "hash": "7f2fc5909c06fcc56f6e87e9404942258e460cd9bf95b1edaa423d175d2ed4b9"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md": {
+    "size": 10683,
+    "mtime_ns": 1787031685680011300,
+    "hash": "65487ba7cc72dd852306c45e4c3e14dcd7e5e5f6b7a40ffc3e2754111ad3fff0"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md": {
+    "size": 8442,
+    "mtime_ns": 1787031685639311300,
+    "hash": "7cfedcc4349c28f603f9c1d23ad08cc42e5366d8b1985e72ebee7a9dbfc9fe3d"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PROJECT_BRIEF.md": {
+    "size": 4429,
+    "mtime_ns": 1787031685583230000,
+    "hash": "ff1bff50f7263f41128e4d2658bb2253ef182b8d69b9a65525dda2730273ce11"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\README.md": {
+    "size": 8372,
+    "mtime_ns": 1787031685615428000,
+    "hash": "09d05be6d88bcc0e10521b5cf60510991290043a702cd76a6cbcfe7630351aaf"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md": {
+    "size": 53877,
+    "mtime_ns": 1787031685691590900,
+    "hash": "259fd0e0bd8a809c9bdf08707db1a6c35bee477379cb364656df47b87092f98f"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\swagger\\swagger.yaml": {
+    "size": 49804,
+    "mtime_ns": 1779399637665033000,
+    "hash": "b67bacf78c3e387e571be6fbd40d74808e7bdf305ca773c633fdc566709d8eaf"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\public\\oblation_icon.svg": {
+    "size": 55801,
+    "mtime_ns": 1779292620974241100,
+    "hash": "67a2671483d3fb953c0bf8990e78e895ef3e713e172dc44cb07292c66bd6c2ff"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\public\\assets\\images\\about\\Cebu-Building.webp": {
+    "size": 374278,
+    "mtime_ns": 1779292620922135600,
+    "hash": "aff961c3f1b2fcfb18effab20192271907a524068c98d7cd25b4cc458ed44c49"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\public\\assets\\images\\about\\Cebu-The-Junior-College-at-Cebu-.webp": {
+    "size": 642762,
+    "mtime_ns": 1779292620926151400,
+    "hash": "c6c9be491fe0279c10f5ac177de9c5c3b41179d627ac14224004ebacbf12e6b6"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\public\\assets\\images\\about\\Cebu-UP-Cebu-College.webp": {
+    "size": 489982,
+    "mtime_ns": 1779292620930150000,
+    "hash": "b4b1b31fc29b7dbf600fccaceb411bc93986e1e0f55637448ff1345e576ce8b9"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\public\\assets\\images\\about\\Cebu-UP-Cebu-Oblation.webp": {
+    "size": 675174,
+    "mtime_ns": 1779292620933919600,
+    "hash": "0f9352e463240ce2068111cae4ba8b3e3c4e4925f6ac24779433d00df2e178c5"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\public\\assets\\images\\eras\\1990.png": {
+    "size": 1119536,
+    "mtime_ns": 1779292620938918500,
+    "hash": "b6dbb1c7df62051bd5cd3b5269e675e950672321a1d0d99e5b0a098184458fe2"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\public\\assets\\images\\eras\\2000.png": {
+    "size": 819531,
+    "mtime_ns": 1779292620942942900,
+    "hash": "0d8eb7463adeb869778265e4659827123c0c8a0cc9f70ce0c13c51fbc989ff43"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\public\\assets\\images\\eras\\2010.png": {
+    "size": 1100308,
+    "mtime_ns": 1779292620947944100,
+    "hash": "2efbef1d4b14dfdb1c7658da0b4fca5f5edbb7d5f15778ba7b32887ecb1e7b31"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\public\\assets\\images\\eras\\2020.png": {
+    "size": 978528,
+    "mtime_ns": 1779292620952980800,
+    "hash": "9867051233e8107e152377ca06c1d65dbd70af16c69e661e694d1ceb4f38415a"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\public\\assets\\images\\selfies\\Bayadog.png": {
+    "size": 2069788,
+    "mtime_ns": 1779292620962721300,
+    "hash": "fd081c73dd5ff6143c9b6fa50ed1f761f93032de396c6b702ae3f57240cc288e"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\public\\assets\\images\\selfies\\Borbano.png": {
+    "size": 1472344,
+    "mtime_ns": 1779292620967224100,
+    "hash": "194c6b6bf475ad3f41f673f43769317e992933472d9507a767cd0a145e5b9c61"
+  },
+  "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\public\\assets\\images\\selfies\\Sandro.png": {
+    "size": 1842667,
+    "mtime_ns": 1779292620973240400,
+    "hash": "550e48ae13233987b7b86d36053e27e9da4a858846a6734aa9e426ffaf081115"
+  }
+}

@@ -99,6 +99,8 @@ export function FilterPanel({
     setLocalSearch(filters.searchQuery);
   }, [filters.searchQuery]);
 
+  // Debounce: only react to user input (localSearch). Including filters.searchQuery
+  // or update() would fire the debounce on every parent prop change.
   useEffect(() => {
     const handler = setTimeout(() => {
       if (localSearch !== filters.searchQuery) {
@@ -474,7 +476,7 @@ function FilterDropdown({
 }: {
   value: string;
   onChange: (value: string) => void;
-  options: Array<{ label: string; value: string }>;
+  options: { label: string; value: string }[];
   side?: 'top' | 'bottom';
 }) {
   const selectedLabel =

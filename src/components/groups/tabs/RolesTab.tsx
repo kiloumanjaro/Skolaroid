@@ -48,12 +48,12 @@ const roleMeta: Record<
   },
 };
 
-const permissionMeta: Array<{
+const permissionMeta: {
   key: GroupPermissionKey;
   label: string;
   description: string;
   Icon: ComponentType<{ className?: string }>;
-}> = [
+}[] = [
   {
     key: 'editContent',
     label: 'Edit content',

@@ -1,3 +1,4 @@
+import type { Prisma } from '@/generated/prisma/client';
 import { prisma } from '@/lib/prisma';
 import { slugify } from '@/lib/slugify';
 import { MAX_TAGS, type MemoryVisibility } from '@/lib/schemas';
@@ -77,8 +78,7 @@ export async function createMemoryService(
   }));
 
   // Create memory with all relations
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const data: any = {
+  const data: Prisma.MemoryCreateInput = {
     title,
     description,
     mediaURLs: normalizedMediaURLs,

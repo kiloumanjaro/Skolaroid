@@ -1,0 +1,133 @@
+{
+  "nodes": [
+    {
+      "id": "docs_prisma_troubleshooting_guide",
+      "label": "Prisma v7 Troubleshooting Guide",
+      "file_type": "document",
+      "source_file": "docs/PRISMA_TROUBLESHOOTING.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_troubleshooting_p1000",
+      "label": "P1000 Authentication Failed",
+      "file_type": "concept",
+      "source_file": "docs/PRISMA_TROUBLESHOOTING.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_troubleshooting_p1001",
+      "label": "P1001 Can't Reach Database Server",
+      "file_type": "concept",
+      "source_file": "docs/PRISMA_TROUBLESHOOTING.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_troubleshooting_direct_url_migrations",
+      "label": "Use DIRECT_URL for Migrations",
+      "file_type": "rationale",
+      "source_file": "docs/PRISMA_TROUBLESHOOTING.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_troubleshooting_prismapg",
+      "label": "PrismaPg Adapter",
+      "file_type": "concept",
+      "source_file": "docs/PRISMA_TROUBLESHOOTING.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_troubleshooting_generated_import",
+      "label": "Import from @/generated/prisma/client",
+      "file_type": "rationale",
+      "source_file": "docs/PRISMA_TROUBLESHOOTING.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_prisma_troubleshooting_guide",
+      "target": "docs_prisma_troubleshooting_p1000",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_TROUBLESHOOTING.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_guide",
+      "target": "docs_prisma_troubleshooting_p1001",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_TROUBLESHOOTING.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_direct_url_migrations",
+      "target": "docs_prisma_troubleshooting_p1000",
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/PRISMA_TROUBLESHOOTING.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_guide",
+      "target": "docs_prisma_troubleshooting_prismapg",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_TROUBLESHOOTING.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_guide",
+      "target": "docs_prisma_troubleshooting_generated_import",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_TROUBLESHOOTING.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_p1000",
+      "target": "docs_prisma_quick_reference_error_codes",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/PRISMA_TROUBLESHOOTING.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

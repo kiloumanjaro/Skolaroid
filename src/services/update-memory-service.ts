@@ -1,3 +1,4 @@
+import type { Prisma } from '@/generated/prisma/client';
 import { prisma } from '@/lib/prisma';
 import { slugify } from '@/lib/slugify';
 import { MAX_TAGS, type EditMemoryInput } from '@/lib/schemas';
@@ -25,6 +26,10 @@ export async function updateMemoryService(
       memoryDate: true,
       visibility: true,
       privateGroupId: true,
+      moderationStatus: true,
+      title: true,
+      description: true,
+      tags: { select: { slug: true } },
     },
   });
 
@@ -52,8 +57,7 @@ export async function updateMemoryService(
     await assertCanPostInGroup(actorId, data.privateGroupId);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const updateData: any = {
+  const updateData: Prisma.MemoryUpdateInput = {
     ...(data.title !== undefined && { title: data.title }),
     ...(data.description !== undefined && { description: data.description }),
     ...(data.visibility !== undefined && { visibility: data.visibility }),
@@ -64,6 +68,31 @@ export async function updateMemoryService(
           : { connect: { id: data.privateGroupId } },
     }),
   };
+
+  // Approval covers the content and audience an admin actually saw. Group
+  // memories skip review at creation, so without this a creator could post to
+  // a one-person group and flip it to PUBLIC, or swap an approved memory's
+  // text after the fact. Removed/rejected memories keep their status so an
+  // edit cannot resurrect them.
+  // Edit forms resend every field, so compare values rather than presence.
+  const currentTagSlugs = new Set(memory.tags.map((tag) => tag.slug));
+  const changesReviewedContent =
+    (data.title !== undefined && data.title !== memory.title) ||
+    (data.description !== undefined &&
+      (data.description || null) !== (memory.description || null)) ||
+    (data.tags !== undefined &&
+      data.tags.some((tag) => !currentTagSlugs.has(slugify(tag)))) ||
+    effectiveVisibility !== memory.visibility ||
+    effectivePrivateGroupId !== memory.privateGroupId;
+
+  if (
+    !isAdmin &&
+    changesReviewedContent &&
+    effectiveVisibility !== 'GROUP_ONLY' &&
+    memory.moderationStatus === 'APPROVED'
+  ) {
+    updateData.moderationStatus = 'PENDING';
+  }
 
   if (data.tags !== undefined) {
     const autoTags = await generateAutoTags(

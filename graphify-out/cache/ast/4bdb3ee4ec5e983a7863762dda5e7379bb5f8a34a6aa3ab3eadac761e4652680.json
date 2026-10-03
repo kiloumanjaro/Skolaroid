@@ -1,0 +1,127 @@
+{
+  "nodes": [
+    {
+      "id": "c_users_kint_louise_documents_projects_skolaroid_docs_prisma_workflow_md",
+      "label": "PRISMA WORKFLOW.md",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA WORKFLOW.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_prisma_workflow_database_setup_prisma_migration_guide",
+      "label": "Database Setup & Prisma Migration Guide",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA WORKFLOW.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_prisma_workflow_prerequisites",
+      "label": "Prerequisites",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA WORKFLOW.md",
+      "source_location": "L7"
+    },
+    {
+      "id": "docs_prisma_workflow_prisma_migration_workflow",
+      "label": "Prisma Migration Workflow",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA WORKFLOW.md",
+      "source_location": "L28"
+    },
+    {
+      "id": "docs_prisma_workflow_1_apply_changes_locally_first",
+      "label": "1. Apply Changes Locally First",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA WORKFLOW.md",
+      "source_location": "L32"
+    },
+    {
+      "id": "docs_prisma_workflow_2_develop_and_test_locally",
+      "label": "2. Develop and Test Locally",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA WORKFLOW.md",
+      "source_location": "L46"
+    },
+    {
+      "id": "docs_prisma_workflow_3_deploy_migrations_to_production",
+      "label": "3. Deploy Migrations to Production",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA WORKFLOW.md",
+      "source_location": "L54"
+    },
+    {
+      "id": "docs_prisma_workflow_important_notes",
+      "label": "Important Notes",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA WORKFLOW.md",
+      "source_location": "L64"
+    }
+  ],
+  "edges": [
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_docs_prisma_workflow_md",
+      "target": "docs_prisma_workflow_database_setup_prisma_migration_guide",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA WORKFLOW.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_workflow_database_setup_prisma_migration_guide",
+      "target": "docs_prisma_workflow_prerequisites",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA WORKFLOW.md",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_workflow_database_setup_prisma_migration_guide",
+      "target": "docs_prisma_workflow_prisma_migration_workflow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA WORKFLOW.md",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_workflow_prisma_migration_workflow",
+      "target": "docs_prisma_workflow_1_apply_changes_locally_first",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA WORKFLOW.md",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_workflow_prisma_migration_workflow",
+      "target": "docs_prisma_workflow_2_develop_and_test_locally",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA WORKFLOW.md",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_workflow_prisma_migration_workflow",
+      "target": "docs_prisma_workflow_3_deploy_migrations_to_production",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA WORKFLOW.md",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_workflow_database_setup_prisma_migration_guide",
+      "target": "docs_prisma_workflow_important_notes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA WORKFLOW.md",
+      "source_location": "L64",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

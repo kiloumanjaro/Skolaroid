@@ -1,0 +1,415 @@
+{
+  "nodes": [
+    {
+      "id": "c_users_kint_louise_documents_projects_skolaroid_docs_prisma_quick_reference_md",
+      "label": "PRISMA_QUICK_REFERENCE.md",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_prisma_quick_reference_prisma_v7_quick_reference",
+      "label": "Prisma v7 Quick Reference",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_prisma_quick_reference_common_commands",
+      "label": "Common Commands",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L3"
+    },
+    {
+      "id": "docs_prisma_quick_reference_migrations",
+      "label": "Migrations",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L5"
+    },
+    {
+      "id": "docs_prisma_quick_reference_client_generation",
+      "label": "Client Generation",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L21"
+    },
+    {
+      "id": "docs_prisma_quick_reference_database_operations",
+      "label": "Database Operations",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L31"
+    },
+    {
+      "id": "docs_prisma_quick_reference_using_prisma_client",
+      "label": "Using Prisma Client",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L41"
+    },
+    {
+      "id": "docs_prisma_quick_reference_import",
+      "label": "Import",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L43"
+    },
+    {
+      "id": "docs_prisma_quick_reference_create_operations",
+      "label": "Create Operations",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L49"
+    },
+    {
+      "id": "docs_prisma_quick_reference_read_operations",
+      "label": "Read Operations",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L74"
+    },
+    {
+      "id": "docs_prisma_quick_reference_update_operations",
+      "label": "Update Operations",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L110"
+    },
+    {
+      "id": "docs_prisma_quick_reference_delete_operations",
+      "label": "Delete Operations",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L130"
+    },
+    {
+      "id": "docs_prisma_quick_reference_filtering",
+      "label": "Filtering",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L148"
+    },
+    {
+      "id": "docs_prisma_quick_reference_operators",
+      "label": "Operators",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L150"
+    },
+    {
+      "id": "docs_prisma_quick_reference_logical_operators",
+      "label": "Logical Operators",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L175"
+    },
+    {
+      "id": "docs_prisma_quick_reference_error_handling",
+      "label": "Error Handling",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L188"
+    },
+    {
+      "id": "docs_prisma_quick_reference_transactions",
+      "label": "Transactions",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L210"
+    },
+    {
+      "id": "docs_prisma_quick_reference_environment_variables",
+      "label": "Environment Variables",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L224"
+    },
+    {
+      "id": "docs_prisma_quick_reference_api_routes_pattern",
+      "label": "API Routes Pattern",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L234"
+    },
+    {
+      "id": "docs_prisma_quick_reference_type_safety",
+      "label": "Type Safety",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L262"
+    },
+    {
+      "id": "docs_prisma_quick_reference_performance_tips",
+      "label": "Performance Tips",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L279"
+    },
+    {
+      "id": "docs_prisma_quick_reference_debugging",
+      "label": "Debugging",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L310"
+    },
+    {
+      "id": "docs_prisma_quick_reference_enable_query_logging",
+      "label": "Enable Query Logging",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L312"
+    },
+    {
+      "id": "docs_prisma_quick_reference_prisma_studio",
+      "label": "Prisma Studio",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L324"
+    },
+    {
+      "id": "docs_prisma_quick_reference_common_errors",
+      "label": "Common Errors",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L332"
+    },
+    {
+      "id": "docs_prisma_quick_reference_links",
+      "label": "Links",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L342"
+    }
+  ],
+  "edges": [
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_docs_prisma_quick_reference_md",
+      "target": "docs_prisma_quick_reference_prisma_v7_quick_reference",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_prisma_v7_quick_reference",
+      "target": "docs_prisma_quick_reference_common_commands",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_common_commands",
+      "target": "docs_prisma_quick_reference_migrations",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_common_commands",
+      "target": "docs_prisma_quick_reference_client_generation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_common_commands",
+      "target": "docs_prisma_quick_reference_database_operations",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_prisma_v7_quick_reference",
+      "target": "docs_prisma_quick_reference_using_prisma_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_using_prisma_client",
+      "target": "docs_prisma_quick_reference_import",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_using_prisma_client",
+      "target": "docs_prisma_quick_reference_create_operations",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_using_prisma_client",
+      "target": "docs_prisma_quick_reference_read_operations",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_using_prisma_client",
+      "target": "docs_prisma_quick_reference_update_operations",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_using_prisma_client",
+      "target": "docs_prisma_quick_reference_delete_operations",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L130",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_prisma_v7_quick_reference",
+      "target": "docs_prisma_quick_reference_filtering",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L148",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_filtering",
+      "target": "docs_prisma_quick_reference_operators",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L150",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_filtering",
+      "target": "docs_prisma_quick_reference_logical_operators",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L175",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_prisma_v7_quick_reference",
+      "target": "docs_prisma_quick_reference_error_handling",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L188",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_prisma_v7_quick_reference",
+      "target": "docs_prisma_quick_reference_transactions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L210",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_prisma_v7_quick_reference",
+      "target": "docs_prisma_quick_reference_environment_variables",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L224",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_prisma_v7_quick_reference",
+      "target": "docs_prisma_quick_reference_api_routes_pattern",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L234",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_prisma_v7_quick_reference",
+      "target": "docs_prisma_quick_reference_type_safety",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L262",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_prisma_v7_quick_reference",
+      "target": "docs_prisma_quick_reference_performance_tips",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L279",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_prisma_v7_quick_reference",
+      "target": "docs_prisma_quick_reference_debugging",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L310",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_debugging",
+      "target": "docs_prisma_quick_reference_enable_query_logging",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L312",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_debugging",
+      "target": "docs_prisma_quick_reference_prisma_studio",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L324",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_prisma_v7_quick_reference",
+      "target": "docs_prisma_quick_reference_common_errors",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L332",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_prisma_v7_quick_reference",
+      "target": "docs_prisma_quick_reference_links",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_QUICK_REFERENCE.md",
+      "source_location": "L342",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

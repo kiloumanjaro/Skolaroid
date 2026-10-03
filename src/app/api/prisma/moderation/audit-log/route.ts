@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import type { Prisma } from '@/generated/prisma/client';
 import { auditLogQuerySchema } from '@/lib/schemas';
 import { requireAdmin } from '@/lib/utils/require-admin';
 import { prisma } from '@/lib/prisma';
@@ -32,14 +33,14 @@ export async function GET(request: NextRequest) {
     const { action, adminId, dateFrom, dateTo, cursor, limit, sort } =
       parsed.data;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const where: Record<string, any> = {};
+    const where: Prisma.ModerationActionLogWhereInput = {};
     if (action) where.action = action;
     if (adminId) where.adminId = adminId;
     if (dateFrom || dateTo) {
-      where.createdAt = {};
-      if (dateFrom) where.createdAt.gte = dateFrom;
-      if (dateTo) where.createdAt.lte = dateTo;
+      const createdAt: Prisma.DateTimeFilter = {};
+      if (dateFrom) createdAt.gte = dateFrom;
+      if (dateTo) createdAt.lte = dateTo;
+      where.createdAt = createdAt;
     }
 
     const rows = await prisma.moderationActionLog.findMany({

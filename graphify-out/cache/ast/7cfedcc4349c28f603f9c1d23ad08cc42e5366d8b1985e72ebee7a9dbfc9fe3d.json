@@ -1,0 +1,591 @@
+{
+  "nodes": [
+    {
+      "id": "c_users_kint_louise_documents_projects_skolaroid_docs_prisma_v7_setup_md",
+      "label": "PRISMA_V7_SETUP.md",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_prisma_v7_setup_prisma_v7_implementation_guide",
+      "label": "Prisma v7 Implementation Guide",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_prisma_v7_setup_overview",
+      "label": "Overview",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L3"
+    },
+    {
+      "id": "docs_prisma_v7_setup_architecture",
+      "label": "Architecture",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L7"
+    },
+    {
+      "id": "docs_prisma_v7_setup_key_changes_from_prisma_v6",
+      "label": "Key Changes from Prisma v6",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L9"
+    },
+    {
+      "id": "docs_prisma_v7_setup_configuration_files",
+      "label": "Configuration Files",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L16"
+    },
+    {
+      "id": "docs_prisma_v7_setup_prisma_config_ts",
+      "label": "prisma.config.ts",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L18"
+    },
+    {
+      "id": "docs_prisma_v7_setup_prisma_schema_prisma",
+      "label": "prisma/schema.prisma",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L43"
+    },
+    {
+      "id": "docs_prisma_v7_setup_environment_configuration",
+      "label": "Environment Configuration",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L71"
+    },
+    {
+      "id": "docs_prisma_v7_setup_env_file",
+      "label": ".env File",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L73"
+    },
+    {
+      "id": "docs_prisma_v7_setup_env_local_optional",
+      "label": ".env.local (Optional)",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L88"
+    },
+    {
+      "id": "docs_prisma_v7_setup_prisma_client_setup",
+      "label": "Prisma Client Setup",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L92"
+    },
+    {
+      "id": "docs_prisma_v7_setup_src_lib_prisma_ts",
+      "label": "src/lib/prisma.ts",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L94"
+    },
+    {
+      "id": "docs_prisma_v7_setup_database_operations",
+      "label": "Database Operations",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L126"
+    },
+    {
+      "id": "docs_prisma_v7_setup_api_routes",
+      "label": "API Routes",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L128"
+    },
+    {
+      "id": "docs_prisma_v7_setup_create_single_user",
+      "label": "Create Single User",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L132"
+    },
+    {
+      "id": "docs_prisma_v7_setup_create_multiple_users",
+      "label": "Create Multiple Users",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L167"
+    },
+    {
+      "id": "docs_prisma_v7_setup_delete_single_user",
+      "label": "Delete Single User",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L181"
+    },
+    {
+      "id": "docs_prisma_v7_setup_delete_all_users",
+      "label": "Delete All Users",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L191"
+    },
+    {
+      "id": "docs_prisma_v7_setup_fetch_all_users",
+      "label": "Fetch All Users",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L201"
+    },
+    {
+      "id": "docs_prisma_v7_setup_running_migrations",
+      "label": "Running Migrations",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L211"
+    },
+    {
+      "id": "docs_prisma_v7_setup_create_initial_migration",
+      "label": "Create Initial Migration",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L213"
+    },
+    {
+      "id": "docs_prisma_v7_setup_apply_existing_migrations",
+      "label": "Apply Existing Migrations",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L226"
+    },
+    {
+      "id": "docs_prisma_v7_setup_generate_prisma_client",
+      "label": "Generate Prisma Client",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L232"
+    },
+    {
+      "id": "docs_prisma_v7_setup_package_dependencies",
+      "label": "Package Dependencies",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L238"
+    },
+    {
+      "id": "docs_prisma_v7_setup_required_packages",
+      "label": "Required Packages",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L240"
+    },
+    {
+      "id": "docs_prisma_v7_setup_installation",
+      "label": "Installation",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L250"
+    },
+    {
+      "id": "docs_prisma_v7_setup_development_workflow",
+      "label": "Development Workflow",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L257"
+    },
+    {
+      "id": "docs_prisma_v7_setup_performance_considerations",
+      "label": "Performance Considerations",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L264"
+    },
+    {
+      "id": "docs_prisma_v7_setup_connection_pooling",
+      "label": "Connection Pooling",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L266"
+    },
+    {
+      "id": "docs_prisma_v7_setup_client_reuse",
+      "label": "Client Reuse",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L272"
+    },
+    {
+      "id": "docs_prisma_v7_setup_troubleshooting",
+      "label": "Troubleshooting",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L280"
+    },
+    {
+      "id": "docs_prisma_v7_setup_authentication_errors",
+      "label": "Authentication Errors",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L282"
+    },
+    {
+      "id": "docs_prisma_v7_setup_migration_issues",
+      "label": "Migration Issues",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L293"
+    },
+    {
+      "id": "docs_prisma_v7_setup_client_generation_issues",
+      "label": "Client Generation Issues",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L304"
+    },
+    {
+      "id": "docs_prisma_v7_setup_file_structure",
+      "label": "File Structure",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L315"
+    },
+    {
+      "id": "docs_prisma_v7_setup_references",
+      "label": "References",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L337"
+    }
+  ],
+  "edges": [
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_docs_prisma_v7_setup_md",
+      "target": "docs_prisma_v7_setup_prisma_v7_implementation_guide",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_prisma_v7_implementation_guide",
+      "target": "docs_prisma_v7_setup_overview",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_prisma_v7_implementation_guide",
+      "target": "docs_prisma_v7_setup_architecture",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_architecture",
+      "target": "docs_prisma_v7_setup_key_changes_from_prisma_v6",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_prisma_v7_implementation_guide",
+      "target": "docs_prisma_v7_setup_configuration_files",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_configuration_files",
+      "target": "docs_prisma_v7_setup_prisma_config_ts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_configuration_files",
+      "target": "docs_prisma_v7_setup_prisma_schema_prisma",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_prisma_v7_implementation_guide",
+      "target": "docs_prisma_v7_setup_environment_configuration",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_environment_configuration",
+      "target": "docs_prisma_v7_setup_env_file",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_environment_configuration",
+      "target": "docs_prisma_v7_setup_env_local_optional",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L88",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_prisma_v7_implementation_guide",
+      "target": "docs_prisma_v7_setup_prisma_client_setup",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_prisma_client_setup",
+      "target": "docs_prisma_v7_setup_src_lib_prisma_ts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_prisma_v7_implementation_guide",
+      "target": "docs_prisma_v7_setup_database_operations",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L126",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_database_operations",
+      "target": "docs_prisma_v7_setup_api_routes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L128",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_api_routes",
+      "target": "docs_prisma_v7_setup_create_single_user",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L132",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_api_routes",
+      "target": "docs_prisma_v7_setup_create_multiple_users",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L167",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_api_routes",
+      "target": "docs_prisma_v7_setup_delete_single_user",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L181",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_api_routes",
+      "target": "docs_prisma_v7_setup_delete_all_users",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L191",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_api_routes",
+      "target": "docs_prisma_v7_setup_fetch_all_users",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L201",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_prisma_v7_implementation_guide",
+      "target": "docs_prisma_v7_setup_running_migrations",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L211",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_running_migrations",
+      "target": "docs_prisma_v7_setup_create_initial_migration",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L213",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_running_migrations",
+      "target": "docs_prisma_v7_setup_apply_existing_migrations",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L226",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_running_migrations",
+      "target": "docs_prisma_v7_setup_generate_prisma_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L232",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_prisma_v7_implementation_guide",
+      "target": "docs_prisma_v7_setup_package_dependencies",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L238",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_package_dependencies",
+      "target": "docs_prisma_v7_setup_required_packages",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L240",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_package_dependencies",
+      "target": "docs_prisma_v7_setup_installation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L250",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_prisma_v7_implementation_guide",
+      "target": "docs_prisma_v7_setup_development_workflow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L257",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_prisma_v7_implementation_guide",
+      "target": "docs_prisma_v7_setup_performance_considerations",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L264",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_performance_considerations",
+      "target": "docs_prisma_v7_setup_connection_pooling",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L266",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_performance_considerations",
+      "target": "docs_prisma_v7_setup_client_reuse",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L272",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_prisma_v7_implementation_guide",
+      "target": "docs_prisma_v7_setup_troubleshooting",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L280",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_troubleshooting",
+      "target": "docs_prisma_v7_setup_authentication_errors",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L282",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_troubleshooting",
+      "target": "docs_prisma_v7_setup_migration_issues",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L293",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_troubleshooting",
+      "target": "docs_prisma_v7_setup_client_generation_issues",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L304",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_prisma_v7_implementation_guide",
+      "target": "docs_prisma_v7_setup_file_structure",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L315",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_prisma_v7_implementation_guide",
+      "target": "docs_prisma_v7_setup_references",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_V7_SETUP.md",
+      "source_location": "L337",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

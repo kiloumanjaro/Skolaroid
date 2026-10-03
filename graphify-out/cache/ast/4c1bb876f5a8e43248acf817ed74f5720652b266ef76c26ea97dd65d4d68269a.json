@@ -1,0 +1,335 @@
+{
+  "nodes": [
+    {
+      "id": "c_users_kint_louise_documents_projects_skolaroid_docs_dual_map_view_implementation_md",
+      "label": "DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_dual_map_view_implementation_dual_map_view_feature_implementation_complete",
+      "label": "Dual Map View Feature - Implementation Complete",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_dual_map_view_implementation_overview",
+      "label": "Overview",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L3"
+    },
+    {
+      "id": "docs_dual_map_view_implementation_components_created",
+      "label": "Components Created",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L12"
+    },
+    {
+      "id": "docs_dual_map_view_implementation_1_memorypin_tsx_src_components_map_memorypin_tsx",
+      "label": "1. `MemoryPin.tsx` (`src/components/map/MemoryPin.tsx`)",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L14"
+    },
+    {
+      "id": "docs_dual_map_view_implementation_2_memorydetailmodal_tsx_src_components_map_memorydetailmodal_tsx",
+      "label": "2. `MemoryDetailModal.tsx` (`src/components/map/MemoryDetailModal.tsx`)",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L22"
+    },
+    {
+      "id": "docs_dual_map_view_implementation_3_useallmemorieswithcoordinates_ts_src_lib_hooks_useallmemorieswithcoordinates_ts",
+      "label": "3. `useAllMemoriesWithCoordinates.ts` (`src/lib/hooks/useAllMemoriesWithCoordinates.ts`)",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L29"
+    },
+    {
+      "id": "docs_dual_map_view_implementation_4_api_route_src_app_api_prisma_memory_get_all_with_coordinates_route_ts",
+      "label": "4. API Route (`src/app/api/prisma/memory/get-all-with-coordinates/route.ts`)",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L36"
+    },
+    {
+      "id": "docs_dual_map_view_implementation_updated_components",
+      "label": "Updated Components",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L45"
+    },
+    {
+      "id": "docs_dual_map_view_implementation_map_tsx",
+      "label": "`map.tsx`",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L47"
+    },
+    {
+      "id": "docs_dual_map_view_implementation_data_flow",
+      "label": "Data Flow",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L69"
+    },
+    {
+      "id": "docs_dual_map_view_implementation_database_integration_checklist",
+      "label": "Database Integration Checklist",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L91"
+    },
+    {
+      "id": "docs_dual_map_view_implementation_step_1_api_route",
+      "label": "Step 1: API Route",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L95"
+    },
+    {
+      "id": "docs_dual_map_view_implementation_step_2_memory_schema",
+      "label": "Step 2: Memory Schema",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L103"
+    },
+    {
+      "id": "docs_dual_map_view_implementation_step_3_image_storage",
+      "label": "Step 3: Image Storage",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L121"
+    },
+    {
+      "id": "docs_dual_map_view_implementation_component_sizes_current",
+      "label": "Component Sizes (Current)",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L138"
+    },
+    {
+      "id": "docs_dual_map_view_implementation_map_configuration",
+      "label": "Map Configuration",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L155"
+    },
+    {
+      "id": "docs_dual_map_view_implementation_mock_data_locations_for_testing",
+      "label": "Mock Data Locations (for testing)",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L173"
+    },
+    {
+      "id": "docs_dual_map_view_implementation_next_steps",
+      "label": "Next Steps",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L185"
+    },
+    {
+      "id": "docs_dual_map_view_implementation_known_limitations",
+      "label": "Known Limitations",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L196"
+    },
+    {
+      "id": "docs_dual_map_view_implementation_testing_instructions",
+      "label": "Testing Instructions",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L205"
+    }
+  ],
+  "edges": [
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_docs_dual_map_view_implementation_md",
+      "target": "docs_dual_map_view_implementation_dual_map_view_feature_implementation_complete",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_dual_map_view_feature_implementation_complete",
+      "target": "docs_dual_map_view_implementation_overview",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_dual_map_view_feature_implementation_complete",
+      "target": "docs_dual_map_view_implementation_components_created",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_components_created",
+      "target": "docs_dual_map_view_implementation_1_memorypin_tsx_src_components_map_memorypin_tsx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_components_created",
+      "target": "docs_dual_map_view_implementation_2_memorydetailmodal_tsx_src_components_map_memorydetailmodal_tsx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_components_created",
+      "target": "docs_dual_map_view_implementation_3_useallmemorieswithcoordinates_ts_src_lib_hooks_useallmemorieswithcoordinates_ts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_components_created",
+      "target": "docs_dual_map_view_implementation_4_api_route_src_app_api_prisma_memory_get_all_with_coordinates_route_ts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_dual_map_view_feature_implementation_complete",
+      "target": "docs_dual_map_view_implementation_updated_components",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_updated_components",
+      "target": "docs_dual_map_view_implementation_map_tsx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_dual_map_view_feature_implementation_complete",
+      "target": "docs_dual_map_view_implementation_data_flow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_dual_map_view_feature_implementation_complete",
+      "target": "docs_dual_map_view_implementation_database_integration_checklist",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L91",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_database_integration_checklist",
+      "target": "docs_dual_map_view_implementation_step_1_api_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L95",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_database_integration_checklist",
+      "target": "docs_dual_map_view_implementation_step_2_memory_schema",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L103",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_database_integration_checklist",
+      "target": "docs_dual_map_view_implementation_step_3_image_storage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L121",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_dual_map_view_feature_implementation_complete",
+      "target": "docs_dual_map_view_implementation_component_sizes_current",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L138",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_dual_map_view_feature_implementation_complete",
+      "target": "docs_dual_map_view_implementation_map_configuration",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L155",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_dual_map_view_feature_implementation_complete",
+      "target": "docs_dual_map_view_implementation_mock_data_locations_for_testing",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L173",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_dual_map_view_feature_implementation_complete",
+      "target": "docs_dual_map_view_implementation_next_steps",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L185",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_dual_map_view_feature_implementation_complete",
+      "target": "docs_dual_map_view_implementation_known_limitations",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L196",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_dual_map_view_feature_implementation_complete",
+      "target": "docs_dual_map_view_implementation_testing_instructions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": "L205",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

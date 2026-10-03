@@ -1,0 +1,249 @@
+{
+  "nodes": [
+    {
+      "id": "sprint_backlog_skolaroid",
+      "label": "Skolaroid Sprint Backlog",
+      "file_type": "document",
+      "source_file": "docs/SPRINT_BACKLOG.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "sprint_backlog_auth_guards",
+      "label": "Auth & Authorization Guard Stories (AUTH)",
+      "file_type": "concept",
+      "source_file": "docs/SPRINT_BACKLOG.md",
+      "source_location": "Priority 1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "sprint_backlog_content_approval",
+      "label": "Content Approval Workflow Stories (TRUST/APPROVAL)",
+      "file_type": "concept",
+      "source_file": "docs/SPRINT_BACKLOG.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "sprint_backlog_story_highlights",
+      "label": "Story Highlights Stories (HIGHLIGHTS)",
+      "file_type": "concept",
+      "source_file": "docs/SPRINT_BACKLOG.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "sprint_backlog_heatmap",
+      "label": "Heatmap Stories (HEATMAP)",
+      "file_type": "concept",
+      "source_file": "docs/SPRINT_BACKLOG.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "sprint_backlog_search",
+      "label": "Search Stories (SEARCH)",
+      "file_type": "concept",
+      "source_file": "docs/SPRINT_BACKLOG.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "sprint_backlog_fundraiser",
+      "label": "Fundraiser Stories (FUND)",
+      "file_type": "concept",
+      "source_file": "docs/SPRINT_BACKLOG.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "sprint_backlog_on_this_day",
+      "label": "On This Day Stories (OTD)",
+      "file_type": "concept",
+      "source_file": "docs/SPRINT_BACKLOG.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "sprint_backlog_skolaroid",
+      "target": "pre_beta_audit_report_skolaroid",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/SPRINT_BACKLOG.md",
+      "source_location": "Derived from",
+      "weight": 1.0
+    },
+    {
+      "source": "sprint_backlog_skolaroid",
+      "target": "sprint_backlog_auth_guards",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/SPRINT_BACKLOG.md",
+      "source_location": "Priority 1",
+      "weight": 1.0
+    },
+    {
+      "source": "sprint_backlog_skolaroid",
+      "target": "sprint_backlog_content_approval",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/SPRINT_BACKLOG.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "sprint_backlog_skolaroid",
+      "target": "sprint_backlog_story_highlights",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/SPRINT_BACKLOG.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "sprint_backlog_skolaroid",
+      "target": "sprint_backlog_heatmap",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/SPRINT_BACKLOG.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "sprint_backlog_skolaroid",
+      "target": "sprint_backlog_search",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/SPRINT_BACKLOG.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "sprint_backlog_skolaroid",
+      "target": "sprint_backlog_fundraiser",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/SPRINT_BACKLOG.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "sprint_backlog_skolaroid",
+      "target": "sprint_backlog_on_this_day",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/SPRINT_BACKLOG.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "sprint_backlog_content_approval",
+      "target": "project_brief_batch_archives",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/SPRINT_BACKLOG.md",
+      "source_location": "Audit source Feature 2",
+      "weight": 1.0
+    },
+    {
+      "source": "sprint_backlog_heatmap",
+      "target": "project_brief_batch_heatmap",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/SPRINT_BACKLOG.md",
+      "source_location": "Audit source Feature 4",
+      "weight": 1.0
+    },
+    {
+      "source": "sprint_backlog_search",
+      "target": "project_brief_advanced_search",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/SPRINT_BACKLOG.md",
+      "source_location": "Audit source Feature 5",
+      "weight": 1.0
+    },
+    {
+      "source": "sprint_backlog_fundraiser",
+      "target": "project_brief_fundraising",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/SPRINT_BACKLOG.md",
+      "source_location": "Audit source Feature 7",
+      "weight": 1.0
+    },
+    {
+      "source": "sprint_backlog_on_this_day",
+      "target": "project_brief_on_this_day",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/SPRINT_BACKLOG.md",
+      "source_location": "Audit source Feature 8",
+      "weight": 1.0
+    },
+    {
+      "source": "sprint_backlog_auth_guards",
+      "target": "pre_beta_audit_report_cross_cutting_gaps",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/SPRINT_BACKLOG.md",
+      "source_location": "Audit source",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "audit_to_backlog_traceability",
+      "label": "Audit-to-Backlog Traceability Chain",
+      "nodes": [
+        "project_brief_skolaroid",
+        "pre_beta_audit_report_skolaroid",
+        "sprint_backlog_skolaroid"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/SPRINT_BACKLOG.md"
+    }
+  ]
+}

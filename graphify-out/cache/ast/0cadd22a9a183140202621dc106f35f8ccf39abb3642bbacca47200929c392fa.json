@@ -1,0 +1,431 @@
+{
+  "nodes": [
+    {
+      "id": "c_users_kint_louise_documents_projects_skolaroid_docs_prisma_api_demo_md",
+      "label": "PRISMA_API_DEMO.md",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_prisma_api_demo_prisma_v7_api_demo_documentation",
+      "label": "Prisma v7 API Demo Documentation",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_prisma_api_demo_overview",
+      "label": "Overview",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L3"
+    },
+    {
+      "id": "docs_prisma_api_demo_live_demo_interface",
+      "label": "Live Demo Interface",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L7"
+    },
+    {
+      "id": "docs_prisma_api_demo_features",
+      "label": "Features",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L13"
+    },
+    {
+      "id": "docs_prisma_api_demo_api_endpoints",
+      "label": "API Endpoints",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L23"
+    },
+    {
+      "id": "docs_prisma_api_demo_1_create_single_user",
+      "label": "1. Create Single User",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L27"
+    },
+    {
+      "id": "docs_prisma_api_demo_2_create_multiple_users",
+      "label": "2. Create Multiple Users",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L103"
+    },
+    {
+      "id": "docs_prisma_api_demo_3_delete_single_user",
+      "label": "3. Delete Single User",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L183"
+    },
+    {
+      "id": "docs_prisma_api_demo_4_delete_all_users",
+      "label": "4. Delete All Users",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L255"
+    },
+    {
+      "id": "docs_prisma_api_demo_5_get_all_users",
+      "label": "5. Get All Users",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L309"
+    },
+    {
+      "id": "docs_prisma_api_demo_testing_with_curl",
+      "label": "Testing with cURL",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L380"
+    },
+    {
+      "id": "docs_prisma_api_demo_create_user",
+      "label": "Create User",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L382"
+    },
+    {
+      "id": "docs_prisma_api_demo_create_multiple_users",
+      "label": "Create Multiple Users",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L393"
+    },
+    {
+      "id": "docs_prisma_api_demo_delete_user",
+      "label": "Delete User",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L406"
+    },
+    {
+      "id": "docs_prisma_api_demo_delete_all_users",
+      "label": "Delete All Users",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L414"
+    },
+    {
+      "id": "docs_prisma_api_demo_get_all_users",
+      "label": "Get All Users",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L420"
+    },
+    {
+      "id": "docs_prisma_api_demo_testing_with_frontend_demo",
+      "label": "Testing with Frontend Demo",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L426"
+    },
+    {
+      "id": "docs_prisma_api_demo_user_schema",
+      "label": "User Schema",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L447"
+    },
+    {
+      "id": "docs_prisma_api_demo_field_definitions",
+      "label": "Field Definitions",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L459"
+    },
+    {
+      "id": "docs_prisma_api_demo_error_scenarios",
+      "label": "Error Scenarios",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L469"
+    },
+    {
+      "id": "docs_prisma_api_demo_duplicate_email",
+      "label": "Duplicate Email",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L471"
+    },
+    {
+      "id": "docs_prisma_api_demo_user_not_found",
+      "label": "User Not Found",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L483"
+    },
+    {
+      "id": "docs_prisma_api_demo_database_connection_error",
+      "label": "Database Connection Error",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L495"
+    },
+    {
+      "id": "docs_prisma_api_demo_performance_tips",
+      "label": "Performance Tips",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L507"
+    },
+    {
+      "id": "docs_prisma_api_demo_next_steps",
+      "label": "Next Steps",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L514"
+    },
+    {
+      "id": "docs_prisma_api_demo_related_documentation",
+      "label": "Related Documentation",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L535"
+    }
+  ],
+  "edges": [
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_docs_prisma_api_demo_md",
+      "target": "docs_prisma_api_demo_prisma_v7_api_demo_documentation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_prisma_v7_api_demo_documentation",
+      "target": "docs_prisma_api_demo_overview",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_prisma_v7_api_demo_documentation",
+      "target": "docs_prisma_api_demo_live_demo_interface",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_live_demo_interface",
+      "target": "docs_prisma_api_demo_features",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_prisma_v7_api_demo_documentation",
+      "target": "docs_prisma_api_demo_api_endpoints",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_api_endpoints",
+      "target": "docs_prisma_api_demo_1_create_single_user",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_api_endpoints",
+      "target": "docs_prisma_api_demo_2_create_multiple_users",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L103",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_api_endpoints",
+      "target": "docs_prisma_api_demo_3_delete_single_user",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L183",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_api_endpoints",
+      "target": "docs_prisma_api_demo_4_delete_all_users",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L255",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_api_endpoints",
+      "target": "docs_prisma_api_demo_5_get_all_users",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L309",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_prisma_v7_api_demo_documentation",
+      "target": "docs_prisma_api_demo_testing_with_curl",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L380",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_testing_with_curl",
+      "target": "docs_prisma_api_demo_create_user",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L382",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_testing_with_curl",
+      "target": "docs_prisma_api_demo_create_multiple_users",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L393",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_testing_with_curl",
+      "target": "docs_prisma_api_demo_delete_user",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L406",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_testing_with_curl",
+      "target": "docs_prisma_api_demo_delete_all_users",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L414",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_testing_with_curl",
+      "target": "docs_prisma_api_demo_get_all_users",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L420",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_prisma_v7_api_demo_documentation",
+      "target": "docs_prisma_api_demo_testing_with_frontend_demo",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L426",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_prisma_v7_api_demo_documentation",
+      "target": "docs_prisma_api_demo_user_schema",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L447",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_user_schema",
+      "target": "docs_prisma_api_demo_field_definitions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L459",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_prisma_v7_api_demo_documentation",
+      "target": "docs_prisma_api_demo_error_scenarios",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L469",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_error_scenarios",
+      "target": "docs_prisma_api_demo_duplicate_email",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L471",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_error_scenarios",
+      "target": "docs_prisma_api_demo_user_not_found",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L483",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_error_scenarios",
+      "target": "docs_prisma_api_demo_database_connection_error",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L495",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_prisma_v7_api_demo_documentation",
+      "target": "docs_prisma_api_demo_performance_tips",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L507",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_prisma_v7_api_demo_documentation",
+      "target": "docs_prisma_api_demo_next_steps",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L514",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_prisma_v7_api_demo_documentation",
+      "target": "docs_prisma_api_demo_related_documentation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_API_DEMO.md",
+      "source_location": "L535",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

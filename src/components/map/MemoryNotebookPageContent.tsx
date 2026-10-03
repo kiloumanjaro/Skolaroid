@@ -57,7 +57,7 @@ interface MemoryNotebookPageContentProps {
   onCommentsCollapsedChange?: (collapsed: boolean) => void;
   currentUserId?: string;
   authUserId?: string;
-  userGroups?: Array<{ id: string; name: string }>;
+  userGroups?: { id: string; name: string }[];
   onEditClick?: () => void;
   onReportClick?: () => void;
   onDeleteClick?: () => void;

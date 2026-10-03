@@ -30,11 +30,20 @@ function formatDateTime(iso: string) {
   }).format(new Date(iso));
 }
 
+async function jsonOrThrow<T>(res: Response): Promise<T> {
+  if (!res.ok) {
+    throw new Error(`Request failed: ${res.status} ${res.statusText}`);
+  }
+  return res.json() as Promise<T>;
+}
+
 function useActiveEvents() {
   return useQuery<{ success: boolean; data: LiveEvent[] }>({
     queryKey: ['live-events', 'admin-all'],
     queryFn: () =>
-      fetch('/api/prisma/live-event/get-active').then((r) => r.json()),
+      fetch('/api/prisma/live-event/get-active').then((r) =>
+        jsonOrThrow<{ success: boolean; data: LiveEvent[] }>(r)
+      ),
   });
 }
 
@@ -44,7 +53,7 @@ function useDeactivateEvent() {
     mutationFn: (id: string) =>
       fetch(`/api/prisma/live-event/${id}/deactivate`, {
         method: 'PATCH',
-      }).then((r) => r.json()),
+      }).then((r) => jsonOrThrow(r)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['live-events'] });
     },
@@ -59,7 +68,7 @@ function useCreateEvent() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
-      }).then((r) => r.json()),
+      }).then((r) => jsonOrThrow<{ success: boolean; message?: string }>(r)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['live-events'] });
     },
@@ -113,6 +122,8 @@ function LocationPicker({
       map.remove();
       mapRef.current = null;
     };
+    // Mount-only: Mapbox owns the DOM/teardown after init; `onSelect` is read
+    // through the closure but should not retrigger map recreation.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

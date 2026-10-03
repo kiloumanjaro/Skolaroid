@@ -1,0 +1,168 @@
+{
+  "nodes": [
+    {
+      "id": "prompts_sketch_skolaroid_hand_drawn_design_system",
+      "label": "Skolaroid Hand-Drawn Design System",
+      "file_type": "document",
+      "source_file": ".github/prompts/sketch.prompt.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "prompts_sketch_wobbly_borders",
+      "label": "Wobbly Border Radius Constants",
+      "file_type": "concept",
+      "source_file": ".github/prompts/sketch.prompt.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "prompts_sketch_hard_offset_shadows",
+      "label": "Hard Offset Shadows",
+      "file_type": "rationale",
+      "source_file": ".github/prompts/sketch.prompt.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "prompts_sketch_polaroid_card",
+      "label": "PolaroidCard Component",
+      "file_type": "concept",
+      "source_file": ".github/prompts/sketch.prompt.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "prompts_sketch_shadcn_primitives",
+      "label": "shadcn/ui Primitives",
+      "file_type": "concept",
+      "source_file": ".github/prompts/sketch.prompt.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "prompts_sketch_skolaroid_blue",
+      "label": "Skolaroid Blue Brand Color",
+      "file_type": "concept",
+      "source_file": ".github/prompts/sketch.prompt.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "prompts_sketch_skolaroid_hand_drawn_design_system",
+      "target": "prompts_sketch_wobbly_borders",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/prompts/sketch.prompt.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_sketch_skolaroid_hand_drawn_design_system",
+      "target": "prompts_sketch_hard_offset_shadows",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/prompts/sketch.prompt.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_sketch_skolaroid_hand_drawn_design_system",
+      "target": "prompts_sketch_polaroid_card",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/prompts/sketch.prompt.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_sketch_skolaroid_hand_drawn_design_system",
+      "target": "prompts_sketch_shadcn_primitives",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/prompts/sketch.prompt.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_sketch_skolaroid_hand_drawn_design_system",
+      "target": "prompts_sketch_skolaroid_blue",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/prompts/sketch.prompt.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_sketch_shadcn_primitives",
+      "target": "github_copilot_instructions_tailwind_radix_ui",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": ".github/prompts/sketch.prompt.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_sketch_skolaroid_blue",
+      "target": "github_copilot_instructions_tailwind_radix_ui",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": ".github/prompts/sketch.prompt.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_sketch_skolaroid_hand_drawn_design_system",
+      "target": "github_copilot_instructions_nextjs_app_router",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/prompts/sketch.prompt.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "skolaroid_frontend_stack",
+      "label": "Skolaroid Frontend Stack and Design System",
+      "nodes": [
+        "github_copilot_instructions_nextjs_app_router",
+        "github_copilot_instructions_tailwind_radix_ui",
+        "prompts_sketch_skolaroid_hand_drawn_design_system",
+        "instructions_nextjs_server_client_boundary"
+      ],
+      "relation": "form",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": ".github/prompts/sketch.prompt.md"
+    }
+  ]
+}

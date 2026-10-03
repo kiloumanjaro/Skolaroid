@@ -1,0 +1,367 @@
+{
+  "nodes": [
+    {
+      "id": "c_users_kint_louise_documents_projects_skolaroid_docs_database_schema_md",
+      "label": "database_schema.md",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_database_schema_skolaroid_database_schema_relationships_complete_guide",
+      "label": "Skolaroid Database Schema & Relationships (Complete Guide)",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_database_schema_1_academic_identity_core",
+      "label": "1. Academic & Identity Core",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L7"
+    },
+    {
+      "id": "docs_database_schema_user",
+      "label": "**User**",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L9"
+    },
+    {
+      "id": "docs_database_schema_program",
+      "label": "**Program**",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L17"
+    },
+    {
+      "id": "docs_database_schema_batch",
+      "label": "**Batch**",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L24"
+    },
+    {
+      "id": "docs_database_schema_programbatch",
+      "label": "**ProgramBatch**",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L31"
+    },
+    {
+      "id": "docs_database_schema_2_social_content_layer",
+      "label": "2. Social & Content Layer",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L41"
+    },
+    {
+      "id": "docs_database_schema_memory",
+      "label": "**Memory**",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L43"
+    },
+    {
+      "id": "docs_database_schema_memorycomment",
+      "label": "**MemoryComment**",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L54"
+    },
+    {
+      "id": "docs_database_schema_memoryvote",
+      "label": "**MemoryVote**",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L62"
+    },
+    {
+      "id": "docs_database_schema_location",
+      "label": "**Location**",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L70"
+    },
+    {
+      "id": "docs_database_schema_tag",
+      "label": "**Tag**",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L77"
+    },
+    {
+      "id": "docs_database_schema_3_privacy_groups",
+      "label": "3. Privacy & Groups",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L86"
+    },
+    {
+      "id": "docs_database_schema_privategroup",
+      "label": "**PrivateGroup**",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L88"
+    },
+    {
+      "id": "docs_database_schema_groupmembership",
+      "label": "**GroupMembership**",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L96"
+    },
+    {
+      "id": "docs_database_schema_invitation",
+      "label": "**Invitation**",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L104"
+    },
+    {
+      "id": "docs_database_schema_4_system_moderation",
+      "label": "4. System & Moderation",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L114"
+    },
+    {
+      "id": "docs_database_schema_report",
+      "label": "**Report**",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L116"
+    },
+    {
+      "id": "docs_database_schema_moderationactionlog",
+      "label": "**ModerationActionLog**",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L126"
+    },
+    {
+      "id": "docs_database_schema_notification",
+      "label": "**Notification**",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L134"
+    },
+    {
+      "id": "docs_database_schema_uploadratelimit",
+      "label": "**UploadRateLimit**",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L143"
+    },
+    {
+      "id": "docs_database_schema_exhaustive_relationship_conflict_summary",
+      "label": "Exhaustive Relationship & Conflict Summary",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L152"
+    }
+  ],
+  "edges": [
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_docs_database_schema_md",
+      "target": "docs_database_schema_skolaroid_database_schema_relationships_complete_guide",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_database_schema_skolaroid_database_schema_relationships_complete_guide",
+      "target": "docs_database_schema_1_academic_identity_core",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_database_schema_1_academic_identity_core",
+      "target": "docs_database_schema_user",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_database_schema_1_academic_identity_core",
+      "target": "docs_database_schema_program",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_database_schema_1_academic_identity_core",
+      "target": "docs_database_schema_batch",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_database_schema_1_academic_identity_core",
+      "target": "docs_database_schema_programbatch",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_database_schema_skolaroid_database_schema_relationships_complete_guide",
+      "target": "docs_database_schema_2_social_content_layer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_database_schema_2_social_content_layer",
+      "target": "docs_database_schema_memory",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_database_schema_2_social_content_layer",
+      "target": "docs_database_schema_memorycomment",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_database_schema_2_social_content_layer",
+      "target": "docs_database_schema_memoryvote",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_database_schema_2_social_content_layer",
+      "target": "docs_database_schema_location",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_database_schema_2_social_content_layer",
+      "target": "docs_database_schema_tag",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L77",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_database_schema_skolaroid_database_schema_relationships_complete_guide",
+      "target": "docs_database_schema_3_privacy_groups",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L86",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_database_schema_3_privacy_groups",
+      "target": "docs_database_schema_privategroup",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L88",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_database_schema_3_privacy_groups",
+      "target": "docs_database_schema_groupmembership",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_database_schema_3_privacy_groups",
+      "target": "docs_database_schema_invitation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L104",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_database_schema_skolaroid_database_schema_relationships_complete_guide",
+      "target": "docs_database_schema_4_system_moderation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L114",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_database_schema_4_system_moderation",
+      "target": "docs_database_schema_report",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L116",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_database_schema_4_system_moderation",
+      "target": "docs_database_schema_moderationactionlog",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L126",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_database_schema_4_system_moderation",
+      "target": "docs_database_schema_notification",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L134",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_database_schema_4_system_moderation",
+      "target": "docs_database_schema_uploadratelimit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L143",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_database_schema_skolaroid_database_schema_relationships_complete_guide",
+      "target": "docs_database_schema_exhaustive_relationship_conflict_summary",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\database_schema.md",
+      "source_location": "L152",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

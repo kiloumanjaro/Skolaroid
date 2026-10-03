@@ -1,0 +1,38 @@
+{
+  "nodes": [
+    {
+      "id": "eras_1990_image",
+      "label": "1990 Era Image - Oblation Statue (Halftone)",
+      "file_type": "image",
+      "source_file": "public/assets/images/eras/1990.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "eras_1990_image",
+      "target": "eras_timeline_concept",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "public/assets/images/eras/1990.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "eras_1990_image",
+      "target": "eras_2000_image",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "public/assets/images/eras/1990.png",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

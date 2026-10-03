@@ -74,7 +74,14 @@ export function GalleryPolaroid({
           className="relative overflow-hidden bg-secondary"
           style={{ aspectRatio: '7/10' }}
         >
-          <Image src={src} alt={alt} fill className="object-cover" />
+          <Image
+            src={src}
+            alt={alt}
+            fill
+            sizes="(max-width: 768px) 50vw, 280px"
+            loading="lazy"
+            className="object-cover"
+          />
         </div>
       </div>
     </motion.div>

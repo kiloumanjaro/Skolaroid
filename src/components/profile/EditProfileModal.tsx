@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
 import { cn } from '@/lib/utils';
 import { useUpdateProfile } from '@/lib/hooks/useUpdateProfile';
-import { updateProfileSchema } from '@/lib/schemas';
+import { PH_PHONE_PLACEHOLDER, updateProfileSchema } from '@/lib/schemas';
 import type { CurrentUserProfile } from '@/lib/hooks/useCurrentUser';
 import type { User } from '@supabase/supabase-js';
 import { profileFlatButtonClass } from '@/components/profile/ProfileShell';
@@ -172,7 +172,7 @@ export function EditProfileModal({
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="+63 XXX XXX XXXX"
+                placeholder={PH_PHONE_PLACEHOLDER}
                 className={cn(
                   errors.phone &&
                     'border-destructive focus-visible:ring-destructive/20'

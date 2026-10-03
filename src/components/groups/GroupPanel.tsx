@@ -14,21 +14,15 @@ import { MediaTab } from '@/components/groups/tabs/MediaTab';
 import { AboutTab } from '@/components/groups/tabs/AboutTab';
 import { RolesTab } from '@/components/groups/tabs/RolesTab';
 import { SettingsTab } from '@/components/groups/tabs/SettingsTab';
-import { type Group, type GroupMember } from '@/lib/types/group';
+import { type Group } from '@/lib/types/group';
 import { useUserAuth } from '@/lib/hooks/useUserAuth';
-import {
-  type GroupResponse,
-  type GroupMembershipResponse,
-  type GroupMemberResponse,
-} from '@/lib/hooks/useCreateGroup';
+import { type GroupResponse } from '@/lib/hooks/useCreateGroup';
 import { useUserGroups } from '@/lib/hooks/useUserGroups';
 import { useGroupById } from '@/lib/hooks/useGroupById';
 import { useDeleteGroup } from '@/lib/hooks/useDeleteGroup';
 import { useRemoveGroupMember } from '@/lib/hooks/useGroupMembers';
-import {
-  canRoleUsePermission,
-  normaliseGroupRolePrivileges,
-} from '@/lib/group-permissions';
+import { canRoleUsePermission } from '@/lib/group-permissions';
+import { toGroup } from './GroupPanel.helpers';
 import { cn } from '@/lib/utils';
 import {
   X,
@@ -56,54 +50,13 @@ interface GroupPanelProps {
 type TabType = 'members' | 'media' | 'settings' | 'about' | 'roles';
 type MemberChangeAction = 'removed' | 'role-updated' | 'ownership-transferred';
 
-/** Transform an API member response to the frontend GroupMember shape. */
-function toGroupMember(
-  m: GroupMemberResponse,
-  creatorId: string | null,
-  membership?: GroupMembershipResponse
-): GroupMember {
-  return {
-    id: m.id,
-    name: `${m.firstName ?? ''} ${m.lastName ?? ''}`.trim() || m.email,
-    email: m.email,
-    role:
-      m.role ??
-      (m.id === creatorId
-        ? ('OWNER' as const)
-        : (membership?.role ?? 'MEMBER')),
-    joinedAt: m.joinedAt ?? membership?.joinedAt ?? new Date().toISOString(),
-  };
-}
-
-/** Transform an API GroupResponse to the frontend Group shape. */
-function toGroup(g: GroupResponse): Group {
-  const membershipByUser = new Map(
-    (g.groupMemberships ?? []).map((membership) => [
-      membership.userId,
-      membership,
-    ])
-  );
-
-  return {
-    id: g.id,
-    name: g.name,
-    description: g.description ?? undefined,
-    message: g.message ?? undefined,
-    privacy: 'PRIVATE',
-    visibility: 'VISIBLE',
-    coverPhotoUrl: undefined,
-    memberCount: g._count.members,
-    postCount: g._count.memories,
-    ownerId: g.creatorId ?? '',
-    members: g.members.map((m) =>
-      toGroupMember(m, g.creatorId, membershipByUser.get(m.id))
-    ),
-    rolePrivileges: normaliseGroupRolePrivileges(g.rolePrivileges),
-    currentUserRole: g.currentUserRole,
-    createdAt: g.createdAt,
-  };
-}
-
+/**
+ * Side-panel surface for browsing and managing a group: switcher, tabs
+ * (Members / Media / About / Roles / Settings), and the create / invite /
+ * share / leave / delete modals. Mounted via a React portal.
+ *
+ * Pure API → frontend transforms live in `./GroupPanel.helpers.ts`.
+ */
 export function GroupPanel({
   open,
   selectedGroupId,

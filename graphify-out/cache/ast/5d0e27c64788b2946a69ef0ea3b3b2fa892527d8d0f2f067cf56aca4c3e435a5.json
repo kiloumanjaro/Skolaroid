@@ -1,0 +1,223 @@
+{
+  "nodes": [
+    {
+      "id": "c_users_kint_louise_documents_projects_skolaroid_github_prompts_remember_prompt_md",
+      "label": "remember.prompt.md",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "prompts_remember_prompt_memory_keeper",
+      "label": "Memory Keeper",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L7"
+    },
+    {
+      "id": "prompts_remember_prompt_scopes",
+      "label": "Scopes",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L11"
+    },
+    {
+      "id": "prompts_remember_prompt_your_mission",
+      "label": "Your Mission",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L22"
+    },
+    {
+      "id": "prompts_remember_prompt_syntax",
+      "label": "Syntax",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L33"
+    },
+    {
+      "id": "prompts_remember_prompt_memory_file_structure",
+      "label": "Memory File Structure",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L53"
+    },
+    {
+      "id": "prompts_remember_prompt_description_frontmatter",
+      "label": "Description Frontmatter",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L55"
+    },
+    {
+      "id": "prompts_remember_prompt_applyto_frontmatter",
+      "label": "ApplyTo Frontmatter",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L59"
+    },
+    {
+      "id": "prompts_remember_prompt_main_headline",
+      "label": "Main Headline",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L63"
+    },
+    {
+      "id": "prompts_remember_prompt_tag_line",
+      "label": "Tag Line",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L67"
+    },
+    {
+      "id": "prompts_remember_prompt_learnings",
+      "label": "Learnings",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L71"
+    },
+    {
+      "id": "prompts_remember_prompt_process",
+      "label": "Process",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L75"
+    },
+    {
+      "id": "prompts_remember_prompt_quality_guidelines",
+      "label": "Quality Guidelines",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L114"
+    },
+    {
+      "id": "prompts_remember_prompt_update_triggers",
+      "label": "Update Triggers",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L124"
+    }
+  ],
+  "edges": [
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_github_prompts_remember_prompt_md",
+      "target": "prompts_remember_prompt_memory_keeper",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_remember_prompt_memory_keeper",
+      "target": "prompts_remember_prompt_scopes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_remember_prompt_memory_keeper",
+      "target": "prompts_remember_prompt_your_mission",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_remember_prompt_memory_keeper",
+      "target": "prompts_remember_prompt_syntax",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_remember_prompt_memory_keeper",
+      "target": "prompts_remember_prompt_memory_file_structure",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_remember_prompt_memory_file_structure",
+      "target": "prompts_remember_prompt_description_frontmatter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_remember_prompt_memory_file_structure",
+      "target": "prompts_remember_prompt_applyto_frontmatter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L59",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_remember_prompt_memory_file_structure",
+      "target": "prompts_remember_prompt_main_headline",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_remember_prompt_memory_file_structure",
+      "target": "prompts_remember_prompt_tag_line",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_remember_prompt_memory_file_structure",
+      "target": "prompts_remember_prompt_learnings",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_remember_prompt_memory_keeper",
+      "target": "prompts_remember_prompt_process",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_remember_prompt_memory_keeper",
+      "target": "prompts_remember_prompt_quality_guidelines",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L114",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_remember_prompt_memory_keeper",
+      "target": "prompts_remember_prompt_update_triggers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\remember.prompt.md",
+      "source_location": "L124",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

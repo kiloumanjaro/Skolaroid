@@ -1,8 +1,5 @@
 'use client';
 
-// TODO: Update next.config.ts images.remotePatterns when real media URLs
-// (e.g., Supabase storage) are used instead of local placeholders.
-
 import { useState } from 'react';
 import Image from 'next/image';
 import {

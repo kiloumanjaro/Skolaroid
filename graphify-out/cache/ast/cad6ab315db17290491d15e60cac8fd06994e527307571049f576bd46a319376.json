@@ -1,0 +1,335 @@
+{
+  "nodes": [
+    {
+      "id": "c_users_kint_louise_documents_projects_skolaroid_readme_md",
+      "label": "README.md",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "skolaroid_readme_project_overview",
+      "label": "\ud83d\uddfa\ufe0f Project Overview",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L56"
+    },
+    {
+      "id": "skolaroid_readme_why_skolaroid",
+      "label": "\ud83d\udca1 Why Skolaroid?",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L62"
+    },
+    {
+      "id": "skolaroid_readme_tech_stack",
+      "label": "\ud83d\udcda Tech Stack",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L71"
+    },
+    {
+      "id": "skolaroid_readme_documentation",
+      "label": "\ud83d\udcd6 Documentation",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L89"
+    },
+    {
+      "id": "skolaroid_readme_api_documentation_swagger",
+      "label": "API Documentation (Swagger)",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L102"
+    },
+    {
+      "id": "skolaroid_readme_getting_started",
+      "label": "\ud83d\udcbb Getting Started",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L110"
+    },
+    {
+      "id": "skolaroid_readme_prerequisites",
+      "label": "\ud83d\udd27 Prerequisites",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L114"
+    },
+    {
+      "id": "skolaroid_readme_installation",
+      "label": "\ud83d\udee0\ufe0f Installation",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L122"
+    },
+    {
+      "id": "skolaroid_readme_1_clone_the_repository",
+      "label": "1. Clone the Repository",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L124"
+    },
+    {
+      "id": "skolaroid_readme_2_install_dependencies",
+      "label": "2. Install Dependencies",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L131"
+    },
+    {
+      "id": "skolaroid_readme_3_environment_setup",
+      "label": "3. Environment Setup",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L137"
+    },
+    {
+      "id": "skolaroid_readme_4_run_database_migrations",
+      "label": "4. Run Database Migrations",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L160"
+    },
+    {
+      "id": "skolaroid_readme_running_the_application",
+      "label": "\u25b6\ufe0f Running the Application",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L167"
+    },
+    {
+      "id": "skolaroid_readme_development_server",
+      "label": "Development Server",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L169"
+    },
+    {
+      "id": "skolaroid_readme_production_build",
+      "label": "Production Build",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L177"
+    },
+    {
+      "id": "skolaroid_readme_type_checking_linting",
+      "label": "Type Checking & Linting",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L184"
+    },
+    {
+      "id": "skolaroid_readme_contributing",
+      "label": "\ud83d\udcec Contributing",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L194"
+    },
+    {
+      "id": "skolaroid_readme_contributors",
+      "label": "\ud83d\udce2 Contributors",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L206"
+    },
+    {
+      "id": "skolaroid_readme_project_structure",
+      "label": "\ud83d\udd0e Project Structure",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L212"
+    },
+    {
+      "id": "skolaroid_readme_license",
+      "label": "\u2696\ufe0f License",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L251"
+    }
+  ],
+  "edges": [
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_readme_md",
+      "target": "skolaroid_readme_project_overview",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L56",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_readme_project_overview",
+      "target": "skolaroid_readme_why_skolaroid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_readme_project_overview",
+      "target": "skolaroid_readme_tech_stack",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_readme_md",
+      "target": "skolaroid_readme_documentation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L89",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_readme_documentation",
+      "target": "skolaroid_readme_api_documentation_swagger",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L102",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_readme_md",
+      "target": "skolaroid_readme_getting_started",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_readme_getting_started",
+      "target": "skolaroid_readme_prerequisites",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L114",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_readme_getting_started",
+      "target": "skolaroid_readme_installation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L122",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_readme_installation",
+      "target": "skolaroid_readme_1_clone_the_repository",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L124",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_readme_installation",
+      "target": "skolaroid_readme_2_install_dependencies",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L131",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_readme_installation",
+      "target": "skolaroid_readme_3_environment_setup",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L137",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_readme_installation",
+      "target": "skolaroid_readme_4_run_database_migrations",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L160",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_readme_getting_started",
+      "target": "skolaroid_readme_running_the_application",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L167",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_readme_running_the_application",
+      "target": "skolaroid_readme_development_server",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L169",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_readme_running_the_application",
+      "target": "skolaroid_readme_production_build",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L177",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_readme_running_the_application",
+      "target": "skolaroid_readme_type_checking_linting",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L184",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_readme_md",
+      "target": "skolaroid_readme_contributing",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L194",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_readme_contributing",
+      "target": "skolaroid_readme_contributors",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L206",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_readme_contributing",
+      "target": "skolaroid_readme_project_structure",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L212",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_readme_md",
+      "target": "skolaroid_readme_license",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\README.md",
+      "source_location": "L251",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

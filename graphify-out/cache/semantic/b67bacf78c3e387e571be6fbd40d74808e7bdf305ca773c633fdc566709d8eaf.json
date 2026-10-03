@@ -1,0 +1,132 @@
+{
+  "nodes": [
+    {
+      "id": "swagger_swagger_api_spec",
+      "label": "Skolaroid OpenAPI Specification",
+      "file_type": "document",
+      "source_file": "swagger/swagger.yaml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "swagger_swagger_supabase_session",
+      "label": "SupabaseSession Security Scheme",
+      "file_type": "concept",
+      "source_file": "swagger/swagger.yaml",
+      "source_location": "securitySchemes",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "swagger_swagger_cron_bearer",
+      "label": "CronBearer Security Scheme",
+      "file_type": "concept",
+      "source_file": "swagger/swagger.yaml",
+      "source_location": "securitySchemes",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "swagger_swagger_memory_visibility",
+      "label": "MemoryVisibility Enum",
+      "file_type": "concept",
+      "source_file": "swagger/swagger.yaml",
+      "source_location": "schemas",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "swagger_swagger_global_search",
+      "label": "Global Search Endpoint",
+      "file_type": "concept",
+      "source_file": "swagger/swagger.yaml",
+      "source_location": "/api/prisma/search",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "swagger_swagger_api_spec",
+      "target": "swagger_swagger_supabase_session",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "swagger/swagger.yaml",
+      "source_location": "securitySchemes",
+      "weight": 1.0
+    },
+    {
+      "source": "swagger_swagger_api_spec",
+      "target": "swagger_swagger_cron_bearer",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "swagger/swagger.yaml",
+      "source_location": "securitySchemes",
+      "weight": 1.0
+    },
+    {
+      "source": "swagger_swagger_api_spec",
+      "target": "swagger_swagger_memory_visibility",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "swagger/swagger.yaml",
+      "source_location": "schemas",
+      "weight": 1.0
+    },
+    {
+      "source": "swagger_swagger_api_spec",
+      "target": "swagger_swagger_global_search",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "swagger/swagger.yaml",
+      "source_location": "/api/prisma/search",
+      "weight": 1.0
+    },
+    {
+      "source": "swagger_swagger_global_search",
+      "target": "sprint_backlog_search",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "swagger/swagger.yaml",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "swagger_swagger_supabase_session",
+      "target": "sprint_backlog_auth_guards",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "swagger/swagger.yaml",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "swagger_swagger_cron_bearer",
+      "target": "database_schema_invitation",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": "swagger/swagger.yaml",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

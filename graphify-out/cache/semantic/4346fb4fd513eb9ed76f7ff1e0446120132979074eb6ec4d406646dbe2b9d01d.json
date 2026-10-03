@@ -1,0 +1,70 @@
+{
+  "nodes": [
+    {
+      "id": "pre_beta_audit_report_skolaroid",
+      "label": "Skolaroid Pre-Beta Audit Report",
+      "file_type": "document",
+      "source_file": "docs/PRE_BETA_AUDIT_REPORT.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "pre_beta_audit_report_feature_status",
+      "label": "Feature Implementation Status Matrix",
+      "file_type": "concept",
+      "source_file": "docs/PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "Feature Implementation Status",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "pre_beta_audit_report_cross_cutting_gaps",
+      "label": "Cross-Cutting Technical Gaps",
+      "file_type": "concept",
+      "source_file": "docs/PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "Cross-Cutting Technical Gaps",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "pre_beta_audit_report_skolaroid",
+      "target": "pre_beta_audit_report_feature_status",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "Feature Implementation Status",
+      "weight": 1.0
+    },
+    {
+      "source": "pre_beta_audit_report_skolaroid",
+      "target": "pre_beta_audit_report_cross_cutting_gaps",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "Cross-Cutting Technical Gaps",
+      "weight": 1.0
+    },
+    {
+      "source": "pre_beta_audit_report_feature_status",
+      "target": "project_brief_skolaroid",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "Feature Implementation Status",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

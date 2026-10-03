@@ -75,9 +75,6 @@ export async function POST(
 
     const tags = Array.isArray(draft.tags) ? (draft.tags as string[]) : [];
 
-    console.log(
-      `[photobooth-draft/${token}/submit] creating memory for user ${authUser.id}`
-    );
     const memory = await createMemoryService({
       title: draft.event.name,
       description: draft.caption ?? undefined,
@@ -95,9 +92,6 @@ export async function POST(
       data: { usedAt: new Date() },
     });
 
-    console.log(
-      `[photobooth-draft/${token}/submit] successfully created memory ${memory.id}`
-    );
     return NextResponse.json({ success: true, data: { memoryId: memory.id } });
   } catch (error) {
     console.error(`[photobooth-draft/${token}/submit] error:`, error);

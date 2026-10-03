@@ -1,0 +1,190 @@
+{
+  "nodes": [
+    {
+      "id": "docs_prisma_v7_setup_guide",
+      "label": "Prisma v7 Implementation Guide",
+      "file_type": "document",
+      "source_file": "docs/PRISMA_V7_SETUP.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_v7_setup_config",
+      "label": "prisma.config.ts",
+      "file_type": "code",
+      "source_file": "docs/PRISMA_V7_SETUP.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_v7_setup_schema",
+      "label": "prisma/schema.prisma",
+      "file_type": "code",
+      "source_file": "docs/PRISMA_V7_SETUP.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_v7_setup_client_singleton",
+      "label": "Prisma Client Singleton (src/lib/prisma.ts)",
+      "file_type": "code",
+      "source_file": "docs/PRISMA_V7_SETUP.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_v7_setup_mandatory_adapters",
+      "label": "Mandatory Database Adapters in v7",
+      "file_type": "rationale",
+      "source_file": "docs/PRISMA_V7_SETUP.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_v7_setup_adapter_pg",
+      "label": "@prisma/adapter-pg",
+      "file_type": "concept",
+      "source_file": "docs/PRISMA_V7_SETUP.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_v7_setup_singleton_pattern",
+      "label": "Singleton Pattern for Client Reuse",
+      "file_type": "rationale",
+      "source_file": "docs/PRISMA_V7_SETUP.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_prisma_v7_setup_guide",
+      "target": "docs_prisma_v7_setup_config",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_V7_SETUP.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_guide",
+      "target": "docs_prisma_v7_setup_schema",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_V7_SETUP.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_guide",
+      "target": "docs_prisma_v7_setup_client_singleton",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_V7_SETUP.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_mandatory_adapters",
+      "target": "docs_prisma_v7_setup_adapter_pg",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_V7_SETUP.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_client_singleton",
+      "target": "docs_prisma_v7_setup_adapter_pg",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_V7_SETUP.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_singleton_pattern",
+      "target": "docs_prisma_v7_setup_client_singleton",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_V7_SETUP.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_config",
+      "target": "docs_prisma_v7_setup_schema",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_V7_SETUP.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_guide",
+      "target": "docs_prisma_troubleshooting_guide",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/PRISMA_V7_SETUP.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_v7_setup_client_singleton",
+      "target": "docs_prisma_quick_reference_client",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/PRISMA_V7_SETUP.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "prisma_v7_doc_set",
+      "label": "Prisma v7 Documentation Set",
+      "nodes": [
+        "docs_prisma_v7_setup_guide",
+        "docs_prisma_api_demo_guide",
+        "docs_prisma_quick_reference_guide",
+        "docs_prisma_troubleshooting_guide",
+        "docs_prisma_workflow_guide"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/PRISMA_V7_SETUP.md"
+    }
+  ]
+}

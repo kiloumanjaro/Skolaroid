@@ -1,5 +1,10 @@
 'use client';
 
+import {
+  generateId,
+  formatFileSize,
+  uploadFileWithProgress,
+} from './AddMemoryModal.helpers';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/Button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/Dialog';
@@ -138,71 +143,23 @@ const LANDMARK_TYPE_ICONS = {
   security: Shield,
 } as const;
 
-// =============================================================================
-// HELPERS
-// =============================================================================
-
-function generateId(): string {
-  return Math.random().toString(36).substring(2, 12);
-}
-
-function formatFileSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
-function uploadFileWithProgress(
-  file: File,
-  onProgress: (percent: number) => void
-): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    const formData = new FormData();
-    formData.append('file', file);
-
-    xhr.upload.addEventListener('progress', (e) => {
-      if (e.lengthComputable) {
-        const percent = Math.round((e.loaded / e.total) * 100);
-        onProgress(percent);
-      }
-    });
-
-    xhr.addEventListener('load', () => {
-      try {
-        const json = JSON.parse(xhr.responseText);
-        if (xhr.status >= 200 && xhr.status < 300 && json.success) {
-          resolve(json.url as string);
-        } else {
-          reject(new Error(json.message ?? 'Upload failed'));
-        }
-      } catch {
-        reject(new Error('Invalid response from server'));
-      }
-    });
-
-    xhr.addEventListener('error', () => {
-      reject(new Error('Network error during upload'));
-    });
-
-    xhr.addEventListener('abort', () => {
-      reject(new Error('Upload aborted'));
-    });
-
-    xhr.open('POST', '/api/storage/upload-memory-media');
-    xhr.send(formData);
-  });
-}
+/** Time (ms) the success confirmation stays visible before the modal closes. */
+const SUCCESS_MODAL_DURATION_MS = 2000;
 
 // =============================================================================
 // COMPONENT
 // =============================================================================
 
+/**
+ * Multi-tab modal that walks the user through creating a memory: media upload,
+ * location pick, caption + tags, and privacy/visibility. Mounted in a React
+ * portal so it overlays the rest of the app chrome.
+ *
+ * Helpers live in `./AddMemoryModal.helpers.ts`.
+ */
 export function AddMemoryModal({
   open,
   onOpenChange,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  defaultEra,
   defaultGroupId,
   onRequestMapSelection,
 }: AddMemoryModalProps) {
@@ -213,6 +170,8 @@ export function AddMemoryModal({
   const [activeTab, setActiveTab] = useState<Tab>('upload');
   const [highestReachedTab, setHighestReachedTab] = useState<number>(0);
   const [uploadingFiles, setUploadingFiles] = useState<UploadingFile[]>([]);
+  const uploadingFilesRef = useRef<UploadingFile[]>([]);
+  uploadingFilesRef.current = uploadingFiles;
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [caption, setCaption] = useState('');
   const [memoryDate, setMemoryDate] = useState('');
@@ -224,14 +183,11 @@ export function AddMemoryModal({
   const [showSuccess, setShowSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [, setShowVisibilityDropdown] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [placeholderStates, setPlaceholderStates] = useState<PlaceholderStates>(
-    {
-      addToStory: false,
-      shareToFeed: true,
-      enableComments: true,
-    }
-  );
+  const [, setPlaceholderStates] = useState<PlaceholderStates>({
+    addToStory: false,
+    shareToFeed: true,
+    enableComments: true,
+  });
 
   // Location selection state
   const [selectedLocationName, setSelectedLocationName] = useState<
@@ -308,14 +264,14 @@ export function AddMemoryModal({
   // Cleanup Object URLs on unmount
   // ---------------------------------------------------------------------------
 
+  // Revoke any in-flight blob URLs on unmount — uses a ref so the cleanup sees
+  // the latest array instead of an empty closure from mount time.
   useEffect(() => {
     return () => {
-      uploadingFiles.forEach((f) => {
+      uploadingFilesRef.current.forEach((f) => {
         URL.revokeObjectURL(f.previewUrl);
       });
     };
-    // Only run on unmount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ---------------------------------------------------------------------------
@@ -584,7 +540,7 @@ export function AddMemoryModal({
           setTimeout(() => {
             resetState();
             onOpenChange(false);
-          }, 2000);
+          }, SUCCESS_MODAL_DURATION_MS);
         },
         onError: (err) => {
           setSubmitError(
@@ -804,25 +760,6 @@ export function AddMemoryModal({
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [open, handleAttemptClose]);
-
-  // ---------------------------------------------------------------------------
-  // Placeholder handlers
-  // ---------------------------------------------------------------------------
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const updatePlaceholder = useCallback(
-    <K extends keyof PlaceholderStates>(
-      key: K,
-      value: PlaceholderStates[K]
-    ) => {
-      setPlaceholderStates((prev) => ({ ...prev, [key]: value }));
-      // TODO: Implement backend integration for placeholder states
-      console.log(
-        `[AddMemoryModal] placeholder state changed: ${key} = ${String(value)}`
-      );
-    },
-    []
-  );
 
   // ---------------------------------------------------------------------------
   // Tab: Upload Media

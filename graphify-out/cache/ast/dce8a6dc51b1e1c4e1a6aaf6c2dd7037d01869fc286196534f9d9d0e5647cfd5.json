@@ -1,0 +1,175 @@
+{
+  "nodes": [
+    {
+      "id": "c_users_kint_louise_documents_projects_skolaroid_github_copilot_instructions_md",
+      "label": "copilot-instructions.md",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\copilot-instructions.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "github_copilot_instructions_skolaroid_ai_guide",
+      "label": "Skolaroid AI Guide",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\copilot-instructions.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "github_copilot_instructions_big_picture",
+      "label": "\ud83c\udfd7\ufe0f Big Picture",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\copilot-instructions.md",
+      "source_location": "L5"
+    },
+    {
+      "id": "github_copilot_instructions_key_directories",
+      "label": "\ud83d\udcc1 Key directories",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\copilot-instructions.md",
+      "source_location": "L14"
+    },
+    {
+      "id": "github_copilot_instructions_api_route_component_conventions",
+      "label": "\ud83d\udea6 API route & Component conventions",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\copilot-instructions.md",
+      "source_location": "L30"
+    },
+    {
+      "id": "github_copilot_instructions_client_patterns",
+      "label": "\ud83d\udd04 Client patterns",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\copilot-instructions.md",
+      "source_location": "L38"
+    },
+    {
+      "id": "github_copilot_instructions_supabase_auth",
+      "label": "\ud83d\udd10 Supabase & auth",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\copilot-instructions.md",
+      "source_location": "L46"
+    },
+    {
+      "id": "github_copilot_instructions_development_workflows",
+      "label": "\ud83d\udd27 Development workflows",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\copilot-instructions.md",
+      "source_location": "L58"
+    },
+    {
+      "id": "github_copilot_instructions_project_specific_conventions",
+      "label": "\ud83d\udea8 Project-specific conventions",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\copilot-instructions.md",
+      "source_location": "L72"
+    },
+    {
+      "id": "github_copilot_instructions_external_integrations",
+      "label": "\ud83d\udd04 External integrations",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\copilot-instructions.md",
+      "source_location": "L80"
+    },
+    {
+      "id": "github_copilot_instructions_when_adding_features",
+      "label": "\u2699\ufe0f When adding features",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\copilot-instructions.md",
+      "source_location": "L87"
+    }
+  ],
+  "edges": [
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_github_copilot_instructions_md",
+      "target": "github_copilot_instructions_skolaroid_ai_guide",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\copilot-instructions.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_skolaroid_ai_guide",
+      "target": "github_copilot_instructions_big_picture",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\copilot-instructions.md",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_skolaroid_ai_guide",
+      "target": "github_copilot_instructions_key_directories",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\copilot-instructions.md",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_skolaroid_ai_guide",
+      "target": "github_copilot_instructions_api_route_component_conventions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\copilot-instructions.md",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_skolaroid_ai_guide",
+      "target": "github_copilot_instructions_client_patterns",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\copilot-instructions.md",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_skolaroid_ai_guide",
+      "target": "github_copilot_instructions_supabase_auth",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\copilot-instructions.md",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_skolaroid_ai_guide",
+      "target": "github_copilot_instructions_development_workflows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\copilot-instructions.md",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_skolaroid_ai_guide",
+      "target": "github_copilot_instructions_project_specific_conventions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\copilot-instructions.md",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_skolaroid_ai_guide",
+      "target": "github_copilot_instructions_external_integrations",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\copilot-instructions.md",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_skolaroid_ai_guide",
+      "target": "github_copilot_instructions_when_adding_features",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\copilot-instructions.md",
+      "source_location": "L87",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

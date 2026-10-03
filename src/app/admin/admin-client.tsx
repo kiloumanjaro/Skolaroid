@@ -40,7 +40,18 @@ import {
   XCircle,
 } from 'lucide-react';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import {
+  ANALYTICS_HIGHLIGHT_LIMIT,
+  ANALYTICS_WINDOW_PRESETS,
+  DEFAULT_ANALYTICS_WINDOW_DAYS,
+  MAX_ANALYTICS_WINDOW_DAYS,
+  MIN_ANALYTICS_WINDOW_DAYS,
+  clampAnalyticsWindowDays,
+  formatCount,
+  formatDate,
+  formatPercent,
+} from './admin-client.helpers';
 
 type AdminTab =
   | 'live-events'
@@ -85,40 +96,6 @@ const statusBadgeStyles: Record<
     text: 'text-foreground',
   },
 };
-
-const numberFormatter = new Intl.NumberFormat('en-US');
-
-function formatCount(value: number): string {
-  return numberFormatter.format(value);
-}
-
-function formatPercent(value: number): string {
-  return `${value.toFixed(1)}%`;
-}
-
-function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true,
-  });
-}
-
-const MIN_ANALYTICS_WINDOW_DAYS = 7;
-const MAX_ANALYTICS_WINDOW_DAYS = 365;
-const DEFAULT_ANALYTICS_WINDOW_DAYS = 30;
-const ANALYTICS_WINDOW_PRESETS = [7, 14, 30, 60, 90, 180, 365] as const;
-const ANALYTICS_HIGHLIGHT_LIMIT = 5;
-
-function clampAnalyticsWindowDays(days: number): number {
-  return Math.min(
-    MAX_ANALYTICS_WINDOW_DAYS,
-    Math.max(MIN_ANALYTICS_WINDOW_DAYS, Math.round(days))
-  );
-}
 
 function LoadingState() {
   return (
@@ -762,19 +739,20 @@ function PublishedPostsContent({ searchQuery }: { searchQuery: string }) {
   const moderateMemory = useModerateMemory();
   const { showSuccess, showError, ToastPortal } = useAdminToast();
 
+  const filtered = useMemo(() => {
+    const memories = data?.data ?? [];
+    const query = searchQuery.toLowerCase();
+    return memories.filter(
+      (m) =>
+        m.title.toLowerCase().includes(query) ||
+        m.description?.toLowerCase().includes(query) ||
+        m.creator?.firstName.toLowerCase().includes(query) ||
+        m.creator?.lastName.toLowerCase().includes(query)
+    );
+  }, [data, searchQuery]);
+
   if (isLoading) return <LoadingState />;
   if (isError) return <ErrorState onRetry={() => refetch()} />;
-
-  const memories = data?.data ?? [];
-  const filtered = memories.filter((m) => {
-    const query = searchQuery.toLowerCase();
-    return (
-      m.title.toLowerCase().includes(query) ||
-      m.description?.toLowerCase().includes(query) ||
-      m.creator?.firstName.toLowerCase().includes(query) ||
-      m.creator?.lastName.toLowerCase().includes(query)
-    );
-  });
 
   if (filtered.length === 0) {
     return (
@@ -816,19 +794,20 @@ function PendingReviewContent({ searchQuery }: { searchQuery: string }) {
   const moderateMemory = useModerateMemory();
   const { showSuccess, showError, ToastPortal } = useAdminToast();
 
+  const filtered = useMemo(() => {
+    const memories = data?.data ?? [];
+    const query = searchQuery.toLowerCase();
+    return memories.filter(
+      (m) =>
+        m.title.toLowerCase().includes(query) ||
+        m.description?.toLowerCase().includes(query) ||
+        m.creator?.firstName.toLowerCase().includes(query) ||
+        m.creator?.lastName.toLowerCase().includes(query)
+    );
+  }, [data, searchQuery]);
+
   if (isLoading) return <LoadingState />;
   if (isError) return <ErrorState onRetry={() => refetch()} />;
-
-  const memories = data?.data ?? [];
-  const filtered = memories.filter((m) => {
-    const query = searchQuery.toLowerCase();
-    return (
-      m.title.toLowerCase().includes(query) ||
-      m.description?.toLowerCase().includes(query) ||
-      m.creator?.firstName.toLowerCase().includes(query) ||
-      m.creator?.lastName.toLowerCase().includes(query)
-    );
-  });
 
   if (filtered.length === 0) {
     return (
@@ -880,19 +859,21 @@ function ReportsContent({ searchQuery }: { searchQuery: string }) {
   const resolveReport = useResolveReport();
   const { showSuccess, showError, ToastPortal } = useAdminToast();
 
+  const filtered = useMemo(() => {
+    const reports = data?.data ?? [];
+    const query = searchQuery.toLowerCase();
+    return reports.filter((report) => {
+      const reporterName =
+        `${report.reporter.firstName} ${report.reporter.lastName}`.toLowerCase();
+      return (
+        report.reason.toLowerCase().includes(query) ||
+        reporterName.includes(query)
+      );
+    });
+  }, [data, searchQuery]);
+
   if (isLoading) return <LoadingState />;
   if (isError) return <ErrorState onRetry={() => refetch()} />;
-
-  const reports = data?.data ?? [];
-  const filtered = reports.filter((report) => {
-    const query = searchQuery.toLowerCase();
-    const reporterName =
-      `${report.reporter.firstName} ${report.reporter.lastName}`.toLowerCase();
-    return (
-      report.reason.toLowerCase().includes(query) ||
-      reporterName.includes(query)
-    );
-  });
 
   if (filtered.length === 0) {
     return (
@@ -1054,22 +1035,27 @@ function AuditLogContent({ searchQuery }: { searchQuery: string }) {
     isFetchingNextPage,
   } = useAuditLog(filters);
 
+  const allEntries = useMemo(
+    () => data?.pages.flatMap((page) => page.data.items) ?? [],
+    [data]
+  );
+
+  const filtered = useMemo(() => {
+    if (!searchQuery) return allEntries;
+    const query = searchQuery.toLowerCase();
+    return allEntries.filter((entry) => {
+      const adminName =
+        `${entry.admin.firstName} ${entry.admin.lastName}`.toLowerCase();
+      const targetTitle =
+        entry.targetMemory?.title?.toLowerCase() ??
+        entry.targetReport?.reason?.toLowerCase() ??
+        '';
+      return adminName.includes(query) || targetTitle.includes(query);
+    });
+  }, [allEntries, searchQuery]);
+
   if (isLoading) return <LoadingState />;
   if (isError) return <ErrorState onRetry={() => refetch()} />;
-
-  const allEntries = data?.pages.flatMap((page) => page.data.items) ?? [];
-
-  const filtered = allEntries.filter((entry) => {
-    if (!searchQuery) return true;
-    const query = searchQuery.toLowerCase();
-    const adminName =
-      `${entry.admin.firstName} ${entry.admin.lastName}`.toLowerCase();
-    const targetTitle =
-      entry.targetMemory?.title?.toLowerCase() ??
-      entry.targetReport?.reason?.toLowerCase() ??
-      '';
-    return adminName.includes(query) || targetTitle.includes(query);
-  });
 
   function getTargetLabel(entry: AuditLogEntry): string {
     if (entry.targetType === 'MEMORY') {
@@ -1225,6 +1211,12 @@ function AuditLogContent({ searchQuery }: { searchQuery: string }) {
   );
 }
 
+/**
+ * Top-level admin dashboard client component. Owns tab routing, the shared
+ * search field, and renders the six tab contents (Live Events, Analytics,
+ * Published, Pending, Reports, Audit). Pure helpers live in
+ * `./admin-client.helpers.ts`.
+ */
 export function AdminPageClient() {
   const [currentTab, setCurrentTab] = useState<AdminTab>('analytics');
   const [searchQuery, setSearchQuery] = useState('');

@@ -1,0 +1,303 @@
+{
+  "nodes": [
+    {
+      "id": "c_users_kint_louise_documents_projects_skolaroid_docs_javascript_page_animation_md",
+      "label": "JAVASCRIPT_PAGE_ANIMATION.md",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_javascript_page_animation_javascript_page_animation",
+      "label": "JAVASCRIPT_PAGE_ANIMATION",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_javascript_page_animation_what_to_keep_the_same",
+      "label": "What To Keep The Same",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L16"
+    },
+    {
+      "id": "docs_javascript_page_animation_recommended_file_split",
+      "label": "Recommended File Split",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L37"
+    },
+    {
+      "id": "docs_javascript_page_animation_html_structure",
+      "label": "HTML Structure",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L47"
+    },
+    {
+      "id": "docs_javascript_page_animation_css_structure",
+      "label": "CSS Structure",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L103"
+    },
+    {
+      "id": "docs_javascript_page_animation_javascript_state_model",
+      "label": "JavaScript State Model",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L307"
+    },
+    {
+      "id": "docs_javascript_page_animation_data_helpers",
+      "label": "Data Helpers",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L335"
+    },
+    {
+      "id": "docs_javascript_page_animation_render_rules",
+      "label": "Render Rules",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L372"
+    },
+    {
+      "id": "docs_javascript_page_animation_open_and_close_logic",
+      "label": "Open And Close Logic",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L411"
+    },
+    {
+      "id": "docs_javascript_page_animation_next_and_previous_logic",
+      "label": "Next And Previous Logic",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L463"
+    },
+    {
+      "id": "docs_javascript_page_animation_overlay_rendering",
+      "label": "Overlay Rendering",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L528"
+    },
+    {
+      "id": "docs_javascript_page_animation_next_overlay",
+      "label": "Next Overlay",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L532"
+    },
+    {
+      "id": "docs_javascript_page_animation_previous_overlay",
+      "label": "Previous Overlay",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L540"
+    },
+    {
+      "id": "docs_javascript_page_animation_plain_dom_rendering_pattern",
+      "label": "Plain DOM Rendering Pattern",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L548"
+    },
+    {
+      "id": "docs_javascript_page_animation_comment_porting_rules",
+      "label": "Comment Porting Rules",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L567"
+    },
+    {
+      "id": "docs_javascript_page_animation_optional_plugins",
+      "label": "Optional Plugins",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L578"
+    },
+    {
+      "id": "docs_javascript_page_animation_porting_checklist",
+      "label": "Porting Checklist",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L590"
+    },
+    {
+      "id": "docs_javascript_page_animation_expected_result",
+      "label": "Expected Result",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L602"
+    }
+  ],
+  "edges": [
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_docs_javascript_page_animation_md",
+      "target": "docs_javascript_page_animation_javascript_page_animation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_javascript_page_animation_javascript_page_animation",
+      "target": "docs_javascript_page_animation_what_to_keep_the_same",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_javascript_page_animation_javascript_page_animation",
+      "target": "docs_javascript_page_animation_recommended_file_split",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_javascript_page_animation_javascript_page_animation",
+      "target": "docs_javascript_page_animation_html_structure",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_javascript_page_animation_javascript_page_animation",
+      "target": "docs_javascript_page_animation_css_structure",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L103",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_javascript_page_animation_javascript_page_animation",
+      "target": "docs_javascript_page_animation_javascript_state_model",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L307",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_javascript_page_animation_javascript_page_animation",
+      "target": "docs_javascript_page_animation_data_helpers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L335",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_javascript_page_animation_javascript_page_animation",
+      "target": "docs_javascript_page_animation_render_rules",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L372",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_javascript_page_animation_javascript_page_animation",
+      "target": "docs_javascript_page_animation_open_and_close_logic",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L411",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_javascript_page_animation_javascript_page_animation",
+      "target": "docs_javascript_page_animation_next_and_previous_logic",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L463",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_javascript_page_animation_javascript_page_animation",
+      "target": "docs_javascript_page_animation_overlay_rendering",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L528",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_javascript_page_animation_overlay_rendering",
+      "target": "docs_javascript_page_animation_next_overlay",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L532",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_javascript_page_animation_overlay_rendering",
+      "target": "docs_javascript_page_animation_previous_overlay",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L540",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_javascript_page_animation_javascript_page_animation",
+      "target": "docs_javascript_page_animation_plain_dom_rendering_pattern",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L548",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_javascript_page_animation_javascript_page_animation",
+      "target": "docs_javascript_page_animation_comment_porting_rules",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L567",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_javascript_page_animation_javascript_page_animation",
+      "target": "docs_javascript_page_animation_optional_plugins",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L578",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_javascript_page_animation_javascript_page_animation",
+      "target": "docs_javascript_page_animation_porting_checklist",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L590",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_javascript_page_animation_javascript_page_animation",
+      "target": "docs_javascript_page_animation_expected_result",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\JAVASCRIPT_PAGE_ANIMATION.md",
+      "source_location": "L602",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

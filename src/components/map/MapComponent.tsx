@@ -73,18 +73,18 @@ const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 // Era → Mapbox style mapping
 // Use the outdoors style consistently across all eras.
 // ---------------------------------------------------------------------------
-const ERA_MAP_STYLES: Record<number, string> = {
-  2020: 'mapbox://styles/mapbox/outdoors-v12',
-  2010: 'mapbox://styles/mapbox/outdoors-v12',
-  2000: 'mapbox://styles/mapbox/outdoors-v12',
-  1990: 'mapbox://styles/mapbox/outdoors-v12',
-  1980: 'mapbox://styles/mapbox/outdoors-v12',
-  1970: 'mapbox://styles/mapbox/outdoors-v12',
-  1960: 'mapbox://styles/mapbox/outdoors-v12',
-  1950: 'mapbox://styles/mapbox/outdoors-v12',
-  1940: 'mapbox://styles/mapbox/outdoors-v12',
-};
 const DEFAULT_MAP_STYLE = 'mapbox://styles/mapbox/outdoors-v12';
+const ERA_MAP_STYLES: Record<number, string> = {
+  2020: DEFAULT_MAP_STYLE,
+  2010: DEFAULT_MAP_STYLE,
+  2000: DEFAULT_MAP_STYLE,
+  1990: DEFAULT_MAP_STYLE,
+  1980: DEFAULT_MAP_STYLE,
+  1970: DEFAULT_MAP_STYLE,
+  1960: DEFAULT_MAP_STYLE,
+  1950: DEFAULT_MAP_STYLE,
+  1940: DEFAULT_MAP_STYLE,
+};
 
 /** Distance threshold (degrees) — if map center is already within this of the target, skip flyTo. */
 const FLY_TO_THRESHOLD = 0.0001;
@@ -103,6 +103,15 @@ const CAMERA_ANIMATION = {
 const DEFAULT_MAP_CENTER: [number, number] = [123.8986, 10.3224];
 const DEFAULT_MAP_ZOOM = 17;
 
+/** Duration (ms) for the camera ease back to the overview after closing a notebook. */
+const OVERVIEW_EASE_DURATION_MS = 900;
+
+/** Duration (ms) for the cinematic flyTo when focusing a single memory. */
+const CINEMATIC_FLYTO_DURATION_MS = 1500;
+
+/** Delay (ms) after a Mapbox style.load before kicking off a follow-up flyTo. */
+const POST_STYLE_LOAD_FLYTO_DELAY_MS = 300;
+
 interface MapComponentProps {
   activeEraFromUrl: number;
   filters: MemoryFilters;
@@ -112,6 +121,11 @@ interface MapComponentProps {
   onMemoryDetailOpenStateChange?: (open: boolean) => void;
 }
 
+/**
+ * Mapbox-backed campus map. Owns the map instance, era → style switching,
+ * landmark + memory marker management, URL ⇄ state sync, and the embedded
+ * modal/panel surfaces (memory detail, batches, photobooth, add-memory).
+ */
 export function MapComponent({
   activeEraFromUrl,
   filters,
@@ -475,7 +489,7 @@ export function MapComponent({
     map?.easeTo({
       center: DEFAULT_MAP_CENTER,
       zoom: DEFAULT_MAP_ZOOM,
-      duration: 900,
+      duration: OVERVIEW_EASE_DURATION_MS,
       essential: true,
     });
 
@@ -526,7 +540,7 @@ export function MapComponent({
         zoom: CAMERA_ANIMATION.targetZoom,
         speed: CAMERA_ANIMATION.speed,
         curve: CAMERA_ANIMATION.curve,
-        duration: 1500,
+        duration: CINEMATIC_FLYTO_DURATION_MS,
         essential: CAMERA_ANIMATION.essential,
       });
 
@@ -934,7 +948,7 @@ export function MapComponent({
         map.off('style.load', onStyleLoad);
         setTimeout(() => {
           flyToMemoryWithSequence(targetMemory);
-        }, 300);
+        }, POST_STYLE_LOAD_FLYTO_DELAY_MS);
       };
 
       map.on('style.load', onStyleLoad);
@@ -942,7 +956,7 @@ export function MapComponent({
     } else {
       setTimeout(() => {
         flyToMemoryWithSequence(targetMemory);
-      }, 300);
+      }, POST_STYLE_LOAD_FLYTO_DELAY_MS);
     }
   }, [
     memories,
