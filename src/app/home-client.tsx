@@ -689,6 +689,26 @@ export default function HomeClient() {
           </div>
         </div>
       </div>
+
+      <footer className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-4 pb-3">
+        <p className="pointer-events-auto max-w-2xl text-center text-xs leading-relaxed text-foreground/70 sm:text-sm">
+          Skolaroid is a campus memory app — people at a school pin photos and
+          short stories to places on their campus map.{' '}
+          <Link
+            href="/privacy"
+            className="whitespace-nowrap underline underline-offset-2 hover:text-foreground"
+          >
+            Privacy Policy
+          </Link>{' '}
+          ·{' '}
+          <Link
+            href="/terms"
+            className="whitespace-nowrap underline underline-offset-2 hover:text-foreground"
+          >
+            Terms of Use
+          </Link>
+        </p>
+      </footer>
     </main>
   );
 }
