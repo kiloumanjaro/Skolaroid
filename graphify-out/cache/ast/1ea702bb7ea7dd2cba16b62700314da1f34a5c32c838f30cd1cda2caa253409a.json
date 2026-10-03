@@ -1,0 +1,207 @@
+{
+  "nodes": [
+    {
+      "id": "c_users_kint_louise_documents_projects_skolaroid_github_prompts_op_generate_prompt_md",
+      "label": "op-generate.prompt.md",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "prompts_op_generate_prompt_step_1_parse_plan_research_codebase",
+      "label": "Step 1: Parse Plan & Research Codebase",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L21"
+    },
+    {
+      "id": "prompts_op_generate_prompt_step_2_generate_implementation_file",
+      "label": "Step 2: Generate Implementation File",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L30"
+    },
+    {
+      "id": "prompts_op_generate_prompt_feature_name",
+      "label": "{FEATURE_NAME}",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L83"
+    },
+    {
+      "id": "prompts_op_generate_prompt_goal",
+      "label": "Goal",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L85"
+    },
+    {
+      "id": "prompts_op_generate_prompt_prerequisites",
+      "label": "Prerequisites",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L89"
+    },
+    {
+      "id": "prompts_op_generate_prompt_step_by_step_instructions",
+      "label": "Step-by-Step Instructions",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L94"
+    },
+    {
+      "id": "prompts_op_generate_prompt_step_1_action",
+      "label": "Step 1: {Action}",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L96"
+    },
+    {
+      "id": "prompts_op_generate_prompt_step_1_verification_checklist",
+      "label": "Step 1 Verification Checklist",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L112"
+    },
+    {
+      "id": "prompts_op_generate_prompt_step_1_stop_commit",
+      "label": "Step 1 STOP & COMMIT",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L117"
+    },
+    {
+      "id": "prompts_op_generate_prompt_step_2_action",
+      "label": "Step 2: {Action}",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L121"
+    },
+    {
+      "id": "prompts_op_generate_prompt_step_2_verification_checklist",
+      "label": "Step 2 Verification Checklist",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L130"
+    },
+    {
+      "id": "prompts_op_generate_prompt_step_2_stop_commit",
+      "label": "Step 2 STOP & COMMIT",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L135"
+    }
+  ],
+  "edges": [
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_github_prompts_op_generate_prompt_md",
+      "target": "prompts_op_generate_prompt_step_1_parse_plan_research_codebase",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_github_prompts_op_generate_prompt_md",
+      "target": "prompts_op_generate_prompt_step_2_generate_implementation_file",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_github_prompts_op_generate_prompt_md",
+      "target": "prompts_op_generate_prompt_feature_name",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_op_generate_prompt_feature_name",
+      "target": "prompts_op_generate_prompt_goal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_op_generate_prompt_feature_name",
+      "target": "prompts_op_generate_prompt_prerequisites",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L89",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_op_generate_prompt_prerequisites",
+      "target": "prompts_op_generate_prompt_step_by_step_instructions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_op_generate_prompt_step_by_step_instructions",
+      "target": "prompts_op_generate_prompt_step_1_action",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_op_generate_prompt_step_1_action",
+      "target": "prompts_op_generate_prompt_step_1_verification_checklist",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_op_generate_prompt_step_by_step_instructions",
+      "target": "prompts_op_generate_prompt_step_1_stop_commit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L117",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_op_generate_prompt_step_by_step_instructions",
+      "target": "prompts_op_generate_prompt_step_2_action",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L121",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_op_generate_prompt_step_2_action",
+      "target": "prompts_op_generate_prompt_step_2_verification_checklist",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L130",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_op_generate_prompt_step_by_step_instructions",
+      "target": "prompts_op_generate_prompt_step_2_stop_commit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\op-generate.prompt.md",
+      "source_location": "L135",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

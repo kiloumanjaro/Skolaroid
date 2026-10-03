@@ -1,0 +1,179 @@
+{
+  "nodes": [
+    {
+      "id": "docs_page_flip_animation_guide_guide",
+      "label": "Page Flip Animation Guide",
+      "file_type": "document",
+      "source_file": "docs/PAGE_FLIP_ANIMATION_GUIDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_page_flip_animation_guide_animations_module",
+      "label": "memory-modal-animations.ts",
+      "file_type": "code",
+      "source_file": "docs/PAGE_FLIP_ANIMATION_GUIDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_page_flip_animation_guide_modal_component",
+      "label": "MemoryDetailModal.tsx",
+      "file_type": "code",
+      "source_file": "docs/PAGE_FLIP_ANIMATION_GUIDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_page_flip_animation_guide_animation_phase",
+      "label": "AnimationPhase State Machine",
+      "file_type": "concept",
+      "source_file": "docs/PAGE_FLIP_ANIMATION_GUIDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_page_flip_animation_guide_overlay_caching",
+      "label": "Overlay Layer Content Caching",
+      "file_type": "rationale",
+      "source_file": "docs/PAGE_FLIP_ANIMATION_GUIDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_page_flip_animation_guide_3d_requirements",
+      "label": "3D Transform Requirements",
+      "file_type": "concept",
+      "source_file": "docs/PAGE_FLIP_ANIMATION_GUIDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_page_flip_animation_guide_framer_motion",
+      "label": "Framer Motion Variants",
+      "file_type": "concept",
+      "source_file": "docs/PAGE_FLIP_ANIMATION_GUIDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_page_flip_animation_guide_guide",
+      "target": "docs_page_flip_animation_guide_animations_module",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PAGE_FLIP_ANIMATION_GUIDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_page_flip_animation_guide_guide",
+      "target": "docs_page_flip_animation_guide_modal_component",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PAGE_FLIP_ANIMATION_GUIDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_page_flip_animation_guide_modal_component",
+      "target": "docs_page_flip_animation_guide_animations_module",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PAGE_FLIP_ANIMATION_GUIDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_page_flip_animation_guide_guide",
+      "target": "docs_page_flip_animation_guide_animation_phase",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PAGE_FLIP_ANIMATION_GUIDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_page_flip_animation_guide_overlay_caching",
+      "target": "docs_page_flip_animation_guide_modal_component",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PAGE_FLIP_ANIMATION_GUIDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_page_flip_animation_guide_guide",
+      "target": "docs_page_flip_animation_guide_3d_requirements",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PAGE_FLIP_ANIMATION_GUIDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_page_flip_animation_guide_animations_module",
+      "target": "docs_page_flip_animation_guide_framer_motion",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PAGE_FLIP_ANIMATION_GUIDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_page_flip_animation_guide_modal_component",
+      "target": "docs_dual_map_view_implementation_memory_detail_modal",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/PAGE_FLIP_ANIMATION_GUIDE.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "page_flip_animation_system",
+      "label": "Book Page Flip Animation System",
+      "nodes": [
+        "docs_page_flip_animation_guide_guide",
+        "docs_javascript_page_animation_guide",
+        "docs_page_flip_animation_guide_modal_component",
+        "docs_page_flip_animation_guide_animations_module"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/PAGE_FLIP_ANIMATION_GUIDE.md"
+    }
+  ]
+}

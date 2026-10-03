@@ -1,0 +1,123 @@
+{
+  "nodes": [
+    {
+      "id": "instructions_nextjs_nextjs_best_practices",
+      "label": "Next.js Best Practices for LLMs (2026)",
+      "file_type": "document",
+      "source_file": ".github/instructions/nextjs.instructions.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "instructions_nextjs_server_client_boundary",
+      "label": "Server and Client Component Integration",
+      "file_type": "concept",
+      "source_file": ".github/instructions/nextjs.instructions.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "instructions_nextjs_async_request_apis",
+      "label": "Next.js 16 Async Request APIs",
+      "file_type": "concept",
+      "source_file": ".github/instructions/nextjs.instructions.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "instructions_nextjs_cache_components",
+      "label": "Cache Components and Revalidation",
+      "file_type": "concept",
+      "source_file": ".github/instructions/nextjs.instructions.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "instructions_nextjs_route_handler_no_self_fetch",
+      "label": "Avoid Self-Fetch of Route Handlers",
+      "file_type": "rationale",
+      "source_file": ".github/instructions/nextjs.instructions.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "instructions_nextjs_naming_conventions",
+      "label": "Next.js Naming Conventions",
+      "file_type": "concept",
+      "source_file": ".github/instructions/nextjs.instructions.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "instructions_nextjs_nextjs_best_practices",
+      "target": "instructions_nextjs_server_client_boundary",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/instructions/nextjs.instructions.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "instructions_nextjs_nextjs_best_practices",
+      "target": "instructions_nextjs_async_request_apis",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/instructions/nextjs.instructions.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "instructions_nextjs_nextjs_best_practices",
+      "target": "instructions_nextjs_cache_components",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/instructions/nextjs.instructions.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "instructions_nextjs_nextjs_best_practices",
+      "target": "instructions_nextjs_route_handler_no_self_fetch",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/instructions/nextjs.instructions.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "instructions_nextjs_nextjs_best_practices",
+      "target": "instructions_nextjs_naming_conventions",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/instructions/nextjs.instructions.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

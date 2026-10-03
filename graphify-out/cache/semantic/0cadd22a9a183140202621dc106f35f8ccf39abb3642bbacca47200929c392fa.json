@@ -1,0 +1,216 @@
+{
+  "nodes": [
+    {
+      "id": "docs_prisma_api_demo_guide",
+      "label": "Prisma v7 API Demo Documentation",
+      "file_type": "document",
+      "source_file": "docs/PRISMA_API_DEMO.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_api_demo_page",
+      "label": "Demo Interface (src/app/page.tsx)",
+      "file_type": "code",
+      "source_file": "docs/PRISMA_API_DEMO.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_api_demo_create",
+      "label": "POST /api/prisma/user/create",
+      "file_type": "code",
+      "source_file": "docs/PRISMA_API_DEMO.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_api_demo_create_many",
+      "label": "POST /api/prisma/user/create-many",
+      "file_type": "code",
+      "source_file": "docs/PRISMA_API_DEMO.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_api_demo_delete",
+      "label": "DELETE /api/prisma/user/delete",
+      "file_type": "code",
+      "source_file": "docs/PRISMA_API_DEMO.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_api_demo_delete_many",
+      "label": "DELETE /api/prisma/user/delete-many",
+      "file_type": "code",
+      "source_file": "docs/PRISMA_API_DEMO.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_api_demo_get_all",
+      "label": "GET /api/prisma/user/get-all",
+      "file_type": "code",
+      "source_file": "docs/PRISMA_API_DEMO.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_api_demo_user_model",
+      "label": "User Prisma Model",
+      "file_type": "concept",
+      "source_file": "docs/PRISMA_API_DEMO.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_api_demo_skip_duplicates",
+      "label": "skipDuplicates Option",
+      "file_type": "rationale",
+      "source_file": "docs/PRISMA_API_DEMO.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_prisma_api_demo_guide",
+      "target": "docs_prisma_api_demo_page",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_API_DEMO.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_guide",
+      "target": "docs_prisma_api_demo_create",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_API_DEMO.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_guide",
+      "target": "docs_prisma_api_demo_create_many",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_API_DEMO.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_guide",
+      "target": "docs_prisma_api_demo_delete",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_API_DEMO.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_guide",
+      "target": "docs_prisma_api_demo_delete_many",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_API_DEMO.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_guide",
+      "target": "docs_prisma_api_demo_get_all",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_API_DEMO.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_create",
+      "target": "docs_prisma_api_demo_user_model",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_API_DEMO.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_skip_duplicates",
+      "target": "docs_prisma_api_demo_create_many",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_API_DEMO.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_guide",
+      "target": "docs_prisma_v7_setup_guide",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_API_DEMO.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_guide",
+      "target": "docs_prisma_quick_reference_guide",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_API_DEMO.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_api_demo_guide",
+      "target": "docs_prisma_troubleshooting_guide",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_API_DEMO.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

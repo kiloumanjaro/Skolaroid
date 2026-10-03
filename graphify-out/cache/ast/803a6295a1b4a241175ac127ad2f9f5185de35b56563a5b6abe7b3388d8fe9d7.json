@@ -1,0 +1,63 @@
+{
+  "nodes": [
+    {
+      "id": "c_users_kint_louise_documents_projects_skolaroid_github_prompts_so_plan_prompt_md",
+      "label": "so-plan.prompt.md",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\so-plan.prompt.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "prompts_so_plan_prompt_step_1_research_and_gather_context",
+      "label": "Step 1: Research and Gather Context",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\so-plan.prompt.md",
+      "source_location": "L16"
+    },
+    {
+      "id": "prompts_so_plan_prompt_step_2_determine_commits",
+      "label": "Step 2: Determine Commits",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\so-plan.prompt.md",
+      "source_location": "L24"
+    },
+    {
+      "id": "prompts_so_plan_prompt_step_3_plan_generation",
+      "label": "Step 3: Plan Generation",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\so-plan.prompt.md",
+      "source_location": "L31"
+    }
+  ],
+  "edges": [
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_github_prompts_so_plan_prompt_md",
+      "target": "prompts_so_plan_prompt_step_1_research_and_gather_context",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\so-plan.prompt.md",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_github_prompts_so_plan_prompt_md",
+      "target": "prompts_so_plan_prompt_step_2_determine_commits",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\so-plan.prompt.md",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_github_prompts_so_plan_prompt_md",
+      "target": "prompts_so_plan_prompt_step_3_plan_generation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\so-plan.prompt.md",
+      "source_location": "L31",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

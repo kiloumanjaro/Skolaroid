@@ -1,0 +1,288 @@
+{
+  "nodes": [
+    {
+      "id": "github_copilot_instructions_skolaroid_ai_guide",
+      "label": "Skolaroid AI Guide",
+      "file_type": "document",
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "github_copilot_instructions_nextjs_app_router",
+      "label": "Next.js App Router Architecture",
+      "file_type": "concept",
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "github_copilot_instructions_prisma_postgres",
+      "label": "Prisma + PostgreSQL Backend",
+      "file_type": "concept",
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "github_copilot_instructions_data_flow",
+      "label": "UI to Hooks to API Data Flow",
+      "file_type": "rationale",
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "github_copilot_instructions_react_query",
+      "label": "React Query State and Caching",
+      "file_type": "concept",
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "github_copilot_instructions_zod_schemas",
+      "label": "Zod Schemas Validation",
+      "file_type": "concept",
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "github_copilot_instructions_supabase_auth",
+      "label": "Supabase Auth and Proxy",
+      "file_type": "concept",
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "github_copilot_instructions_proxy_onboarding",
+      "label": "Proxy Onboarding Enforcement",
+      "file_type": "rationale",
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "github_copilot_instructions_mapbox_map",
+      "label": "Mapbox Interactive Map",
+      "file_type": "concept",
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "github_copilot_instructions_tailwind_radix_ui",
+      "label": "Tailwind + Radix UI Layer",
+      "file_type": "concept",
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "github_copilot_instructions_dev_workflows",
+      "label": "Development Workflows (pnpm)",
+      "file_type": "concept",
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "github_copilot_instructions_skolaroid_ai_guide",
+      "target": "github_copilot_instructions_nextjs_app_router",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_skolaroid_ai_guide",
+      "target": "github_copilot_instructions_prisma_postgres",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_skolaroid_ai_guide",
+      "target": "github_copilot_instructions_data_flow",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_skolaroid_ai_guide",
+      "target": "github_copilot_instructions_react_query",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_skolaroid_ai_guide",
+      "target": "github_copilot_instructions_zod_schemas",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_skolaroid_ai_guide",
+      "target": "github_copilot_instructions_supabase_auth",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_skolaroid_ai_guide",
+      "target": "github_copilot_instructions_mapbox_map",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_skolaroid_ai_guide",
+      "target": "github_copilot_instructions_tailwind_radix_ui",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_skolaroid_ai_guide",
+      "target": "github_copilot_instructions_dev_workflows",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_data_flow",
+      "target": "github_copilot_instructions_react_query",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_supabase_auth",
+      "target": "github_copilot_instructions_proxy_onboarding",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_zod_schemas",
+      "target": "github_copilot_instructions_data_flow",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_data_flow",
+      "target": "instructions_nextjs_route_handler_no_self_fetch",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_nextjs_app_router",
+      "target": "instructions_nextjs_async_request_apis",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_react_query",
+      "target": "instructions_nextjs_cache_components",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "github_copilot_instructions_dev_workflows",
+      "target": "prompts_conventional_commit_conventional_commits_spec",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/copilot-instructions.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

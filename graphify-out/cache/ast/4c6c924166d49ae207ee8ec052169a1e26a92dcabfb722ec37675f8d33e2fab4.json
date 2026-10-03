@@ -1,0 +1,159 @@
+{
+  "nodes": [
+    {
+      "id": "c_users_kint_louise_documents_projects_skolaroid_github_agents_implement_agent_md",
+      "label": "implement.agent.md",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\agents\\implement.agent.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "agents_implement_agent_structured_autonomy_implementation_agent",
+      "label": "Structured Autonomy Implementation Agent",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\agents\\implement.agent.md",
+      "source_location": "L9"
+    },
+    {
+      "id": "agents_implement_agent_mandatory_pre_condition",
+      "label": "\ud83d\udee1 Mandatory Pre-Condition",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\agents\\implement.agent.md",
+      "source_location": "L13"
+    },
+    {
+      "id": "agents_implement_agent_the_execution_loop",
+      "label": "\ud83d\udd04 The Execution Loop",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\agents\\implement.agent.md",
+      "source_location": "L19"
+    },
+    {
+      "id": "agents_implement_agent_1_locate_and_scan",
+      "label": "1. Locate and Scan",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\agents\\implement.agent.md",
+      "source_location": "L21"
+    },
+    {
+      "id": "agents_implement_agent_2_strict_implementation",
+      "label": "2. Strict Implementation",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\agents\\implement.agent.md",
+      "source_location": "L27"
+    },
+    {
+      "id": "agents_implement_agent_3_state_management_checklist_update",
+      "label": "3. State Management (Checklist Update)",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\agents\\implement.agent.md",
+      "source_location": "L32"
+    },
+    {
+      "id": "agents_implement_agent_4_verification",
+      "label": "4. Verification",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\agents\\implement.agent.md",
+      "source_location": "L37"
+    },
+    {
+      "id": "agents_implement_agent_5_forced_stop",
+      "label": "5. Forced Stop",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\agents\\implement.agent.md",
+      "source_location": "L42"
+    },
+    {
+      "id": "agents_implement_agent_hard_constraints",
+      "label": "\ud83d\udeab Hard Constraints",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\agents\\implement.agent.md",
+      "source_location": "L48"
+    }
+  ],
+  "edges": [
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_github_agents_implement_agent_md",
+      "target": "agents_implement_agent_structured_autonomy_implementation_agent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\agents\\implement.agent.md",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "agents_implement_agent_structured_autonomy_implementation_agent",
+      "target": "agents_implement_agent_mandatory_pre_condition",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\agents\\implement.agent.md",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "agents_implement_agent_structured_autonomy_implementation_agent",
+      "target": "agents_implement_agent_the_execution_loop",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\agents\\implement.agent.md",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "agents_implement_agent_the_execution_loop",
+      "target": "agents_implement_agent_1_locate_and_scan",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\agents\\implement.agent.md",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "agents_implement_agent_the_execution_loop",
+      "target": "agents_implement_agent_2_strict_implementation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\agents\\implement.agent.md",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "agents_implement_agent_the_execution_loop",
+      "target": "agents_implement_agent_3_state_management_checklist_update",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\agents\\implement.agent.md",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "agents_implement_agent_the_execution_loop",
+      "target": "agents_implement_agent_4_verification",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\agents\\implement.agent.md",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "agents_implement_agent_the_execution_loop",
+      "target": "agents_implement_agent_5_forced_stop",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\agents\\implement.agent.md",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "agents_implement_agent_structured_autonomy_implementation_agent",
+      "target": "agents_implement_agent_hard_constraints",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\agents\\implement.agent.md",
+      "source_location": "L48",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

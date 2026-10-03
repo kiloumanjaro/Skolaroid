@@ -1,0 +1,133 @@
+{
+  "nodes": [
+    {
+      "id": "docs_prisma_quick_reference_guide",
+      "label": "Prisma v7 Quick Reference",
+      "file_type": "document",
+      "source_file": "docs/PRISMA_QUICK_REFERENCE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_quick_reference_client",
+      "label": "Prisma Client (@/lib/prisma)",
+      "file_type": "concept",
+      "source_file": "docs/PRISMA_QUICK_REFERENCE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_quick_reference_pooling",
+      "label": "Connection Pooling (DATABASE_URL vs DIRECT_URL)",
+      "file_type": "rationale",
+      "source_file": "docs/PRISMA_QUICK_REFERENCE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_quick_reference_studio",
+      "label": "Prisma Studio",
+      "file_type": "concept",
+      "source_file": "docs/PRISMA_QUICK_REFERENCE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_quick_reference_error_codes",
+      "label": "Prisma Error Codes (P2002, P2025, etc.)",
+      "file_type": "concept",
+      "source_file": "docs/PRISMA_QUICK_REFERENCE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_quick_reference_prisma_docs",
+      "label": "Prisma Documentation",
+      "file_type": "concept",
+      "source_file": "docs/PRISMA_QUICK_REFERENCE.md",
+      "source_location": null,
+      "source_url": "https://www.prisma.io/docs",
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_prisma_quick_reference_guide",
+      "target": "docs_prisma_quick_reference_client",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_QUICK_REFERENCE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_guide",
+      "target": "docs_prisma_quick_reference_studio",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_QUICK_REFERENCE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_guide",
+      "target": "docs_prisma_quick_reference_error_codes",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_QUICK_REFERENCE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_guide",
+      "target": "docs_prisma_quick_reference_prisma_docs",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_QUICK_REFERENCE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_guide",
+      "target": "docs_prisma_quick_reference_pooling",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA_QUICK_REFERENCE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_quick_reference_pooling",
+      "target": "docs_prisma_troubleshooting_direct_url_migrations",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/PRISMA_QUICK_REFERENCE.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

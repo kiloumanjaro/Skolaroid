@@ -1,0 +1,170 @@
+{
+  "nodes": [
+    {
+      "id": "architecture_data_flow_pattern",
+      "label": "Standard Data Flow Pattern",
+      "file_type": "rationale",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "Data Flow",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_tanstack_query",
+      "label": "TanStack Query Data Fetching",
+      "file_type": "concept",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_zod_validation",
+      "label": "Zod Validation",
+      "file_type": "concept",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_service_layer",
+      "label": "Service Layer Extraction",
+      "file_type": "rationale",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "Key Patterns 3",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_api_route_pattern",
+      "label": "API Route with Zod Validation",
+      "file_type": "concept",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_prisma_postgresql",
+      "label": "Prisma + PostgreSQL Database Layer",
+      "file_type": "concept",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_type_inference_zod",
+      "label": "Type Inference from Zod",
+      "file_type": "rationale",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "Key Patterns 4",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "architecture_data_flow_pattern",
+      "target": "architecture_tanstack_query",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "Data Flow",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_data_flow_pattern",
+      "target": "architecture_api_route_pattern",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "Data Flow",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_data_flow_pattern",
+      "target": "architecture_service_layer",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "Data Flow",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_data_flow_pattern",
+      "target": "architecture_prisma_postgresql",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "Data Flow",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_api_route_pattern",
+      "target": "architecture_zod_validation",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "Key Patterns 1",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_type_inference_zod",
+      "target": "architecture_zod_validation",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "Key Patterns 4",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_zod_validation",
+      "target": "swagger_swagger_api_spec",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7,
+      "source_file": "ARCHITECTURE.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "skolaroid_data_flow_layers",
+      "label": "Skolaroid Standard Data Flow Layers",
+      "nodes": [
+        "architecture_tanstack_query",
+        "architecture_api_route_pattern",
+        "architecture_service_layer",
+        "architecture_prisma_postgresql",
+        "architecture_zod_validation"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ARCHITECTURE.md"
+    }
+  ]
+}

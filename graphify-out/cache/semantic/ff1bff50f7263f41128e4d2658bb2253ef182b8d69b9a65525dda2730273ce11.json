@@ -1,0 +1,248 @@
+{
+  "nodes": [
+    {
+      "id": "project_brief_skolaroid",
+      "label": "Skolaroid Project Brief",
+      "file_type": "document",
+      "source_file": "docs/PROJECT_BRIEF.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "project_brief_user_profiles",
+      "label": "Feature 1: User Profiles and Accounts",
+      "file_type": "concept",
+      "source_file": "docs/PROJECT_BRIEF.md",
+      "source_location": "Core Features 1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "project_brief_batch_archives",
+      "label": "Feature 2: Batch Archives and Story Highlights",
+      "file_type": "concept",
+      "source_file": "docs/PROJECT_BRIEF.md",
+      "source_location": "Core Features 2",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "project_brief_immersive_mapping",
+      "label": "Feature 3: Immersive Mapping",
+      "file_type": "concept",
+      "source_file": "docs/PROJECT_BRIEF.md",
+      "source_location": "Core Features 3",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "project_brief_batch_heatmap",
+      "label": "Feature 4: Batch Heatmap Overlay",
+      "file_type": "concept",
+      "source_file": "docs/PROJECT_BRIEF.md",
+      "source_location": "Core Features 4",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "project_brief_advanced_search",
+      "label": "Feature 5: Advanced Searching",
+      "file_type": "concept",
+      "source_file": "docs/PROJECT_BRIEF.md",
+      "source_location": "Core Features 5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "project_brief_groups_communities",
+      "label": "Feature 6: Groups and Communities",
+      "file_type": "concept",
+      "source_file": "docs/PROJECT_BRIEF.md",
+      "source_location": "Core Features 6",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "project_brief_fundraising",
+      "label": "Feature 7: Fundraising Platform",
+      "file_type": "concept",
+      "source_file": "docs/PROJECT_BRIEF.md",
+      "source_location": "Core Features 7",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "project_brief_on_this_day",
+      "label": "Feature 8: On This Day Digital Time Capsule",
+      "file_type": "concept",
+      "source_file": "docs/PROJECT_BRIEF.md",
+      "source_location": "Core Features 8",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "project_brief_input_a_story",
+      "label": "Feature 9: Input a Story",
+      "file_type": "concept",
+      "source_file": "docs/PROJECT_BRIEF.md",
+      "source_location": "Core Features 9",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "project_brief_email_domain_restriction",
+      "label": "UP Email Domain Restriction",
+      "file_type": "rationale",
+      "source_file": "docs/PROJECT_BRIEF.md",
+      "source_location": "Core Features 1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "project_brief_skolaroid",
+      "target": "project_brief_user_profiles",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_BRIEF.md",
+      "source_location": "Core Features",
+      "weight": 1.0
+    },
+    {
+      "source": "project_brief_skolaroid",
+      "target": "project_brief_batch_archives",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_BRIEF.md",
+      "source_location": "Core Features",
+      "weight": 1.0
+    },
+    {
+      "source": "project_brief_skolaroid",
+      "target": "project_brief_immersive_mapping",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_BRIEF.md",
+      "source_location": "Core Features",
+      "weight": 1.0
+    },
+    {
+      "source": "project_brief_skolaroid",
+      "target": "project_brief_batch_heatmap",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_BRIEF.md",
+      "source_location": "Core Features",
+      "weight": 1.0
+    },
+    {
+      "source": "project_brief_skolaroid",
+      "target": "project_brief_advanced_search",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_BRIEF.md",
+      "source_location": "Core Features",
+      "weight": 1.0
+    },
+    {
+      "source": "project_brief_skolaroid",
+      "target": "project_brief_groups_communities",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_BRIEF.md",
+      "source_location": "Core Features",
+      "weight": 1.0
+    },
+    {
+      "source": "project_brief_skolaroid",
+      "target": "project_brief_fundraising",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_BRIEF.md",
+      "source_location": "Core Features",
+      "weight": 1.0
+    },
+    {
+      "source": "project_brief_skolaroid",
+      "target": "project_brief_on_this_day",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_BRIEF.md",
+      "source_location": "Core Features",
+      "weight": 1.0
+    },
+    {
+      "source": "project_brief_skolaroid",
+      "target": "project_brief_input_a_story",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_BRIEF.md",
+      "source_location": "Core Features",
+      "weight": 1.0
+    },
+    {
+      "source": "project_brief_email_domain_restriction",
+      "target": "project_brief_user_profiles",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_BRIEF.md",
+      "source_location": "Core Features 1",
+      "weight": 1.0
+    },
+    {
+      "source": "project_brief_groups_communities",
+      "target": "database_schema_privategroup",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/PROJECT_BRIEF.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "project_brief_input_a_story",
+      "target": "database_schema_memory",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/PROJECT_BRIEF.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

@@ -1,0 +1,1391 @@
+{
+  "nodes": [
+    {
+      "id": "c_users_kint_louise_documents_projects_skolaroid_docs_sprint_backlog_md",
+      "label": "SPRINT_BACKLOG.md",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_sprint_backlog_skolaroid_sprint_backlog",
+      "label": "Skolaroid Sprint Backlog",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_sprint_backlog_priority_1_critical_blocking",
+      "label": "Priority 1 \u2014 Critical & Blocking",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L8"
+    },
+    {
+      "id": "docs_sprint_backlog_auth_1_guard_user_admin_api_routes",
+      "label": "AUTH-1: Guard user admin API routes",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L14"
+    },
+    {
+      "id": "docs_sprint_backlog_auth_2_guard_upload_api_endpoint",
+      "label": "AUTH-2: Guard upload API endpoint",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L31"
+    },
+    {
+      "id": "docs_sprint_backlog_auth_3_remove_dev_seed_user_fallbacks",
+      "label": "AUTH-3: Remove dev seed-user fallbacks",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L44"
+    },
+    {
+      "id": "docs_sprint_backlog_auth_4_enforce_email_domain_restriction",
+      "label": "AUTH-4: Enforce email domain restriction",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L58"
+    },
+    {
+      "id": "docs_sprint_backlog_auth_5_restrict_admin_page_access",
+      "label": "AUTH-5: Restrict admin page access",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L72"
+    },
+    {
+      "id": "docs_sprint_backlog_auth_6_add_security_response_headers",
+      "label": "AUTH-6: Add security response headers",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L85"
+    },
+    {
+      "id": "docs_sprint_backlog_auth_7_validate_upload_file_content",
+      "label": "AUTH-7: Validate upload file content",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L99"
+    },
+    {
+      "id": "docs_sprint_backlog_auth_8_add_upload_rate_limiting",
+      "label": "AUTH-8: Add upload rate limiting",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L113"
+    },
+    {
+      "id": "docs_sprint_backlog_auth_9_verify_proxy_covers_all_api_routes",
+      "label": "AUTH-9: Verify proxy covers all API routes",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L127"
+    },
+    {
+      "id": "docs_sprint_backlog_trust_1_add_approvalstatus_to_memory",
+      "label": "TRUST-1: Add approvalStatus to Memory",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L141"
+    },
+    {
+      "id": "docs_sprint_backlog_trust_2_filter_queries_by_approvalstatus",
+      "label": "TRUST-2: Filter queries by approvalStatus",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L156"
+    },
+    {
+      "id": "docs_sprint_backlog_story_1_fix_hardcoded_programbatchid",
+      "label": "STORY-1: Fix hardcoded programBatchId",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L171"
+    },
+    {
+      "id": "docs_sprint_backlog_story_2_re_enable_upload_validation_checks",
+      "label": "STORY-2: Re-enable upload validation checks",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L184"
+    },
+    {
+      "id": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "label": "Priority 2 \u2014 High Impact, Non-Blocking",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L197"
+    },
+    {
+      "id": "docs_sprint_backlog_approval_1_content_approval_api_routes",
+      "label": "APPROVAL-1: Content approval API routes",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L203"
+    },
+    {
+      "id": "docs_sprint_backlog_approval_2_wire_admin_approval_ui",
+      "label": "APPROVAL-2: Wire admin approval UI",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L218"
+    },
+    {
+      "id": "docs_sprint_backlog_batch_1_batch_archive_browser_api",
+      "label": "BATCH-1: Batch archive browser API",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L232"
+    },
+    {
+      "id": "docs_sprint_backlog_batch_2_batch_archive_listing_page",
+      "label": "BATCH-2: Batch archive listing page",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L246"
+    },
+    {
+      "id": "docs_sprint_backlog_batch_3_batch_detail_page",
+      "label": "BATCH-3: Batch detail page",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L259"
+    },
+    {
+      "id": "docs_sprint_backlog_highlights_1_story_prisma_model_migration",
+      "label": "HIGHLIGHTS-1: Story Prisma model + migration",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L272"
+    },
+    {
+      "id": "docs_sprint_backlog_highlights_2_story_crud_api_routes",
+      "label": "HIGHLIGHTS-2: Story CRUD API routes",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L286"
+    },
+    {
+      "id": "docs_sprint_backlog_highlights_3_story_viewer_component",
+      "label": "HIGHLIGHTS-3: Story viewer component",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L301"
+    },
+    {
+      "id": "docs_sprint_backlog_highlights_4_story_highlights_per_batch",
+      "label": "HIGHLIGHTS-4: Story highlights per batch",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L315"
+    },
+    {
+      "id": "docs_sprint_backlog_heatmap_1_batch_scoped_heatmap_api",
+      "label": "HEATMAP-1: Batch-scoped heatmap API",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L329"
+    },
+    {
+      "id": "docs_sprint_backlog_heatmap_2_mapbox_heatmap_layer_toggle",
+      "label": "HEATMAP-2: Mapbox heatmap layer + toggle",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L342"
+    },
+    {
+      "id": "docs_sprint_backlog_heatmap_3_heatmap_legend_component",
+      "label": "HEATMAP-3: Heatmap legend component",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L356"
+    },
+    {
+      "id": "docs_sprint_backlog_search_1_full_text_search_migration",
+      "label": "SEARCH-1: Full-text search migration",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L370"
+    },
+    {
+      "id": "docs_sprint_backlog_search_2_search_api_route_schema",
+      "label": "SEARCH-2: Search API route + schema",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L383"
+    },
+    {
+      "id": "docs_sprint_backlog_search_3_search_bar_hook",
+      "label": "SEARCH-3: Search bar + hook",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L397"
+    },
+    {
+      "id": "docs_sprint_backlog_search_4_search_results_page",
+      "label": "SEARCH-4: Search results page",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L412"
+    },
+    {
+      "id": "docs_sprint_backlog_otd_1_on_this_day_api_route",
+      "label": "OTD-1: \"On This Day\" API route",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L425"
+    },
+    {
+      "id": "docs_sprint_backlog_otd_2_on_this_day_home_component",
+      "label": "OTD-2: \"On This Day\" home component",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L439"
+    },
+    {
+      "id": "docs_sprint_backlog_fund_1_fundraiser_model_migration",
+      "label": "FUND-1: Fundraiser model + migration",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L454"
+    },
+    {
+      "id": "docs_sprint_backlog_fund_2_fundraiser_schemas_hooks",
+      "label": "FUND-2: Fundraiser schemas + hooks",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L468"
+    },
+    {
+      "id": "docs_sprint_backlog_fund_3_fundraiser_crud_api_routes",
+      "label": "FUND-3: Fundraiser CRUD API routes",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L482"
+    },
+    {
+      "id": "docs_sprint_backlog_fund_4_fundraiser_approval_api",
+      "label": "FUND-4: Fundraiser approval API",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L501"
+    },
+    {
+      "id": "docs_sprint_backlog_fund_5_fundraiser_listing_page",
+      "label": "FUND-5: Fundraiser listing page",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L515"
+    },
+    {
+      "id": "docs_sprint_backlog_fund_6_fundraiser_detail_page",
+      "label": "FUND-6: Fundraiser detail page",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L529"
+    },
+    {
+      "id": "docs_sprint_backlog_fund_7_create_fundraiser_modal",
+      "label": "FUND-7: Create fundraiser modal",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L542"
+    },
+    {
+      "id": "docs_sprint_backlog_group_1_group_edit_api_route",
+      "label": "GROUP-1: Group edit API route",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L556"
+    },
+    {
+      "id": "docs_sprint_backlog_group_2_group_edit_ui_modal",
+      "label": "GROUP-2: Group edit UI modal",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L569"
+    },
+    {
+      "id": "docs_sprint_backlog_group_3_add_public_group_type",
+      "label": "GROUP-3: Add public group type",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L584"
+    },
+    {
+      "id": "docs_sprint_backlog_map_1_add_location_categorization",
+      "label": "MAP-1: Add location categorization",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L599"
+    },
+    {
+      "id": "docs_sprint_backlog_map_2_gps_coordinate_bounding_box",
+      "label": "MAP-2: GPS coordinate bounding box",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L614"
+    },
+    {
+      "id": "docs_sprint_backlog_profile_1_extend_user_model_schema",
+      "label": "PROFILE-1: Extend User model schema",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L628"
+    },
+    {
+      "id": "docs_sprint_backlog_profile_2_profile_update_api_route",
+      "label": "PROFILE-2: Profile update API route",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L642"
+    },
+    {
+      "id": "docs_sprint_backlog_profile_3_profile_edit_ui_hook",
+      "label": "PROFILE-3: Profile edit UI + hook",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L656"
+    },
+    {
+      "id": "docs_sprint_backlog_memory_1_memory_edit_api_route",
+      "label": "MEMORY-1: Memory edit API route",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L671"
+    },
+    {
+      "id": "docs_sprint_backlog_memory_2_memory_edit_ui_modal",
+      "label": "MEMORY-2: Memory edit UI modal",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L685"
+    },
+    {
+      "id": "docs_sprint_backlog_valid_1_validate_batch_membership_on_post",
+      "label": "VALID-1: Validate batch membership on post",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L700"
+    },
+    {
+      "id": "docs_sprint_backlog_priority_3_stabilization_polish",
+      "label": "Priority 3 \u2014 Stabilization & Polish",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L713"
+    },
+    {
+      "id": "docs_sprint_backlog_errh_1_add_error_global_error_boundaries",
+      "label": "ERRH-1: Add error + global-error boundaries",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L719"
+    },
+    {
+      "id": "docs_sprint_backlog_errh_2_add_not_found_page",
+      "label": "ERRH-2: Add not-found page",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L734"
+    },
+    {
+      "id": "docs_sprint_backlog_errh_3_add_loading_states",
+      "label": "ERRH-3: Add loading states",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L747"
+    },
+    {
+      "id": "docs_sprint_backlog_valid_2_remove_mock_data_fallbacks",
+      "label": "VALID-2: Remove mock data fallbacks",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L761"
+    },
+    {
+      "id": "docs_sprint_backlog_valid_3_add_composite_database_indexes",
+      "label": "VALID-3: Add composite database indexes",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L775"
+    },
+    {
+      "id": "docs_sprint_backlog_valid_4_add_pagination_to_list_endpoints",
+      "label": "VALID-4: Add pagination to list endpoints",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L790"
+    },
+    {
+      "id": "docs_sprint_backlog_valid_5_validate_get_query_params",
+      "label": "VALID-5: Validate GET query params",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L804"
+    },
+    {
+      "id": "docs_sprint_backlog_profile_4_activity_timeline_api_ui",
+      "label": "PROFILE-4: Activity timeline API + UI",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L818"
+    },
+    {
+      "id": "docs_sprint_backlog_profile_5_account_deletion_flow",
+      "label": "PROFILE-5: Account deletion flow",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L832"
+    },
+    {
+      "id": "docs_sprint_backlog_onboard_1_handle_onboarding_race_condition",
+      "label": "ONBOARD-1: Handle onboarding race condition",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L846"
+    },
+    {
+      "id": "docs_sprint_backlog_memory_3_map_visibility_gating",
+      "label": "MEMORY-3: Map visibility gating",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L859"
+    },
+    {
+      "id": "docs_sprint_backlog_memory_4_profile_ring_indicator",
+      "label": "MEMORY-4: Profile ring indicator",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L872"
+    },
+    {
+      "id": "docs_sprint_backlog_infra_1_configure_connection_pooling",
+      "label": "INFRA-1: Configure connection pooling",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L885"
+    },
+    {
+      "id": "docs_sprint_backlog_infra_2_add_health_check_endpoint",
+      "label": "INFRA-2: Add health check endpoint",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L898"
+    },
+    {
+      "id": "docs_sprint_backlog_infra_3_integrate_error_tracking",
+      "label": "INFRA-3: Integrate error tracking",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L911"
+    },
+    {
+      "id": "docs_sprint_backlog_infra_4_schedule_invitation_cleanup",
+      "label": "INFRA-4: Schedule invitation cleanup",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L925"
+    },
+    {
+      "id": "docs_sprint_backlog_infra_5_ensure_production_env_vars",
+      "label": "INFRA-5: Ensure production env vars",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L939"
+    },
+    {
+      "id": "docs_sprint_backlog_a11y_1_fix_modal_accessibility",
+      "label": "A11Y-1: Fix modal accessibility",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L953"
+    },
+    {
+      "id": "docs_sprint_backlog_a11y_2_map_keyboard_navigation",
+      "label": "A11Y-2: Map keyboard navigation",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L967"
+    },
+    {
+      "id": "docs_sprint_backlog_mobile_1_responsive_map_layout",
+      "label": "MOBILE-1: Responsive map layout",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L980"
+    },
+    {
+      "id": "docs_sprint_backlog_group_4_relax_global_group_name_uniqueness",
+      "label": "GROUP-4: Relax global group name uniqueness",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L994"
+    },
+    {
+      "id": "docs_sprint_backlog_nice_to_have_stories_post_beta",
+      "label": "Nice-to-Have Stories (Post-Beta)",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1008"
+    },
+    {
+      "id": "docs_sprint_backlog_nice_1_activate_dark_mode",
+      "label": "NICE-1: Activate dark mode",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1014"
+    },
+    {
+      "id": "docs_sprint_backlog_nice_2_wire_notification_system",
+      "label": "NICE-2: Wire notification system",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1024"
+    },
+    {
+      "id": "docs_sprint_backlog_nice_3_batch_timeline_visualization",
+      "label": "NICE-3: Batch timeline visualization",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1034"
+    },
+    {
+      "id": "docs_sprint_backlog_nice_4_multi_image_memory_carousel",
+      "label": "NICE-4: Multi-image memory carousel",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1044"
+    },
+    {
+      "id": "docs_sprint_backlog_nice_5_social_sharing_og_images",
+      "label": "NICE-5: Social sharing OG images",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1054"
+    },
+    {
+      "id": "docs_sprint_backlog_nice_6_leaderboard_contribution_stats",
+      "label": "NICE-6: Leaderboard + contribution stats",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1064"
+    },
+    {
+      "id": "docs_sprint_backlog_nice_7_analytics_dashboard_admin",
+      "label": "NICE-7: Analytics dashboard (admin)",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1074"
+    },
+    {
+      "id": "docs_sprint_backlog_nice_8_export_batch_archives_as_pdf",
+      "label": "NICE-8: Export batch archives as PDF",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1084"
+    },
+    {
+      "id": "docs_sprint_backlog_nice_9_ai_powered_auto_captioning",
+      "label": "NICE-9: AI-powered auto-captioning",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1094"
+    },
+    {
+      "id": "docs_sprint_backlog_nice_10_multi_university_architecture",
+      "label": "NICE-10: Multi-university architecture",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1104"
+    },
+    {
+      "id": "docs_sprint_backlog_sprint_summary",
+      "label": "Sprint Summary",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1114"
+    }
+  ],
+  "edges": [
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_docs_sprint_backlog_md",
+      "target": "docs_sprint_backlog_skolaroid_sprint_backlog",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_skolaroid_sprint_backlog",
+      "target": "docs_sprint_backlog_priority_1_critical_blocking",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_1_critical_blocking",
+      "target": "docs_sprint_backlog_auth_1_guard_user_admin_api_routes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_1_critical_blocking",
+      "target": "docs_sprint_backlog_auth_2_guard_upload_api_endpoint",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_1_critical_blocking",
+      "target": "docs_sprint_backlog_auth_3_remove_dev_seed_user_fallbacks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_1_critical_blocking",
+      "target": "docs_sprint_backlog_auth_4_enforce_email_domain_restriction",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_1_critical_blocking",
+      "target": "docs_sprint_backlog_auth_5_restrict_admin_page_access",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_1_critical_blocking",
+      "target": "docs_sprint_backlog_auth_6_add_security_response_headers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_1_critical_blocking",
+      "target": "docs_sprint_backlog_auth_7_validate_upload_file_content",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L99",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_1_critical_blocking",
+      "target": "docs_sprint_backlog_auth_8_add_upload_rate_limiting",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_1_critical_blocking",
+      "target": "docs_sprint_backlog_auth_9_verify_proxy_covers_all_api_routes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L127",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_1_critical_blocking",
+      "target": "docs_sprint_backlog_trust_1_add_approvalstatus_to_memory",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L141",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_1_critical_blocking",
+      "target": "docs_sprint_backlog_trust_2_filter_queries_by_approvalstatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L156",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_1_critical_blocking",
+      "target": "docs_sprint_backlog_story_1_fix_hardcoded_programbatchid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L171",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_1_critical_blocking",
+      "target": "docs_sprint_backlog_story_2_re_enable_upload_validation_checks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L184",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_skolaroid_sprint_backlog",
+      "target": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L197",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_approval_1_content_approval_api_routes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L203",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_approval_2_wire_admin_approval_ui",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L218",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_batch_1_batch_archive_browser_api",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L232",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_batch_2_batch_archive_listing_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L246",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_batch_3_batch_detail_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L259",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_highlights_1_story_prisma_model_migration",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L272",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_highlights_2_story_crud_api_routes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L286",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_highlights_3_story_viewer_component",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L301",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_highlights_4_story_highlights_per_batch",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L315",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_heatmap_1_batch_scoped_heatmap_api",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L329",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_heatmap_2_mapbox_heatmap_layer_toggle",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L342",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_heatmap_3_heatmap_legend_component",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L356",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_search_1_full_text_search_migration",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L370",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_search_2_search_api_route_schema",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L383",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_search_3_search_bar_hook",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L397",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_search_4_search_results_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L412",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_otd_1_on_this_day_api_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L425",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_otd_2_on_this_day_home_component",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L439",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_fund_1_fundraiser_model_migration",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L454",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_fund_2_fundraiser_schemas_hooks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L468",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_fund_3_fundraiser_crud_api_routes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L482",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_fund_4_fundraiser_approval_api",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L501",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_fund_5_fundraiser_listing_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L515",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_fund_6_fundraiser_detail_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L529",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_fund_7_create_fundraiser_modal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L542",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_group_1_group_edit_api_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L556",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_group_2_group_edit_ui_modal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L569",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_group_3_add_public_group_type",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L584",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_map_1_add_location_categorization",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L599",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_map_2_gps_coordinate_bounding_box",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L614",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_profile_1_extend_user_model_schema",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L628",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_profile_2_profile_update_api_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L642",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_profile_3_profile_edit_ui_hook",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L656",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_memory_1_memory_edit_api_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L671",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_memory_2_memory_edit_ui_modal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L685",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_2_high_impact_non_blocking",
+      "target": "docs_sprint_backlog_valid_1_validate_batch_membership_on_post",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L700",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_skolaroid_sprint_backlog",
+      "target": "docs_sprint_backlog_priority_3_stabilization_polish",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L713",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_3_stabilization_polish",
+      "target": "docs_sprint_backlog_errh_1_add_error_global_error_boundaries",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L719",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_3_stabilization_polish",
+      "target": "docs_sprint_backlog_errh_2_add_not_found_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L734",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_3_stabilization_polish",
+      "target": "docs_sprint_backlog_errh_3_add_loading_states",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L747",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_3_stabilization_polish",
+      "target": "docs_sprint_backlog_valid_2_remove_mock_data_fallbacks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L761",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_3_stabilization_polish",
+      "target": "docs_sprint_backlog_valid_3_add_composite_database_indexes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L775",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_3_stabilization_polish",
+      "target": "docs_sprint_backlog_valid_4_add_pagination_to_list_endpoints",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L790",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_3_stabilization_polish",
+      "target": "docs_sprint_backlog_valid_5_validate_get_query_params",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L804",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_3_stabilization_polish",
+      "target": "docs_sprint_backlog_profile_4_activity_timeline_api_ui",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L818",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_3_stabilization_polish",
+      "target": "docs_sprint_backlog_profile_5_account_deletion_flow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L832",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_3_stabilization_polish",
+      "target": "docs_sprint_backlog_onboard_1_handle_onboarding_race_condition",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L846",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_3_stabilization_polish",
+      "target": "docs_sprint_backlog_memory_3_map_visibility_gating",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L859",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_3_stabilization_polish",
+      "target": "docs_sprint_backlog_memory_4_profile_ring_indicator",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L872",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_3_stabilization_polish",
+      "target": "docs_sprint_backlog_infra_1_configure_connection_pooling",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L885",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_3_stabilization_polish",
+      "target": "docs_sprint_backlog_infra_2_add_health_check_endpoint",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L898",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_3_stabilization_polish",
+      "target": "docs_sprint_backlog_infra_3_integrate_error_tracking",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L911",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_3_stabilization_polish",
+      "target": "docs_sprint_backlog_infra_4_schedule_invitation_cleanup",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L925",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_3_stabilization_polish",
+      "target": "docs_sprint_backlog_infra_5_ensure_production_env_vars",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L939",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_3_stabilization_polish",
+      "target": "docs_sprint_backlog_a11y_1_fix_modal_accessibility",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L953",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_3_stabilization_polish",
+      "target": "docs_sprint_backlog_a11y_2_map_keyboard_navigation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L967",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_3_stabilization_polish",
+      "target": "docs_sprint_backlog_mobile_1_responsive_map_layout",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L980",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_priority_3_stabilization_polish",
+      "target": "docs_sprint_backlog_group_4_relax_global_group_name_uniqueness",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L994",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_skolaroid_sprint_backlog",
+      "target": "docs_sprint_backlog_nice_to_have_stories_post_beta",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1008",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_nice_to_have_stories_post_beta",
+      "target": "docs_sprint_backlog_nice_1_activate_dark_mode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1014",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_nice_to_have_stories_post_beta",
+      "target": "docs_sprint_backlog_nice_2_wire_notification_system",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1024",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_nice_to_have_stories_post_beta",
+      "target": "docs_sprint_backlog_nice_3_batch_timeline_visualization",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1034",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_nice_to_have_stories_post_beta",
+      "target": "docs_sprint_backlog_nice_4_multi_image_memory_carousel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1044",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_nice_to_have_stories_post_beta",
+      "target": "docs_sprint_backlog_nice_5_social_sharing_og_images",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1054",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_nice_to_have_stories_post_beta",
+      "target": "docs_sprint_backlog_nice_6_leaderboard_contribution_stats",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1064",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_nice_to_have_stories_post_beta",
+      "target": "docs_sprint_backlog_nice_7_analytics_dashboard_admin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1074",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_nice_to_have_stories_post_beta",
+      "target": "docs_sprint_backlog_nice_8_export_batch_archives_as_pdf",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1084",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_nice_to_have_stories_post_beta",
+      "target": "docs_sprint_backlog_nice_9_ai_powered_auto_captioning",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1094",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_nice_to_have_stories_post_beta",
+      "target": "docs_sprint_backlog_nice_10_multi_university_architecture",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1104",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_sprint_backlog_skolaroid_sprint_backlog",
+      "target": "docs_sprint_backlog_sprint_summary",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\SPRINT_BACKLOG.md",
+      "source_location": "L1114",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

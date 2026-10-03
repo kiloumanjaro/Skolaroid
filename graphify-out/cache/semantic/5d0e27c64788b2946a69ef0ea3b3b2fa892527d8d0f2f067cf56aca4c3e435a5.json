@@ -1,0 +1,39 @@
+{
+  "nodes": [
+    {
+      "id": "prompts_remember_memory_keeper",
+      "label": "Memory Keeper",
+      "file_type": "document",
+      "source_file": ".github/prompts/remember.prompt.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "prompts_remember_domain_memory_instructions",
+      "label": "Domain-Organized Memory Instructions",
+      "file_type": "concept",
+      "source_file": ".github/prompts/remember.prompt.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "prompts_remember_memory_keeper",
+      "target": "prompts_remember_domain_memory_instructions",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/prompts/remember.prompt.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

@@ -1,0 +1,38 @@
+{
+  "nodes": [
+    {
+      "id": "prompts_so_plan_sa_planning_prompt_sonnet",
+      "label": "SA Planning Prompt (Sonnet)",
+      "file_type": "document",
+      "source_file": ".github/prompts/so-plan.prompt.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "prompts_so_plan_sa_planning_prompt_sonnet",
+      "target": "prompts_op_plan_plan_md_artifact",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/prompts/so-plan.prompt.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_so_plan_sa_planning_prompt_sonnet",
+      "target": "prompts_op_plan_sa_planning_prompt_opus",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": ".github/prompts/so-plan.prompt.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

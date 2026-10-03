@@ -1,0 +1,879 @@
+{
+  "nodes": [
+    {
+      "id": "c_users_kint_louise_documents_projects_skolaroid_docs_pre_beta_audit_report_md",
+      "label": "PRE_BETA_AUDIT_REPORT.md",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_skolaroid_pre_beta_audit_report",
+      "label": "Skolaroid \u2014 Pre-Beta Audit Report",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_feature_implementation_status",
+      "label": "Feature Implementation Status",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L8"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_critical_gaps_must_fix_before_beta",
+      "label": "Critical Gaps \u2014 Must Fix Before Beta",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L24"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_1_user_profiles_accounts",
+      "label": "1. User Profiles & Accounts",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L28"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_existing_code",
+      "label": "Existing Code",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L30"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_missing_code",
+      "label": "Missing Code",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L39"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_logic_security_loopholes",
+      "label": "Logic & Security Loopholes",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L52"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_2_batch_archives_story_highlights",
+      "label": "2. Batch Archives & Story Highlights",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L64"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_existing_code_66",
+      "label": "Existing Code",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L66"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_missing_code_73",
+      "label": "Missing Code",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L73"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_logic_security_loopholes_86",
+      "label": "Logic & Security Loopholes",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L86"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_3_immersive_mapping",
+      "label": "3. Immersive Mapping",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L94"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_existing_code_96",
+      "label": "Existing Code",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L96"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_missing_code_105",
+      "label": "Missing Code",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L105"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_logic_security_loopholes_111",
+      "label": "Logic & Security Loopholes",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L111"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_4_batch_heatmap_overlay",
+      "label": "4. Batch Heatmap Overlay",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L120"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_existing_code_122",
+      "label": "Existing Code",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L122"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_missing_code_127",
+      "label": "Missing Code",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L127"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_logic_security_loopholes_135",
+      "label": "Logic & Security Loopholes",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L135"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_5_advanced_search",
+      "label": "5. Advanced Search",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L141"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_existing_code_143",
+      "label": "Existing Code",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L143"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_missing_code_147",
+      "label": "Missing Code",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L147"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_logic_security_loopholes_157",
+      "label": "Logic & Security Loopholes",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L157"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_6_groups_communities",
+      "label": "6. Groups & Communities",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L163"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_existing_code_165",
+      "label": "Existing Code",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L165"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_missing_code_174",
+      "label": "Missing Code",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L174"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_logic_security_loopholes_182",
+      "label": "Logic & Security Loopholes",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L182"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_7_fundraising_platform",
+      "label": "7. Fundraising Platform",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L190"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_existing_code_192",
+      "label": "Existing Code",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L192"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_missing_code_196",
+      "label": "Missing Code",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L196"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_logic_security_loopholes_207",
+      "label": "Logic & Security Loopholes",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L207"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_8_on_this_day_digital_time_capsule",
+      "label": "8. \"On This Day\" Digital Time Capsule",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L215"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_existing_code_217",
+      "label": "Existing Code",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L217"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_missing_code_221",
+      "label": "Missing Code",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L221"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_logic_security_loopholes_229",
+      "label": "Logic & Security Loopholes",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L229"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_9_input_a_story_memory_posting",
+      "label": "9. Input a Story (Memory Posting)",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L237"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_existing_code_239",
+      "label": "Existing Code",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L239"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_missing_code_248",
+      "label": "Missing Code",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L248"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_logic_security_loopholes_258",
+      "label": "Logic & Security Loopholes",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L258"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_cross_cutting_technical_gaps",
+      "label": "Cross-Cutting Technical Gaps",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L268"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_authentication_authorization",
+      "label": "Authentication & Authorization",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L270"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_error_handling",
+      "label": "Error Handling",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L277"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_input_validation",
+      "label": "Input Validation",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L284"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_database_performance",
+      "label": "Database & Performance",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L289"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_security_headers",
+      "label": "Security Headers",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L297"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_monitoring_observability",
+      "label": "Monitoring & Observability",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L302"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_accessibility",
+      "label": "Accessibility",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L308"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_mobile_ux",
+      "label": "Mobile UX",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L315"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_environment_deployment",
+      "label": "Environment & Deployment",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L321"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_nice_to_have_features_post_beta_investor_demo",
+      "label": "Nice-to-Have Features (Post-Beta / Investor Demo)",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L329"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_experience_enhancements",
+      "label": "Experience Enhancements",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L333"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_growth_engagement_features",
+      "label": "Growth & Engagement Features",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L343"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_investor_facing_differentiators",
+      "label": "Investor-Facing Differentiators",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L353"
+    },
+    {
+      "id": "docs_pre_beta_audit_report_summary_checklist",
+      "label": "Summary Checklist",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L365"
+    }
+  ],
+  "edges": [
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_docs_pre_beta_audit_report_md",
+      "target": "docs_pre_beta_audit_report_skolaroid_pre_beta_audit_report",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_skolaroid_pre_beta_audit_report",
+      "target": "docs_pre_beta_audit_report_feature_implementation_status",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_skolaroid_pre_beta_audit_report",
+      "target": "docs_pre_beta_audit_report_critical_gaps_must_fix_before_beta",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_critical_gaps_must_fix_before_beta",
+      "target": "docs_pre_beta_audit_report_1_user_profiles_accounts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_1_user_profiles_accounts",
+      "target": "docs_pre_beta_audit_report_existing_code",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_1_user_profiles_accounts",
+      "target": "docs_pre_beta_audit_report_missing_code",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_1_user_profiles_accounts",
+      "target": "docs_pre_beta_audit_report_logic_security_loopholes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_critical_gaps_must_fix_before_beta",
+      "target": "docs_pre_beta_audit_report_2_batch_archives_story_highlights",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L64",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_2_batch_archives_story_highlights",
+      "target": "docs_pre_beta_audit_report_existing_code_66",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_2_batch_archives_story_highlights",
+      "target": "docs_pre_beta_audit_report_missing_code_73",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_2_batch_archives_story_highlights",
+      "target": "docs_pre_beta_audit_report_logic_security_loopholes_86",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L86",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_critical_gaps_must_fix_before_beta",
+      "target": "docs_pre_beta_audit_report_3_immersive_mapping",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_3_immersive_mapping",
+      "target": "docs_pre_beta_audit_report_existing_code_96",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_3_immersive_mapping",
+      "target": "docs_pre_beta_audit_report_missing_code_105",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L105",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_3_immersive_mapping",
+      "target": "docs_pre_beta_audit_report_logic_security_loopholes_111",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L111",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_critical_gaps_must_fix_before_beta",
+      "target": "docs_pre_beta_audit_report_4_batch_heatmap_overlay",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L120",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_4_batch_heatmap_overlay",
+      "target": "docs_pre_beta_audit_report_existing_code_122",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L122",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_4_batch_heatmap_overlay",
+      "target": "docs_pre_beta_audit_report_missing_code_127",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L127",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_4_batch_heatmap_overlay",
+      "target": "docs_pre_beta_audit_report_logic_security_loopholes_135",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L135",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_critical_gaps_must_fix_before_beta",
+      "target": "docs_pre_beta_audit_report_5_advanced_search",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L141",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_5_advanced_search",
+      "target": "docs_pre_beta_audit_report_existing_code_143",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L143",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_5_advanced_search",
+      "target": "docs_pre_beta_audit_report_missing_code_147",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L147",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_5_advanced_search",
+      "target": "docs_pre_beta_audit_report_logic_security_loopholes_157",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L157",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_critical_gaps_must_fix_before_beta",
+      "target": "docs_pre_beta_audit_report_6_groups_communities",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L163",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_6_groups_communities",
+      "target": "docs_pre_beta_audit_report_existing_code_165",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L165",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_6_groups_communities",
+      "target": "docs_pre_beta_audit_report_missing_code_174",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L174",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_6_groups_communities",
+      "target": "docs_pre_beta_audit_report_logic_security_loopholes_182",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L182",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_critical_gaps_must_fix_before_beta",
+      "target": "docs_pre_beta_audit_report_7_fundraising_platform",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L190",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_7_fundraising_platform",
+      "target": "docs_pre_beta_audit_report_existing_code_192",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L192",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_7_fundraising_platform",
+      "target": "docs_pre_beta_audit_report_missing_code_196",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L196",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_7_fundraising_platform",
+      "target": "docs_pre_beta_audit_report_logic_security_loopholes_207",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L207",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_critical_gaps_must_fix_before_beta",
+      "target": "docs_pre_beta_audit_report_8_on_this_day_digital_time_capsule",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L215",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_8_on_this_day_digital_time_capsule",
+      "target": "docs_pre_beta_audit_report_existing_code_217",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L217",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_8_on_this_day_digital_time_capsule",
+      "target": "docs_pre_beta_audit_report_missing_code_221",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L221",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_8_on_this_day_digital_time_capsule",
+      "target": "docs_pre_beta_audit_report_logic_security_loopholes_229",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L229",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_critical_gaps_must_fix_before_beta",
+      "target": "docs_pre_beta_audit_report_9_input_a_story_memory_posting",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L237",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_9_input_a_story_memory_posting",
+      "target": "docs_pre_beta_audit_report_existing_code_239",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L239",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_9_input_a_story_memory_posting",
+      "target": "docs_pre_beta_audit_report_missing_code_248",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L248",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_9_input_a_story_memory_posting",
+      "target": "docs_pre_beta_audit_report_logic_security_loopholes_258",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L258",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_skolaroid_pre_beta_audit_report",
+      "target": "docs_pre_beta_audit_report_cross_cutting_technical_gaps",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L268",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_cross_cutting_technical_gaps",
+      "target": "docs_pre_beta_audit_report_authentication_authorization",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L270",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_cross_cutting_technical_gaps",
+      "target": "docs_pre_beta_audit_report_error_handling",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L277",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_cross_cutting_technical_gaps",
+      "target": "docs_pre_beta_audit_report_input_validation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L284",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_cross_cutting_technical_gaps",
+      "target": "docs_pre_beta_audit_report_database_performance",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L289",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_cross_cutting_technical_gaps",
+      "target": "docs_pre_beta_audit_report_security_headers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L297",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_cross_cutting_technical_gaps",
+      "target": "docs_pre_beta_audit_report_monitoring_observability",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L302",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_cross_cutting_technical_gaps",
+      "target": "docs_pre_beta_audit_report_accessibility",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L308",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_cross_cutting_technical_gaps",
+      "target": "docs_pre_beta_audit_report_mobile_ux",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L315",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_cross_cutting_technical_gaps",
+      "target": "docs_pre_beta_audit_report_environment_deployment",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L321",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_skolaroid_pre_beta_audit_report",
+      "target": "docs_pre_beta_audit_report_nice_to_have_features_post_beta_investor_demo",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L329",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_nice_to_have_features_post_beta_investor_demo",
+      "target": "docs_pre_beta_audit_report_experience_enhancements",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L333",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_nice_to_have_features_post_beta_investor_demo",
+      "target": "docs_pre_beta_audit_report_growth_engagement_features",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L343",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_nice_to_have_features_post_beta_investor_demo",
+      "target": "docs_pre_beta_audit_report_investor_facing_differentiators",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L353",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pre_beta_audit_report_skolaroid_pre_beta_audit_report",
+      "target": "docs_pre_beta_audit_report_summary_checklist",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRE_BETA_AUDIT_REPORT.md",
+      "source_location": "L365",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

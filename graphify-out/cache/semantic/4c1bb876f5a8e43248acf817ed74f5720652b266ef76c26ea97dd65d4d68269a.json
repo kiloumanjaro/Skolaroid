@@ -1,0 +1,220 @@
+{
+  "nodes": [
+    {
+      "id": "docs_dual_map_view_implementation_guide",
+      "label": "Dual Map View Feature Implementation",
+      "file_type": "document",
+      "source_file": "docs/DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_dual_map_view_implementation_memory_pin",
+      "label": "MemoryPin Component",
+      "file_type": "code",
+      "source_file": "docs/DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_dual_map_view_implementation_memory_detail_modal",
+      "label": "MemoryDetailModal Component",
+      "file_type": "code",
+      "source_file": "docs/DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_dual_map_view_implementation_hook",
+      "label": "useAllMemoriesWithCoordinates Hook",
+      "file_type": "code",
+      "source_file": "docs/DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_dual_map_view_implementation_api_route",
+      "label": "GET /api/prisma/memory/get-all-with-coordinates",
+      "file_type": "code",
+      "source_file": "docs/DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_dual_map_view_implementation_map",
+      "label": "map.tsx Component",
+      "file_type": "code",
+      "source_file": "docs/DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_dual_map_view_implementation_landmark_marker",
+      "label": "Landmark Markers",
+      "file_type": "concept",
+      "source_file": "docs/DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_dual_map_view_implementation_min_zoom",
+      "label": "Min Zoom 16 to Prevent Oversized Markers",
+      "file_type": "rationale",
+      "source_file": "docs/DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_dual_map_view_implementation_guide",
+      "target": "docs_dual_map_view_implementation_memory_pin",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_guide",
+      "target": "docs_dual_map_view_implementation_memory_detail_modal",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_guide",
+      "target": "docs_dual_map_view_implementation_hook",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_guide",
+      "target": "docs_dual_map_view_implementation_api_route",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_guide",
+      "target": "docs_dual_map_view_implementation_map",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_hook",
+      "target": "docs_dual_map_view_implementation_api_route",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_map",
+      "target": "docs_dual_map_view_implementation_memory_pin",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_map",
+      "target": "docs_dual_map_view_implementation_landmark_marker",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_memory_pin",
+      "target": "docs_dual_map_view_implementation_memory_detail_modal",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_min_zoom",
+      "target": "docs_dual_map_view_implementation_map",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dual_map_view_implementation_api_route",
+      "target": "docs_prisma_api_demo_user_model",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": "docs/DUAL_MAP_VIEW_IMPLEMENTATION.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "dual_map_data_flow",
+      "label": "Dual Map Memory Pin Data Flow",
+      "nodes": [
+        "docs_dual_map_view_implementation_hook",
+        "docs_dual_map_view_implementation_api_route",
+        "docs_dual_map_view_implementation_map",
+        "docs_dual_map_view_implementation_memory_pin"
+      ],
+      "relation": "form",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/DUAL_MAP_VIEW_IMPLEMENTATION.md"
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "nodes": [
+    {
+      "id": "docs_prisma_workflow_guide",
+      "label": "Database Setup & Prisma Migration Guide",
+      "file_type": "document",
+      "source_file": "docs/PRISMA WORKFLOW.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_workflow_supabase",
+      "label": "Supabase",
+      "file_type": "concept",
+      "source_file": "docs/PRISMA WORKFLOW.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_workflow_migration_dev",
+      "label": "prisma migrate dev",
+      "file_type": "concept",
+      "source_file": "docs/PRISMA WORKFLOW.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_workflow_migrate_prod",
+      "label": "pnpm run migrate:prod",
+      "file_type": "concept",
+      "source_file": "docs/PRISMA WORKFLOW.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_prisma_workflow_local_first",
+      "label": "Apply Schema Changes Locally First",
+      "file_type": "rationale",
+      "source_file": "docs/PRISMA WORKFLOW.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_prisma_workflow_guide",
+      "target": "docs_prisma_workflow_supabase",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA WORKFLOW.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_workflow_guide",
+      "target": "docs_prisma_workflow_migration_dev",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA WORKFLOW.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_workflow_guide",
+      "target": "docs_prisma_workflow_migrate_prod",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA WORKFLOW.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_workflow_local_first",
+      "target": "docs_prisma_workflow_migration_dev",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRISMA WORKFLOW.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_workflow_migrate_prod",
+      "target": "docs_prisma_workflow_migration_dev",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/PRISMA WORKFLOW.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

@@ -1,0 +1,38 @@
+{
+  "nodes": [
+    {
+      "id": "about_cebu_building_photo",
+      "label": "UP Cebu Building Exterior Photo with Students",
+      "file_type": "image",
+      "source_file": "public/assets/images/about/Cebu-Building.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "about_cebu_building_photo",
+      "target": "about_cebu_concept_up_cebu",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "public/assets/images/about/Cebu-Building.webp",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "about_cebu_building_photo",
+      "target": "about_cebu_concept_about_page",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "public/assets/images/about/Cebu-Building.webp",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

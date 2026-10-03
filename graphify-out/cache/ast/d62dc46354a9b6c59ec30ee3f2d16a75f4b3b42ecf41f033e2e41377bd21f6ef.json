@@ -1,0 +1,271 @@
+{
+  "nodes": [
+    {
+      "id": "c_users_kint_louise_documents_projects_skolaroid_architecture_md",
+      "label": "ARCHITECTURE.md",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "skolaroid_architecture_architecture_guide",
+      "label": "Architecture Guide",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "skolaroid_architecture_technology_stack",
+      "label": "Technology Stack",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L5"
+    },
+    {
+      "id": "skolaroid_architecture_data_flow",
+      "label": "Data Flow",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L14"
+    },
+    {
+      "id": "skolaroid_architecture_example_user_login_flow",
+      "label": "Example: User Login Flow",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L30"
+    },
+    {
+      "id": "skolaroid_architecture_directory_structure",
+      "label": "Directory Structure",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L111"
+    },
+    {
+      "id": "skolaroid_architecture_key_patterns",
+      "label": "Key Patterns",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L135"
+    },
+    {
+      "id": "skolaroid_architecture_1_always_use_zod_for_validation",
+      "label": "1. Always Use Zod for Validation",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L137"
+    },
+    {
+      "id": "skolaroid_architecture_2_use_tanstack_query_for_data_fetching",
+      "label": "2. Use TanStack Query for Data Fetching",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L157"
+    },
+    {
+      "id": "skolaroid_architecture_3_service_layer_extract_when_complex",
+      "label": "3. Service Layer: Extract When Complex",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L200"
+    },
+    {
+      "id": "skolaroid_architecture_4_use_type_inference_from_zod",
+      "label": "4. Use Type Inference from Zod",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L243"
+    },
+    {
+      "id": "skolaroid_architecture_common_mistakes_to_avoid",
+      "label": "Common Mistakes to Avoid",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L264"
+    },
+    {
+      "id": "skolaroid_architecture_development_workflow",
+      "label": "Development Workflow",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L289"
+    },
+    {
+      "id": "skolaroid_architecture_testing_your_code",
+      "label": "Testing Your Code",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L297"
+    },
+    {
+      "id": "skolaroid_architecture_adding_new_features",
+      "label": "Adding New Features",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L314"
+    },
+    {
+      "id": "skolaroid_architecture_serving_the_mobile_app",
+      "label": "Serving the mobile app",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L327"
+    },
+    {
+      "id": "skolaroid_architecture_questions",
+      "label": "Questions?",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L361"
+    }
+  ],
+  "edges": [
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_architecture_md",
+      "target": "skolaroid_architecture_architecture_guide",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_architecture_architecture_guide",
+      "target": "skolaroid_architecture_technology_stack",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_architecture_architecture_guide",
+      "target": "skolaroid_architecture_data_flow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_architecture_data_flow",
+      "target": "skolaroid_architecture_example_user_login_flow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_architecture_architecture_guide",
+      "target": "skolaroid_architecture_directory_structure",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L111",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_architecture_architecture_guide",
+      "target": "skolaroid_architecture_key_patterns",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L135",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_architecture_key_patterns",
+      "target": "skolaroid_architecture_1_always_use_zod_for_validation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L137",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_architecture_key_patterns",
+      "target": "skolaroid_architecture_2_use_tanstack_query_for_data_fetching",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L157",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_architecture_key_patterns",
+      "target": "skolaroid_architecture_3_service_layer_extract_when_complex",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L200",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_architecture_key_patterns",
+      "target": "skolaroid_architecture_4_use_type_inference_from_zod",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L243",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_architecture_architecture_guide",
+      "target": "skolaroid_architecture_common_mistakes_to_avoid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L264",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_architecture_architecture_guide",
+      "target": "skolaroid_architecture_development_workflow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L289",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_architecture_architecture_guide",
+      "target": "skolaroid_architecture_testing_your_code",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L297",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_architecture_architecture_guide",
+      "target": "skolaroid_architecture_adding_new_features",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L314",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_architecture_architecture_guide",
+      "target": "skolaroid_architecture_serving_the_mobile_app",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L327",
+      "weight": 1.0
+    },
+    {
+      "source": "skolaroid_architecture_architecture_guide",
+      "target": "skolaroid_architecture_questions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\ARCHITECTURE.md",
+      "source_location": "L361",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

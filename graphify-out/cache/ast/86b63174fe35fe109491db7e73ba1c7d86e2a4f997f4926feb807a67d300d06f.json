@@ -1,0 +1,29 @@
+{
+  "nodes": [
+    {
+      "id": "c_users_kint_louise_documents_projects_skolaroid_vercel_json",
+      "label": "vercel.json",
+      "file_type": "code",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\vercel.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "skolaroid_vercel_crons",
+      "label": "crons",
+      "file_type": "code",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\vercel.json",
+      "source_location": "L2"
+    }
+  ],
+  "edges": [
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_vercel_json",
+      "target": "skolaroid_vercel_crons",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\vercel.json",
+      "source_location": "L2",
+      "weight": 1.0
+    }
+  ]
+}

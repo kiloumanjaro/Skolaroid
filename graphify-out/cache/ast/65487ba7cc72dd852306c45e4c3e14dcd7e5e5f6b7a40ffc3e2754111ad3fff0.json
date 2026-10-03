@@ -1,0 +1,575 @@
+{
+  "nodes": [
+    {
+      "id": "c_users_kint_louise_documents_projects_skolaroid_docs_prisma_troubleshooting_md",
+      "label": "PRISMA_TROUBLESHOOTING.md",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_prisma_v7_troubleshooting_guide",
+      "label": "Prisma v7 Troubleshooting Guide",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_authentication_connection_issues",
+      "label": "Authentication & Connection Issues",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L3"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_problem_p1000_authentication_failed",
+      "label": "Problem: P1000 - Authentication Failed",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L5"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_problem_p1001_can_t_reach_database_server",
+      "label": "Problem: P1001 - Can't Reach Database Server",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L52"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_problem_connection_pooling_issues",
+      "label": "Problem: Connection Pooling Issues",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L90"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_migration_issues",
+      "label": "Migration Issues",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L120"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_problem_migration_fails_with_p1000_error",
+      "label": "Problem: Migration Fails with P1000 Error",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L122"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_problem_migration_conflict_error",
+      "label": "Problem: \"Migration Conflict\" Error",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L136"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_problem_schema_validation_error",
+      "label": "Problem: Schema Validation Error",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L170"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_client_generation_issues",
+      "label": "Client Generation Issues",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L209"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_problem_module_not_found_generated_prisma",
+      "label": "Problem: Module Not Found - '@/generated/prisma'",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L211"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_problem_types_not_found_in_generated_client",
+      "label": "Problem: Types Not Found in Generated Client",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L262"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_runtime_issues",
+      "label": "Runtime Issues",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L287"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_problem_prismaclient_not_exported",
+      "label": "Problem: PrismaClient Not Exported",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L289"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_problem_prismapg_constructor_error",
+      "label": "Problem: PrismaPg Constructor Error",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L312"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_problem_operation_timeout",
+      "label": "Problem: Operation Timeout",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L337"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_development_workflow_issues",
+      "label": "Development Workflow Issues",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L374"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_problem_changes_to_schema_prisma_don_t_apply",
+      "label": "Problem: Changes to schema.prisma Don't Apply",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L376"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_problem_env_changes_not_reflecting",
+      "label": "Problem: .env Changes Not Reflecting",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L389"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_problem_type_errors_after_migration",
+      "label": "Problem: Type Errors After Migration",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L413"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_database_issues",
+      "label": "Database Issues",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L422"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_problem_unique_constraint_violation",
+      "label": "Problem: Unique Constraint Violation",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L424"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_problem_foreign_key_constraint_violation",
+      "label": "Problem: Foreign Key Constraint Violation",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L450"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_problem_record_not_found_in_unique_query",
+      "label": "Problem: Record Not Found in Unique Query",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L477"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_debugging_commands",
+      "label": "Debugging Commands",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L501"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_view_all_environment_variables",
+      "label": "View All Environment Variables",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L503"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_check_prisma_version",
+      "label": "Check Prisma Version",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L509"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_validate_schema",
+      "label": "Validate Schema",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L515"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_check_migration_history",
+      "label": "Check Migration History",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L521"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_reset_database_development_only",
+      "label": "Reset Database (Development Only)",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L527"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_view_database_with_studio",
+      "label": "View Database with Studio",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L533"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_performance_diagnostics",
+      "label": "Performance Diagnostics",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L539"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_enable_query_logging",
+      "label": "Enable Query Logging",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L541"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_monitor_connections",
+      "label": "Monitor Connections",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L562"
+    },
+    {
+      "id": "docs_prisma_troubleshooting_getting_help",
+      "label": "Getting Help",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L569"
+    }
+  ],
+  "edges": [
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_docs_prisma_troubleshooting_md",
+      "target": "docs_prisma_troubleshooting_prisma_v7_troubleshooting_guide",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_prisma_v7_troubleshooting_guide",
+      "target": "docs_prisma_troubleshooting_authentication_connection_issues",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_authentication_connection_issues",
+      "target": "docs_prisma_troubleshooting_problem_p1000_authentication_failed",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_authentication_connection_issues",
+      "target": "docs_prisma_troubleshooting_problem_p1001_can_t_reach_database_server",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_authentication_connection_issues",
+      "target": "docs_prisma_troubleshooting_problem_connection_pooling_issues",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L90",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_prisma_v7_troubleshooting_guide",
+      "target": "docs_prisma_troubleshooting_migration_issues",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L120",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_migration_issues",
+      "target": "docs_prisma_troubleshooting_problem_migration_fails_with_p1000_error",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L122",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_migration_issues",
+      "target": "docs_prisma_troubleshooting_problem_migration_conflict_error",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L136",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_migration_issues",
+      "target": "docs_prisma_troubleshooting_problem_schema_validation_error",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L170",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_prisma_v7_troubleshooting_guide",
+      "target": "docs_prisma_troubleshooting_client_generation_issues",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L209",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_client_generation_issues",
+      "target": "docs_prisma_troubleshooting_problem_module_not_found_generated_prisma",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L211",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_client_generation_issues",
+      "target": "docs_prisma_troubleshooting_problem_types_not_found_in_generated_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L262",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_prisma_v7_troubleshooting_guide",
+      "target": "docs_prisma_troubleshooting_runtime_issues",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L287",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_runtime_issues",
+      "target": "docs_prisma_troubleshooting_problem_prismaclient_not_exported",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L289",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_runtime_issues",
+      "target": "docs_prisma_troubleshooting_problem_prismapg_constructor_error",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L312",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_runtime_issues",
+      "target": "docs_prisma_troubleshooting_problem_operation_timeout",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L337",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_prisma_v7_troubleshooting_guide",
+      "target": "docs_prisma_troubleshooting_development_workflow_issues",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L374",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_development_workflow_issues",
+      "target": "docs_prisma_troubleshooting_problem_changes_to_schema_prisma_don_t_apply",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L376",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_development_workflow_issues",
+      "target": "docs_prisma_troubleshooting_problem_env_changes_not_reflecting",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L389",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_development_workflow_issues",
+      "target": "docs_prisma_troubleshooting_problem_type_errors_after_migration",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L413",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_prisma_v7_troubleshooting_guide",
+      "target": "docs_prisma_troubleshooting_database_issues",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L422",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_database_issues",
+      "target": "docs_prisma_troubleshooting_problem_unique_constraint_violation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L424",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_database_issues",
+      "target": "docs_prisma_troubleshooting_problem_foreign_key_constraint_violation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L450",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_database_issues",
+      "target": "docs_prisma_troubleshooting_problem_record_not_found_in_unique_query",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L477",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_prisma_v7_troubleshooting_guide",
+      "target": "docs_prisma_troubleshooting_debugging_commands",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L501",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_debugging_commands",
+      "target": "docs_prisma_troubleshooting_view_all_environment_variables",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L503",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_debugging_commands",
+      "target": "docs_prisma_troubleshooting_check_prisma_version",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L509",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_debugging_commands",
+      "target": "docs_prisma_troubleshooting_validate_schema",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L515",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_debugging_commands",
+      "target": "docs_prisma_troubleshooting_check_migration_history",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L521",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_debugging_commands",
+      "target": "docs_prisma_troubleshooting_reset_database_development_only",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L527",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_debugging_commands",
+      "target": "docs_prisma_troubleshooting_view_database_with_studio",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L533",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_prisma_v7_troubleshooting_guide",
+      "target": "docs_prisma_troubleshooting_performance_diagnostics",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L539",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_performance_diagnostics",
+      "target": "docs_prisma_troubleshooting_enable_query_logging",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L541",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_performance_diagnostics",
+      "target": "docs_prisma_troubleshooting_monitor_connections",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L562",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_prisma_troubleshooting_prisma_v7_troubleshooting_guide",
+      "target": "docs_prisma_troubleshooting_getting_help",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\docs\\PRISMA_TROUBLESHOOTING.md",
+      "source_location": "L569",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

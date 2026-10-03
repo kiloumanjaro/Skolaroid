@@ -1,0 +1,255 @@
+{
+  "nodes": [
+    {
+      "id": "c_users_kint_louise_documents_projects_skolaroid_github_prompts_sketch_prompt_md",
+      "label": "sketch.prompt.md",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "prompts_sketch_prompt_skolaroid_x_hand_drawn_merged_design_system",
+      "label": "Skolaroid x Hand-Drawn \u2014 Merged Design System",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L21"
+    },
+    {
+      "id": "prompts_sketch_prompt_design_philosophy",
+      "label": "Design Philosophy",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L23"
+    },
+    {
+      "id": "prompts_sketch_prompt_color_tokens_css_variables_light_mode_only",
+      "label": "Color Tokens (CSS Variables \u2014 Light Mode Only)",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L38"
+    },
+    {
+      "id": "prompts_sketch_prompt_typography",
+      "label": "Typography",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L61"
+    },
+    {
+      "id": "prompts_sketch_prompt_wobbly_border_radius",
+      "label": "Wobbly Border Radius",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L67"
+    },
+    {
+      "id": "prompts_sketch_prompt_shadows",
+      "label": "Shadows",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L78"
+    },
+    {
+      "id": "prompts_sketch_prompt_component_patterns",
+      "label": "Component Patterns",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L86"
+    },
+    {
+      "id": "prompts_sketch_prompt_button_default_variant_uses_skolaroid_blue_press_flat_active_wobbly_radius",
+      "label": "Button \u2014 `default` variant uses Skolaroid blue, press-flat active, wobbly radius",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L88"
+    },
+    {
+      "id": "prompts_sketch_prompt_card_white_bg_border_2_wobblymd_radius_subtle_hard_shadow_hover_rotation_jiggle",
+      "label": "Card \u2014 White bg, `border-2`, wobblyMd radius, subtle hard shadow, hover rotation jiggle",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L90"
+    },
+    {
+      "id": "prompts_sketch_prompt_input_border_2_wobbly_radius_font_hand_blue_focus_ring",
+      "label": "Input \u2014 `border-2`, wobbly radius, `font-hand`, blue focus ring",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L92"
+    },
+    {
+      "id": "prompts_sketch_prompt_badge_wobbly_radius_border_2_font_hand_variants_default_secondary_destructive_outline_tag_role_status",
+      "label": "Badge \u2014 Wobbly radius, `border-2`, `font-hand`, variants: default/secondary/destructive/outline/tag/role/status",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L94"
+    },
+    {
+      "id": "prompts_sketch_prompt_dialog_warm_paper_overlay_no_blur_wobblymd_content_panel_border_2_hard_shadow",
+      "label": "Dialog \u2014 Warm paper overlay (no blur), wobblyMd content panel, `border-2`, hard shadow",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L96"
+    },
+    {
+      "id": "prompts_sketch_prompt_polaroidcard_memory_display_wobbly_borders_hard_shadow_pb_12_slight_rotation_optional_tape",
+      "label": "PolaroidCard \u2014 Memory display: wobbly borders, hard shadow, `pb-12`, slight rotation, optional tape",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L98"
+    },
+    {
+      "id": "prompts_sketch_prompt_interaction_patterns",
+      "label": "Interaction Patterns",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L100"
+    },
+    {
+      "id": "prompts_sketch_prompt_paper_texture_background",
+      "label": "Paper Texture Background",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L106"
+    }
+  ],
+  "edges": [
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_github_prompts_sketch_prompt_md",
+      "target": "prompts_sketch_prompt_skolaroid_x_hand_drawn_merged_design_system",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_sketch_prompt_skolaroid_x_hand_drawn_merged_design_system",
+      "target": "prompts_sketch_prompt_design_philosophy",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_sketch_prompt_skolaroid_x_hand_drawn_merged_design_system",
+      "target": "prompts_sketch_prompt_color_tokens_css_variables_light_mode_only",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_sketch_prompt_skolaroid_x_hand_drawn_merged_design_system",
+      "target": "prompts_sketch_prompt_typography",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_sketch_prompt_skolaroid_x_hand_drawn_merged_design_system",
+      "target": "prompts_sketch_prompt_wobbly_border_radius",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_sketch_prompt_skolaroid_x_hand_drawn_merged_design_system",
+      "target": "prompts_sketch_prompt_shadows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_sketch_prompt_skolaroid_x_hand_drawn_merged_design_system",
+      "target": "prompts_sketch_prompt_component_patterns",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L86",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_sketch_prompt_component_patterns",
+      "target": "prompts_sketch_prompt_button_default_variant_uses_skolaroid_blue_press_flat_active_wobbly_radius",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L88",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_sketch_prompt_component_patterns",
+      "target": "prompts_sketch_prompt_card_white_bg_border_2_wobblymd_radius_subtle_hard_shadow_hover_rotation_jiggle",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L90",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_sketch_prompt_component_patterns",
+      "target": "prompts_sketch_prompt_input_border_2_wobbly_radius_font_hand_blue_focus_ring",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_sketch_prompt_component_patterns",
+      "target": "prompts_sketch_prompt_badge_wobbly_radius_border_2_font_hand_variants_default_secondary_destructive_outline_tag_role_status",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_sketch_prompt_component_patterns",
+      "target": "prompts_sketch_prompt_dialog_warm_paper_overlay_no_blur_wobblymd_content_panel_border_2_hard_shadow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_sketch_prompt_component_patterns",
+      "target": "prompts_sketch_prompt_polaroidcard_memory_display_wobbly_borders_hard_shadow_pb_12_slight_rotation_optional_tape",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_sketch_prompt_skolaroid_x_hand_drawn_merged_design_system",
+      "target": "prompts_sketch_prompt_interaction_patterns",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L100",
+      "weight": 1.0
+    },
+    {
+      "source": "prompts_sketch_prompt_skolaroid_x_hand_drawn_merged_design_system",
+      "target": "prompts_sketch_prompt_paper_texture_background",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\sketch.prompt.md",
+      "source_location": "L106",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

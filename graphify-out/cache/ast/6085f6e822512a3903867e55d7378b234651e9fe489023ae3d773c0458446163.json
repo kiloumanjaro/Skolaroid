@@ -1,0 +1,111 @@
+{
+  "nodes": [
+    {
+      "id": "c_users_kint_louise_documents_projects_skolaroid_github_prompts_conventional_commit_prompt_md",
+      "label": "conventional-commit.prompt.md",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\conventional-commit.prompt.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "prompts_conventional_commit_prompt_instructions",
+      "label": "Instructions",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\conventional-commit.prompt.md",
+      "source_location": "L7"
+    },
+    {
+      "id": "prompts_conventional_commit_prompt_workflow",
+      "label": "Workflow",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\conventional-commit.prompt.md",
+      "source_location": "L13"
+    },
+    {
+      "id": "prompts_conventional_commit_prompt_commit_message_structure",
+      "label": "Commit Message Structure",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\conventional-commit.prompt.md",
+      "source_location": "L30"
+    },
+    {
+      "id": "prompts_conventional_commit_prompt_examples",
+      "label": "Examples",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\conventional-commit.prompt.md",
+      "source_location": "L44"
+    },
+    {
+      "id": "prompts_conventional_commit_prompt_validation",
+      "label": "Validation",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\conventional-commit.prompt.md",
+      "source_location": "L69"
+    },
+    {
+      "id": "prompts_conventional_commit_prompt_final_step",
+      "label": "Final Step",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\conventional-commit.prompt.md",
+      "source_location": "L82"
+    }
+  ],
+  "edges": [
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_github_prompts_conventional_commit_prompt_md",
+      "target": "prompts_conventional_commit_prompt_instructions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\conventional-commit.prompt.md",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_github_prompts_conventional_commit_prompt_md",
+      "target": "prompts_conventional_commit_prompt_workflow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\conventional-commit.prompt.md",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_github_prompts_conventional_commit_prompt_md",
+      "target": "prompts_conventional_commit_prompt_commit_message_structure",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\conventional-commit.prompt.md",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_github_prompts_conventional_commit_prompt_md",
+      "target": "prompts_conventional_commit_prompt_examples",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\conventional-commit.prompt.md",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_github_prompts_conventional_commit_prompt_md",
+      "target": "prompts_conventional_commit_prompt_validation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\conventional-commit.prompt.md",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_kint_louise_documents_projects_skolaroid_github_prompts_conventional_commit_prompt_md",
+      "target": "prompts_conventional_commit_prompt_final_step",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Kint Louise\\Documents\\Projects\\Skolaroid\\.github\\prompts\\conventional-commit.prompt.md",
+      "source_location": "L82",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}
